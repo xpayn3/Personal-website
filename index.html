@@ -78,16 +78,17 @@
         .new-section h2 {
             font-size: 40px;
             margin: 0;
+            text-align: left; /* Align the headline to the left */
         }
         .new-section .image-container {
             display: flex;
             justify-content: space-between;
-            gap: 20px;
+            gap: 10px; /* Reduced gap to make padding smaller */
             margin-top: 20px;
         }
         .new-section img {
             width: 100%;
-            max-width: 48%; /* Set maximum width of each image to 45% to fit two images */
+            max-width: 45%; /* Set maximum width of each image to 45% to fit two images */
         }
 
         /* Media Queries for Responsiveness */
@@ -109,7 +110,7 @@
             }
             .new-section .image-container {
                 flex-direction: column; /* Stack images vertically on smaller screens */
-                gap: 10px; /* Reduce gap between images */
+                gap: 10px; /* Reduced gap between images */
             }
             .new-section img {
                 max-width: 100%; /* Allow images to fill the available space on smaller screens */
@@ -140,8 +141,8 @@
 <div class="new-section">
     <h2>My Latest Project</h2>
     <div class="image-container">
-        <img src="Images/upload-sphere.gif" alt="Description of the first project image">
-        <img src="Images/upload-sphere.gif" alt="Description of the second project image">
+        <img src="Images/project-image1.jpg" alt="Description of the first project image">
+        <img src="Images/project-image2.jpg" alt="Description of the second project image">
     </div>
 </div>
 
