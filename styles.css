@@ -39,6 +39,9 @@ section {
     max-width: 100%;
     height: auto;
 }
+.grey-text {
+    color: grey; /* Sets the text color to grey */
+}
 
 footer {
     text-align: center; /* Center the text */
