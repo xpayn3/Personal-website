@@ -12,7 +12,7 @@
             box-sizing: border-box;
             background-color: black; /* Set background color to black */
             color: white; /* Make text white to be visible on black background */
-            padding: 0 150px; /* Add padding on both sides */
+            padding: 0 10vw; /* Add responsive padding on both sides (10% of the viewport width) */
         }
         header {
             background-color: black; /* Set header background to black */
@@ -69,6 +69,40 @@
         .more-section a:hover {
             text-decoration: underline;
         }
+
+        /* New Section below more-section */
+        .new-section {
+            text-align: center;
+            padding: 40px 0;
+        }
+        .new-section h2 {
+            font-size: 40px;
+            margin: 0;
+        }
+        .new-section img {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            body {
+                padding: 0 5vw; /* Reduce padding for smaller screens */
+            }
+            header {
+                height: 150px; /* Reduce header height on smaller screens */
+            }
+            .cover {
+                height: 70vh; /* Adjust cover image height on smaller screens */
+            }
+            .more-section h2 {
+                font-size: 30px; /* Adjust the font size for smaller screens */
+            }
+            .new-section h2 {
+                font-size: 30px; /* Adjust the font size for smaller screens */
+            }
+        }
     </style>
 </head>
 <body>
@@ -88,6 +122,12 @@
 
 <div class="more-section">
     <h2><a href="#more">More</a></h2>
+</div>
+
+<!-- New Section below the cover and "More" section -->
+<div class="new-section">
+    <h2>My Latest Project</h2>
+    <img src="Images/project-image.jpg" alt="Description of the project">
 </div>
 
 </body>
