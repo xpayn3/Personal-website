@@ -70,7 +70,7 @@
             text-decoration: underline;
         }
 
-        /* New Section below more-section */
+        /* New Section with two-column layout */
         .new-section {
             text-align: center;
             padding: 40px 0;
@@ -79,10 +79,15 @@
             font-size: 40px;
             margin: 0;
         }
+        .new-section .image-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 20px;
+        }
         .new-section img {
             width: 100%;
-            max-width: 600px;
-            margin-top: 20px;
+            max-width: 45%; /* Set maximum width of each image to 45% to fit two images */
         }
 
         /* Media Queries for Responsiveness */
@@ -101,6 +106,13 @@
             }
             .new-section h2 {
                 font-size: 30px; /* Adjust the font size for smaller screens */
+            }
+            .new-section .image-container {
+                flex-direction: column; /* Stack images vertically on smaller screens */
+                gap: 10px; /* Reduce gap between images */
+            }
+            .new-section img {
+                max-width: 100%; /* Allow images to fill the available space on smaller screens */
             }
         }
     </style>
@@ -124,10 +136,13 @@
     <h2><a href="#more">More</a></h2>
 </div>
 
-<!-- New Section below the cover and "More" section -->
+<!-- New Section with Two-Column Layout -->
 <div class="new-section">
     <h2>My Latest Project</h2>
-    <img src="Images/upload-sphere.gif" alt="Description of the project">
+    <div class="image-container">
+        <img src="Images/project-image1.jpg" alt="Description of the first project image">
+        <img src="Images/project-image2.jpg" alt="Description of the second project image">
+    </div>
 </div>
 
 </body>
