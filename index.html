@@ -146,5 +146,20 @@
     </div>
 </div>
 
+<!-- Footer Section -->
+<footer>
+    <p id="date"></p>
+</footer>
+
+<script>
+    // Get today's date
+    const today = new Date();
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const formattedDate = today.toLocaleDateString('en-US', options);
+
+    // Set the date text to the paragraph with id "date"
+    document.getElementById('date').innerText = formattedDate;
+</script>
+
 </body>
 </html>
