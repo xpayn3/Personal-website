@@ -46,19 +46,4 @@ footer {
     background-color: black; /* Set footer background to black */
     color: white; /* Make text white */
     font-size: 16px; /* Set font size */
-}
 
-footer ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-footer ul li {
-    display: inline;
-    margin: 0 10px;
-}
-
-footer ul li a {
-    color: white;
-    text-decoration: none;
-}
