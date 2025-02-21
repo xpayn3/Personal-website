@@ -197,6 +197,19 @@ section {
 }
 
 
+/* Wrapper for the entire content */
+.container {
+    max-width: 1200px; /* Set the max width for the page content */
+    margin: 0 auto; /* Center the container horizontally */
+    padding: 0 20px; /* Add some padding on the sides for spacing */
+}
+
+/* Optional: Set a minimum width if needed */
+body {
+    min-width: 320px; /* Ensures the page is not too narrow on mobile devices */
+}
+
+
 footer {
     text-align: center; /* Center the text */
     padding: 20px 0; /* Add padding above and below */
