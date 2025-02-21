@@ -3,18 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About - Luka Grcar</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link your main CSS file -->
+    <title>About me</title>
+    <link rel="stylesheet" href="styles.css">  <!-- Reference to the CSS file -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: black; /* Set background color to black */
+            color: white; /* Make text white to be visible on black background */
+            padding: 0 5vw; /* Add responsive padding on both sides (10% of the viewport width) */
+        }
+        header {
+            background-color: black; /* Set header background to black */
+            color: white;
+            padding: 15px;
+            height: 200px; /* Set header height to 200px */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header .left {
+            font-size: 20px;
+        }
+        header .left h1 {
+            margin: 0;
+        }
+        header .left p {
+            margin: 0;
+            font-style: italic;
+            font-size: 14px;
+        }
+        header .right {
+            display: flex;
+            gap: 15px;
+        }
+        header .right a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        header .right a:hover {
+            text-decoration: underline;
+        }
+        .cover {
+            width: 100%;
+            height: 100vh; /* 100% of the viewport height */
+            background-image: url('Images/cover.png');
+            background-size: cover;
+            background-position: center;
+        }
+        .more-section {
+            text-align: center;
+            padding: 40px 0;
+        }
+        .more-section h2 {
+            font-size: 50px;
+            margin: 0;
+        }
+        .more-section a {
+            text-decoration: none;
+            font-size: 20px;
+            color: #fff; /* Set color to white for the link */
+        }
+        .more-section a:hover {
+            text-decoration: underline;
+        }
+
+        /* New Section with two-column layout */
+        .new-section {
+            text-align: center;
+            padding: 40px 0;
+        }
+        .new-section h2 {
+            font-size: 80px;
+            margin: 0;
+            text-align: left; /* Align the headline to the left */
+        }
+        .new-section h3 {
+            font-size: 20px;
+            font-weight: normal;
+            margin: 0;
+            text-align: left; /* Align the headline to the left */
+        }
+        .new-section .image-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px; /* Reduced gap to make padding smaller */
+            margin-top: 20px;
+        }
+        .new-section img {
+            width: 100%;
+            max-width: 49%; /* Set maximum width of each image to 45% to fit two images */
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            body {
+                padding: 0 5vw; /* Reduce padding for smaller screens */
+            }
+            header {
+                height: 150px; /* Reduce header height on smaller screens */
+            }
+            .cover {
+                height: 70vh; /* Adjust cover image height on smaller screens */
+            }
+            .more-section h2 {
+                font-size: 30px; /* Adjust the font size for smaller screens */
+            }
+            .new-section h2 {
+                font-size: 30px; /* Adjust the font size for smaller screens */
+            }
+            .new-section .image-container {
+                flex-direction: column; /* Stack images vertically on smaller screens */
+                gap: 10px; /* Reduced gap between images */
+            }
+            .new-section img {
+                max-width: 100%; /* Allow images to fill the available space on smaller screens */
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <a href="index.html">Home</a>
+
+<header>
+    <div class="left">
+        <h1>Luka Grčar</h1>
+        <p>Motion & Graphic Designer</p>
+    </div>
+    <div class="right">
         <a href="work.html">Work</a>
         <a href="about.html">About</a>
-    </header>
-    
-    <h1>About Me</h1>
-    <p>Welcome to my about page!</p>
+    </div>
+</header>
+
+<div class="cover"></div>
+
+<div class="more-section">
+    <h2><a href="#more">More</a></h2>
+</div>
+
+
+
+
+<!-- New Section with Two-Column Layout -->
+<div class="new-section">
+    <h3 class="grey-text">3D Animation for  CESTEL</h3>
+    <h2>Leading company in the fields of high-speed weigh-in-motion and traffic analysis</h2>
+    <div class="image-container">
+        <img src="Images/covergif_1.gif" alt="Description of the first project image">
+        <img src="Images/covergif_2.gif" alt="Description of the second project image">
+    </div>
+</div>
+
+
+
+
+
+
+<!-- Footer Section -->
+<footer>
+    <p id="date"></p>
+</footer>
+
+<script>
+    // Get today's date
+    const today = new Date();
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const formattedDate = today.toLocaleDateString('en-US', options);
+
+    // Set the date text to the paragraph with id "date"
+    document.getElementById('date').innerText = formattedDate;
+</script>
 
 </body>
 </html>
