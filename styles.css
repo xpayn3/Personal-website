@@ -73,6 +73,16 @@ section {
 }
 
 
+.invisible-link {
+    color: inherit; /* Use the same color as surrounding text */
+    text-decoration: none; /* Remove underline */
+    cursor: pointer; /* Keep it clickable */
+}
+.invisible-link:hover {
+    text-decoration: none; /* No underline on hover */
+}
+
+
 
 
 
