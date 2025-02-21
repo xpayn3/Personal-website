@@ -43,19 +43,37 @@ section {
     color: grey; /* Sets the text color to grey */
 }
 
-
-
+/* Default styles for the video container */
 .video-container {
-    width: 100%;
-    height: 100vh; /* Full screen height */
-    padding: 50px 0; /* Adds 50px padding on top and bottom */
+    position: relative;
+    width: 100%; /* Take up the full width of the container */
+    height: 0;
+    padding-bottom: 56.25%; /* Maintain 16:9 aspect ratio */
+    overflow: hidden; /* Hide overflow */
 }
 
+/* The iframe to fill the container */
 .video-container iframe {
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    object-fit: cover; /* Crop and cover the container */
 }
 
+/* Mobile styles to adjust the container for smaller screens */
+@media (max-width: 768px) {
+    .video-container {
+        height: 40vh; /* Full height of the screen on mobile */
+        padding-bottom: 0; /* Remove the aspect ratio padding */
+    }
+
+    .video-container iframe {
+        width: 100%;
+        height: 50%; /* Make sure the iframe takes up the full screen height */
+    }
+}
 
 .scrolling-text {
     width: 100%;
@@ -109,6 +127,74 @@ section {
     margin: 0px; /* Add negative margin */
 }
 
+
+/* Full-width image */
+.full-width-image {
+    width: 100%; /* Ensure the image takes the full width */
+    margin-bottom: 1vh; /* Add space below the full-width image */
+}
+
+.full-width-image img {
+    width: 100%; /* Ensure the image is 100% of its container */
+    height: auto; /* Maintain aspect ratio */
+    object-fit: cover; /* Ensure it covers the section fully */
+}
+
+/* Image container for two side-by-side images */
+.image-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 5px; /* Space between the two images */
+}
+
+.image-container img {
+    width: 49%; /* Ensure each image takes up 48% of the container's width */
+    height: auto; /* Maintain aspect ratio */
+    object-fit: cover; /* Ensure the image covers its container */
+}
+
+/* Optional: Make images responsive */
+@media (max-width: 768px) {
+    .image-container {
+        flex-direction: column; /* Stack images vertically on smaller screens */
+    }
+
+    .image-container img {
+        width: 100%; /* Make each image take full width on smaller screens */
+    }
+}
+
+
+.new-section {
+    text-align: center;
+    padding: 40px 0;
+    width: 100%; /* Ensure full width of section */
+}
+
+.new-section h2 {
+    font-size: 80px;
+    margin: 0;
+    text-align: left; /* Align the headline to the left */
+}
+
+.new-section h3 {
+    font-size: 20px;
+    font-weight: normal;
+    margin: 0;
+    text-align: left; /* Align the headline to the left */
+}
+
+.new-section .image-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px; /* Reduced gap to make padding smaller */
+    margin-top: 20px;
+}
+
+.new-section img {
+    width: 100%;
+    max-width: 49%; /* Set maximum width of each image to 45% to fit two images */
+}
 
 
 footer {
