@@ -85,6 +85,28 @@ section {
 
 
 
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    grid-gap: 0px; /* No gap between items */
+     border: 1px solid white;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 50px;
+    
+}
+
+.grid-item {
+    border-left: 1px solid white;
+    border-top: 1px solid white;
+    padding: 100px 32px 100px 32px;
+    text-align: left;
+    font-size: 18px;
+    height: 200px; /* Adjust height of each grid item */
+    margin: 0px; /* Add negative margin */
+}
+
+
 
 footer {
     text-align: center; /* Center the text */
