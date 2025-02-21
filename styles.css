@@ -1,5 +1,6 @@
 body {
-    font-family: "Unbounded", normal !important;
+    font-family: "Unbounded", normal;
+    font-size: 3vw;
     margin: 0;
     padding: 0;
 }
