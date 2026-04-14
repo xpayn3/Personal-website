@@ -1627,52 +1627,63 @@ html {
     display: flex;
     position: fixed;
     top: 50%;
-    right: 12px;
+    right: 8px;
     transform: translateY(-50%);
     z-index: 90;
     align-items: center;
-    padding: 45px 2px;
-    background: rgba(255,255,255,0.6);
+    justify-content: center;
+    padding: 20px 6px;
+    background: rgba(255,255,255,0.5);
     backdrop-filter: blur(20px) saturate(1.4);
     -webkit-backdrop-filter: blur(20px) saturate(1.4);
-    border: 1px solid rgba(0,0,0,0.06);
-    border-radius: 16px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    border: 1px solid rgba(0,0,0,0.04);
+    border-radius: 22px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
     transition: opacity 0.3s ease, transform 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: none;
   }
 
   .mobile-slider-pill input[type="range"] {
     -webkit-appearance: none;
     appearance: none;
-    width: 80px;
+    width: 100px;
     transform: rotate(-90deg);
-    margin: 0 -30px;
-    height: 4px;
-    background: rgba(0,0,0,0.1);
-    border-radius: 2px;
+    margin: 0 -40px;
+    height: 6px;
+    background: rgba(0,0,0,0.08);
+    border-radius: 3px;
     outline: none;
     cursor: pointer;
     position: relative;
     z-index: 2;
+    touch-action: none;
   }
 
   .mobile-slider-pill input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 14px;
-    height: 14px;
+    width: 28px;
+    height: 28px;
     background: #fff;
     border-radius: 50%;
     cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.04);
+  }
+
+  .mobile-slider-pill input[type="range"]::-webkit-slider-thumb:active {
+    transform: scale(1.15);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2), 0 0 0 1px rgba(0,0,0,0.06);
   }
 
   .mobile-slider-pill input[type="range"]::-moz-range-thumb {
-    width: 14px;
-    height: 14px;
+    width: 28px;
+    height: 28px;
     background: #fff;
     border: none;
     border-radius: 50%;
     cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
   }
 
   .mobile-slider-pill.pill-hidden {

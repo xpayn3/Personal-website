@@ -20,9 +20,10 @@ body {
 }
 
 /* ========== PROJECT BLOCK ========== */
-/* Title sticks for 100vh, then images scroll naturally */
+/* Title sticks while image layer scrolls over */
 .project-block {
   position: relative;
+  min-height: 280vh;
 }
 
 /* ========== TITLE LAYER — sticks while image scrolls over ========== */
@@ -110,9 +111,6 @@ body {
   will-change: transform;
 }
 
-.project-block {
-  contain: layout style;
-}
 
 /* ========== BOTTOM BAR ========== */
 .bottom-bar {
@@ -380,7 +378,8 @@ body {
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
   .title-name { font-size: clamp(2rem, 10vw, 4rem); }
-  .image-layer { height: 120vh; }
+  .image-layer { height: 150vh; }
+  .project-block { min-height: 250vh; }
   .bar-label, .bar-counter, .bar-divider {
     display: none;
   }

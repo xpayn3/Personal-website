@@ -49,11 +49,11 @@ const projects = [
     id: 'grounded2022',
     name: 'Grounded 2022',
     year: 2022,
-    hero: `${IMG}/Grounded_2022/Grounded_2022_01.webp`,
+    hero: `${IMG}/Grounded_2022/GR_main_1.webm`,
     floats: [
-      `${IMG}/Grounded_2022/Grounded_2022_03.webp`,
+      `${IMG}/Grounded_2022/Grounded_2022_01.webp`,
+      `${IMG}/Grounded_2022/card_holo.webm`,
       `${IMG}/Grounded_2022/Grounded_2022_05.webp`,
-      `${IMG}/Grounded_2022/Grounded_2022_07.webp`,
     ]
   },
   {
@@ -361,11 +361,12 @@ function updateParallax() {
 
     if (blockTop > vh * 2 || blockTop < -bd.el.offsetHeight - vh) continue;
 
-    const progress = Math.max(0, Math.min(1, -blockTop / vh));
+    // Title fades only after scrolling past the title section (100vh)
+    const titleProgress = Math.max(0, Math.min(1, (-blockTop - vh * 0.5) / (vh * 0.5)));
 
-    const titleScale = 1 + progress * 0.15;
-    const titleOpacity = Math.max(0, 1 - progress * 1.3);
-    const letterSpacing = progress * 0.5;
+    const titleScale = 1 + titleProgress * 0.15;
+    const titleOpacity = Math.max(0, 1 - titleProgress * 1.5);
+    const letterSpacing = titleProgress * 0.5;
     bd.titleName.style.transform = `scale(${titleScale})`;
     bd.titleName.style.opacity = titleOpacity;
     bd.titleName.style.letterSpacing = `${letterSpacing}em`;
@@ -416,8 +417,8 @@ function onMobileScroll() {
     const bd = blockData[idx];
     const blockTop = bd.el.offsetTop - scrollY;
     if (blockTop > vh * 2 || blockTop < -bd.el.offsetHeight - vh) continue;
-    const progress = Math.max(0, Math.min(1, -blockTop / vh));
-    bd.titleName.style.opacity = Math.max(0, 1 - progress * 1.3);
+    const titleProgress = Math.max(0, Math.min(1, (-blockTop - vh * 0.5) / (vh * 0.5)));
+    bd.titleName.style.opacity = Math.max(0, 1 - titleProgress * 1.5);
 
     if (blockTop > -vh && blockTop < vh * 0.5) {
       barName.textContent = projects[idx].name;
