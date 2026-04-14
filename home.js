@@ -372,6 +372,8 @@ function onMobileScroll() {
     if (blockTop > vh * 2 || blockTop < -bd.el.offsetHeight - vh) continue;
     const titleProgress = Math.max(0, Math.min(1, (-blockTop - vh * 0.5) / (vh * 0.5)));
     bd.titleName.style.opacity = Math.max(0, 1 - titleProgress * 1.5);
+    bd.titleName.style.transform = `scale(${1 + titleProgress * 0.15})`;
+    bd.titleName.style.letterSpacing = `${titleProgress * 0.5}em`;
 
     if (blockTop > -vh && blockTop < vh * 0.5) {
       barName.textContent = projects[idx].name;
