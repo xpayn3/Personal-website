@@ -954,11 +954,14 @@ const loremPool = [
 function mediaTag(src, alt) {
   if (src.endsWith('.webm') || src.endsWith('.mp4')) {
     if (isMobile) {
-      // On mobile show thumbnail instead of video to save memory
       const thumb = src.replace(/\.(webm|mp4)$/, '_thumb.webp');
       return `<img src="${thumb}" alt="${alt || ''}" loading="lazy" decoding="async" />`;
     }
     return `<video data-src="${src}" muted loop playsinline preload="none"></video>`;
+  }
+  if (isMobile) {
+    const mobileSrc = src.replace('Images/', 'Images/mobile/');
+    return `<img src="${mobileSrc}" alt="${alt || ''}" loading="lazy" decoding="async" onerror="this.src='${src}'" />`;
   }
   return `<img src="${src}" alt="${alt || ''}" loading="lazy" decoding="async" />`;
 }
@@ -1127,6 +1130,8 @@ function openProject(projId) {
   overlay.classList.add('open');
   overlayClose.classList.add('visible');
   lockScroll();
+  const tc = document.getElementById('themeColor');
+  if (tc) tc.content = '#111111';
   overlay.scrollTop = 0;
 }
 
@@ -1266,6 +1271,8 @@ function closeOverlay() {
   overlay.classList.remove('open');
   overlayClose.classList.remove('visible');
   unlockScroll();
+  const tc = document.getElementById('themeColor');
+  if (tc) tc.content = '#ffffff';
 }
 
 overlayClose.addEventListener('click', closeOverlay);
