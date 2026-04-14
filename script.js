@@ -1040,6 +1040,8 @@ function openProject(projId) {
   overlay.scrollTop = 0;
 }
 
+let projNavLocked = false;
+
 function buildProjNav(activeProjId) {
   const nav = document.getElementById('projNav');
   nav.innerHTML = '';
@@ -1065,19 +1067,19 @@ function buildProjNav(activeProjId) {
     btn.appendChild(label);
 
     btn.addEventListener('click', () => {
-      if (id === activeProjId) return;
-      // Update nav immediately
+      if (id === activeProjId || projNavLocked) return;
+      projNavLocked = true;
       nav.querySelectorAll('.proj-nav-item').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       btn.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
-      // Fade content
       overlayInner.style.transition = 'opacity 0.2s ease';
       overlayInner.style.opacity = '0';
       setTimeout(() => {
         overlay.scrollTop = 0;
         openProject(id);
         overlayInner.style.opacity = '1';
-      }, 200);
+        projNavLocked = false;
+      }, 250);
     });
 
     nav.appendChild(btn);
@@ -1349,12 +1351,23 @@ function openLightbox(index) {
 }
 
 function closeLightbox() {
+  const vid = lightboxContent.querySelector('video');
+  if (vid) { vid.pause(); vid.src = ''; }
   lightbox.classList.remove('open');
   lightboxContent.innerHTML = '';
   if (lbFrameRAF) cancelAnimationFrame(lbFrameRAF);
+  lbFrameRAF = null;
 }
 
 function renderLightbox() {
+  // Pause any playing video before switching
+  const oldVid = lightboxContent.querySelector('video');
+  if (oldVid) { oldVid.pause(); oldVid.src = ''; }
+
+  // Bounds check
+  if (lightboxIndex < 0) lightboxIndex = 0;
+  if (lightboxIndex >= lightboxItems.length) lightboxIndex = lightboxItems.length - 1;
+
   const src = lightboxItems[lightboxIndex];
   const isVid = src.endsWith('.webm') || src.endsWith('.mp4');
   lightboxContent.className = 'lightbox-content slide-' + lbDirection;
