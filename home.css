@@ -16,7 +16,7 @@ body {
 
 /* ========== SCROLL CONTAINER ========== */
 .scroll-container {
-  min-height: 100vh;
+  display: block;
 }
 
 /* ========== PROJECT BLOCK ========== */
@@ -82,7 +82,7 @@ body {
   position: relative;
   z-index: 2;
   background: var(--bg);
-  min-height: 180vh;
+  height: 180vh;
   overflow: visible;
 }
 
@@ -380,7 +380,7 @@ body {
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
   .title-name { font-size: clamp(2rem, 10vw, 4rem); }
-  .image-layer { min-height: 120vh; }
+  .image-layer { height: 120vh; }
   .bar-label, .bar-counter, .bar-divider {
     display: none;
   }

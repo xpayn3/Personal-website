@@ -101,16 +101,6 @@ const projects = [
     ]
   },
   {
-    id: 'largavida',
-    name: 'LargaVida',
-    year: 2022,
-    hero: `${IMG}/LargaVida/01_larga_vida_desktop.webp`,
-    floats: [
-      `${IMG}/LargaVida/larga_vida_screenshot_01.webp`,
-      `${IMG}/LargaVida/larga_vida_screenshot_03.webp`,
-    ]
-  },
-  {
     id: 'newedge',
     name: 'NewEdge Magazine',
     year: 2020,
@@ -189,22 +179,22 @@ function createMedia(src) {
 // ========== SCATTER LAYOUTS — pre-defined positions per image count ==========
 const scatterLayouts = {
   3: [
-    { x: 5, y: 0, w: 55, h: 60, z: 2, speed: -0.08 },
-    { x: 50, y: 15, w: 40, h: 45, z: 3, speed: 0.12 },
-    { x: 10, y: 55, w: 45, h: 50, z: 1, speed: -0.15 },
+    { x: 5, y: 5, w: 55, h: 32, z: 2, speed: -0.08 },
+    { x: 45, y: 30, w: 48, h: 28, z: 3, speed: 0.12 },
+    { x: 10, y: 60, w: 50, h: 30, z: 1, speed: -0.15 },
   ],
   4: [
-    { x: 3, y: 0, w: 52, h: 55, z: 2, speed: -0.06 },
-    { x: 48, y: 10, w: 42, h: 40, z: 3, speed: 0.14 },
-    { x: 15, y: 48, w: 38, h: 42, z: 4, speed: -0.18 },
-    { x: 55, y: 55, w: 35, h: 38, z: 1, speed: 0.1 },
+    { x: 3, y: 5, w: 55, h: 30, z: 2, speed: -0.06 },
+    { x: 45, y: 25, w: 48, h: 28, z: 3, speed: 0.14 },
+    { x: 8, y: 50, w: 50, h: 28, z: 4, speed: -0.18 },
+    { x: 42, y: 70, w: 48, h: 25, z: 1, speed: 0.1 },
   ],
   5: [
-    { x: 2, y: 0, w: 50, h: 50, z: 2, speed: -0.05 },
-    { x: 52, y: 5, w: 40, h: 35, z: 3, speed: 0.15 },
-    { x: 8, y: 42, w: 42, h: 40, z: 4, speed: -0.2 },
-    { x: 50, y: 45, w: 38, h: 35, z: 1, speed: 0.08 },
-    { x: 25, y: 78, w: 50, h: 30, z: 5, speed: -0.12 },
+    { x: 2, y: 3, w: 55, h: 30, z: 2, speed: -0.05 },
+    { x: 48, y: 18, w: 46, h: 26, z: 3, speed: 0.15 },
+    { x: 5, y: 40, w: 50, h: 28, z: 4, speed: -0.2 },
+    { x: 45, y: 58, w: 48, h: 25, z: 1, speed: 0.08 },
+    { x: 15, y: 78, w: 55, h: 22, z: 5, speed: -0.12 },
   ],
 };
 
@@ -297,7 +287,6 @@ if (ctaEl) {
 }
 
 // ========== SMOOTH SCROLL PHYSICS (desktop only) ==========
-const isMobileHome = window.innerWidth < 768;
 
 if (!isMobileHome) {
   let smoothScroll = window.scrollY;
