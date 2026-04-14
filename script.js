@@ -382,6 +382,11 @@ const projects = {
       `${IMG}/Lab/kristal0026.webp`,
       `${IMG}/Lab/qurtz0012.webp`,
       `${IMG}/Lab/qurtz0033.webp`,
+      `${IMG}/Lab/testgoba_3.webp`,
+      `${IMG}/Lab/take_3_0138.webp`,
+      `${IMG}/Lab/Kersnikova_logo_take4_4.webp`,
+      `${IMG}/Lab/end.webp`,
+      `${IMG}/Lab/lm62ZTf.webp`,
     ],
     layout: [
       { cols: 2, imgs: [0, 1] },
@@ -394,6 +399,9 @@ const projects = {
       { cols: 2, imgs: [13, 14] },
       { cols: 3, imgs: [15, 16, 17] },
       { cols: 2, imgs: [18, 19] },
+      { cols: 1, imgs: [20] },
+      { cols: 2, imgs: [21, 22] },
+      { cols: 2, imgs: [23, 24] },
     ]
   },
   poster: {
@@ -575,7 +583,10 @@ function renderGrid() {
   gridEl.appendChild(frag);
 }
 
+const isMobile = window.innerWidth < 768;
+
 function extractColor(media, item, div) {
+  if (isMobile) return; // skip heavy canvas work on mobile
   try {
     const color = getDominantColor(media);
     item.color = color;
@@ -598,7 +609,7 @@ const lazyObserver = new IntersectionObserver((entries) => {
       lazyObserver.unobserve(entry.target);
     }
   });
-}, { rootMargin: '200px' });
+}, { rootMargin: isMobile ? '400px' : '200px' });
 
 document.querySelectorAll('.grid-item').forEach(item => lazyObserver.observe(item));
 
