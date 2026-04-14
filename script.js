@@ -434,6 +434,14 @@ const projects = {
       `${IMG}/Lab/Kersnikova_logo_take4_4.webp`,
       `${IMG}/Lab/end.webp`,
       `${IMG}/Lab/lm62ZTf.webp`,
+      `${IMG}/Lab/lab_flag.webm`,
+      `${IMG}/Lab/mecha.webp`,
+      `${IMG}/Lab/mecha_02.webp`,
+      `${IMG}/Lab/mecha_03.webp`,
+      `${IMG}/Lab/mecha_04.webp`,
+      `${IMG}/Lab/mecha_grid_8.webp`,
+      `${IMG}/Lab/mecha_grid_9.webp`,
+      `${IMG}/Lab/mecha_grid_11.webp`,
     ],
     layout: [
       { cols: 2, imgs: [0, 1] },
@@ -449,6 +457,11 @@ const projects = {
       { cols: 1, imgs: [20] },
       { cols: 2, imgs: [21, 22] },
       { cols: 2, imgs: [23, 24] },
+      { cols: 1, imgs: [25] },
+      { cols: 2, imgs: [26, 27] },
+      { cols: 3, imgs: [28, 29, 30] },
+      { cols: 2, imgs: [31, 32] },
+      { cols: 1, imgs: [33] },
     ]
   },
   kersnikova: {
