@@ -24,10 +24,13 @@ body {
   color: var(--text);
   font-family: 'Inter', sans-serif;
   min-height: 100vh;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 html {
   overflow-x: hidden;
+  background: #fff;
 }
 
 /* ========== SQUARE GRID ========== */
