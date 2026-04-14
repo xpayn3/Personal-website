@@ -176,32 +176,6 @@ function createMedia(src) {
 }
 
 // ========== SCATTER LAYOUTS — pre-defined positions per image count ==========
-const smallSlots = [
-  { x: 45, y: 0, w: 48, h: 28, z: 3, speed: 0.12 },
-  { x: 5, y: 0, w: 50, h: 30, z: 1, speed: -0.15 },
-  { x: 42, y: 0, w: 48, h: 25, z: 4, speed: 0.1 },
-  { x: 8, y: 0, w: 50, h: 28, z: 2, speed: -0.18 },
-];
-const fullSlot = { x: 0, y: 0, w: 100, h: 32, z: 5, speed: -0.06 };
-
-function buildScatterLayout(count) {
-  const layout = [];
-  const fullIdx = 1 + Math.floor(Math.random() * (count - 1));
-  let yPos = 2;
-  let si = 0;
-  for (let i = 0; i < count; i++) {
-    if (i === fullIdx) {
-      layout.push({ ...fullSlot, y: yPos });
-      yPos += 34;
-    } else {
-      const slot = smallSlots[si % smallSlots.length];
-      layout.push({ ...slot, y: yPos });
-      yPos += 30;
-      si++;
-    }
-  }
-  return layout;
-}
 
 // ========== BUILD SECTIONS ==========
 const container = document.getElementById('scrollContainer');
@@ -228,30 +202,18 @@ projects.forEach((proj, idx) => {
   const imageLayer = document.createElement('div');
   imageLayer.className = 'image-layer';
 
-  const allSrcs = [proj.hero, ...proj.floats];
-  const count = Math.min(allSrcs.length, 5);
-  const layout = buildScatterLayout(count);
+  // Hero — sticky
+  const heroEl = document.createElement('div');
+  heroEl.className = 'scatter-img hero-scatter';
+  heroEl.appendChild(createMedia(proj.hero));
+  imageLayer.appendChild(heroEl);
 
-  // Mirror every other project for variety
-  const mirror = idx % 2 === 1;
-
-  for (let i = 0; i < count; i++) {
-    const pos = layout[i];
+  // Secondary — flow in, alternate left/right
+  for (let i = 0; i < proj.floats.length; i++) {
     const el = document.createElement('div');
-    el.className = 'scatter-img';
-    el.dataset.speed = pos.speed;
-    el.dataset.z = pos.z;
-
-    const xPos = mirror ? (100 - pos.x - pos.w) : pos.x;
-    el.style.cssText = `
-      left: ${xPos}%;
-      top: ${pos.y}%;
-      width: ${pos.w}%;
-      height: ${pos.h}%;
-      z-index: ${pos.z};
-    `;
-
-    el.appendChild(createMedia(allSrcs[i]));
+    el.className = 'scatter-img side-scatter';
+    el.dataset.speed = (0.1 + i * 0.05).toFixed(2);
+    el.appendChild(createMedia(proj.floats[i]));
     imageLayer.appendChild(el);
   }
 
@@ -334,9 +296,9 @@ const blocks = document.querySelectorAll('.project-block');
 const blockData = Array.from(blocks).map(block => ({
   el: block,
   titleName: block.querySelector('.title-name'),
-  imgs: Array.from(block.querySelectorAll('.scatter-img')).map(img => ({
+  sideImgs: Array.from(block.querySelectorAll('.side-scatter')).map(img => ({
     el: img,
-    speed: parseFloat(img.dataset.speed),
+    speed: parseFloat(img.dataset.speed || 0.1),
   })),
 }));
 
@@ -360,11 +322,12 @@ function updateParallax() {
     bd.titleName.style.opacity = titleOpacity;
     bd.titleName.style.letterSpacing = `${letterSpacing}em`;
 
-    for (const img of bd.imgs) {
+    // Side images parallax
+    for (const img of bd.sideImgs) {
       const rect = img.el.getBoundingClientRect();
       const center = (rect.top + rect.height / 2 - vh / 2) / vh;
-      const y = center * img.speed * vh;
-      img.el.style.transform = `translate3d(0, ${y}px, 0)`;
+      const y = center * img.speed * vh * 0.3;
+      img.el.style.transform = `translateY(${y}px)`;
     }
 
     if (blockTop > -vh && blockTop < vh * 0.5) {

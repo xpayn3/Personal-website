@@ -3,7 +3,7 @@
 :root {
   --bg: #ffffff;
   --text: #111;
-  --accent: #0a2fff;
+  --accent: #0066ff;
 }
 
 html { scroll-behavior: auto; }
@@ -23,7 +23,6 @@ body {
 /* Title sticks while image layer scrolls over */
 .project-block {
   position: relative;
-  min-height: 280vh;
 }
 
 /* ========== TITLE LAYER — sticks while image scrolls over ========== */
@@ -50,55 +49,61 @@ body {
   will-change: transform, opacity;
 }
 
-.title-year {
-  display: none;
-}
 
-.title-line {
-  display: none;
-}
-
-/* floating secondary images */
-.float-img {
-  will-change: transform;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.float-img img,
-.float-img video {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  display: block;
-  border-radius: 4px;
-}
-
-/* ========== IMAGE LAYER — scattered freeform ========== */
+/* ========== IMAGE LAYER ========== */
 .image-layer {
   position: relative;
   z-index: 2;
   background: var(--bg);
-  height: 150vh;
   overflow: visible;
-  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 24px;
 }
 
 .scatter-img {
-  position: absolute;
   will-change: transform;
-  border-radius: 4px;
+  border-radius: 6px;
   overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.scatter-img.hero-scatter {
+  position: sticky;
+  top: 10vh;
+  z-index: 1;
+  align-self: center;
+  width: 85%;
+  max-width: 900px;
+  aspect-ratio: 16 / 9;
+}
+
+.scatter-img.hero-scatter img,
+.scatter-img.hero-scatter video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scatter-img.side-scatter {
+  position: relative;
+  z-index: 2;
+  max-width: 55%;
+}
+
+.scatter-img.side-scatter:nth-child(even) {
+  align-self: flex-start;
+}
+
+.scatter-img.side-scatter:nth-child(odd) {
+  align-self: flex-end;
 }
 
 .scatter-img img,
 .scatter-img video {
   width: 100%;
-  height: 100%;
+  height: auto;
   object-fit: cover;
   display: block;
 }
@@ -379,8 +384,6 @@ body {
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
   .title-name { font-size: clamp(2rem, 10vw, 4rem); }
-  .image-layer { height: 150vh; }
-  .project-block { min-height: 250vh; }
   .bar-label, .bar-counter, .bar-divider {
     display: none;
   }
