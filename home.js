@@ -218,18 +218,36 @@ function goToHeroSlide(i) {
   heroIdx = i;
   heroSlides.style.transform = `translateX(-${i * 100}vw)`;
   heroDots.querySelectorAll('.hero-dot').forEach((d, di) => d.classList.toggle('active', di === i));
-  resetHeroAuto();
+
+  // Restart current video from beginning
+  const currentSlide = heroSlides.children[i];
+  const vid = currentSlide && currentSlide.querySelector('video');
+  if (vid) {
+    vid.currentTime = 0;
+    vid.play().catch(() => {});
+  }
+  watchHeroVideoEnd();
 }
 
 function nextHeroSlide() {
   goToHeroSlide((heroIdx + 1) % heroSrcs.length);
 }
 
-function resetHeroAuto() {
-  clearInterval(heroAutoTimer);
-  heroAutoTimer = setInterval(nextHeroSlide, 5000);
+function watchHeroVideoEnd() {
+  clearTimeout(heroAutoTimer);
+  const currentSlide = heroSlides.children[heroIdx];
+  const vid = currentSlide && currentSlide.querySelector('video');
+  if (vid) {
+    // Wait for video to end, then advance
+    vid.onended = () => nextHeroSlide();
+    // Remove loop so it can end
+    vid.loop = false;
+  } else {
+    // Static image — advance after 5s
+    heroAutoTimer = setTimeout(nextHeroSlide, 5000);
+  }
 }
-resetHeroAuto();
+watchHeroVideoEnd();
 
 // Swipe + drag on carousel
 let heroStartX = 0;
