@@ -334,10 +334,12 @@ const projects = {
       `${IMG}/Grounded 2025/Grounded_2025_01.webm`,
       `${IMG}/Grounded 2025/Grounded_2025_02.webm`,
       `${IMG}/Grounded 2025/Grounded_2025_03.webm`,
+      `${IMG}/Grounded 2025/Grounded_2025_web.webm`,
     ],
     layout: [
       { cols: 1, imgs: [0] },
       { cols: 2, imgs: [1, 2] },
+      { cols: 1, imgs: [3] },
     ]
   },
   grounded2024: {
@@ -1010,13 +1012,19 @@ function openProject(projId) {
       if (splash) splash.classList.add('fade-out');
     }, 2500);
   } else {
-    // Hero section — dark with main image only
+    // Hero — fullscreen background
     const heroSrc = proj.images[0];
-    let html = `<div class="proj-hero-dark">`;
-    html += `<div class="proj-hero-media">${mediaTag(heroSrc, proj.name)}</div>`;
+    const isHeroVid = heroSrc.endsWith('.webm') || heroSrc.endsWith('.mp4');
+    let html = `<div class="proj-hero-bg">`;
+    if (isHeroVid && !isMobile) {
+      html += `<video data-src="${heroSrc}" muted loop playsinline preload="none" class="proj-hero-bg-media"></video>`;
+    } else {
+      const thumbSrc = isHeroVid ? heroSrc.replace(/\.(webm|mp4)$/, '_thumb.webp') : heroSrc;
+      html += `<img src="${thumbSrc}" class="proj-hero-bg-media" alt="${proj.name}" />`;
+    }
     html += '</div>';
 
-    // White sheet — title, meta, description, then images
+    // White sheet — title, meta, description, images, tools at bottom
     html += '<div class="proj-white-sheet">';
 
     html += `<h1 class="proj-title-white">${proj.name}</h1>`;
@@ -1036,11 +1044,6 @@ function openProject(projId) {
     if (proj.link) {
       html += `<p><a href="${proj.link}" target="_blank" rel="noopener noreferrer">${proj.link} ↗</a></p>`;
     }
-    if (proj.tools) {
-      html += '<div class="proj-tools-white">';
-      proj.tools.forEach(t => html += `<span>${t}</span>`);
-      html += '</div>';
-    }
     html += '</div>';
 
     // Dynamic 2-column grid layout with white space
@@ -1054,8 +1057,22 @@ function openProject(projId) {
     }
     html += '</div>';
 
+    // Tools at bottom
+    if (proj.tools) {
+      html += '<div class="proj-tools-bottom">';
+      proj.tools.forEach(t => html += `<span>${t}</span>`);
+      html += '</div>';
+    }
+
     html += '</div>';
     overlayInner.innerHTML = html;
+
+    // Autoplay hero video if present
+    const heroVid = overlayInner.querySelector('.proj-hero-bg-media[data-src]');
+    if (heroVid) {
+      heroVid.src = heroVid.dataset.src;
+      heroVid.play().catch(() => {});
+    }
   }
 
   // Lazy-load overlay videos when they scroll into view

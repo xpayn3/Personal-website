@@ -942,7 +942,23 @@ html {
   transform: translateY(0);
 }
 
-/* ========== PROJECT HERO (DARK) ========== */
+/* ========== PROJECT HERO (FULLSCREEN BG) ========== */
+.proj-hero-bg {
+  position: sticky;
+  top: 0;
+  height: 90vh;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.proj-hero-bg-media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* keep old dark hero for lab */
 .proj-hero-dark {
   background: #0a0a0a;
   min-height: 100vh;
@@ -952,21 +968,6 @@ html {
   justify-content: center;
   padding: 80px 24px 60px;
   position: relative;
-}
-
-.proj-hero-media {
-  width: 80vw;
-  max-width: 1000px;
-  margin-bottom: 48px;
-}
-
-.proj-hero-media img,
-.proj-hero-media video {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 16px;
-  box-shadow: 0 40px 100px rgba(0,0,0,0.5);
 }
 
 
@@ -1241,6 +1242,24 @@ html {
 @keyframes labSplashOut {
   0% { opacity: 1; transform: scale(1); }
   100% { opacity: 0; transform: scale(1.15); }
+}
+
+/* tools at bottom */
+.proj-tools-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 40px 0 0;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  margin-top: 40px;
+}
+
+.proj-tools-bottom span {
+  padding: 5px 16px;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  color: #888;
 }
 
 /* Lab gallery (kept simple) */

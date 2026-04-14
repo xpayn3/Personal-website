@@ -40,7 +40,7 @@ body {
 
 .title-name {
   font-family: 'Instrument Sans', sans-serif;
-  font-size: clamp(3rem, 8vw, 7rem);
+  font-size: clamp(2rem, 5vw, 4rem);
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1;
