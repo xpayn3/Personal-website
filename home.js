@@ -193,7 +193,7 @@ heroSrcs.forEach((item, i) => {
     v.loop = false;
     v.autoplay = i === 0;
     v.playsInline = true;
-    v.preload = i <= 1 ? 'auto' : 'metadata';
+    v.preload = i === 0 ? 'auto' : 'none';
     slide.appendChild(v);
   } else {
     const img = document.createElement('img');
@@ -216,18 +216,25 @@ heroSrcs.forEach((item, i) => {
 });
 
 function goToHeroSlide(i) {
-  // Start playing next video BEFORE transitioning
+  // Pause and unload old video to free memory
+  const oldSlide = heroSlides.children[heroIdx];
+  const oldVid = oldSlide && oldSlide.querySelector('video');
+  if (oldVid && heroIdx !== i) {
+    oldVid.pause();
+    oldVid.onended = null;
+  }
+
+  // Load and play new video
   const nextSlide = heroSlides.children[i];
   const nextVid = nextSlide && nextSlide.querySelector('video');
   if (nextVid) {
+    if (!nextVid.src || nextVid.preload === 'none') {
+      nextVid.preload = 'auto';
+      nextVid.load();
+    }
     nextVid.currentTime = 0;
     nextVid.play().catch(() => {});
   }
-
-  // Pause old video
-  const oldSlide = heroSlides.children[heroIdx];
-  const oldVid = oldSlide && oldSlide.querySelector('video');
-  if (oldVid && heroIdx !== i) oldVid.pause();
 
   heroIdx = i;
   heroSlides.style.transform = `translateX(-${i * 100}vw)`;
@@ -245,6 +252,7 @@ function preloadNextHeroVideo() {
   const nextVid = nextSlide && nextSlide.querySelector('video');
   if (nextVid && nextVid.preload !== 'auto') {
     nextVid.preload = 'auto';
+    nextVid.load();
   }
 }
 
