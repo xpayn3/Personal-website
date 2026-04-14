@@ -120,14 +120,14 @@ const projects = [
     ]
   },
   {
-    id: 'radenci',
-    name: 'Radenci',
-    year: 2022,
-    hero: `${IMG}/Radenci_prostorska_projekcija/P1_S1_K01_0323.webp`,
+    id: 'lab',
+    name: 'Lab',
+    year: 2023,
+    hero: `${IMG}/Lab/lab_sandunes.webm`,
     floats: [
-      `${IMG}/Radenci_prostorska_projekcija/P1_S3_K06_0150.webp`,
-      `${IMG}/Radenci_prostorska_projekcija/P2_S1_K01_0227.webp`,
-      `${IMG}/Radenci_prostorska_projekcija/P2_S2_K01_0376.webp`,
+      `${IMG}/Lab/mecha.webp`,
+      `${IMG}/Lab/gold.webm`,
+      `${IMG}/Lab/Fly_fico.webm`,
     ]
   },
 ];
