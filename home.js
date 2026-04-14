@@ -186,18 +186,18 @@ heroSrcs.forEach((item, i) => {
   const slide = document.createElement('div');
   slide.className = 'hero-slide';
 
-  if (isVideo(item.src) && !isMobileHome) {
+  if (isVideo(item.src)) {
     const v = document.createElement('video');
     v.src = item.src;
     v.muted = true;
     v.loop = false;
     v.autoplay = i === 0;
     v.playsInline = true;
-    v.preload = 'auto';
+    v.preload = i <= 1 ? 'auto' : 'metadata';
     slide.appendChild(v);
   } else {
     const img = document.createElement('img');
-    img.src = isMobileHome ? mobileSrc(item.src) : (isVideo(item.src) ? item.src.replace(/\.(webm|mp4)$/, '_thumb.webp') : item.src);
+    img.src = item.src;
     img.alt = item.name;
     slide.appendChild(img);
   }
