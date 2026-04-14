@@ -175,7 +175,73 @@ function createMedia(src) {
   return img;
 }
 
-// ========== SCATTER LAYOUTS — pre-defined positions per image count ==========
+// ========== HERO CAROUSEL ==========
+const heroSlides = document.getElementById('heroSlides');
+const heroDots = document.getElementById('heroDots');
+const heroSrcs = projects.slice(0, 5).map(p => ({ src: p.hero, name: p.name }));
+let heroIdx = 0;
+let heroAutoTimer = null;
+
+heroSrcs.forEach((item, i) => {
+  const slide = document.createElement('div');
+  slide.className = 'hero-slide';
+
+  if (isVideo(item.src) && !isMobileHome) {
+    const v = document.createElement('video');
+    v.src = item.src;
+    v.muted = true;
+    v.loop = true;
+    v.autoplay = true;
+    v.playsInline = true;
+    slide.appendChild(v);
+  } else {
+    const img = document.createElement('img');
+    img.src = isMobileHome ? mobileSrc(item.src) : (isVideo(item.src) ? item.src.replace(/\.(webm|mp4)$/, '_thumb.webp') : item.src);
+    img.alt = item.name;
+    slide.appendChild(img);
+  }
+
+  const title = document.createElement('div');
+  title.className = 'hero-slide-title';
+  title.textContent = item.name;
+  slide.appendChild(title);
+
+  heroSlides.appendChild(slide);
+
+  const dot = document.createElement('div');
+  dot.className = 'hero-dot' + (i === 0 ? ' active' : '');
+  dot.addEventListener('click', () => goToHeroSlide(i));
+  heroDots.appendChild(dot);
+});
+
+function goToHeroSlide(i) {
+  heroIdx = i;
+  heroSlides.style.transform = `translateX(-${i * 100}vw)`;
+  heroDots.querySelectorAll('.hero-dot').forEach((d, di) => d.classList.toggle('active', di === i));
+  resetHeroAuto();
+}
+
+function nextHeroSlide() {
+  goToHeroSlide((heroIdx + 1) % heroSrcs.length);
+}
+
+function resetHeroAuto() {
+  clearInterval(heroAutoTimer);
+  heroAutoTimer = setInterval(nextHeroSlide, 5000);
+}
+resetHeroAuto();
+
+// Swipe on carousel
+let heroTouchX = 0;
+const heroEl = document.getElementById('heroCarousel');
+heroEl.addEventListener('touchstart', (e) => { heroTouchX = e.touches[0].clientX; }, { passive: true });
+heroEl.addEventListener('touchend', (e) => {
+  const diff = heroTouchX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) {
+    if (diff > 0) goToHeroSlide(Math.min(heroIdx + 1, heroSrcs.length - 1));
+    else goToHeroSlide(Math.max(heroIdx - 1, 0));
+  }
+}, { passive: true });
 
 // ========== BUILD SECTIONS ==========
 const container = document.getElementById('scrollContainer');
