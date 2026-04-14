@@ -254,6 +254,7 @@ const projects = {
       `${IMG}/Athletesfoot_blackfriday/Athletesfoot_blackfriday_anim_02.webp`,
       `${IMG}/Athletesfoot_blackfriday/Athletesfoot_blackfriday_01.webp`,
       `${IMG}/Athletesfoot_blackfriday/Athletesfoot_blackfriday_02.webp`,
+      `${IMG}/Athletesfoot_blackfriday/bftaf.webm`,
     ],
     layout: [
       { cols: 2, imgs: [0, 1] },
@@ -961,6 +962,25 @@ function mediaTag(src, alt) {
 }
 
 let currentOverlayObs = null;
+let savedScrollY = 0;
+
+function lockScroll() {
+  savedScrollY = window.scrollY;
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${savedScrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  lockScroll();
+}
+
+function unlockScroll() {
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  unlockScroll();
+  window.scrollTo(0, savedScrollY);
+}
 
 function cleanupOverlay() {
   // Disconnect old observer
@@ -1101,73 +1121,13 @@ function openProject(projId) {
     el.addEventListener('click', () => openLightbox(idx >= 0 ? idx : 0));
   });
 
-  // Build project nav bar
-  buildProjNav(projId);
-  document.getElementById('projNav').classList.add('visible');
 
   overlay.classList.add('open');
   overlayClose.classList.add('visible');
-  document.body.style.overflow = 'hidden';
+  lockScroll();
   overlay.scrollTop = 0;
 }
 
-let projNavLocked = false;
-
-function buildProjNav(activeProjId) {
-  const nav = document.getElementById('projNav');
-  nav.innerHTML = '';
-  const projIds = Object.keys(projects);
-
-  projIds.forEach(id => {
-    const proj = projects[id];
-    const btn = document.createElement('button');
-    btn.className = 'proj-nav-item' + (id === activeProjId ? ' active' : '');
-
-    const firstSrc = proj.images[0];
-    const isVid = firstSrc.endsWith('.webm') || firstSrc.endsWith('.mp4');
-    const thumbSrc = isVid ? firstSrc.replace(/\.(webm|mp4)$/, '_thumb.webp') : firstSrc;
-
-    const thumb = document.createElement('img');
-    thumb.className = 'proj-nav-thumb';
-    thumb.src = isMobile ? thumbSrc.replace('Images/', 'Images/mobile/') : thumbSrc;
-    thumb.alt = proj.name;
-    btn.appendChild(thumb);
-
-    const label = document.createElement('span');
-    label.textContent = proj.name;
-    btn.appendChild(label);
-
-    btn.addEventListener('click', () => {
-      if (id === activeProjId || projNavLocked) return;
-      projNavLocked = true;
-      nav.querySelectorAll('.proj-nav-item').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      btn.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
-      overlayInner.style.transition = 'opacity 0.2s ease';
-      overlayInner.style.opacity = '0';
-      setTimeout(() => {
-        overlay.scrollTop = 0;
-        openProject(id);
-        overlayInner.style.opacity = '1';
-        projNavLocked = false;
-      }, 250);
-    });
-
-    nav.appendChild(btn);
-  });
-
-  // Horizontal scroll with mouse wheel — amplified for responsiveness
-  nav.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    nav.scrollLeft += e.deltaY * 3;
-  }, { passive: false });
-
-  // Scroll active item into view smoothly
-  requestAnimationFrame(() => {
-    const active = nav.querySelector('.active');
-    if (active) active.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
-  });
-}
 
 // ========== MOBILE PROJECT LIST ==========
 const mobileProjList = document.getElementById('mobileProjList');
@@ -1230,7 +1190,7 @@ function openMobileProjectList() {
   mobileProjScroll.appendChild(bottomSpacer);
 
   mobileProjList.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  lockScroll();
 
   // Track center item on scroll
   let scrollTick = false;
@@ -1293,7 +1253,7 @@ function updateCenterItem() {
 
 function closeMobileList() {
   mobileProjList.classList.remove('open');
-  document.body.style.overflow = '';
+  unlockScroll();
 }
 
 mobileProjClose.addEventListener('click', closeMobileList);
@@ -1302,8 +1262,7 @@ function closeOverlay() {
   cleanupOverlay();
   overlay.classList.remove('open');
   overlayClose.classList.remove('visible');
-  document.getElementById('projNav').classList.remove('visible');
-  document.body.style.overflow = '';
+  unlockScroll();
 }
 
 overlayClose.addEventListener('click', closeOverlay);
@@ -1420,7 +1379,7 @@ function openLightbox(index) {
   buildLightboxStrip();
   renderLightbox();
   lightbox.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  lockScroll();
 }
 
 function closeLightbox() {
@@ -1431,7 +1390,7 @@ function closeLightbox() {
   if (lbFrameRAF) cancelAnimationFrame(lbFrameRAF);
   lbFrameRAF = null;
   if (!overlay.classList.contains('open')) {
-    document.body.style.overflow = '';
+    unlockScroll();
   }
 }
 
