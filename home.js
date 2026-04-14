@@ -327,7 +327,7 @@ function updateParallax() {
     for (const img of bd.sideImgs) {
       const rect = img.el.getBoundingClientRect();
       const center = (rect.top + rect.height / 2 - vh / 2) / vh;
-      const y = center * img.speed * vh * 0.3;
+      const y = center * img.speed * vh;
       img.el.style.transform = `translateY(${y}px)`;
     }
 
