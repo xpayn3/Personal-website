@@ -284,6 +284,13 @@ body {
   background: rgba(0,0,0,0.1);
   margin: 0 6px;
   flex-shrink: 0;
+  transition: opacity 0.3s ease, width 0.3s ease, margin 0.3s ease;
+}
+
+.bar-divider.hidden {
+  opacity: 0;
+  width: 0;
+  margin: 0;
 }
 
 .bar-label {

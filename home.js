@@ -461,10 +461,11 @@ function updateParallax() {
     }
   }
 
-  // Show/hide bar labels based on carousel position
+  // Show/hide bar labels + dividers based on carousel position
   const pastCarousel = scrollY > window.innerHeight * 0.8;
   barName.style.opacity = pastCarousel ? '1' : '0';
   barCounter.style.opacity = pastCarousel ? '1' : '0';
+  document.querySelectorAll('.bottom-bar .bar-divider').forEach(d => d.classList.toggle('hidden', !pastCarousel));
 }
 
 // ========== WATERMARK LETTERS ==========
@@ -513,6 +514,7 @@ function onMobileScroll() {
   const pastCarousel = scrollY > vh * 0.8;
   barName.style.opacity = pastCarousel ? '1' : '0';
   barCounter.style.opacity = pastCarousel ? '1' : '0';
+  document.querySelectorAll('.bottom-bar .bar-divider').forEach(d => d.classList.toggle('hidden', !pastCarousel));
 
   // Letter rotation
   if (wmLetters.length) {
