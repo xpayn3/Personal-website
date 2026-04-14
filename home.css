@@ -296,7 +296,9 @@ body {
 .bar-label {
   color: rgba(0,0,0,0.4);
   font-size: 0.8rem;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, max-width 0.3s ease, padding 0.3s ease;
+  overflow: hidden;
+  max-width: 200px;
   white-space: nowrap;
   padding: 0 8px;
   transition: color 0.3s;
@@ -305,7 +307,9 @@ body {
 .bar-counter {
   color: rgba(0,0,0,0.3);
   font-size: 0.75rem;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, max-width 0.3s ease, padding 0.3s ease;
+  overflow: hidden;
+  max-width: 100px;
   white-space: nowrap;
   padding: 0 8px;
 }
