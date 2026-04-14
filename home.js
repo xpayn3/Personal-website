@@ -24,14 +24,14 @@ const projects = [
     ]
   },
   {
-    id: 'grounded2024',
-    name: 'Grounded 2024',
-    year: 2024,
-    hero: `${IMG}/Grounded_2024/Grounded_2024_01.webp`,
+    id: 'grounded2023',
+    name: 'Grounded 2023',
+    year: 2023,
+    hero: `${IMG}/Grounded_2023/Grounded_2023_01.webm`,
     floats: [
-      `${IMG}/Grounded_2024/Grounded_2024_02.webp`,
-      `${IMG}/Grounded_2024/Grounded_2024_04.webp`,
-      `${IMG}/Grounded_2024/Grounded_2024_06.webp`,
+      `${IMG}/Grounded_2023/Grounded_2023_04.webm`,
+      `${IMG}/Grounded_2023/Grounded_2023_05.webm`,
+      `${IMG}/Grounded_2023/Grounded_2023_06.webm`,
     ]
   },
   {
