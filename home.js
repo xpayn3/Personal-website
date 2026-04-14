@@ -1,3 +1,30 @@
+// Loading screen — only on first visit
+const loader = document.getElementById('loader');
+if (loader) {
+  if (sessionStorage.getItem('visited')) {
+    loader.remove();
+  } else {
+    sessionStorage.setItem('visited', '1');
+    const loaderText = document.getElementById('loaderText');
+    if (loaderText) {
+      const text = loaderText.textContent;
+      loaderText.innerHTML = '';
+      for (const char of text) {
+        const span = document.createElement('span');
+        span.className = 'loader-letter';
+        span.textContent = char;
+        loaderText.appendChild(span);
+      }
+    }
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        loader.classList.add('fade-out');
+        setTimeout(() => loader.remove(), 600);
+      }, 800);
+    });
+  }
+}
+
 const IMG = 'Images';
 
 const projects = [
