@@ -35,6 +35,13 @@ html {
   -ms-touch-action: manipulation;
 }
 
+img, video {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  pointer-events: auto;
+}
+
 /* ========== SQUARE GRID ========== */
 .grid {
   display: grid;

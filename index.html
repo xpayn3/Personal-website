@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Luka Grčar — Home</title>
+  <meta name="robots" content="noai, noimageai" />
   <link rel="icon" href="data:," />
   <meta name="theme-color" content="#ffffff" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -87,5 +88,12 @@
   <div class="watermark-right">3D / UI / UX / ANIM</div>
 
   <script src="home.js"></script>
+  <script>
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('dragstart', e => e.preventDefault());
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S' || e.key === 'u' || e.key === 'U')) e.preventDefault();
+  });
+  </script>
 </body>
 </html>
