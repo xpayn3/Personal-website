@@ -17,7 +17,7 @@ const projects = [
     id: 'grounded2025',
     name: 'Grounded 2025',
     year: 2025,
-    hero: `${IMG}/Grounded 2025/Grounded_2025_01.webm`,
+    hero: `${IMG}/Grounded 2025/Grounded_2025_web.webm`,
     floats: [
       `${IMG}/Grounded 2025/Grounded_2025_02.webm`,
       `${IMG}/Grounded 2025/Grounded_2025_03.webm`,
