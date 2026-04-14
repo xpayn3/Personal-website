@@ -65,7 +65,7 @@ body {
 
 .scatter-img {
   will-change: transform;
-  border-radius: 6px;
+  border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.08);
 }
