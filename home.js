@@ -38,10 +38,10 @@ const projects = [
     id: 'grounded2022',
     name: 'Grounded 2022',
     year: 2022,
-    hero: `${IMG}/Grounded_2022/GR_main_1.webm`,
+    hero: `${IMG}/Grounded_2022/card_holo.webm`,
     floats: [
       `${IMG}/Grounded_2022/Grounded_2022_01.webp`,
-      `${IMG}/Grounded_2022/card_holo.webm`,
+      `${IMG}/Grounded_2022/GR_main_1.webm`,
       `${IMG}/Grounded_2022/Grounded_2022_05.webp`,
     ]
   },
@@ -231,17 +231,34 @@ function resetHeroAuto() {
 }
 resetHeroAuto();
 
-// Swipe on carousel
-let heroTouchX = 0;
+// Swipe + drag on carousel
+let heroStartX = 0;
+let heroDragging = false;
 const heroEl = document.getElementById('heroCarousel');
-heroEl.addEventListener('touchstart', (e) => { heroTouchX = e.touches[0].clientX; }, { passive: true });
+
+// Touch
+heroEl.addEventListener('touchstart', (e) => { heroStartX = e.touches[0].clientX; }, { passive: true });
 heroEl.addEventListener('touchend', (e) => {
-  const diff = heroTouchX - e.changedTouches[0].clientX;
+  const diff = heroStartX - e.changedTouches[0].clientX;
   if (Math.abs(diff) > 50) {
     if (diff > 0) goToHeroSlide(Math.min(heroIdx + 1, heroSrcs.length - 1));
     else goToHeroSlide(Math.max(heroIdx - 1, 0));
   }
 }, { passive: true });
+
+// Mouse drag
+heroEl.addEventListener('mousedown', (e) => { heroDragging = true; heroStartX = e.clientX; heroEl.style.cursor = 'grabbing'; });
+window.addEventListener('mouseup', (e) => {
+  if (!heroDragging) return;
+  heroDragging = false;
+  heroEl.style.cursor = '';
+  const diff = heroStartX - e.clientX;
+  if (Math.abs(diff) > 50) {
+    if (diff > 0) goToHeroSlide(Math.min(heroIdx + 1, heroSrcs.length - 1));
+    else goToHeroSlide(Math.max(heroIdx - 1, 0));
+  }
+});
+heroEl.style.cursor = 'grab';
 
 // ========== BUILD SECTIONS ==========
 const container = document.getElementById('scrollContainer');
