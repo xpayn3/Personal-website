@@ -1081,8 +1081,9 @@ document.addEventListener('keydown', (e) => {
 
 // ========== GRID SIZE SLIDER ==========
 window.scrollTo(0, 0);
+const _mobile = window.innerWidth < 768;
 const gridSlider = document.getElementById('gridSlider');
-gridSlider.value = 5;
+gridSlider.value = _mobile ? 3 : 5;
 const sliderDotsEl = document.getElementById('sliderDots');
 const sliderMin = parseInt(gridSlider.min);
 const sliderMax = parseInt(gridSlider.max);
