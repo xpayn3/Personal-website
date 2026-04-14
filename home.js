@@ -460,6 +460,11 @@ function updateParallax() {
       barCounter.textContent = `${idx + 1} / ${projects.length}`;
     }
   }
+
+  // Show/hide bar labels based on carousel position
+  const pastCarousel = scrollY > window.innerHeight * 0.8;
+  barName.style.opacity = pastCarousel ? '1' : '0';
+  barCounter.style.opacity = pastCarousel ? '1' : '0';
 }
 
 // ========== WATERMARK LETTERS ==========
@@ -504,6 +509,10 @@ function onMobileScroll() {
       barCounter.textContent = `${idx + 1} / ${projects.length}`;
     }
   }
+
+  const pastCarousel = scrollY > vh * 0.8;
+  barName.style.opacity = pastCarousel ? '1' : '0';
+  barCounter.style.opacity = pastCarousel ? '1' : '0';
 
   // Letter rotation
   if (wmLetters.length) {
