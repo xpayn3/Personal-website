@@ -3,7 +3,7 @@ const IMG = 'Images';
 
 const projects = {
   cestel: {
-    color: 'blue',
+    color: 'black',
     name: 'CESTEL Animation',
     year: 2023,
     client: 'Cestel',
@@ -44,7 +44,7 @@ const projects = {
     ]
   },
   grounded2022: {
-    color: 'orange',
+    color: 'black',
     name: 'Festival Grounded 2022',
     year: 2022,
     client: 'Pritličje',
@@ -81,7 +81,7 @@ const projects = {
     ]
   },
   grounded2021: {
-    color: 'purple',
+    color: 'gray',
     name: 'Festival Grounded 2021: The State',
     year: 2021,
     client: 'Pritličje',
@@ -109,7 +109,7 @@ const projects = {
     ]
   },
   taf: {
-    color: 'red',
+    color: 'blue',
     name: "The Athlete's Foot",
     year: 2021,
     client: "The Athlete's Foot",
@@ -138,7 +138,7 @@ const projects = {
     ]
   },
   grounded2020: {
-    color: 'cyan',
+    color: 'black',
     name: 'Festival Grounded: Truth',
     year: 2020,
     client: 'Pritličje',
@@ -168,7 +168,7 @@ const projects = {
     ]
   },
   grounded2018: {
-    color: 'pink',
+    color: 'blue',
     name: 'Festival Grounded 2018',
     year: 2018,
     client: 'Pritličje',
@@ -188,7 +188,7 @@ const projects = {
     ]
   },
   tamtam: {
-    color: 'green',
+    color: 'blue',
     name: 'Mesta pešcem — TamTam',
     year: 2018,
     award: 'Mestni plakat leta — TamTam 2018',
@@ -202,7 +202,7 @@ const projects = {
     ]
   },
   ment: {
-    color: 'yellow',
+    color: 'purple',
     name: 'AppointMENT 4.0',
     year: 2019,
     desc: ['Visual identity design for the AppointMENT 4.0 event.'],
@@ -215,7 +215,7 @@ const projects = {
     ]
   },
   halloween: {
-    color: 'black',
+    color: 'purple',
     name: "Halloween — The Athlete's Foot",
     year: 2021,
     client: "The Athlete's Foot",
@@ -243,7 +243,7 @@ const projects = {
     ]
   },
   blackfriday: {
-    color: 'black',
+    color: 'gray',
     name: "Black Friday — The Athlete's Foot",
     year: 2021,
     client: "The Athlete's Foot",
@@ -261,7 +261,7 @@ const projects = {
     ]
   },
   largavida: {
-    color: 'gray',
+    color: 'orange',
     name: 'LargaVida Limited Edition',
     year: 2022,
     desc: ['Design for LargaVida limited edition product line.'],
@@ -300,7 +300,7 @@ const projects = {
     ]
   },
   grounded2023: {
-    color: 'green',
+    color: 'blue',
     name: 'Festival Grounded 2023',
     year: 2023,
     client: 'Pritličje',
@@ -324,7 +324,7 @@ const projects = {
     ]
   },
   grounded2025: {
-    color: 'blue',
+    color: 'black',
     name: 'Festival Grounded 2025',
     year: 2025,
     client: 'Pritličje',
@@ -341,7 +341,7 @@ const projects = {
     ]
   },
   grounded2024: {
-    color: 'red',
+    color: 'blue',
     name: 'Festival Grounded 2024',
     year: 2024,
     client: 'Pritličje',
@@ -372,7 +372,7 @@ const projects = {
     ]
   },
   radenci: {
-    color: 'blue',
+    color: 'orange',
     name: 'Radenci — Prostorska Projekcija',
     year: 2022,
     desc: ['Spatial projection mapping installation in Radenci.'],
@@ -465,7 +465,7 @@ const projects = {
     ]
   },
   kersnikova: {
-    color: 'purple',
+    color: 'pink',
     name: 'Kersnikova',
     year: 2021,
     desc: ['Visual identity and print design for Kersnikova.'],
@@ -483,7 +483,7 @@ const projects = {
     ]
   },
   natureta_renders: {
-    color: 'green',
+    color: 'yellow',
     name: 'Natureta Product Renders',
     year: 2023,
     desc: ['3D product renders and visualization for Natureta.'],
@@ -508,7 +508,7 @@ const projects = {
     ]
   },
   natureta: {
-    color: 'green',
+    color: 'orange',
     name: 'Natureta 100 Let',
     year: 2023,
     desc: ['Product photography and visual design for Natureta.'],
