@@ -463,13 +463,8 @@ function updateParallax() {
 
   // Show/hide bar labels + dividers based on carousel position
   const pastCarousel = scrollY > window.innerHeight * 0.8;
-  barName.style.opacity = pastCarousel ? '1' : '0';
-  barName.style.maxWidth = pastCarousel ? '200px' : '0';
-  barName.style.padding = pastCarousel ? '0 8px' : '0';
-  barCounter.style.opacity = pastCarousel ? '1' : '0';
-  barCounter.style.maxWidth = pastCarousel ? '100px' : '0';
-  barCounter.style.padding = pastCarousel ? '0 8px' : '0';
-  document.querySelectorAll('.bottom-bar .bar-divider').forEach(d => d.classList.toggle('hidden', !pastCarousel));
+  document.querySelectorAll('.bar-collapsible').forEach(el => el.classList.toggle('collapsed', !pastCarousel));
+  document.querySelector('.bottom-bar').classList.toggle('compact', !pastCarousel);
 }
 
 // ========== WATERMARK LETTERS ==========
@@ -516,13 +511,8 @@ function onMobileScroll() {
   }
 
   const pastCarousel = scrollY > vh * 0.8;
-  barName.style.opacity = pastCarousel ? '1' : '0';
-  barName.style.maxWidth = pastCarousel ? '200px' : '0';
-  barName.style.padding = pastCarousel ? '0 8px' : '0';
-  barCounter.style.opacity = pastCarousel ? '1' : '0';
-  barCounter.style.maxWidth = pastCarousel ? '100px' : '0';
-  barCounter.style.padding = pastCarousel ? '0 8px' : '0';
-  document.querySelectorAll('.bottom-bar .bar-divider').forEach(d => d.classList.toggle('hidden', !pastCarousel));
+  document.querySelectorAll('.bar-collapsible').forEach(el => el.classList.toggle('collapsed', !pastCarousel));
+  document.querySelector('.bottom-bar').classList.toggle('compact', !pastCarousel);
 
   // Letter rotation
   if (wmLetters.length) {

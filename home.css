@@ -248,7 +248,11 @@ body {
 .bar-toggle:hover { background: rgba(255,255,255,0.1); }
 
 .bottom-bar {
-  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease, gap 0.3s ease;
+}
+
+.bottom-bar.compact {
+  gap: 0;
 }
 
 .bottom-bar.bar-hidden {
@@ -291,6 +295,18 @@ body {
   opacity: 0;
   width: 0;
   margin: 0;
+}
+
+.bar-collapsible {
+  transition: opacity 0.3s ease, max-width 0.3s ease, padding 0.3s ease, margin 0.3s ease;
+  overflow: hidden;
+}
+
+.bar-collapsible.collapsed {
+  opacity: 0;
+  max-width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 .bar-label {
