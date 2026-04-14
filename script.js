@@ -737,7 +737,16 @@ function closeAllDropdowns() {
 document.querySelectorAll('.bar-toggle').forEach(btn => {
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
-    const menuId = 'menu-' + btn.dataset.menu;
+    const menuType = btn.dataset.menu;
+
+    // On mobile, open fullscreen list for project filter
+    if (isMobile && menuType === 'project') {
+      closeAllDropdowns();
+      openMobileProjectList();
+      return;
+    }
+
+    const menuId = 'menu-' + menuType;
     const menu = document.getElementById(menuId);
     const isOpen = menu.classList.contains('open');
     closeAllDropdowns();
@@ -893,6 +902,115 @@ function openProject(projId) {
   overlay.scrollTop = 0;
 }
 
+// ========== MOBILE PROJECT LIST ==========
+const mobileProjList = document.getElementById('mobileProjList');
+const mobileProjScroll = document.getElementById('mobileProjScroll');
+const mobileProjClose = document.getElementById('mobileProjClose');
+
+function openMobileProjectList() {
+  mobileProjScroll.innerHTML = '';
+
+  // "All" option
+  const allItem = document.createElement('div');
+  allItem.className = 'mobile-proj-item' + (activeFilters.project === null ? ' active' : '');
+  allItem.innerHTML = '<div class="mobile-proj-item-inner"><div class="mobile-proj-name">All Projects</div></div>';
+  allItem.addEventListener('click', () => {
+    setFilter('project', null);
+    activeFilters.project = null;
+    applyFilters();
+    closeMobileList();
+  });
+  mobileProjScroll.appendChild(allItem);
+
+  const projIds = Object.keys(projects);
+  projIds.forEach(id => {
+    const proj = projects[id];
+    const item = document.createElement('div');
+    item.className = 'mobile-proj-item';
+    if (activeFilters.project === id) item.classList.add('active');
+
+    const inner = document.createElement('div');
+    inner.className = 'mobile-proj-item-inner';
+
+    const name = document.createElement('div');
+    name.className = 'mobile-proj-name';
+    name.textContent = proj.name;
+    inner.appendChild(name);
+
+    if (proj.year) {
+      const year = document.createElement('div');
+      year.className = 'mobile-proj-year';
+      year.textContent = proj.year;
+      inner.appendChild(year);
+    }
+
+    item.appendChild(inner);
+    item.addEventListener('click', () => {
+      setFilter('project', id);
+      closeMobileList();
+    });
+
+    mobileProjScroll.appendChild(item);
+  });
+
+  // Add spacers top/bottom so first/last can center
+  const topSpacer = document.createElement('div');
+  topSpacer.className = 'mobile-proj-spacer';
+  mobileProjScroll.prepend(topSpacer);
+  const bottomSpacer = document.createElement('div');
+  bottomSpacer.className = 'mobile-proj-spacer';
+  mobileProjScroll.appendChild(bottomSpacer);
+
+  mobileProjList.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Track center item on scroll
+  let scrollTick = false;
+  mobileProjScroll.addEventListener('scroll', () => {
+    if (!scrollTick) {
+      requestAnimationFrame(() => {
+        updateCenterItem();
+        scrollTick = false;
+      });
+      scrollTick = true;
+    }
+  });
+
+  // Scroll to active item
+  requestAnimationFrame(() => {
+    const active = mobileProjScroll.querySelector('.active');
+    if (active) active.scrollIntoView({ block: 'center', behavior: 'instant' });
+    updateCenterItem();
+  });
+}
+
+function updateCenterItem() {
+  const items = mobileProjScroll.querySelectorAll('.mobile-proj-item');
+  const center = window.innerHeight / 2;
+  let closest = null;
+  let closestDist = Infinity;
+
+  items.forEach(item => {
+    const rect = item.getBoundingClientRect();
+    const itemCenter = rect.top + rect.height / 2;
+    const dist = Math.abs(itemCenter - center);
+    item.classList.remove('center');
+    if (dist < closestDist) {
+      closestDist = dist;
+      closest = item;
+    }
+  });
+
+  if (closest) closest.classList.add('center');
+}
+
+function closeMobileList() {
+  mobileProjList.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+mobileProjClose.addEventListener('click', closeMobileList);
+
 function closeOverlay() {
   overlay.classList.remove('open');
   overlayClose.classList.remove('visible');
@@ -906,6 +1024,7 @@ overlay.addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     if (lightbox.classList.contains('open')) closeLightbox();
+    else if (mobileProjList.classList.contains('open')) closeMobileList();
     else if (overlay.classList.contains('open')) closeOverlay();
   }
 });
