@@ -83,8 +83,9 @@ body {
   position: relative;
   z-index: 2;
   background: var(--bg);
-  height: 180vh;
+  height: 150vh;
   overflow: visible;
+  margin-top: 0;
 }
 
 .scatter-img {

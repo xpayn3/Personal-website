@@ -35,17 +35,6 @@ const projects = [
     ]
   },
   {
-    id: 'grounded2023',
-    name: 'Grounded 2023',
-    year: 2023,
-    hero: `${IMG}/Grounded_2023/Grounded_2023_01.webm`,
-    floats: [
-      `${IMG}/Grounded_2023/Grounded_2023_04.webm`,
-      `${IMG}/Grounded_2023/Grounded_2023_05.webm`,
-      `${IMG}/Grounded_2023/Grounded_2023_06.webm`,
-    ]
-  },
-  {
     id: 'grounded2022',
     name: 'Grounded 2022',
     year: 2022,
