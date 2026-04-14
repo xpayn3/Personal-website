@@ -232,6 +232,12 @@ body {
   object-fit: cover;
 }
 
+@media (max-width: 768px) {
+  .scatter-img.hero-scatter {
+    aspect-ratio: 3 / 4 !important;
+  }
+}
+
 .scatter-img.side-scatter {
   position: relative;
   z-index: 2;

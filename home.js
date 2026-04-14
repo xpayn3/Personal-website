@@ -146,17 +146,6 @@ const projects = [
       `${IMG}/Grounded_2018/44396997_2300717590163245_3256152537651807309_n.webp`,
     ]
   },
-  {
-    id: 'lab',
-    name: 'Lab',
-    year: 2023,
-    hero: `${IMG}/Lab/lab_sandunes.webm`,
-    floats: [
-      `${IMG}/Lab/mecha.webp`,
-      `${IMG}/Lab/gold.webm`,
-      `${IMG}/Lab/Fly_fico.webm`,
-    ]
-  },
 ];
 
 // Sort by year, newest first — show only 5
@@ -177,11 +166,10 @@ function mobileSrc(src) {
 }
 
 function createMedia(src) {
-  const msrc = mobileSrc(src);
-  // On mobile use static images instead of videos
+  // On mobile use video thumbnails but keep full-res images
   if (isVideo(src) && isMobileHome) {
     const img = document.createElement('img');
-    img.src = msrc;
+    img.src = src.replace(/\.(webm|mp4)$/, '_thumb.webp');
     img.loading = 'lazy';
     img.decoding = 'async';
     return img;
@@ -196,7 +184,7 @@ function createMedia(src) {
     return v;
   }
   const img = document.createElement('img');
-  img.src = msrc;
+  img.src = src;
   img.loading = 'lazy';
   img.decoding = 'async';
   return img;
