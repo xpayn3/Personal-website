@@ -247,12 +247,20 @@ heroEl.addEventListener('touchend', (e) => {
 }, { passive: true });
 
 // Mouse drag
-heroEl.addEventListener('mousedown', (e) => { heroDragging = true; heroStartX = e.clientX; heroEl.style.cursor = 'grabbing'; });
+heroEl.addEventListener('mousedown', (e) => {
+  e.preventDefault();
+  heroDragging = true;
+  heroStartX = e.clientX;
+  heroEl.style.cursor = 'grabbing';
+});
+window.addEventListener('mousemove', (e) => {
+  if (heroDragging) e.preventDefault();
+});
 window.addEventListener('mouseup', (e) => {
   if (!heroDragging) return;
-  heroDragging = false;
-  heroEl.style.cursor = '';
   const diff = heroStartX - e.clientX;
+  heroDragging = false;
+  heroEl.style.cursor = 'grab';
   if (Math.abs(diff) > 50) {
     if (diff > 0) goToHeroSlide(Math.min(heroIdx + 1, heroSrcs.length - 1));
     else goToHeroSlide(Math.max(heroIdx - 1, 0));
