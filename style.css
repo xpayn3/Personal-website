@@ -1946,7 +1946,7 @@ html {
 
 @media (max-width: 768px) {
   .grid { grid-template-columns: repeat(3, 1fr); padding: 16px 16px 90px; gap: 10px; }
-  .bottom-bar { bottom: 16px; padding: 10px 16px; max-width: calc(100vw - 24px); width: auto; }
+  .bottom-bar { bottom: calc(16px + env(safe-area-inset-bottom)); padding: 10px 16px; max-width: calc(100vw - 24px); width: auto; }
   .bar-toggle, .bar-reset { font-size: 0.9rem; padding: 10px 16px; }
   .proj-gallery .row-2, .proj-gallery .row-3 {
     grid-template-columns: 1fr;

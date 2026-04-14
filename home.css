@@ -217,7 +217,7 @@ body {
 /* ========== BOTTOM BAR ========== */
 .bottom-bar {
   position: fixed;
-  bottom: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -504,6 +504,60 @@ body {
   background: #111;
   color: #fff;
   border-color: #111;
+}
+
+/* ========== HOME FOOTER ========== */
+.home-footer {
+  background: #0a2fff;
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 40px;
+  position: relative;
+}
+
+.home-footer-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.home-footer-col p,
+.home-footer-col a {
+  display: block;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  line-height: 1.8;
+}
+
+.home-footer-col a:hover {
+  color: #fff;
+}
+
+.home-footer-big {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: clamp(4rem, 15vw, 14rem);
+  font-weight: 400;
+  color: rgba(255,255,255,0.08);
+  line-height: 1;
+  text-align: center;
+  margin-top: auto;
+}
+
+.home-footer-copy {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.2);
+  text-align: center;
+  padding-top: 24px;
+}
+
+@media (max-width: 768px) {
+  .home-footer { padding: 40px 24px; }
+  .home-footer-content { grid-template-columns: 1fr; gap: 24px; }
 }
 
 /* ========== RESPONSIVE ========== */
