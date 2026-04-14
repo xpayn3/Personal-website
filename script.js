@@ -98,6 +98,8 @@ const projects = {
       `${IMG}/Grounded_2021/Statika_2_1.webp`,
       `${IMG}/Grounded_2021/Statika_teme_2.webp`,
       `${IMG}/Grounded_2021/Grounded_2021_IG.webm`,
+      `${IMG}/Grounded_2021/Grounded_2021_insta2.webm`,
+      `${IMG}/Grounded_2021/Grounded_2021_post.webm`,
     ],
     layout: [
       { cols: 1, imgs: [0] },
@@ -180,6 +182,7 @@ const projects = {
       `${IMG}/Grounded_2018/44396997_2300717590163245_3256152537651807309_n.webp`,
       `${IMG}/Grounded_2018/Grounded_2018_instagram.webm`,
       `${IMG}/Grounded_2018/Grounded_2018_music.webm`,
+      `${IMG}/Grounded_2018/Grounded_2018_03.webm`,
     ],
     layout: [
       { cols: 1, imgs: [0] },
@@ -233,6 +236,11 @@ const projects = {
       `${IMG}/Athletesfoot_halloween/screenshot_2.webp`,
       `${IMG}/Athletesfoot_halloween/screenshot_3.webp`,
       `${IMG}/Athletesfoot_halloween/screenshot_zbrush.webp`,
+      `${IMG}/Athletesfoot_halloween/halloween_banner.webm`,
+      `${IMG}/Athletesfoot_halloween/halloween_story.webm`,
+      `${IMG}/Athletesfoot_halloween/adidas_zx_lowpoly.webp`,
+      `${IMG}/Athletesfoot_halloween/DSC_0213.webp`,
+      `${IMG}/Athletesfoot_halloween/DSC_9820.webp`,
     ],
     layout: [
       { cols: 1, imgs: [0] },
