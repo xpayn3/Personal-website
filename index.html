@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="preload" as="script" href="script.js" />
 </head>
 <body>
 
@@ -73,20 +74,21 @@
     </div>
     <div class="bar-divider"></div>
     <div class="bar-section">
-      <button class="bar-toggle" data-menu="project">Project</button>
+      <button class="bar-toggle" data-menu="project" id="projectToggle"><img class="proj-toggle-thumb" id="projToggleThumb" /><span id="projToggleText">Project</span></button>
       <div class="bar-dropdown" id="menu-project"></div>
     </div>
     <div class="bar-section">
-      <button class="bar-toggle" data-menu="color">Color</button>
+      <button class="bar-toggle" data-menu="color"><span class="color-indicator" id="colorIndicator"></span>Color</button>
       <div class="bar-dropdown" id="menu-color"></div>
     </div>
     <div class="bar-section">
-      <button class="bar-toggle" data-menu="type">Type</button>
+      <button class="bar-toggle" data-menu="type" id="typeToggle">Type</button>
       <div class="bar-dropdown" id="menu-type">
         <button data-value="image" id="filterImages">Images</button>
         <button data-value="video" id="filterVideos">Videos</button>
       </div>
     </div>
+    <button class="bar-layout" id="layoutToggle" title="Toggle list view"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="1" y1="3" x2="15" y2="3"/><line x1="1" y1="8" x2="15" y2="8"/><line x1="1" y1="13" x2="15" y2="13"/></svg></button>
     <button class="bar-reset" id="resetFilters">All</button>
     <div class="bar-divider"></div>
     <div class="bar-slider">
@@ -104,6 +106,6 @@
   <!-- ===== NAME WATERMARK ===== -->
   <div class="watermark">Luka Grčar</div>
 
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </body>
 </html>

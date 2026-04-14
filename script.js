@@ -420,6 +420,47 @@ const projects = {
       { cols: 2, imgs: [23, 24] },
     ]
   },
+  natureta_renders: {
+    color: 'green',
+    name: 'Natureta Product Renders',
+    year: 2023,
+    desc: ['3D product renders and visualization for Natureta.'],
+    tools: ['Cinema 4D', 'Redshift', 'Photoshop'],
+    images: [
+      `${IMG}/Natureta product renders/izdelki.webp`,
+      `${IMG}/Natureta product renders/Mockup_2.webp`,
+      `${IMG}/Natureta product renders/float_2.webp`,
+      `${IMG}/Natureta product renders/kumarica.webp`,
+      `${IMG}/Natureta product renders/vsi_2.webp`,
+      `${IMG}/Natureta product renders/ETA_animacija_FINAL_2_2.webp`,
+      `${IMG}/Natureta product renders/Kozarec_eta0001.webp`,
+      `${IMG}/Natureta product renders/Kozarec_eta0013.webp`,
+      `${IMG}/Natureta product renders/Kozarec_eta0015.webp`,
+    ],
+    layout: [
+      { cols: 1, imgs: [0] },
+      { cols: 2, imgs: [1, 2] },
+      { cols: 2, imgs: [3, 4] },
+      { cols: 1, imgs: [5] },
+      { cols: 3, imgs: [6, 7, 8] },
+    ]
+  },
+  natureta: {
+    color: 'green',
+    name: 'Natureta 100 Let',
+    year: 2023,
+    desc: ['Product photography and visual design for Natureta.'],
+    tools: ['Photoshop', 'Cinema 4D'],
+    images: [
+      `${IMG}/Natureta/Prebranec-Natureta-657f495f8b596.webp`,
+      `${IMG}/Natureta/Prebranec-1-65708119051a5.webp`,
+      `${IMG}/Natureta/Prebranec-2-657081193738f.webp`,
+    ],
+    layout: [
+      { cols: 1, imgs: [0] },
+      { cols: 2, imgs: [1, 2] },
+    ]
+  },
   poster: {
     color: 'orange',
     name: 'Poster Design',
@@ -502,29 +543,53 @@ function renderGrid() {
       div.classList.remove('loading');
     });
 
-    // Video hover — desktop only
+    // Video hover — desktop only, with preload-on-hover
     if (isVideo && !isMobile) {
       let vid = null;
+      let hoverTimer = null;
+      // Preload video element on hover with slight delay to avoid drive-by loads
       div.addEventListener('mouseenter', () => {
-        if (!vid) {
-          vid = document.createElement('video');
-          vid.src = item.src;
-          vid.muted = true;
-          vid.loop = true;
-          vid.playsInline = true;
-          vid.preload = 'none';
-          vid.className = 'hover-video';
-          div.appendChild(vid);
-        }
-        vid.play().catch(() => {});
-        vid.style.opacity = '1';
+        hoverTimer = setTimeout(() => {
+          if (!vid) {
+            vid = document.createElement('video');
+            vid.src = item.src;
+            vid.muted = true;
+            vid.loop = true;
+            vid.playsInline = true;
+            vid.preload = 'metadata';
+            vid.className = 'hover-video';
+            div.appendChild(vid);
+          }
+          vid.play().catch(() => {});
+          vid.style.opacity = '1';
+        }, 150);
       });
       div.addEventListener('mouseleave', () => {
+        clearTimeout(hoverTimer);
         if (vid) {
           vid.pause();
+          vid.currentTime = 0;
           vid.style.opacity = '0';
         }
       });
+    }
+
+    // Preload project images on hover (YouTube trick — fetch before click)
+    if (!isMobile) {
+      let preloaded = false;
+      div.addEventListener('mouseenter', () => {
+        if (preloaded) return;
+        preloaded = true;
+        const proj = projects[item.project];
+        if (!proj) return;
+        // Preload first 3 images of the project in background
+        proj.images.slice(0, 3).forEach(src => {
+          const link = document.createElement('link');
+          link.rel = 'prefetch';
+          link.href = src;
+          document.head.appendChild(link);
+        });
+      }, { once: true, passive: true });
     }
 
     const label = document.createElement('span');
@@ -532,7 +597,21 @@ function renderGrid() {
     label.textContent = item.projectName;
     div.appendChild(label);
 
-    div.addEventListener('click', () => openProject(item.project));
+    // Meta info for list view
+    const ext = item.src.split('.').pop().toUpperCase();
+    const meta = document.createElement('div');
+    meta.className = 'item-meta';
+    meta.innerHTML = `<span>${ext}</span><span>${item.projectName}</span>`;
+    div.appendChild(meta);
+
+    div.addEventListener('click', () => {
+      if (gridEl.classList.contains('list-view')) {
+        lightboxItems = [item.src];
+        openLightbox(0);
+      } else {
+        openProject(item.project);
+      }
+    });
 
     frag.appendChild(div);
   }
@@ -541,6 +620,7 @@ function renderGrid() {
 }
 
 const isMobile = window.innerWidth < 768;
+const isSlowConnection = navigator.connection && (navigator.connection.saveData || navigator.connection.effectiveType === '2g' || navigator.connection.effectiveType === 'slow-2g');
 
 renderGrid();
 
@@ -556,7 +636,7 @@ const lazyObserver = new IntersectionObserver((entries) => {
       lazyObserver.unobserve(entry.target);
     }
   });
-}, { rootMargin: isMobile ? '400px' : '200px' });
+}, { rootMargin: isSlowConnection ? '100px' : (isMobile ? '400px' : '200px') });
 
 document.querySelectorAll('.grid-item').forEach(item => lazyObserver.observe(item));
 
@@ -627,6 +707,9 @@ function setFilter(type, value) {
 
 function applyFilters() {
   const items = gridEl.querySelectorAll('.grid-item');
+  const toShow = [];
+  const toHide = [];
+
   items.forEach(item => {
     let show = true;
     if (activeFilters.project && item.dataset.project !== activeFilters.project) show = false;
@@ -634,11 +717,26 @@ function applyFilters() {
     if (activeFilters.color && item.dataset.color !== activeFilters.color) show = false;
     if (activeFilters.type && item.dataset.type !== activeFilters.type) show = false;
 
-    if (show) {
-      item.classList.remove('hidden');
-    } else {
-      item.classList.add('hidden');
-    }
+    const isHidden = item.classList.contains('hidden');
+    if (show && isHidden) toShow.push(item);
+    else if (!show && !isHidden) toHide.push(item);
+  });
+
+  // Hide items instantly
+  toHide.forEach(item => {
+    item.classList.add('hidden');
+    item.classList.remove('hiding', 'showing');
+  });
+
+  // Show items with staggered bounce
+  toShow.forEach((item, i) => {
+    item.classList.remove('hidden');
+    item.classList.add('showing');
+    item.style.animationDelay = Math.min(i * 20, 300) + 'ms';
+    item.addEventListener('animationend', () => {
+      item.classList.remove('showing');
+      item.style.animationDelay = '';
+    }, { once: true });
   });
 
   // Show/hide no results
@@ -658,13 +756,67 @@ function applyFilters() {
     const type = parent.id.replace('menu-', '');
     btn.classList.toggle('active', String(activeFilters[type]) === String(btn.dataset.value));
   });
+
+  // Update project button text + thumbnail
+  const projToggleText = document.getElementById('projToggleText');
+  const projToggleThumb = document.getElementById('projToggleThumb');
+  if (activeFilters.project) {
+    const proj = projects[activeFilters.project];
+    const name = proj.name;
+    projToggleText.textContent = name.length > 18 ? name.slice(0, 18) + '...' : name;
+    const firstSrc = proj.images[0];
+    const isVid = firstSrc.endsWith('.webm') || firstSrc.endsWith('.mp4');
+    projToggleThumb.src = isVid ? firstSrc.replace(/\.(webm|mp4)$/, '_thumb.webp') : firstSrc;
+    projToggleThumb.classList.add('visible');
+  } else {
+    projToggleText.textContent = 'Project';
+    projToggleThumb.classList.remove('visible');
+  }
+
+  // Update type button text
+  const typeToggle = document.getElementById('typeToggle');
+  if (activeFilters.type) {
+    typeToggle.textContent = activeFilters.type === 'image' ? 'Images' : 'Videos';
+  } else {
+    typeToggle.textContent = 'Type';
+  }
+
+  // Show/hide "All" reset button
+  const hasAnyFilter = Object.values(activeFilters).some(v => v !== null);
+  document.getElementById('resetFilters').style.display = hasAnyFilter ? 'flex' : 'none';
+
+  // Update color indicator
+  const indicator = document.getElementById('colorIndicator');
+  if (activeFilters.color) {
+    indicator.style.background = COLOR_HEX[activeFilters.color] || '#888';
+    indicator.classList.add('visible');
+    indicator.style.animation = 'colorPop 0.4s cubic-bezier(0.34,1.56,0.64,1) both';
+  } else if (indicator.classList.contains('visible')) {
+    indicator.style.animation = 'colorPop 0.3s cubic-bezier(0.32,0.72,0,1) reverse forwards';
+    setTimeout(() => {
+      indicator.classList.remove('visible');
+      indicator.style.animation = '';
+    }, 300);
+  }
 }
 
-// Reset
-document.getElementById('resetFilters').addEventListener('click', () => {
-  activeFilters = { project: null, year: null, color: null, type: null };
+// Clear color via indicator click
+document.getElementById('colorIndicator').addEventListener('click', (e) => {
+  e.stopPropagation();
+  activeFilters.color = null;
   applyFilters();
-  closeAllDropdowns();
+});
+
+// Reset
+document.getElementById('resetFilters').addEventListener('click', (e) => {
+  const btn = e.currentTarget;
+  btn.style.animation = 'barItemOut 0.3s cubic-bezier(0.32,0.72,0,1) forwards';
+  setTimeout(() => {
+    activeFilters = { project: null, year: null, color: null, type: null };
+    applyFilters();
+    closeAllDropdowns();
+    btn.style.animation = '';
+  }, 250);
 });
 
 // ========== DROPDOWN TOGGLE ==========
@@ -733,9 +885,9 @@ const loremPool = [
 
 function mediaTag(src, alt) {
   if (src.endsWith('.webm') || src.endsWith('.mp4')) {
-    return `<video src="${src}" autoplay muted loop playsinline></video>`;
+    return `<video data-src="${src}" muted loop playsinline preload="none"></video>`;
   }
-  return `<img src="${src}" alt="${alt || ''}" loading="lazy" />`;
+  return `<img src="${src}" alt="${alt || ''}" loading="lazy" decoding="async" />`;
 }
 
 function openProject(projId) {
@@ -826,11 +978,28 @@ function openProject(projId) {
     overlayInner.innerHTML = html;
   }
 
+  // Lazy-load overlay videos when they scroll into view (YouTube trick)
+  const overlayVideoObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const vid = entry.target;
+      if (entry.isIntersecting) {
+        if (!vid.src && vid.dataset.src) {
+          vid.src = vid.dataset.src;
+        }
+        vid.play().catch(() => {});
+      } else {
+        vid.pause();
+      }
+    });
+  }, { root: overlay, rootMargin: '200px' });
+
+  overlayInner.querySelectorAll('video[data-src]').forEach(vid => overlayVideoObs.observe(vid));
+
   // Wire up lightbox on all clickable media
   lightboxItems = proj.images;
   const allMedia = overlayInner.querySelectorAll('.proj-row-media img, .proj-row-media video, .proj-row-full img, .proj-row-full video, .proj-gallery img, .proj-gallery video');
   allMedia.forEach((el) => {
-    const src = el.src;
+    const src = el.src || el.dataset.src;
     const idx = proj.images.indexOf(src);
     el.addEventListener('click', () => openLightbox(idx >= 0 ? idx : 0));
   });
@@ -1078,3 +1247,26 @@ if (mobileSlider && mobileDotsEl) {
   mobileSlider.addEventListener('input', updateMobileSlider);
   if (_mobile) updateMobileSlider();
 }
+
+// ========== LIST VIEW TOGGLE ==========
+const layoutToggle = document.getElementById('layoutToggle');
+layoutToggle.addEventListener('click', () => {
+  gridEl.style.opacity = '0';
+  gridEl.style.pointerEvents = 'none';
+  gridEl.classList.add('switching');
+  setTimeout(() => {
+    gridEl.style.transition = 'none';
+    gridEl.classList.toggle('list-view');
+    layoutToggle.classList.toggle('active');
+    if (gridEl.classList.contains('list-view')) {
+      gridEl.style.gridTemplateColumns = '';
+    } else {
+      updateSlider();
+    }
+    gridEl.offsetHeight;
+    gridEl.style.transition = 'opacity 0.25s ease';
+    gridEl.style.opacity = '1';
+    gridEl.style.pointerEvents = '';
+    setTimeout(() => gridEl.classList.remove('switching'), 300);
+  }, 250);
+});
