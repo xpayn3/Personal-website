@@ -530,12 +530,23 @@ function renderGrid() {
     div.dataset.year = item.year;
     div.dataset.color = item.color;
     div.dataset.type = (isVideo || isAnim) ? 'video' : 'image';
-    const thumbSrc = isVideo ? item.src.replace(/\.(webm|mp4)$/, '_thumb.webp') : item.src;
+
+    // On mobile: use tiny 300px images, on desktop: use thumbs for videos, full for images
+    let gridSrc;
+    if (isMobile) {
+      if (isVideo) {
+        gridSrc = item.src.replace(/\.(webm|mp4)$/, '_thumb.webp');
+      } else {
+        gridSrc = item.src.replace('Images/', 'Images/mobile/');
+      }
+    } else {
+      gridSrc = isVideo ? item.src.replace(/\.(webm|mp4)$/, '_thumb.webp') : item.src;
+    }
 
     const media = document.createElement('img');
     media.alt = item.projectName;
     media.decoding = 'async';
-    media.dataset.src = thumbSrc;
+    media.dataset.src = gridSrc;
     div.appendChild(media);
     media.addEventListener('load', () => {
       div.classList.remove('loading');
@@ -546,7 +557,8 @@ function renderGrid() {
       }
     });
 
-    if (isVideo) {
+    // Video hover — desktop only
+    if (isVideo && !isMobile) {
       let vid = null;
       div.addEventListener('mouseenter', () => {
         if (!vid) {
