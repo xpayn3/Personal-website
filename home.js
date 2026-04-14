@@ -292,18 +292,18 @@ if (ctaEl) {
     entries.forEach(entry => {
       ctaEl.classList.toggle('in-view', entry.isIntersecting);
     });
-  }, { root: container, threshold: 0.3 });
+  }, { threshold: 0.3 });
   ctaObs.observe(ctaEl);
 }
 
 // ========== SMOOTH SCROLL PHYSICS ==========
-let smoothScroll = container.scrollTop;
-let targetScroll = container.scrollTop;
+let smoothScroll = window.scrollY;
+let targetScroll = window.scrollY;
 let scrollVelocity = 0;
 const FRICTION = 0.92;
 const LERP = 0.08;
 
-container.addEventListener('wheel', (e) => {
+window.addEventListener('wheel', (e) => {
   e.preventDefault();
   scrollVelocity += e.deltaY * 0.15;
 }, { passive: false });
@@ -314,22 +314,22 @@ function smoothScrollLoop() {
   targetScroll += scrollVelocity;
 
   // Clamp
-  const maxScroll = container.scrollHeight - container.clientHeight;
+  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
   targetScroll = Math.max(0, Math.min(maxScroll, targetScroll));
 
   // Lerp toward target
   smoothScroll += (targetScroll - smoothScroll) * LERP;
-  container.scrollTop = smoothScroll;
+  window.scrollTo(0, smoothScroll);
 
   updateParallax();
   requestAnimationFrame(smoothScrollLoop);
 }
 
 // Sync on touch/native scroll
-container.addEventListener('scroll', () => {
+window.addEventListener('scroll', () => {
   if (Math.abs(scrollVelocity) < 0.5) {
-    smoothScroll = container.scrollTop;
-    targetScroll = container.scrollTop;
+    smoothScroll = window.scrollY;
+    targetScroll = window.scrollY;
   }
 }, { passive: true });
 
@@ -348,7 +348,7 @@ const blockData = Array.from(blocks).map(block => ({
 }));
 
 function updateParallax() {
-  const scrollY = container.scrollTop;
+  const scrollY = window.scrollY;
   const vh = window.innerHeight;
 
   for (let idx = 0; idx < blockData.length; idx++) {
@@ -400,8 +400,8 @@ if (wmEl) {
   let lastScroll = 0;
   let resetTimer = null;
 
-  container.addEventListener('scroll', () => {
-    const scrollY = container.scrollTop;
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
     const delta = scrollY - lastScroll;
     lastScroll = scrollY;
 
@@ -427,8 +427,8 @@ if (wmEl) {
 let navLastScroll = 0;
 const navBar = document.querySelector('.bottom-bar');
 if (navBar) {
-  container.addEventListener('scroll', () => {
-    const scrollY = container.scrollTop;
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
     if (scrollY > navLastScroll && scrollY > 100) {
       navBar.classList.add('bar-hidden');
     } else {

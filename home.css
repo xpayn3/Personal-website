@@ -12,15 +12,11 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: 'Inter', sans-serif;
-  overflow: hidden;
-  height: 100vh;
 }
 
 /* ========== SCROLL CONTAINER ========== */
 .scroll-container {
-  height: 100vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  min-height: 100vh;
 }
 
 /* ========== PROJECT BLOCK ========== */
