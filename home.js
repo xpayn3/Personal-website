@@ -296,44 +296,44 @@ if (ctaEl) {
   ctaObs.observe(ctaEl);
 }
 
-// ========== SMOOTH SCROLL PHYSICS ==========
-let smoothScroll = window.scrollY;
-let targetScroll = window.scrollY;
-let scrollVelocity = 0;
-const FRICTION = 0.92;
-const LERP = 0.08;
+// ========== SMOOTH SCROLL PHYSICS (desktop only) ==========
+const isMobileHome = window.innerWidth < 768;
 
-window.addEventListener('wheel', (e) => {
-  e.preventDefault();
-  scrollVelocity += e.deltaY * 0.15;
-}, { passive: false });
+if (!isMobileHome) {
+  let smoothScroll = window.scrollY;
+  let targetScroll = window.scrollY;
+  let scrollVelocity = 0;
+  const FRICTION = 0.92;
+  const LERP = 0.08;
 
-function smoothScrollLoop() {
-  // Apply velocity with friction
-  scrollVelocity *= FRICTION;
-  targetScroll += scrollVelocity;
+  window.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    scrollVelocity += e.deltaY * 0.15;
+  }, { passive: false });
 
-  // Clamp
-  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-  targetScroll = Math.max(0, Math.min(maxScroll, targetScroll));
-
-  // Lerp toward target
-  smoothScroll += (targetScroll - smoothScroll) * LERP;
-  window.scrollTo(0, smoothScroll);
-
-  updateParallax();
-  requestAnimationFrame(smoothScrollLoop);
-}
-
-// Sync on touch/native scroll
-window.addEventListener('scroll', () => {
-  if (Math.abs(scrollVelocity) < 0.5) {
-    smoothScroll = window.scrollY;
-    targetScroll = window.scrollY;
+  function smoothScrollLoop() {
+    scrollVelocity *= FRICTION;
+    targetScroll += scrollVelocity;
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    targetScroll = Math.max(0, Math.min(maxScroll, targetScroll));
+    smoothScroll += (targetScroll - smoothScroll) * LERP;
+    window.scrollTo(0, smoothScroll);
+    updateParallax();
+    requestAnimationFrame(smoothScrollLoop);
   }
-}, { passive: true });
 
-requestAnimationFrame(smoothScrollLoop);
+  window.addEventListener('scroll', () => {
+    if (Math.abs(scrollVelocity) < 0.5) {
+      smoothScroll = window.scrollY;
+      targetScroll = window.scrollY;
+    }
+  }, { passive: true });
+
+  requestAnimationFrame(smoothScrollLoop);
+} else {
+  // Mobile: just update parallax on native scroll
+  window.addEventListener('scroll', updateParallax, { passive: true });
+}
 
 // ========== PARALLAX ==========
 const blocks = document.querySelectorAll('.project-block');
