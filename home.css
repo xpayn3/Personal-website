@@ -6,7 +6,11 @@
   --accent: #0066ff;
 }
 
-html { scroll-behavior: auto; }
+html {
+  scroll-behavior: auto;
+  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+}
 
 body {
   background: var(--bg);

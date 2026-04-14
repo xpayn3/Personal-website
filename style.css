@@ -31,6 +31,8 @@ body {
 html {
   overflow-x: hidden;
   background: #fff;
+  touch-action: manipulation;
+  -ms-touch-action: manipulation;
 }
 
 /* ========== SQUARE GRID ========== */
