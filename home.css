@@ -380,7 +380,7 @@ body {
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
   .title-name { font-size: clamp(2rem, 10vw, 4rem); }
-  .image-layer { min-height: 80vh; }
+  .image-layer { min-height: 120vh; }
   .bar-label, .bar-counter, .bar-divider {
     display: none;
   }
