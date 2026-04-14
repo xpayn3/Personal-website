@@ -262,6 +262,13 @@ function watchHeroVideoEnd() {
     heroAutoTimer = setTimeout(nextHeroSlide, 5000);
   }
 }
+// Force play first video
+const firstVid = heroSlides.children[0] && heroSlides.children[0].querySelector('video');
+if (firstVid) {
+  firstVid.play().catch(() => {});
+  // iOS sometimes needs a slight delay
+  setTimeout(() => firstVid.play().catch(() => {}), 100);
+}
 watchHeroVideoEnd();
 
 // Swipe + drag on carousel
