@@ -15,11 +15,11 @@ const projects = [
   {
     name: 'Grounded 2024',
     year: 2024,
-    hero: `${IMG}/Grounded_2024/Grounded_2024_01.png`,
+    hero: `${IMG}/Grounded_2024/Grounded_2024_01.webp`,
     floats: [
-      `${IMG}/Grounded_2024/Grounded_2024_02.png`,
-      `${IMG}/Grounded_2024/Grounded_2024_04.png`,
-      `${IMG}/Grounded_2024/Grounded_2024_06.png`,
+      `${IMG}/Grounded_2024/Grounded_2024_02.webp`,
+      `${IMG}/Grounded_2024/Grounded_2024_04.webp`,
+      `${IMG}/Grounded_2024/Grounded_2024_06.webp`,
     ]
   },
   {
@@ -121,11 +121,11 @@ const projects = [
   {
     name: 'Radenci',
     year: 2022,
-    hero: `${IMG}/Radenci_prostorska_projekcija/P1_S1_K01_0323.png`,
+    hero: `${IMG}/Radenci_prostorska_projekcija/P1_S1_K01_0323.webp`,
     floats: [
-      `${IMG}/Radenci_prostorska_projekcija/P1_S3_K06_0150.png`,
-      `${IMG}/Radenci_prostorska_projekcija/P2_S1_K01_0227.png`,
-      `${IMG}/Radenci_prostorska_projekcija/P2_S2_K01_0376.png`,
+      `${IMG}/Radenci_prostorska_projekcija/P1_S3_K06_0150.webp`,
+      `${IMG}/Radenci_prostorska_projekcija/P2_S1_K01_0227.webp`,
+      `${IMG}/Radenci_prostorska_projekcija/P2_S2_K01_0376.webp`,
     ]
   },
 ];

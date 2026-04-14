@@ -303,15 +303,15 @@ const projects = {
     desc: ['Visual identity and motion design for the Grounded festival 2024 edition.'],
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects', 'Photoshop'],
     images: [
-      `${IMG}/Grounded_2024/Grounded_2024_01.png`,
-      `${IMG}/Grounded_2024/Grounded_2024_02.png`,
-      `${IMG}/Grounded_2024/Grounded_2024_03.png`,
-      `${IMG}/Grounded_2024/Grounded_2024_04.png`,
-      `${IMG}/Grounded_2024/Grounded_2024_05.png`,
-      `${IMG}/Grounded_2024/Grounded_2024_06.png`,
-      `${IMG}/Grounded_2024/Grounded_2024_07.png`,
-      `${IMG}/Grounded_2024/Grounded_2024_sticker_01.png`,
-      `${IMG}/Grounded_2024/Grounded_2024_sticker_02.png`,
+      `${IMG}/Grounded_2024/Grounded_2024_01.webp`,
+      `${IMG}/Grounded_2024/Grounded_2024_02.webp`,
+      `${IMG}/Grounded_2024/Grounded_2024_03.webp`,
+      `${IMG}/Grounded_2024/Grounded_2024_04.webp`,
+      `${IMG}/Grounded_2024/Grounded_2024_05.webp`,
+      `${IMG}/Grounded_2024/Grounded_2024_06.webp`,
+      `${IMG}/Grounded_2024/Grounded_2024_07.webp`,
+      `${IMG}/Grounded_2024/Grounded_2024_sticker_01.webp`,
+      `${IMG}/Grounded_2024/Grounded_2024_sticker_02.webp`,
       `${IMG}/Grounded_2024/Grounded_2024_comp.webm`,
       `${IMG}/Grounded_2024/Grounded_2024_story.webm`,
       `${IMG}/Grounded_2024/Grounded_2024_mehurcki.webm`,
@@ -333,15 +333,15 @@ const projects = {
     tools: ['Cinema 4D', 'Resolume', 'AfterEffects'],
     images: Array.from({ length: 25 }, (_, i) => {
       const names = [
-        'P1_S1_K01_0323.png','P1_S1_K02_0533.png','P1_S1_K02_i1_0460.png',
-        'P1_S2_K04_0110.png','P1_S2_K05_0238.png','P1_S3_K03_0282.png',
-        'P1_S3_K05_0054.png','P1_S3_K06_0150.png','P1_S3_K06_0329.png',
-        'P1_S3_K07_0377.png','P1_S3_K07_0406.png','P2_S02_K03_0118.png',
-        'P2_S02_K03_0529.png','P2_S1_K01_0227.png','P2_S1_K01_A&B_0046.png',
-        'P2_S1_K02_0806.png','P2_S1_K03_0182.png','P2_S1_K03_B_i1_0397.png',
-        'P2_S2_K01_0376.png','P2_S2_K01_0701.png','P2_S2_K01_0841.png',
-        'P2_S3_K03_0482.png','P2_S3_K03_B_02_0605.png','P2_S3_K05_0026.png',
-        'P2_S3_K05_0477.png'
+        'P1_S1_K01_0323.webp','P1_S1_K02_0533.webp','P1_S1_K02_i1_0460.webp',
+        'P1_S2_K04_0110.webp','P1_S2_K05_0238.webp','P1_S3_K03_0282.webp',
+        'P1_S3_K05_0054.webp','P1_S3_K06_0150.webp','P1_S3_K06_0329.webp',
+        'P1_S3_K07_0377.webp','P1_S3_K07_0406.webp','P2_S02_K03_0118.webp',
+        'P2_S02_K03_0529.webp','P2_S1_K01_0227.webp','P2_S1_K01_A&B_0046.webp',
+        'P2_S1_K02_0806.webp','P2_S1_K03_0182.webp','P2_S1_K03_B_i1_0397.webp',
+        'P2_S2_K01_0376.webp','P2_S2_K01_0701.webp','P2_S2_K01_0841.webp',
+        'P2_S3_K03_0482.webp','P2_S3_K03_B_02_0605.webp','P2_S3_K05_0026.webp',
+        'P2_S3_K05_0477.webp'
       ];
       return `${IMG}/Radenci_prostorska_projekcija/${names[i]}`;
     }),
@@ -370,18 +370,18 @@ const projects = {
       `${IMG}/Lab/lab_comp.webm`,
       `${IMG}/Lab/lab_impol.webm`,
       `${IMG}/Lab/lab_sandunes.webm`,
-      `${IMG}/Lab/Dream_01.png`,
-      `${IMG}/Lab/Dream_02.jpg`,
-      `${IMG}/Lab/Dream_03.jpg`,
-      `${IMG}/Lab/Dream_03-2.png`,
-      `${IMG}/Lab/Dream_04-2.png`,
+      `${IMG}/Lab/Dream_01.webp`,
+      `${IMG}/Lab/Dream_02.webp`,
+      `${IMG}/Lab/Dream_03.webp`,
+      `${IMG}/Lab/Dream_03-2.webp`,
+      `${IMG}/Lab/Dream_04-2.webp`,
       `${IMG}/Lab/lab_kristal.webm`,
       `${IMG}/Lab/lab_kristal_story.webm`,
-      `${IMG}/Lab/kristal0020.png`,
-      `${IMG}/Lab/kristal0025.png`,
-      `${IMG}/Lab/kristal0026.png`,
-      `${IMG}/Lab/qurtz0012.png`,
-      `${IMG}/Lab/qurtz0033.png`,
+      `${IMG}/Lab/kristal0020.webp`,
+      `${IMG}/Lab/kristal0025.webp`,
+      `${IMG}/Lab/kristal0026.webp`,
+      `${IMG}/Lab/qurtz0012.webp`,
+      `${IMG}/Lab/qurtz0033.webp`,
     ],
     layout: [
       { cols: 2, imgs: [0, 1] },
@@ -526,19 +526,17 @@ function renderGrid() {
 
     const media = document.createElement('img');
     media.alt = item.projectName;
-    media.loading = 'lazy';
     media.decoding = 'async';
+    media.dataset.src = thumbSrc;
     div.appendChild(media);
     media.addEventListener('load', () => {
       div.classList.remove('loading');
-      // Defer color extraction to idle time
       if (window.requestIdleCallback) {
         requestIdleCallback(() => extractColor(media, item, div));
       } else {
         setTimeout(() => extractColor(media, item, div), 100);
       }
     });
-    media.src = thumbSrc;
 
     if (isVideo) {
       let vid = null;
@@ -588,6 +586,21 @@ function extractColor(media, item, div) {
 
 renderGrid();
 
+// ========== TRUE LAZY LOAD ==========
+const lazyObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const img = entry.target.querySelector('img[data-src]');
+      if (img) {
+        img.src = img.dataset.src;
+        delete img.dataset.src;
+      }
+      lazyObserver.unobserve(entry.target);
+    }
+  });
+}, { rootMargin: '200px' });
+
+document.querySelectorAll('.grid-item').forEach(item => lazyObserver.observe(item));
 
 // ========== FILTERS ==========
 let activeFilters = { project: null, year: null, color: null, type: null };
@@ -678,6 +691,10 @@ function applyFilters() {
     }
   });
 
+  // Show/hide no results
+  const visibleCount = gridEl.querySelectorAll('.grid-item:not(.hidden)').length;
+  document.getElementById('noResults').classList.toggle('visible', visibleCount === 0);
+
   // Update toggle button states (skip nav)
   document.querySelectorAll('.bar-toggle').forEach(btn => {
     const menu = btn.dataset.menu;
@@ -746,69 +763,117 @@ const overlay = document.getElementById('overlay');
 const overlayInner = document.getElementById('overlayInner');
 const overlayClose = document.getElementById('overlayClose');
 
+const loremPool = [
+  'The creative process began with extensive research into the brand\'s visual language, exploring how motion and form could communicate the core message.',
+  'Every detail was carefully considered — from color grading to timing — ensuring each frame contributed to a cohesive narrative.',
+  'The project pushed the boundaries of what\'s possible with real-time rendering, combining procedural techniques with hand-crafted animation.',
+  'Working closely with the client, we iterated through multiple visual directions before arriving at a concept that felt both fresh and authentic.',
+  'Typography and motion were treated as equal partners in the design, each reinforcing the other to create a unified visual experience.',
+  'The final deliverables included a full suite of animated assets optimized for social media, web, and large-format display.',
+];
+
+function mediaTag(src, alt) {
+  if (src.endsWith('.webm') || src.endsWith('.mp4')) {
+    return `<video src="${src}" autoplay muted loop playsinline></video>`;
+  }
+  return `<img src="${src}" alt="${alt || ''}" loading="lazy" />`;
+}
+
 function openProject(projId) {
   const proj = projects[projId];
   if (!proj) return;
 
-  let html = `<h1 class="proj-title">${proj.name}</h1>`;
-  html += '<div class="proj-meta">';
-  if (proj.client) html += `<div><strong>Client</strong>${proj.client}</div>`;
-  if (proj.collab) html += `<div><strong>Collaboration</strong>${proj.collab}</div>`;
-  if (proj.year) html += `<div><strong>Year</strong>${proj.year}</div>`;
-  if (proj.location) html += `<div><strong>Location</strong>${proj.location}</div>`;
-  if (proj.theme) html += `<div><strong>Theme</strong>${proj.theme}</div>`;
-  if (proj.type) html += `<div><strong>Type</strong>${proj.type}</div>`;
-  if (proj.award) html += `<div><strong>Award</strong>${proj.award}</div>`;
-  html += '</div>';
+  const isLab = projId === 'lab';
 
-  if (proj.desc) {
-    for (const p of proj.desc) {
-      html += `<p class="proj-desc">${p}</p>`;
+  if (isLab) {
+    // Lab keeps simple gallery layout
+    let html = `<div class="proj-hero-dark"><div class="proj-hero-content">`;
+    html += `<h1 class="proj-title">${proj.name}</h1>`;
+    if (proj.desc) proj.desc.forEach(p => html += `<p class="proj-desc">${p}</p>`);
+    if (proj.tools) {
+      html += '<div class="proj-tools">';
+      proj.tools.forEach(t => html += `<span class="proj-tag">${t}</span>`);
+      html += '</div>';
     }
-  }
+    html += '</div></div>';
+    html += '<div class="proj-white-sheet"><div class="proj-gallery">';
+    for (const row of proj.layout) {
+      html += `<div class="gallery-row row-${row.cols}">`;
+      for (const idx of row.imgs) {
+        if (proj.images[idx]) html += mediaTag(proj.images[idx], proj.name);
+      }
+      html += '</div>';
+    }
+    html += '</div></div>';
+    overlayInner.innerHTML = html;
+  } else {
+    // Hero section — dark with main image
+    const heroSrc = proj.images[0];
+    let html = `<div class="proj-hero-dark">`;
+    html += `<div class="proj-hero-media">${mediaTag(heroSrc, proj.name)}</div>`;
+    html += `<div class="proj-hero-content">`;
+    html += `<h1 class="proj-title">${proj.name}</h1>`;
+    html += '<div class="proj-meta">';
+    if (proj.client) html += `<div><strong>Client</strong>${proj.client}</div>`;
+    if (proj.collab) html += `<div><strong>Collaboration</strong>${proj.collab}</div>`;
+    if (proj.year) html += `<div><strong>Year</strong>${proj.year}</div>`;
+    if (proj.location) html += `<div><strong>Location</strong>${proj.location}</div>`;
+    if (proj.theme) html += `<div><strong>Theme</strong>${proj.theme}</div>`;
+    if (proj.type) html += `<div><strong>Type</strong>${proj.type}</div>`;
+    if (proj.award) html += `<div><strong>Award</strong>${proj.award}</div>`;
+    html += '</div></div></div>';
 
-  if (proj.link) {
-    html += `<p class="proj-desc"><a href="${proj.link}" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">${proj.link} ↗</a></p>`;
-  }
+    // White sheet — alternating image/text sections
+    html += '<div class="proj-white-sheet">';
 
-  if (proj.tools) {
-    html += '<div class="proj-tools">';
-    for (const t of proj.tools) html += `<span class="proj-tag">${t}</span>`;
+    // Intro text block
+    const descTexts = proj.desc && proj.desc.length > 0 ? proj.desc : [loremPool[0], loremPool[1]];
+    html += '<div class="proj-intro">';
+    descTexts.forEach(p => html += `<p>${p}</p>`);
+    if (proj.link) {
+      html += `<p><a href="${proj.link}" target="_blank" rel="noopener noreferrer">${proj.link} ↗</a></p>`;
+    }
+    if (proj.tools) {
+      html += '<div class="proj-tools-white">';
+      proj.tools.forEach(t => html += `<span>${t}</span>`);
+      html += '</div>';
+    }
     html += '</div>';
-  }
 
-  html += '<div class="proj-gallery">';
-  for (const row of proj.layout) {
-    html += `<div class="gallery-row row-${row.cols}">`;
-    for (const idx of row.imgs) {
-      if (proj.images[idx]) {
-        const src = proj.images[idx];
-        if (src.endsWith('.webm') || src.endsWith('.mp4')) {
-          html += `<video src="${src}" autoplay muted loop playsinline style="width:100%;border-radius:4px;display:block;"></video>`;
-        } else {
-          html += `<img src="${src}" alt="${proj.name}" loading="lazy" />`;
-        }
+    // Alternating image-text rows (skip first image, used as hero)
+    const remaining = proj.images.slice(1);
+    let loremIdx = 0;
+    for (let i = 0; i < remaining.length; i++) {
+      const src = remaining[i];
+      const isLeft = i % 2 === 0;
+      const text = proj.desc && proj.desc[i + 1]
+        ? proj.desc[i + 1]
+        : loremPool[loremIdx % loremPool.length];
+      loremIdx++;
+
+      if (i < remaining.length - 1 && remaining.length > 2) {
+        // Alternating layout
+        html += `<div class="proj-row ${isLeft ? 'img-left' : 'img-right'}">`;
+        html += `<div class="proj-row-media">${mediaTag(src, proj.name)}</div>`;
+        html += `<div class="proj-row-text"><p>${text}</p></div>`;
+        html += '</div>';
+      } else {
+        // Full-width for last image or small sets
+        html += `<div class="proj-row-full">${mediaTag(src, proj.name)}</div>`;
       }
     }
+
     html += '</div>';
+    overlayInner.innerHTML = html;
   }
-  html += '</div>';
 
-  overlayInner.innerHTML = html;
-
-  // Mark images/videos loaded to remove skeleton
-  overlayInner.querySelectorAll('img').forEach(img => {
-    if (img.complete) { img.classList.add('loaded'); }
-    else { img.addEventListener('load', () => img.classList.add('loaded')); }
-  });
-  overlayInner.querySelectorAll('video').forEach(vid => {
-    vid.addEventListener('loadeddata', () => vid.classList.add('loaded'));
-  });
-
-  // Wire up lightbox on gallery images
+  // Wire up lightbox on all clickable media
   lightboxItems = proj.images;
-  overlayInner.querySelectorAll('.proj-gallery img, .proj-gallery video').forEach((el, i) => {
-    el.addEventListener('click', () => openLightbox(i));
+  const allMedia = overlayInner.querySelectorAll('.proj-row-media img, .proj-row-media video, .proj-row-full img, .proj-row-full video, .proj-gallery img, .proj-gallery video');
+  allMedia.forEach((el) => {
+    const src = el.src;
+    const idx = proj.images.indexOf(src);
+    el.addEventListener('click', () => openLightbox(idx >= 0 ? idx : 0));
   });
 
   overlay.classList.add('open');
