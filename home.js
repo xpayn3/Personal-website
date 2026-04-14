@@ -263,7 +263,7 @@ projects.forEach((proj, idx) => {
   // Click to go to project
   imageLayer.style.cursor = 'pointer';
   imageLayer.addEventListener('click', () => {
-    window.location.href = `index.html#project=${proj.id}`;
+    window.location.href = `grid.html#project=${proj.id}`;
   });
 
   block.appendChild(imageLayer);
@@ -281,7 +281,7 @@ cta.innerHTML = `
     <span class="cta-line cta-line-2">full</span>
     <span class="cta-line cta-line-3">collection</span>
   </div>
-  <a href="index.html" class="cta-link">View all projects &rarr;</a>
+  <a href="grid.html" class="cta-link">View all projects &rarr;</a>
 `;
 container.appendChild(cta);
 
