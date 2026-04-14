@@ -143,8 +143,9 @@ const projects = [
   },
 ];
 
-// Sort by year, newest first
+// Sort by year, newest first — show only 5
 projects.sort((a, b) => b.year - a.year);
+projects.splice(5);
 
 
 function isVideo(src) {
@@ -253,6 +254,30 @@ projects.forEach((proj, idx) => {
 
 barCounter.textContent = `1 / ${projects.length}`;
 
+// ========== END CTA ==========
+const cta = document.createElement('div');
+cta.className = 'home-cta';
+cta.innerHTML = `
+  <div class="cta-text">
+    <span class="cta-line cta-line-1">See the</span>
+    <span class="cta-line cta-line-2">full</span>
+    <span class="cta-line cta-line-3">collection</span>
+  </div>
+  <a href="index.html" class="cta-link">View all projects &rarr;</a>
+`;
+container.appendChild(cta);
+
+// ========== CTA SCROLL ANIMATION ==========
+const ctaEl = document.querySelector('.home-cta');
+if (ctaEl) {
+  const ctaObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      ctaEl.classList.toggle('in-view', entry.isIntersecting);
+    });
+  }, { root: container, threshold: 0.3 });
+  ctaObs.observe(ctaEl);
+}
+
 // ========== SMOOTH SCROLL PHYSICS ==========
 let smoothScroll = container.scrollTop;
 let targetScroll = container.scrollTop;
@@ -353,8 +378,9 @@ if (wmEl) {
     letters.push(span);
   }
 
-  const MAX_ROT = 45;
+  const MAX_ROT = 35;
   let lastScroll = 0;
+  let resetTimer = null;
 
   container.addEventListener('scroll', () => {
     const scrollY = container.scrollTop;
@@ -362,17 +388,34 @@ if (wmEl) {
     lastScroll = scrollY;
 
     letters.forEach((letter, i) => {
-      const offset = i * 0.15;
-      const raw = delta * -(1.5 + offset);
+      const offset = i * 0.12;
+      const raw = delta * -(1.2 + offset);
       const rot = Math.max(-MAX_ROT, Math.min(MAX_ROT, raw));
+      letter.style.transition = 'none';
       letter.style.transform = `rotate(${rot}deg)`;
     });
 
-    setTimeout(() => {
+    clearTimeout(resetTimer);
+    resetTimer = setTimeout(() => {
       letters.forEach(letter => {
+        letter.style.transition = 'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)';
         letter.style.transform = 'rotate(0deg)';
       });
-    }, 150);
+    }, 80);
   }, { passive: true });
 }
 
+// ========== HIDE NAVBAR ON SCROLL DOWN ==========
+let navLastScroll = 0;
+const navBar = document.querySelector('.bottom-bar');
+if (navBar) {
+  container.addEventListener('scroll', () => {
+    const scrollY = container.scrollTop;
+    if (scrollY > navLastScroll && scrollY > 100) {
+      navBar.classList.add('bar-hidden');
+    } else {
+      navBar.classList.remove('bar-hidden');
+    }
+    navLastScroll = scrollY;
+  }, { passive: true });
+}

@@ -243,13 +243,13 @@ body {
   align-items: center;
   gap: 6px;
   padding: 10px 16px;
-  background: rgba(20,20,20,0.6);
-  backdrop-filter: blur(24px) saturate(1.6);
-  -webkit-backdrop-filter: blur(24px) saturate(1.6);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid rgba(0,0,0,0.06);
   border-radius: 999px;
   z-index: 100;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
 }
 
 .bar-section { position: relative; }
@@ -257,7 +257,7 @@ body {
 .bar-toggle {
   background: none;
   border: none;
-  color: #fff;
+  color: #222;
   font-family: 'Inter', sans-serif;
   font-size: 0.9rem;
   padding: 12px 22px;
@@ -268,10 +268,10 @@ body {
   align-items: center;
 }
 
-.bar-toggle:hover { background: rgba(255,255,255,0.1); }
+.bar-toggle:hover { background: rgba(0,0,0,0.05); }
 
 .bar-social {
-  color: #fff;
+  color: #222;
   text-decoration: none;
   font-family: 'Inter', sans-serif;
   font-size: 0.9rem;
@@ -282,18 +282,19 @@ body {
 }
 
 .bar-social:hover {
-  background: rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.05);
 }
 
 .bar-social.active {
-  background: rgba(255,255,255,0.15);
+  background: rgba(0,0,0,0.08);
+  color: #111;
   font-weight: 600;
 }
 
 .bar-divider {
   width: 1px;
   height: 24px;
-  background: rgba(255,255,255,0.15);
+  background: rgba(0,0,0,0.1);
   margin: 0 4px;
   flex-shrink: 0;
 }

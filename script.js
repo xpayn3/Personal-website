@@ -763,7 +763,8 @@ function applyFilters() {
   if (activeFilters.project) {
     const proj = projects[activeFilters.project];
     const name = proj.name;
-    projToggleText.textContent = name.length > 18 ? name.slice(0, 18) + '...' : name;
+    const maxLen = isMobile ? 10 : 18;
+    projToggleText.textContent = name.length > maxLen ? name.slice(0, maxLen) + '...' : name;
     const firstSrc = proj.images[0];
     const isVid = firstSrc.endsWith('.webm') || firstSrc.endsWith('.mp4');
     projToggleThumb.src = isVid ? firstSrc.replace(/\.(webm|mp4)$/, '_thumb.webp') : firstSrc;
@@ -819,6 +820,7 @@ document.getElementById('resetFilters').addEventListener('click', (e) => {
   }, 250);
 });
 
+
 // ========== DROPDOWN TOGGLE ==========
 function closeAllDropdowns() {
   document.querySelectorAll('.bar-dropdown').forEach(d => d.classList.remove('open'));
@@ -855,7 +857,7 @@ document.addEventListener('click', (e) => {
 // ========== DROPDOWN MOUSE TILT ==========
 document.querySelectorAll('.bar-dropdown').forEach(dropdown => {
   dropdown.addEventListener('mousemove', (e) => {
-    if (!dropdown.classList.contains('open')) return;
+    if (!dropdown.classList.contains('open') || isMobile) return;
     const rect = dropdown.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
@@ -864,7 +866,7 @@ document.querySelectorAll('.bar-dropdown').forEach(dropdown => {
     dropdown.style.transform = `translateX(-50%) scale(1) translateY(0) perspective(600px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
   });
   dropdown.addEventListener('mouseleave', () => {
-    if (!dropdown.classList.contains('open')) return;
+    if (!dropdown.classList.contains('open') || isMobile) return;
     dropdown.style.transform = '';
   });
 });
@@ -1095,6 +1097,7 @@ function openMobileProjectList() {
     const proj = projects[id];
     const item = document.createElement('div');
     item.className = 'mobile-proj-item';
+    item.dataset.projId = id;
     if (activeFilters.project === id) item.classList.add('active');
 
     const inner = document.createElement('div');
@@ -1152,6 +1155,9 @@ function openMobileProjectList() {
   });
 }
 
+const mobileProjBg = document.getElementById('mobileProjBg');
+let currentBgProjId = null;
+
 function updateCenterItem() {
   const items = mobileProjScroll.querySelectorAll('.mobile-proj-item');
   const center = window.innerHeight / 2;
@@ -1169,7 +1175,23 @@ function updateCenterItem() {
     }
   });
 
-  if (closest) closest.classList.add('center');
+  if (closest) {
+    closest.classList.add('center');
+    const projId = closest.dataset.projId;
+    if (projId && projId !== currentBgProjId && projects[projId]) {
+      currentBgProjId = projId;
+      const proj = projects[projId];
+      const firstSrc = proj.images[0];
+      const isVid = firstSrc.endsWith('.webm') || firstSrc.endsWith('.mp4');
+      const src = isVid ? firstSrc.replace(/\.(webm|mp4)$/, '_thumb.webp') : firstSrc;
+      const mobileSrc = isMobile ? src.replace('Images/', 'Images/mobile/') : src;
+      mobileProjBg.innerHTML = `<img src="${mobileSrc}" alt="" />`;
+      mobileProjBg.classList.add('visible');
+    } else if (!projId) {
+      mobileProjBg.classList.remove('visible');
+      currentBgProjId = null;
+    }
+  }
 }
 
 function closeMobileList() {
@@ -1272,7 +1294,7 @@ function updateSlider() {
 
   // Fill dots and track
   const pct = ((val - sliderMin) / (sliderMax - sliderMin)) * 100;
-  gridSlider.style.background = `linear-gradient(to right, #fff ${pct}%, rgba(255,255,255,0.2) ${pct}%)`;
+  gridSlider.style.background = `linear-gradient(to right, #222 ${pct}%, rgba(0,0,0,0.1) ${pct}%)`;
 
   const dots = sliderDotsEl.querySelectorAll('.slider-dot');
   dots.forEach((dot, i) => {
@@ -1300,7 +1322,7 @@ if (mobileSlider && mobileDotsEl) {
     const val = parseInt(mobileSlider.value);
     gridEl.style.gridTemplateColumns = `repeat(${val}, 1fr)`;
     const pct = ((val - mMin) / (mMax - mMin)) * 100;
-    mobileSlider.style.background = `linear-gradient(to right, #fff ${pct}%, rgba(255,255,255,0.2) ${pct}%)`;
+    mobileSlider.style.background = `linear-gradient(to right, #222 ${pct}%, rgba(0,0,0,0.1) ${pct}%)`;
     mobileDotsEl.querySelectorAll('.slider-dot').forEach((dot, i) => {
       dot.classList.toggle('filled', i <= val - mMin);
     });
@@ -1363,37 +1385,45 @@ if (wmEl) {
     letters.push(span);
   }
 
-  const MAX_ROT = 45;
+  const MAX_ROT = 35;
   let lastScroll = 0;
-  let wmTicking = false;
+  let resetTimer = null;
 
   window.addEventListener('scroll', () => {
-    if (!wmTicking) {
-      requestAnimationFrame(() => {
-        const scrollY = window.scrollY;
-        const delta = scrollY - lastScroll;
-        lastScroll = scrollY;
+    const scrollY = window.scrollY;
+    const delta = scrollY - lastScroll;
+    lastScroll = scrollY;
 
-        letters.forEach((letter, i) => {
-          const offset = i * 0.15;
-          const raw = delta * -(1.5 + offset);
-          const rot = Math.max(-MAX_ROT, Math.min(MAX_ROT, raw));
-          letter.style.transform = `rotate(${rot}deg)`;
-        });
+    letters.forEach((letter, i) => {
+      const offset = i * 0.12;
+      const raw = delta * -(1.2 + offset);
+      const rot = Math.max(-MAX_ROT, Math.min(MAX_ROT, raw));
+      letter.style.transition = 'none';
+      letter.style.transform = `rotate(${rot}deg)`;
+    });
 
-        // Spring back to 0
-        setTimeout(() => {
-          letters.forEach(letter => {
-            letter.style.transform = 'rotate(0deg)';
-          });
-        }, 150);
-
-        wmTicking = false;
+    clearTimeout(resetTimer);
+    resetTimer = setTimeout(() => {
+      letters.forEach(letter => {
+        letter.style.transition = 'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)';
+        letter.style.transform = 'rotate(0deg)';
       });
-      wmTicking = true;
-    }
+    }, 80);
   }, { passive: true });
 }
+
+// ========== HIDE NAVBAR ON SCROLL DOWN ==========
+let navLastScroll = 0;
+const navBar = document.getElementById('bottomBar');
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY;
+  if (scrollY > navLastScroll && scrollY > 100) {
+    navBar.classList.add('bar-hidden');
+  } else {
+    navBar.classList.remove('bar-hidden');
+  }
+  navLastScroll = scrollY;
+}, { passive: true });
 
 // ========== AUTO-OPEN FROM HASH ==========
 const hashMatch = location.hash.match(/project=(\w+)/);
