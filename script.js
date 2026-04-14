@@ -1412,18 +1412,23 @@ if (wmEl) {
   }, { passive: true });
 }
 
-// ========== HIDE NAVBAR ON SCROLL DOWN ==========
+// ========== HIDE NAVBAR ON SCROLL DOWN (mobile only) ==========
 let navLastScroll = 0;
 const navBar = document.getElementById('bottomBar');
-window.addEventListener('scroll', () => {
-  const scrollY = window.scrollY;
-  if (scrollY > navLastScroll && scrollY > 100) {
-    navBar.classList.add('bar-hidden');
-  } else {
-    navBar.classList.remove('bar-hidden');
-  }
-  navLastScroll = scrollY;
-}, { passive: true });
+if (isMobile && navBar) {
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    const pill = document.getElementById('mobileSliderPill');
+    if (scrollY > navLastScroll && scrollY > 100) {
+      navBar.classList.add('bar-hidden');
+      if (pill) pill.classList.add('pill-hidden');
+    } else {
+      navBar.classList.remove('bar-hidden');
+      if (pill) pill.classList.remove('pill-hidden');
+    }
+    navLastScroll = scrollY;
+  }, { passive: true });
+}
 
 // ========== AUTO-OPEN FROM HASH ==========
 const hashMatch = location.hash.match(/project=(\w+)/);

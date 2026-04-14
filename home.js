@@ -152,7 +152,24 @@ function isVideo(src) {
   return src.endsWith('.webm') || src.endsWith('.mp4');
 }
 
+const isMobileHome = window.innerWidth < 768;
+
+function mobileSrc(src) {
+  if (!isMobileHome) return src;
+  if (isVideo(src)) return src.replace(/\.(webm|mp4)$/, '_thumb.webp');
+  return src.replace('Images/', 'Images/mobile/');
+}
+
 function createMedia(src) {
+  const msrc = mobileSrc(src);
+  // On mobile use static images instead of videos
+  if (isVideo(src) && isMobileHome) {
+    const img = document.createElement('img');
+    img.src = msrc;
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    return img;
+  }
   if (isVideo(src)) {
     const v = document.createElement('video');
     v.src = src;
@@ -163,8 +180,9 @@ function createMedia(src) {
     return v;
   }
   const img = document.createElement('img');
-  img.src = src;
+  img.src = msrc;
   img.loading = 'lazy';
+  img.decoding = 'async';
   return img;
 }
 
