@@ -64,7 +64,7 @@ body {
 }
 
 .hero-dot {
-  width: 24px;
+  width: 16px;
   height: 2px;
   border-radius: 1px;
   background: rgba(255,255,255,0.25);
@@ -74,7 +74,7 @@ body {
 
 .hero-dot.active {
   background: #fff;
-  width: 40px;
+  width: 28px;
 }
 
 .hero-scroll-hint {

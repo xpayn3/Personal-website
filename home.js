@@ -193,7 +193,7 @@ heroSrcs.forEach((item, i) => {
     v.loop = false;
     v.autoplay = i === 0;
     v.playsInline = true;
-    v.preload = i <= 1 ? 'auto' : 'metadata';
+    v.preload = 'auto';
     slide.appendChild(v);
   } else {
     const img = document.createElement('img');
@@ -216,17 +216,22 @@ heroSrcs.forEach((item, i) => {
 });
 
 function goToHeroSlide(i) {
+  // Start playing next video BEFORE transitioning
+  const nextSlide = heroSlides.children[i];
+  const nextVid = nextSlide && nextSlide.querySelector('video');
+  if (nextVid) {
+    nextVid.currentTime = 0;
+    nextVid.play().catch(() => {});
+  }
+
+  // Pause old video
+  const oldSlide = heroSlides.children[heroIdx];
+  const oldVid = oldSlide && oldSlide.querySelector('video');
+  if (oldVid && heroIdx !== i) oldVid.pause();
+
   heroIdx = i;
   heroSlides.style.transform = `translateX(-${i * 100}vw)`;
   heroDots.querySelectorAll('.hero-dot').forEach((d, di) => d.classList.toggle('active', di === i));
-
-  // Restart current video from beginning
-  const currentSlide = heroSlides.children[i];
-  const vid = currentSlide && currentSlide.querySelector('video');
-  if (vid) {
-    vid.currentTime = 0;
-    vid.play().catch(() => {});
-  }
   watchHeroVideoEnd();
 }
 
