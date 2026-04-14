@@ -3,6 +3,7 @@ const IMG = 'Images';
 
 const projects = {
   cestel: {
+    color: 'blue',
     name: 'CESTEL Animation',
     year: 2023,
     client: 'Cestel',
@@ -43,6 +44,7 @@ const projects = {
     ]
   },
   grounded2022: {
+    color: 'orange',
     name: 'Festival Grounded 2022',
     year: 2022,
     client: 'Pritličje',
@@ -67,6 +69,7 @@ const projects = {
     ]
   },
   grounded2021: {
+    color: 'purple',
     name: 'Festival Grounded 2021: The State',
     year: 2021,
     client: 'Pritličje',
@@ -92,6 +95,7 @@ const projects = {
     ]
   },
   taf: {
+    color: 'red',
     name: "The Athlete's Foot",
     year: 2021,
     client: "The Athlete's Foot",
@@ -120,6 +124,7 @@ const projects = {
     ]
   },
   grounded2020: {
+    color: 'cyan',
     name: 'Festival Grounded: Truth',
     year: 2020,
     client: 'Pritličje',
@@ -149,6 +154,7 @@ const projects = {
     ]
   },
   grounded2018: {
+    color: 'pink',
     name: 'Festival Grounded 2018: Intimacy in the age of AI',
     year: 2018,
     client: 'Pritličje',
@@ -168,6 +174,7 @@ const projects = {
     ]
   },
   tamtam: {
+    color: 'green',
     name: 'Mesta pešcem — TamTam',
     year: 2018,
     award: 'Mestni plakat leta — TamTam 2018',
@@ -181,6 +188,7 @@ const projects = {
     ]
   },
   ment: {
+    color: 'yellow',
     name: 'AppointMENT 4.0',
     year: 2019,
     desc: ['Visual identity design for the AppointMENT 4.0 event.'],
@@ -193,6 +201,7 @@ const projects = {
     ]
   },
   halloween: {
+    color: 'black',
     name: "Halloween — The Athlete's Foot",
     year: 2021,
     client: "The Athlete's Foot",
@@ -220,6 +229,7 @@ const projects = {
     ]
   },
   blackfriday: {
+    color: 'black',
     name: "Black Friday — The Athlete's Foot",
     year: 2021,
     client: "The Athlete's Foot",
@@ -237,6 +247,7 @@ const projects = {
     ]
   },
   largavida: {
+    color: 'gray',
     name: 'LargaVida Limited Edition',
     year: 2022,
     desc: ['Design for LargaVida limited edition product line.'],
@@ -255,6 +266,7 @@ const projects = {
     ]
   },
   newedge: {
+    color: 'white',
     name: 'NewEdge Magazine',
     year: 2020,
     desc: ['Editorial design for NewEdge magazine.'],
@@ -274,6 +286,7 @@ const projects = {
     ]
   },
   grounded2023: {
+    color: 'green',
     name: 'Festival Grounded 2023',
     year: 2023,
     client: 'Pritličje',
@@ -297,6 +310,7 @@ const projects = {
     ]
   },
   grounded2024: {
+    color: 'red',
     name: 'Festival Grounded 2024',
     year: 2024,
     client: 'Pritličje',
@@ -327,6 +341,7 @@ const projects = {
     ]
   },
   radenci: {
+    color: 'blue',
     name: 'Radenci — Prostorska Projekcija',
     year: 2022,
     desc: ['Spatial projection mapping installation in Radenci.'],
@@ -359,6 +374,7 @@ const projects = {
     ]
   },
   lab: {
+    color: 'gray',
     name: 'Lab — Experiments',
     desc: ['Personal experiments, 3D explorations, and creative coding projects.'],
     tools: ['Cinema 4D', 'Houdini', 'Redshift'],
@@ -405,6 +421,7 @@ const projects = {
     ]
   },
   poster: {
+    color: 'orange',
     name: 'Poster Design',
     year: 2020,
     desc: ['Various poster design work.'],
@@ -417,73 +434,6 @@ const projects = {
     ]
   }
 };
-
-// ========== DOMINANT COLOR EXTRACTION ==========
-function getDominantColor(img) {
-  const canvas = document.createElement('canvas');
-  const size = 50; // small sample for speed
-  canvas.width = size;
-  canvas.height = size;
-  const ctx = canvas.getContext('2d', { willReadFrequently: true });
-  ctx.drawImage(img, 0, 0, size, size);
-  const data = ctx.getImageData(0, 0, size, size).data;
-
-  // Bucket average — skip near-black/near-white pixels for better color signal
-  let rSum = 0, gSum = 0, bSum = 0, count = 0;
-  for (let i = 0; i < data.length; i += 16) { // sample every 4th pixel
-    const r = data[i], g = data[i+1], b = data[i+2];
-    const brightness = (r + g + b) / 3;
-    if (brightness > 20 && brightness < 235) {
-      rSum += r; gSum += g; bSum += b; count++;
-    }
-  }
-
-  if (count === 0) {
-    // All pixels were near-black or near-white — check which
-    let totalBright = 0, total = 0;
-    for (let i = 0; i < data.length; i += 16) {
-      totalBright += (data[i] + data[i+1] + data[i+2]) / 3;
-      total++;
-    }
-    return (totalBright / total) < 128 ? 'black' : 'white';
-  }
-
-  const r = rSum / count, g = gSum / count, b = bSum / count;
-  return classifyColor(r, g, b);
-}
-
-function classifyColor(r, g, b) {
-  // Convert to HSL for easier classification
-  const rf = r / 255, gf = g / 255, bf = b / 255;
-  const max = Math.max(rf, gf, bf), min = Math.min(rf, gf, bf);
-  const l = (max + min) / 2;
-  const d = max - min;
-  const s = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
-
-  let h = 0;
-  if (d !== 0) {
-    if (max === rf) h = ((gf - bf) / d + (gf < bf ? 6 : 0)) * 60;
-    else if (max === gf) h = ((bf - rf) / d + 2) * 60;
-    else h = ((rf - gf) / d + 4) * 60;
-  }
-
-  // Low saturation → achromatic
-  if (s < 0.12) {
-    if (l < 0.2) return 'black';
-    if (l > 0.8) return 'white';
-    return 'gray';
-  }
-
-  // Classify by hue
-  if (h < 15 || h >= 345) return 'red';
-  if (h < 40) return 'orange';
-  if (h < 70) return 'yellow';
-  if (h < 160) return 'green';
-  if (h < 200) return 'cyan';
-  if (h < 260) return 'blue';
-  if (h < 310) return 'purple';
-  return 'pink';
-}
 
 const COLOR_HEX = {
   red: '#e74c3c', orange: '#e67e22', yellow: '#f1c40f', green: '#2ecc71',
@@ -501,7 +451,7 @@ for (const [projId, proj] of Object.entries(projects)) {
       project: projId,
       projectName: proj.name,
       year: proj.year,
-      color: 'gray',
+      color: proj.color || 'gray',
     });
   }
 }
@@ -550,11 +500,6 @@ function renderGrid() {
     div.appendChild(media);
     media.addEventListener('load', () => {
       div.classList.remove('loading');
-      if (window.requestIdleCallback) {
-        requestIdleCallback(() => extractColor(media, item, div));
-      } else {
-        setTimeout(() => extractColor(media, item, div), 100);
-      }
     });
 
     // Video hover — desktop only
@@ -596,16 +541,6 @@ function renderGrid() {
 }
 
 const isMobile = window.innerWidth < 768;
-
-function extractColor(media, item, div) {
-  if (isMobile) return; // skip heavy canvas work on mobile
-  try {
-    const color = getDominantColor(media);
-    item.color = color;
-    div.dataset.color = color;
-  } catch (e) {}
-  rebuildColorDropdown();
-}
 
 renderGrid();
 
@@ -654,21 +589,13 @@ function buildDropdowns() {
   }
 
 
-  // Color dropdown built dynamically after images load
-  rebuildColorDropdown();
 }
 
-let colorRebuildTimer = null;
-function rebuildColorDropdown() {
-  clearTimeout(colorRebuildTimer);
-  colorRebuildTimer = setTimeout(_rebuildColorDropdown, 300);
-}
-
-function _rebuildColorDropdown() {
+// Build color dropdown statically from project data
+function buildColorDropdown() {
   const colorMenu = document.getElementById('menu-color');
-  colorMenu.innerHTML = '';
   colorMenu.classList.add('color-grid');
-  const colors = [...new Set(gridItems.map(i => i.color))].sort();
+  const colors = [...new Set(Object.values(projects).map(p => p.color).filter(Boolean))].sort();
   for (const name of colors) {
     const hex = COLOR_HEX[name] || '#888';
     const btn = document.createElement('button');
@@ -676,13 +603,13 @@ function _rebuildColorDropdown() {
     btn.dataset.value = name;
     btn.style.background = hex;
     btn.title = name;
-    if (activeFilters.color === name) btn.classList.add('active');
     btn.addEventListener('click', () => setFilter('color', name));
     colorMenu.appendChild(btn);
   }
 }
 
 buildDropdowns();
+buildColorDropdown();
 
 // Type filter buttons
 document.getElementById('filterImages').addEventListener('click', (e) => { e.stopPropagation(); setFilter('type', 'image'); });
@@ -1124,3 +1051,30 @@ function updateSlider() {
 
 gridSlider.addEventListener('input', updateSlider);
 updateSlider();
+
+// ========== MOBILE TOP SLIDER ==========
+const mobileSlider = document.getElementById('mobileGridSlider');
+const mobileDotsEl = document.getElementById('mobileSliderDots');
+if (mobileSlider && mobileDotsEl) {
+  const mMin = parseInt(mobileSlider.min);
+  const mMax = parseInt(mobileSlider.max);
+  for (let i = 0; i <= mMax - mMin; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'slider-dot';
+    mobileDotsEl.appendChild(dot);
+  }
+  mobileSlider.value = _mobile ? 3 : 5;
+
+  function updateMobileSlider() {
+    const val = parseInt(mobileSlider.value);
+    gridEl.style.gridTemplateColumns = `repeat(${val}, 1fr)`;
+    const pct = ((val - mMin) / (mMax - mMin)) * 100;
+    mobileSlider.style.background = `linear-gradient(to right, #fff ${pct}%, rgba(255,255,255,0.2) ${pct}%)`;
+    mobileDotsEl.querySelectorAll('.slider-dot').forEach((dot, i) => {
+      dot.classList.toggle('filled', i <= val - mMin);
+    });
+  }
+
+  mobileSlider.addEventListener('input', updateMobileSlider);
+  if (_mobile) updateMobileSlider();
+}
