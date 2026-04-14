@@ -664,9 +664,11 @@ function renderGrid() {
 
     div.addEventListener('click', () => {
       if (gridEl.classList.contains('list-view')) {
+        lbIsLab = false;
         lightboxItems = [item.src];
         openLightbox(0);
       } else if (item.project === 'lab') {
+        lbIsLab = true;
         const labImages = projects.lab.images;
         lightboxItems = labImages;
         const idx = labImages.indexOf(item.src);
@@ -1118,7 +1120,7 @@ function openProject(projId) {
   allMedia.forEach((el) => {
     const src = el.src || el.dataset.src;
     const idx = proj.images.indexOf(src);
-    el.addEventListener('click', () => openLightbox(idx >= 0 ? idx : 0));
+    el.addEventListener('click', () => { lbIsLab = (projId === 'lab'); openLightbox(idx >= 0 ? idx : 0); });
   });
 
 
@@ -1285,6 +1287,7 @@ let lightboxItems = [];
 let lightboxIndex = 0;
 let lbFrameRAF = null;
 let lbDirection = 'init';
+let lbIsLab = false;
 
 function drawHistogram(source, canvas) {
   try {
@@ -1413,16 +1416,27 @@ function renderLightbox() {
   }
   lightboxCounter.textContent = `${lightboxIndex + 1} / ${lightboxItems.length}`;
 
-  // File info
+  updateStripActive();
+
+  // File info + histogram — only for Lab
   const info = document.getElementById('lightboxInfo');
+  const histCanvas = document.getElementById('lightboxHistogram');
+  if (lbFrameRAF) cancelAnimationFrame(lbFrameRAF);
+
+  if (!lbIsLab) {
+    info.style.display = 'none';
+    histCanvas.style.display = 'none';
+    return;
+  }
+
+  info.style.display = '';
+  histCanvas.style.display = '';
   const filename = src.split('/').pop();
   const ext = filename.split('.').pop().toUpperCase();
   const folder = src.split('/').slice(-2, -1)[0] || '';
   const isVidFile = ext === 'WEBM' || ext === 'MP4';
   info.innerHTML = `${filename}<br>${ext} ${isVidFile ? '· VIDEO' : '· IMAGE'}<br>${folder}`;
 
-  // Frame counter for videos
-  if (lbFrameRAF) cancelAnimationFrame(lbFrameRAF);
   if (isVidFile) {
     const vid = lightboxContent.querySelector('video');
     if (vid) {
@@ -1438,8 +1452,6 @@ function renderLightbox() {
     }
   }
 
-  // Draw histogram
-  const histCanvas = document.getElementById('lightboxHistogram');
   if (!isVidFile) {
     const imgEl = lightboxContent.querySelector('img');
     if (imgEl) {
@@ -1453,11 +1465,21 @@ function renderLightbox() {
       vid.addEventListener('loadeddata', () => drawHistogram(vid, histCanvas), { once: true });
     }
   }
-
-  updateStripActive();
 }
 
 document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+
+// Swipe in lightbox
+let lbTouchX = 0;
+lightboxContent.addEventListener('touchstart', (e) => { lbTouchX = e.touches[0].clientX; }, { passive: true });
+lightboxContent.addEventListener('touchend', (e) => {
+  const diff = lbTouchX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) {
+    if (diff > 0) { lbDirection = 'right'; lightboxIndex = (lightboxIndex + 1) % lightboxItems.length; }
+    else { lbDirection = 'left'; lightboxIndex = (lightboxIndex - 1 + lightboxItems.length) % lightboxItems.length; }
+    renderLightbox();
+  }
+}, { passive: true });
 lightbox.addEventListener('click', (e) => {
   if (e.target === lightbox) closeLightbox();
 });
