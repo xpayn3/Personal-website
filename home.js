@@ -14,6 +14,16 @@ const projects = [
     ]
   },
   {
+    id: 'grounded2025',
+    name: 'Grounded 2025',
+    year: 2025,
+    hero: `${IMG}/Grounded 2025/Grounded_2025_01.webm`,
+    floats: [
+      `${IMG}/Grounded 2025/Grounded_2025_02.webm`,
+      `${IMG}/Grounded 2025/Grounded_2025_03.webm`,
+    ]
+  },
+  {
     id: 'grounded2024',
     name: 'Grounded 2024',
     year: 2024,
@@ -177,26 +187,32 @@ function createMedia(src) {
 }
 
 // ========== SCATTER LAYOUTS — pre-defined positions per image count ==========
-const scatterLayouts = {
-  3: [
-    { x: 5, y: 5, w: 55, h: 32, z: 2, speed: -0.08 },
-    { x: 45, y: 30, w: 48, h: 28, z: 3, speed: 0.12 },
-    { x: 10, y: 60, w: 50, h: 30, z: 1, speed: -0.15 },
-  ],
-  4: [
-    { x: 3, y: 5, w: 55, h: 30, z: 2, speed: -0.06 },
-    { x: 45, y: 25, w: 48, h: 28, z: 3, speed: 0.14 },
-    { x: 8, y: 50, w: 50, h: 28, z: 4, speed: -0.18 },
-    { x: 42, y: 70, w: 48, h: 25, z: 1, speed: 0.1 },
-  ],
-  5: [
-    { x: 2, y: 3, w: 55, h: 30, z: 2, speed: -0.05 },
-    { x: 48, y: 18, w: 46, h: 26, z: 3, speed: 0.15 },
-    { x: 5, y: 40, w: 50, h: 28, z: 4, speed: -0.2 },
-    { x: 45, y: 58, w: 48, h: 25, z: 1, speed: 0.08 },
-    { x: 15, y: 78, w: 55, h: 22, z: 5, speed: -0.12 },
-  ],
-};
+const smallSlots = [
+  { x: 45, y: 0, w: 48, h: 28, z: 3, speed: 0.12 },
+  { x: 5, y: 0, w: 50, h: 30, z: 1, speed: -0.15 },
+  { x: 42, y: 0, w: 48, h: 25, z: 4, speed: 0.1 },
+  { x: 8, y: 0, w: 50, h: 28, z: 2, speed: -0.18 },
+];
+const fullSlot = { x: 0, y: 0, w: 100, h: 32, z: 5, speed: -0.06 };
+
+function buildScatterLayout(count) {
+  const layout = [];
+  const fullIdx = 1 + Math.floor(Math.random() * (count - 1));
+  let yPos = 2;
+  let si = 0;
+  for (let i = 0; i < count; i++) {
+    if (i === fullIdx) {
+      layout.push({ ...fullSlot, y: yPos });
+      yPos += 34;
+    } else {
+      const slot = smallSlots[si % smallSlots.length];
+      layout.push({ ...slot, y: yPos });
+      yPos += 30;
+      si++;
+    }
+  }
+  return layout;
+}
 
 // ========== BUILD SECTIONS ==========
 const container = document.getElementById('scrollContainer');
@@ -225,7 +241,7 @@ projects.forEach((proj, idx) => {
 
   const allSrcs = [proj.hero, ...proj.floats];
   const count = Math.min(allSrcs.length, 5);
-  const layout = scatterLayouts[count] || scatterLayouts[3];
+  const layout = buildScatterLayout(count);
 
   // Mirror every other project for variety
   const mirror = idx % 2 === 1;
@@ -267,7 +283,6 @@ const cta = document.createElement('div');
 cta.className = 'home-cta';
 cta.innerHTML = `
   <div class="cta-text">
-    <span class="cta-line cta-line-1">See the</span>
     <span class="cta-line cta-line-2">full</span>
     <span class="cta-line cta-line-3">collection</span>
   </div>
@@ -410,15 +425,6 @@ function onMobileScroll() {
     }
   }
 
-  // Navbar hide/show
-  if (navBar) {
-    if (scrollY > navLastScroll && scrollY > 100) {
-      navBar.classList.add('bar-hidden');
-    } else {
-      navBar.classList.remove('bar-hidden');
-    }
-  }
-
   // Letter rotation
   if (wmLetters.length) {
     const delta = scrollY - wmLastScroll;
@@ -462,15 +468,4 @@ if (!isMobileHome) {
     }, { passive: true });
   }
 
-  if (navBar) {
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      if (scrollY > navLastScroll && scrollY > 100) {
-        navBar.classList.add('bar-hidden');
-      } else {
-        navBar.classList.remove('bar-hidden');
-      }
-      navLastScroll = scrollY;
-    }, { passive: true });
-  }
 }

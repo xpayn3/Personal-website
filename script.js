@@ -323,6 +323,23 @@ const projects = {
       { cols: 1, imgs: [6] },
     ]
   },
+  grounded2025: {
+    color: 'blue',
+    name: 'Festival Grounded 2025',
+    year: 2025,
+    client: 'Pritličje',
+    desc: ['Visual identity and motion design for the Grounded festival 2025 edition.'],
+    tools: ['Cinema 4D', 'Redshift', 'AfterEffects'],
+    images: [
+      `${IMG}/Grounded 2025/Grounded_2025_01.webm`,
+      `${IMG}/Grounded 2025/Grounded_2025_02.webm`,
+      `${IMG}/Grounded 2025/Grounded_2025_03.webm`,
+    ],
+    layout: [
+      { cols: 1, imgs: [0] },
+      { cols: 2, imgs: [1, 2] },
+    ]
+  },
   grounded2024: {
     color: 'red',
     name: 'Festival Grounded 2024',
@@ -1348,6 +1365,7 @@ function openLightbox(index) {
   buildLightboxStrip();
   renderLightbox();
   lightbox.classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
 function closeLightbox() {
@@ -1357,6 +1375,9 @@ function closeLightbox() {
   lightboxContent.innerHTML = '';
   if (lbFrameRAF) cancelAnimationFrame(lbFrameRAF);
   lbFrameRAF = null;
+  if (!overlay.classList.contains('open')) {
+    document.body.style.overflow = '';
+  }
 }
 
 function renderLightbox() {
@@ -1587,23 +1608,6 @@ if (wmEl) {
   }, { passive: true });
 }
 
-// ========== HIDE NAVBAR ON SCROLL DOWN (mobile only) ==========
-let navLastScroll = 0;
-const navBar = document.getElementById('bottomBar');
-if (isMobile && navBar) {
-  window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
-    const pill = document.getElementById('mobileSliderPill');
-    if (scrollY > navLastScroll && scrollY > 100) {
-      navBar.classList.add('bar-hidden');
-      if (pill) pill.classList.add('pill-hidden');
-    } else {
-      navBar.classList.remove('bar-hidden');
-      if (pill) pill.classList.remove('pill-hidden');
-    }
-    navLastScroll = scrollY;
-  }, { passive: true });
-}
 
 // ========== AUTO-OPEN FROM HASH ==========
 const hashMatch = location.hash.match(/project=(\w+)/);

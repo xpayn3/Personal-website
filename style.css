@@ -189,7 +189,7 @@ html {
   appearance: none;
   width: 14px;
   height: 14px;
-  background: #222;
+  background: #111;
   border-radius: 50%;
   cursor: pointer;
   transition: transform 0.15s ease;
