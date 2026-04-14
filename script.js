@@ -1194,18 +1194,6 @@ function openMobileProjectList() {
   mobileProjList.classList.add('open');
   lockScroll();
 
-  // Track center item on scroll
-  let scrollTick = false;
-  mobileProjScroll.addEventListener('scroll', () => {
-    if (!scrollTick) {
-      requestAnimationFrame(() => {
-        updateCenterItem();
-        scrollTick = false;
-      });
-      scrollTick = true;
-    }
-  });
-
   // Scroll to active item
   requestAnimationFrame(() => {
     const active = mobileProjScroll.querySelector('.active');
@@ -1214,12 +1202,25 @@ function openMobileProjectList() {
   });
 }
 
+// Single scroll listener for project picker
+let pickerTick = false;
+mobileProjScroll.addEventListener('scroll', () => {
+  if (!pickerTick) {
+    requestAnimationFrame(() => {
+      updateCenterItem();
+      pickerTick = false;
+    });
+    pickerTick = true;
+  }
+}, { passive: true });
+
 const mobileProjBg = document.getElementById('mobileProjBg');
 let currentBgProjId = null;
 
 function updateCenterItem() {
   const items = mobileProjScroll.querySelectorAll('.mobile-proj-item');
-  const center = window.innerHeight / 2;
+  const scrollRect = mobileProjScroll.getBoundingClientRect();
+  const center = scrollRect.top + scrollRect.height / 2;
   let closest = null;
   let closestDist = Infinity;
 
