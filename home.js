@@ -212,7 +212,8 @@ projects.forEach((proj, idx) => {
   for (let i = 0; i < proj.floats.length; i++) {
     const el = document.createElement('div');
     el.className = 'scatter-img side-scatter';
-    el.dataset.speed = (0.1 + i * 0.05).toFixed(2);
+    const speeds = [0.08, -0.12, 0.18, -0.06, 0.14];
+    el.dataset.speed = speeds[i % speeds.length];
     el.appendChild(createMedia(proj.floats[i]));
     imageLayer.appendChild(el);
   }
