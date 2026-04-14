@@ -190,9 +190,10 @@ heroSrcs.forEach((item, i) => {
     const v = document.createElement('video');
     v.src = item.src;
     v.muted = true;
-    v.loop = true;
-    v.autoplay = true;
+    v.loop = false;
+    v.autoplay = i === 0;
     v.playsInline = true;
+    v.preload = i <= 1 ? 'auto' : 'metadata';
     slide.appendChild(v);
   } else {
     const img = document.createElement('img');
@@ -233,17 +234,26 @@ function nextHeroSlide() {
   goToHeroSlide((heroIdx + 1) % heroSrcs.length);
 }
 
+function preloadNextHeroVideo() {
+  const nextIdx = (heroIdx + 1) % heroSrcs.length;
+  const nextSlide = heroSlides.children[nextIdx];
+  const nextVid = nextSlide && nextSlide.querySelector('video');
+  if (nextVid && nextVid.preload !== 'auto') {
+    nextVid.preload = 'auto';
+  }
+}
+
 function watchHeroVideoEnd() {
   clearTimeout(heroAutoTimer);
   const currentSlide = heroSlides.children[heroIdx];
   const vid = currentSlide && currentSlide.querySelector('video');
   if (vid) {
-    // Wait for video to end, then advance
     vid.onended = () => nextHeroSlide();
-    // Remove loop so it can end
     vid.loop = false;
+    // Preload next video while current plays
+    preloadNextHeroVideo();
   } else {
-    // Static image — advance after 5s
+    preloadNextHeroVideo();
     heroAutoTimer = setTimeout(nextHeroSlide, 5000);
   }
 }
