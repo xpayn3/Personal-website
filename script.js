@@ -975,7 +975,7 @@ function lockScroll() {
   document.body.style.top = `-${savedScrollY}px`;
   document.body.style.left = '0';
   document.body.style.right = '0';
-  lockScroll();
+  document.body.style.overflow = 'hidden';
 }
 
 function unlockScroll() {
@@ -983,7 +983,7 @@ function unlockScroll() {
   document.body.style.top = '';
   document.body.style.left = '';
   document.body.style.right = '';
-  unlockScroll();
+  document.body.style.overflow = '';
   window.scrollTo(0, savedScrollY);
 }
 
