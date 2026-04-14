@@ -24,6 +24,9 @@ body {
   color: var(--text);
   font-family: 'Inter', sans-serif;
   min-height: 100vh;
+}
+
+html {
   overflow-x: hidden;
 }
 
