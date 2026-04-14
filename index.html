@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Luka Grčar — Portfolio</title>
+  <meta name="description" content="Slovenian-based motion and graphic designer based in Ljubljana, Slovenia." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>img,video{content-visibility:auto}</style>
+</head>
+<body>
+
+  <!-- ===== GRID ===== -->
+  <main class="grid" id="grid"></main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-col footer-col-about">
+        <div class="footer-label">About</div>
+        <p>3D generalist &amp; UX graphic designer</p>
+        <p>Ljubljana, Slovenia</p>
+        <p><a href="mailto:luka.grcar@me.com">luka.grcar@me.com</a></p>
+      </div>
+      <div class="footer-col footer-col-tools">
+        <div class="footer-label">Skills</div>
+        <p>3D Motion Graphic<br>UX Design</p>
+      </div>
+      <div class="footer-col footer-col-links">
+        <div class="footer-label">Connect</div>
+        <a href="https://www.instagram.com/lukakluka/" target="_blank" rel="noopener noreferrer">Instagram &nearr;</a>
+        <a href="https://www.behance.net/lukagrcar" target="_blank" rel="noopener noreferrer">Behance &nearr;</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2024 Luka Grčar</span>
+    </div>
+  </footer>
+
+  <!-- ===== PROJECT OVERLAY ===== -->
+  <button class="overlay-close" id="overlayClose" aria-label="Close"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="1" y1="1" x2="17" y2="17"/><line x1="17" y1="1" x2="1" y2="17"/></svg></button>
+  <div class="overlay" id="overlay">
+    <div class="overlay-inner" id="overlayInner"></div>
+  </div>
+
+  <!-- ===== LIGHTBOX ===== -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="1" y1="1" x2="17" y2="17"/><line x1="17" y1="1" x2="1" y2="17"/></svg></button>
+    <button class="lightbox-nav lightbox-prev" id="lightboxPrev"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15,4 7,12 15,20"/></svg></button>
+    <button class="lightbox-nav lightbox-next" id="lightboxNext"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9,4 17,12 9,20"/></svg></button>
+    <div class="lightbox-content" id="lightboxContent"></div>
+    <div class="lightbox-counter" id="lightboxCounter"></div>
+  </div>
+
+  <!-- ===== FLOATING BOTTOM BAR ===== -->
+  <nav class="bottom-bar bar-animate-in" id="bottomBar">
+    <div class="bar-section">
+      <button class="bar-toggle" data-menu="nav">Index</button>
+      <div class="bar-dropdown" id="menu-nav">
+        <a href="index.html" class="bar-nav-link active">Index</a>
+        <a href="about.html" class="bar-nav-link">About</a>
+        <a href="home.html" class="bar-nav-link">Home</a>
+      </div>
+    </div>
+    <div class="bar-divider"></div>
+    <div class="bar-section">
+      <button class="bar-toggle" data-menu="project">Project</button>
+      <div class="bar-dropdown" id="menu-project"></div>
+    </div>
+    <div class="bar-section">
+      <button class="bar-toggle" data-menu="color">Color</button>
+      <div class="bar-dropdown" id="menu-color"></div>
+    </div>
+    <div class="bar-section">
+      <button class="bar-toggle" data-menu="type">Type</button>
+      <div class="bar-dropdown" id="menu-type">
+        <button data-value="image" id="filterImages">Images</button>
+        <button data-value="video" id="filterVideos">Videos</button>
+      </div>
+    </div>
+    <button class="bar-reset" id="resetFilters">All</button>
+    <div class="bar-divider"></div>
+    <div class="bar-slider">
+      <input type="range" id="gridSlider" min="2" max="8" value="5" step="1" />
+      <div class="slider-dots" id="sliderDots"></div>
+    </div>
+  </nav>
+
+  <!-- ===== NAME WATERMARK ===== -->
+  <div class="watermark">Luka Grčar</div>
+
+  <script src="script.js"></script>
+</body>
+</html>
