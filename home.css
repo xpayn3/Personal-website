@@ -58,6 +58,7 @@ body {
   overflow: visible;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 16px;
   padding: 0 24px;
 }
@@ -71,12 +72,14 @@ body {
 
 .scatter-img.hero-scatter {
   position: sticky;
-  top: 10vh;
+  top: 50vh;
+  transform: translateY(-50%);
   z-index: 1;
-  align-self: center;
   width: 85%;
   max-width: 900px;
   aspect-ratio: 16 / 9;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .scatter-img.hero-scatter img,
@@ -89,7 +92,7 @@ body {
 .scatter-img.side-scatter {
   position: relative;
   z-index: 2;
-  max-width: 55%;
+  max-width: 42%;
 }
 
 .scatter-img.side-scatter:nth-child(even) {
