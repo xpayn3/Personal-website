@@ -54,27 +54,15 @@ body {
 }
 
 .title-year {
-  font-family: 'Inter', sans-serif;
-  font-size: clamp(0.8rem, 1.2vw, 1rem);
-  color: rgba(0,0,0,0.3);
-  letter-spacing: 0.2em;
-  margin-top: 20px;
-  text-transform: uppercase;
+  display: none;
 }
 
 .title-line {
-  width: 40px;
-  height: 2px;
-  background: var(--text);
-  margin-top: 24px;
-  opacity: 0.2;
+  display: none;
 }
 
-/* floating secondary images — sit in the image layer */
+/* floating secondary images */
 .float-img {
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.12);
   will-change: transform;
   pointer-events: none;
   display: flex;
@@ -90,67 +78,39 @@ body {
   height: auto;
   object-fit: contain;
   display: block;
+  border-radius: 4px;
 }
 
-/* ========== IMAGE LAYER — scrolls over the title ========== */
+/* ========== IMAGE LAYER — scattered freeform ========== */
 .image-layer {
   position: relative;
   z-index: 2;
   background: var(--bg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 40px;
-  padding: 60px 0;
+  min-height: 180vh;
+  overflow: visible;
 }
 
-.hero-image {
-  width: 85vw;
-  max-width: 1200px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.scatter-img {
+  position: absolute;
   will-change: transform;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
-.hero-image img,
-.hero-image video {
-  max-width: 100%;
-  max-height: 80vh;
-  width: auto;
-  height: auto;
-  object-fit: contain;
+.scatter-img img,
+.scatter-img video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   display: block;
-  border-radius: 20px;
-  box-shadow: 0 40px 100px rgba(0,0,0,0.15);
-}
-
-/* secondary images in the scroll flow */
-.float-row {
-  display: flex;
-  gap: 24px;
-  width: 85vw;
-  max-width: 1200px;
-  justify-content: center;
-  will-change: transform;
-}
-
-.float-img {
-  flex: 1;
-  max-width: 50%;
-  max-height: 50vh;
 }
 
 /* ========== PARALLAX DRIVEN BY JS ========== */
-.title-name, .title-year, .title-line {
-  will-change: transform, opacity;
+.title-name {
+  will-change: transform, opacity, letter-spacing;
 }
 
-.hero-image {
-  will-change: transform;
-}
-
-.float-row {
+.scatter-img {
   will-change: transform;
 }
 
@@ -208,6 +168,12 @@ body {
 
 .bar-link:hover {
   background: rgba(255,255,255,0.1);
+}
+
+.bar-link.active {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  font-weight: 600;
 }
 
 .bar-divider {
@@ -288,13 +254,34 @@ body {
   letter-spacing: 0.06em;
   color: #111;
   z-index: 90;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.watermark .wm-letter {
+  display: inline-block;
+  transform-origin: bottom center;
+  transition: transform 0.1s ease-out;
+}
+
+.watermark-right {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: #999;
+  z-index: 90;
   pointer-events: none;
 }
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
-  .hero-image { width: 94vw; height: 70vh; }
   .title-name { font-size: clamp(2rem, 10vw, 4rem); }
-  .float-row { flex-direction: column; gap: 16px; }
-  .float-img { max-width: 100%; }
+  .image-layer { min-height: 80vh; }
+  .bar-label, .bar-counter, .bar-divider {
+    display: none;
+  }
 }

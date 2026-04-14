@@ -1004,10 +1004,70 @@ function openProject(projId) {
     el.addEventListener('click', () => openLightbox(idx >= 0 ? idx : 0));
   });
 
+  // Build project nav bar
+  buildProjNav(projId);
+  document.getElementById('projNav').classList.add('visible');
+
   overlay.classList.add('open');
   overlayClose.classList.add('visible');
   document.body.style.overflow = 'hidden';
   overlay.scrollTop = 0;
+}
+
+function buildProjNav(activeProjId) {
+  const nav = document.getElementById('projNav');
+  nav.innerHTML = '';
+  const projIds = Object.keys(projects);
+
+  projIds.forEach(id => {
+    const proj = projects[id];
+    const btn = document.createElement('button');
+    btn.className = 'proj-nav-item' + (id === activeProjId ? ' active' : '');
+
+    const firstSrc = proj.images[0];
+    const isVid = firstSrc.endsWith('.webm') || firstSrc.endsWith('.mp4');
+    const thumbSrc = isVid ? firstSrc.replace(/\.(webm|mp4)$/, '_thumb.webp') : firstSrc;
+
+    const thumb = document.createElement('img');
+    thumb.className = 'proj-nav-thumb';
+    thumb.src = isMobile ? thumbSrc.replace('Images/', 'Images/mobile/') : thumbSrc;
+    thumb.alt = proj.name;
+    btn.appendChild(thumb);
+
+    const label = document.createElement('span');
+    label.textContent = proj.name;
+    btn.appendChild(label);
+
+    btn.addEventListener('click', () => {
+      if (id === activeProjId) return;
+      // Update nav immediately
+      nav.querySelectorAll('.proj-nav-item').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      btn.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+      // Fade content
+      overlayInner.style.transition = 'opacity 0.2s ease';
+      overlayInner.style.opacity = '0';
+      setTimeout(() => {
+        overlay.scrollTop = 0;
+        openProject(id);
+        overlayInner.style.opacity = '1';
+      }, 200);
+    });
+
+    nav.appendChild(btn);
+  });
+
+  // Horizontal scroll with mouse wheel — amplified for responsiveness
+  nav.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    nav.scrollLeft += e.deltaY * 3;
+  }, { passive: false });
+
+  // Scroll active item into view smoothly
+  requestAnimationFrame(() => {
+    const active = nav.querySelector('.active');
+    if (active) active.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+  });
 }
 
 // ========== MOBILE PROJECT LIST ==========
@@ -1122,6 +1182,7 @@ mobileProjClose.addEventListener('click', closeMobileList);
 function closeOverlay() {
   overlay.classList.remove('open');
   overlayClose.classList.remove('visible');
+  document.getElementById('projNav').classList.remove('visible');
   document.body.style.overflow = '';
 }
 
@@ -1189,6 +1250,7 @@ document.addEventListener('keydown', (e) => {
 
 // ========== GRID SIZE SLIDER ==========
 window.scrollTo(0, 0);
+
 const _mobile = window.innerWidth < 768;
 const gridSlider = document.getElementById('gridSlider');
 gridSlider.value = _mobile ? 3 : 5;
@@ -1249,19 +1311,25 @@ if (mobileSlider && mobileDotsEl) {
 }
 
 // ========== LIST VIEW TOGGLE ==========
-const layoutToggle = document.getElementById('layoutToggle');
-layoutToggle.addEventListener('click', () => {
+const layoutGridBtn = document.getElementById('layoutGrid');
+const layoutListBtn = document.getElementById('layoutList');
+
+function switchLayout(toList) {
   gridEl.style.opacity = '0';
   gridEl.style.pointerEvents = 'none';
   gridEl.classList.add('switching');
   setTimeout(() => {
     gridEl.style.transition = 'none';
-    gridEl.classList.toggle('list-view');
-    layoutToggle.classList.toggle('active');
-    if (gridEl.classList.contains('list-view')) {
+    if (toList) {
+      gridEl.classList.add('list-view');
       gridEl.style.gridTemplateColumns = '';
+      layoutListBtn.classList.add('active');
+      layoutGridBtn.classList.remove('active');
     } else {
+      gridEl.classList.remove('list-view');
       updateSlider();
+      layoutGridBtn.classList.add('active');
+      layoutListBtn.classList.remove('active');
     }
     gridEl.offsetHeight;
     gridEl.style.transition = 'opacity 0.25s ease';
@@ -1269,4 +1337,66 @@ layoutToggle.addEventListener('click', () => {
     gridEl.style.pointerEvents = '';
     setTimeout(() => gridEl.classList.remove('switching'), 300);
   }, 250);
+}
+
+layoutGridBtn.addEventListener('click', () => {
+  if (!gridEl.classList.contains('list-view')) return;
+  switchLayout(false);
 });
+
+layoutListBtn.addEventListener('click', () => {
+  if (gridEl.classList.contains('list-view')) return;
+  switchLayout(true);
+});
+
+// ========== WATERMARK LETTER ROTATION ==========
+const wmEl = document.getElementById('watermarkText');
+if (wmEl) {
+  const text = wmEl.textContent;
+  wmEl.innerHTML = '';
+  const letters = [];
+  for (const char of text) {
+    const span = document.createElement('span');
+    span.className = 'wm-letter';
+    span.textContent = char === ' ' ? '\u00A0' : char;
+    wmEl.appendChild(span);
+    letters.push(span);
+  }
+
+  const MAX_ROT = 45;
+  let lastScroll = 0;
+  let wmTicking = false;
+
+  window.addEventListener('scroll', () => {
+    if (!wmTicking) {
+      requestAnimationFrame(() => {
+        const scrollY = window.scrollY;
+        const delta = scrollY - lastScroll;
+        lastScroll = scrollY;
+
+        letters.forEach((letter, i) => {
+          const offset = i * 0.15;
+          const raw = delta * -(1.5 + offset);
+          const rot = Math.max(-MAX_ROT, Math.min(MAX_ROT, raw));
+          letter.style.transform = `rotate(${rot}deg)`;
+        });
+
+        // Spring back to 0
+        setTimeout(() => {
+          letters.forEach(letter => {
+            letter.style.transform = 'rotate(0deg)';
+          });
+        }, 150);
+
+        wmTicking = false;
+      });
+      wmTicking = true;
+    }
+  }, { passive: true });
+}
+
+// ========== AUTO-OPEN FROM HASH ==========
+const hashMatch = location.hash.match(/project=(\w+)/);
+if (hashMatch) {
+  setTimeout(() => openProject(hashMatch[1]), 100);
+}

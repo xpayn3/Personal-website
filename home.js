@@ -2,6 +2,7 @@ const IMG = 'Images';
 
 const projects = [
   {
+    id: 'cestel',
     name: 'CESTEL',
     year: 2023,
     hero: `${IMG}/Cestel_project/cestel_anim_01.webp`,
@@ -13,6 +14,7 @@ const projects = [
     ]
   },
   {
+    id: 'grounded2024',
     name: 'Grounded 2024',
     year: 2024,
     hero: `${IMG}/Grounded_2024/Grounded_2024_01.webp`,
@@ -23,6 +25,7 @@ const projects = [
     ]
   },
   {
+    id: 'grounded2023',
     name: 'Grounded 2023',
     year: 2023,
     hero: `${IMG}/Grounded_2023/Grounded_2023_01.webm`,
@@ -33,6 +36,7 @@ const projects = [
     ]
   },
   {
+    id: 'grounded2022',
     name: 'Grounded 2022',
     year: 2022,
     hero: `${IMG}/Grounded_2022/Grounded_2022_01.webp`,
@@ -43,6 +47,7 @@ const projects = [
     ]
   },
   {
+    id: 'grounded2021',
     name: 'Grounded 2021',
     year: 2021,
     hero: `${IMG}/Grounded_2021/Grounded_SerijaPlakatov.webp`,
@@ -53,6 +58,7 @@ const projects = [
     ]
   },
   {
+    id: 'taf',
     name: "The Athlete's Foot",
     year: 2021,
     hero: `${IMG}/Athletesfoot/taf_anim.webp`,
@@ -63,6 +69,7 @@ const projects = [
     ]
   },
   {
+    id: 'grounded2020',
     name: 'Grounded: Truth',
     year: 2020,
     hero: `${IMG}/Grounded_2020/Grounded_poster_2.webp`,
@@ -73,6 +80,7 @@ const projects = [
     ]
   },
   {
+    id: 'halloween',
     name: 'Halloween TAF',
     year: 2021,
     hero: `${IMG}/Athletesfoot_halloween/Athletesfoot_halloween_01.webp`,
@@ -83,6 +91,7 @@ const projects = [
     ]
   },
   {
+    id: 'blackfriday',
     name: 'Black Friday TAF',
     year: 2021,
     hero: `${IMG}/Athletesfoot_blackfriday/Athletesfoot_blackfriday_anim_01.webp`,
@@ -92,6 +101,7 @@ const projects = [
     ]
   },
   {
+    id: 'largavida',
     name: 'LargaVida',
     year: 2022,
     hero: `${IMG}/LargaVida/01_larga_vida_desktop.webp`,
@@ -101,6 +111,7 @@ const projects = [
     ]
   },
   {
+    id: 'newedge',
     name: 'NewEdge Magazine',
     year: 2020,
     hero: `${IMG}/NewEdge_magazine/NewEdge_magazine_01.webp`,
@@ -110,6 +121,7 @@ const projects = [
     ]
   },
   {
+    id: 'grounded2018',
     name: 'Grounded 2018',
     year: 2018,
     hero: `${IMG}/Grounded_2018/plakat.webp`,
@@ -119,6 +131,7 @@ const projects = [
     ]
   },
   {
+    id: 'radenci',
     name: 'Radenci',
     year: 2022,
     hero: `${IMG}/Radenci_prostorska_projekcija/P1_S1_K01_0323.webp`,
@@ -130,11 +143,8 @@ const projects = [
   },
 ];
 
-// Shuffle
-for (let i = projects.length - 1; i > 0; i--) {
-  const j = Math.floor(Math.random() * (i + 1));
-  [projects[i], projects[j]] = [projects[j], projects[i]];
-}
+// Sort by year, newest first
+projects.sort((a, b) => b.year - a.year);
 
 
 function isVideo(src) {
@@ -157,6 +167,28 @@ function createMedia(src) {
   return img;
 }
 
+// ========== SCATTER LAYOUTS — pre-defined positions per image count ==========
+const scatterLayouts = {
+  3: [
+    { x: 5, y: 0, w: 55, h: 60, z: 2, speed: -0.08 },
+    { x: 50, y: 15, w: 40, h: 45, z: 3, speed: 0.12 },
+    { x: 10, y: 55, w: 45, h: 50, z: 1, speed: -0.15 },
+  ],
+  4: [
+    { x: 3, y: 0, w: 52, h: 55, z: 2, speed: -0.06 },
+    { x: 48, y: 10, w: 42, h: 40, z: 3, speed: 0.14 },
+    { x: 15, y: 48, w: 38, h: 42, z: 4, speed: -0.18 },
+    { x: 55, y: 55, w: 35, h: 38, z: 1, speed: 0.1 },
+  ],
+  5: [
+    { x: 2, y: 0, w: 50, h: 50, z: 2, speed: -0.05 },
+    { x: 52, y: 5, w: 40, h: 35, z: 3, speed: 0.15 },
+    { x: 8, y: 42, w: 42, h: 40, z: 4, speed: -0.2 },
+    { x: 50, y: 45, w: 38, h: 35, z: 1, speed: 0.08 },
+    { x: 25, y: 78, w: 50, h: 30, z: 5, speed: -0.12 },
+  ],
+};
+
 // ========== BUILD SECTIONS ==========
 const container = document.getElementById('scrollContainer');
 const barName = document.getElementById('barProjectName');
@@ -176,48 +208,44 @@ projects.forEach((proj, idx) => {
   name.textContent = proj.name;
   titleLayer.appendChild(name);
 
-  const year = document.createElement('div');
-  year.className = 'title-year';
-  year.textContent = proj.year;
-  titleLayer.appendChild(year);
-
-  const line = document.createElement('div');
-  line.className = 'title-line';
-  titleLayer.appendChild(line);
-
   block.appendChild(titleLayer);
 
-  // Image layer — hero + secondary rows scroll over the title
+  // Image layer — scattered freeform
   const imageLayer = document.createElement('div');
   imageLayer.className = 'image-layer';
 
-  // Hero
-  const hero = document.createElement('div');
-  hero.className = 'hero-image';
-  hero.appendChild(createMedia(proj.hero));
-  imageLayer.appendChild(hero);
+  const allSrcs = [proj.hero, ...proj.floats];
+  const count = Math.min(allSrcs.length, 5);
+  const layout = scatterLayouts[count] || scatterLayouts[3];
 
-  // Secondary images in rows of 2
-  for (let i = 0; i < proj.floats.length; i += 2) {
-    const row = document.createElement('div');
-    row.className = 'float-row';
-    // Alternate parallax speed per row
-    row.dataset.speed = (0.3 + (i / proj.floats.length) * 0.5).toFixed(2);
+  // Mirror every other project for variety
+  const mirror = idx % 2 === 1;
 
-    const f1 = document.createElement('div');
-    f1.className = 'float-img';
-    f1.appendChild(createMedia(proj.floats[i]));
-    row.appendChild(f1);
+  for (let i = 0; i < count; i++) {
+    const pos = layout[i];
+    const el = document.createElement('div');
+    el.className = 'scatter-img';
+    el.dataset.speed = pos.speed;
+    el.dataset.z = pos.z;
 
-    if (proj.floats[i + 1]) {
-      const f2 = document.createElement('div');
-      f2.className = 'float-img';
-      f2.appendChild(createMedia(proj.floats[i + 1]));
-      row.appendChild(f2);
-    }
+    const xPos = mirror ? (100 - pos.x - pos.w) : pos.x;
+    el.style.cssText = `
+      left: ${xPos}%;
+      top: ${pos.y}%;
+      width: ${pos.w}%;
+      height: ${pos.h}%;
+      z-index: ${pos.z};
+    `;
 
-    imageLayer.appendChild(row);
+    el.appendChild(createMedia(allSrcs[i]));
+    imageLayer.appendChild(el);
   }
+
+  // Click to go to project
+  imageLayer.style.cursor = 'pointer';
+  imageLayer.addEventListener('click', () => {
+    window.location.href = `index.html#project=${proj.id}`;
+  });
 
   block.appendChild(imageLayer);
   container.appendChild(block);
@@ -225,32 +253,56 @@ projects.forEach((proj, idx) => {
 
 barCounter.textContent = `1 / ${projects.length}`;
 
-// ========== SCROLL-DRIVEN PARALLAX ==========
-const blocks = document.querySelectorAll('.project-block');
-let ticking = false;
+// ========== SMOOTH SCROLL PHYSICS ==========
+let smoothScroll = container.scrollTop;
+let targetScroll = container.scrollTop;
+let scrollVelocity = 0;
+const FRICTION = 0.92;
+const LERP = 0.08;
 
-// Cache DOM refs per block to avoid querySelectorAll on every frame
+container.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  scrollVelocity += e.deltaY * 0.15;
+}, { passive: false });
+
+function smoothScrollLoop() {
+  // Apply velocity with friction
+  scrollVelocity *= FRICTION;
+  targetScroll += scrollVelocity;
+
+  // Clamp
+  const maxScroll = container.scrollHeight - container.clientHeight;
+  targetScroll = Math.max(0, Math.min(maxScroll, targetScroll));
+
+  // Lerp toward target
+  smoothScroll += (targetScroll - smoothScroll) * LERP;
+  container.scrollTop = smoothScroll;
+
+  updateParallax();
+  requestAnimationFrame(smoothScrollLoop);
+}
+
+// Sync on touch/native scroll
+container.addEventListener('scroll', () => {
+  if (Math.abs(scrollVelocity) < 0.5) {
+    smoothScroll = container.scrollTop;
+    targetScroll = container.scrollTop;
+  }
+}, { passive: true });
+
+requestAnimationFrame(smoothScrollLoop);
+
+// ========== PARALLAX ==========
+const blocks = document.querySelectorAll('.project-block');
+
 const blockData = Array.from(blocks).map(block => ({
   el: block,
   titleName: block.querySelector('.title-name'),
-  titleYear: block.querySelector('.title-year'),
-  titleLine: block.querySelector('.title-line'),
-  hero: block.querySelector('.hero-image'),
-  rows: Array.from(block.querySelectorAll('.float-row')).map(row => ({
-    el: row,
-    speed: parseFloat(row.dataset.speed),
+  imgs: Array.from(block.querySelectorAll('.scatter-img')).map(img => ({
+    el: img,
+    speed: parseFloat(img.dataset.speed),
   })),
 }));
-
-container.addEventListener('scroll', () => {
-  if (!ticking) {
-    requestAnimationFrame(() => {
-      updateParallax();
-      ticking = false;
-    });
-    ticking = true;
-  }
-});
 
 function updateParallax() {
   const scrollY = container.scrollTop;
@@ -260,26 +312,24 @@ function updateParallax() {
     const bd = blockData[idx];
     const blockTop = bd.el.offsetTop - scrollY;
 
-    // Skip blocks far off-screen
     if (blockTop > vh * 2 || blockTop < -bd.el.offsetHeight - vh) continue;
 
     const progress = Math.max(0, Math.min(1, -blockTop / vh));
 
+    // Title
     const titleScale = 1 + progress * 0.15;
     const titleOpacity = Math.max(0, 1 - progress * 1.3);
+    const letterSpacing = progress * 0.5;
     bd.titleName.style.transform = `scale(${titleScale})`;
     bd.titleName.style.opacity = titleOpacity;
-    bd.titleYear.style.opacity = titleOpacity;
-    bd.titleLine.style.opacity = titleOpacity * 0.2;
+    bd.titleName.style.letterSpacing = `${letterSpacing}em`;
 
-    const heroRect = bd.hero.getBoundingClientRect();
-    const heroY = (1 - (vh - heroRect.top) / (vh + heroRect.height)) * 40;
-    bd.hero.style.transform = `translateY(${heroY}px)`;
-
-    for (const row of bd.rows) {
-      const rowRect = row.el.getBoundingClientRect();
-      const rowY = (1 - (vh - rowRect.top) / (vh + rowRect.height)) * 80 * row.speed;
-      row.el.style.transform = `translateY(${rowY}px)`;
+    // Scattered images — each at its own speed
+    for (const img of bd.imgs) {
+      const rect = img.el.getBoundingClientRect();
+      const center = (rect.top + rect.height / 2 - vh / 2) / vh;
+      const y = center * img.speed * vh;
+      img.el.style.transform = `translate3d(0, ${y}px, 0)`;
     }
 
     if (blockTop > -vh && blockTop < vh * 0.5) {
@@ -289,6 +339,40 @@ function updateParallax() {
   }
 }
 
-updateParallax();
+// ========== WATERMARK LETTER ROTATION ==========
+const wmEl = document.getElementById('watermarkText');
+if (wmEl) {
+  const text = wmEl.textContent;
+  wmEl.innerHTML = '';
+  const letters = [];
+  for (const char of text) {
+    const span = document.createElement('span');
+    span.className = 'wm-letter';
+    span.textContent = char === ' ' ? '\u00A0' : char;
+    wmEl.appendChild(span);
+    letters.push(span);
+  }
 
+  const MAX_ROT = 45;
+  let lastScroll = 0;
+
+  container.addEventListener('scroll', () => {
+    const scrollY = container.scrollTop;
+    const delta = scrollY - lastScroll;
+    lastScroll = scrollY;
+
+    letters.forEach((letter, i) => {
+      const offset = i * 0.15;
+      const raw = delta * -(1.5 + offset);
+      const rot = Math.max(-MAX_ROT, Math.min(MAX_ROT, raw));
+      letter.style.transform = `rotate(${rot}deg)`;
+    });
+
+    setTimeout(() => {
+      letters.forEach(letter => {
+        letter.style.transform = 'rotate(0deg)';
+      });
+    }, 150);
+  }, { passive: true });
+}
 

@@ -95,16 +95,36 @@ body {
   margin-top: 16px;
 }
 
-.about-links a {
+.about-icon-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   color: var(--text);
   text-decoration: none;
   font-size: 0.9rem;
-  font-weight: 600;
-  transition: opacity 0.2s;
+  font-weight: 500;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: background 0.2s, border-color 0.2s;
 }
 
-.about-links a:hover {
+.about-icon-link:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.about-icon-link svg {
+  flex-shrink: 0;
   opacity: 0.6;
+  width: 18px;
+  height: 18px;
+}
+
+.bar-social i {
+  font-size: 1.3rem;
+  display: block;
+  line-height: 1;
 }
 
 /* ========== SKILLS ========== */
@@ -121,11 +141,23 @@ body {
   font-size: 0.8rem;
   color: var(--dim);
   transition: border-color 0.2s, color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.skill-tag i {
+  font-size: 0.9rem;
+  opacity: 0.5;
 }
 
 .skill-tag:hover {
   border-color: rgba(255,255,255,0.3);
   color: var(--text);
+}
+
+.skill-tag:hover i {
+  opacity: 0.8;
 }
 
 /* ========== CLIENTS ========== */
@@ -253,6 +285,11 @@ body {
   background: rgba(255,255,255,0.1);
 }
 
+.bar-social.active {
+  background: rgba(255,255,255,0.15);
+  font-weight: 600;
+}
+
 .bar-divider {
   width: 1px;
   height: 24px;
@@ -324,7 +361,7 @@ body {
 }
 
 .bar-nav-link:hover { background: rgba(255,255,255,0.1); }
-.bar-nav-link.active { color: var(--accent); }
+.bar-nav-link.active { background: rgba(255,255,255,0.15); color: #fff; font-weight: 600; }
 
 .watermark {
   position: fixed;
@@ -336,6 +373,8 @@ body {
   letter-spacing: 0.06em;
   color: #f0f0f0;
   z-index: 90;
+  text-decoration: none;
+  cursor: pointer;
   pointer-events: none;
 }
 

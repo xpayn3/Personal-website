@@ -280,7 +280,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0;
-  padding: 10px 16px;
+  padding: 10px 10px;
   background: rgba(20,20,20,0.6);
   backdrop-filter: blur(24px) saturate(1.6);
   -webkit-backdrop-filter: blur(24px) saturate(1.6);
@@ -414,7 +414,9 @@ body {
 }
 
 .bar-nav-link.active {
-  color: var(--accent);
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  font-weight: 600;
 }
 
 .bar-menu-icon {
@@ -857,10 +859,12 @@ body {
   top: 20px;
   right: 24px;
   z-index: 250;
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
+  background: rgba(20,20,20,0.6);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  border: 1px solid rgba(255,255,255,0.1);
   color: #fff;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
   font-size: 1.6rem;
   width: 44px;
   height: 44px;
@@ -884,7 +888,7 @@ body {
 }
 
 .overlay-close:hover {
-  background: rgba(255,255,255,0.15);
+  background: rgba(20,20,20,0.8);
 }
 
 .overlay-inner {
@@ -1144,6 +1148,89 @@ body {
   .proj-gallery { padding: 0; }
 }
 
+/* ========== PROJECT NAV BAR ========== */
+.proj-nav {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px;
+  background: rgba(20,20,20,0.7);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  z-index: 210;
+  max-width: min(calc(140px * 3 + 2px * 2 + 12px), calc(100vw - 32px));
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+
+.proj-nav.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.proj-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.proj-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  width: 140px;
+  overflow: hidden;
+  transition: background 0.25s ease;
+  border: none;
+  background: none;
+  color: rgba(255,255,255,0.4);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.proj-nav-item:hover {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.7);
+}
+
+.proj-nav-item.active {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  font-weight: 600;
+}
+
+.proj-nav-item span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.proj-nav-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
 /* ========== LIGHTBOX ========== */
 .lightbox {
   position: fixed;
@@ -1328,24 +1415,43 @@ body {
 }
 
 /* ========== LAYOUT TOGGLE ========== */
-.bar-layout {
+.layout-toggle {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  z-index: 90;
+  display: flex;
+  background: rgba(20,20,20,0.6);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 4px;
+  gap: 2px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.layout-btn {
   background: none;
   border: none;
-  color: #fff;
-  padding: 10px 12px;
+  color: rgba(255,255,255,0.4);
+  padding: 8px 10px;
   cursor: pointer;
-  border-radius: 999px;
-  transition: background 0.2s;
+  border-radius: 8px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  transition: background 0.25s cubic-bezier(0.34,1.56,0.64,1),
+              color 0.25s ease;
 }
 
-.bar-layout:hover {
-  background: rgba(255,255,255,0.1);
+.layout-btn:hover {
+  color: rgba(255,255,255,0.7);
 }
 
-.bar-layout.active {
+.layout-btn.active {
   background: rgba(255,255,255,0.15);
+  color: #fff;
 }
 
 /* list view mode */
@@ -1459,6 +1565,26 @@ body {
   font-weight: 700;
   letter-spacing: 0.06em;
   color: #111;
+  z-index: 90;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.watermark .wm-letter {
+  display: inline-block;
+  transform-origin: bottom center;
+  transition: transform 0.1s ease-out;
+}
+
+.watermark-right {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: #999;
   z-index: 90;
   pointer-events: none;
 }
