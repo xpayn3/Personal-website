@@ -60,12 +60,24 @@ const projects = {
       `${IMG}/Grounded_2022/Grounded_2022_06.webp`,
       `${IMG}/Grounded_2022/Grounded_2022_07.webp`,
       `${IMG}/Grounded_2022/Grounded_2022_08.webp`,
+      `${IMG}/Grounded_2022/GR_main_1.webm`,
+      `${IMG}/Grounded_2022/GR_main_vertical.webm`,
+      `${IMG}/Grounded_2022/Projection_CD.webm`,
+      `${IMG}/Grounded_2022/najava_landscape.webm`,
+      `${IMG}/Grounded_2022/najava_square.webm`,
+      `${IMG}/Grounded_2022/najava_vertical.webm`,
+      `${IMG}/Grounded_2022/card_holo.webm`,
     ],
     layout: [
-      { cols: 1, imgs: [0] },
-      { cols: 2, imgs: [1, 2] },
-      { cols: 3, imgs: [3, 4, 5] },
-      { cols: 2, imgs: [6, 7] },
+      { cols: 1, imgs: [8] },
+      { cols: 2, imgs: [0, 1] },
+      { cols: 3, imgs: [2, 3, 4] },
+      { cols: 2, imgs: [5, 6] },
+      { cols: 1, imgs: [10] },
+      { cols: 2, imgs: [7, 9] },
+      { cols: 2, imgs: [11, 12] },
+      { cols: 1, imgs: [13] },
+      { cols: 1, imgs: [14] },
     ]
   },
   grounded2021: {
@@ -85,6 +97,7 @@ const projects = {
       `${IMG}/Grounded_2021/Statika_1.webp`,
       `${IMG}/Grounded_2021/Statika_2_1.webp`,
       `${IMG}/Grounded_2021/Statika_teme_2.webp`,
+      `${IMG}/Grounded_2021/Grounded_2021_IG.webm`,
     ],
     layout: [
       { cols: 1, imgs: [0] },
@@ -92,6 +105,7 @@ const projects = {
       { cols: 3, imgs: [3, 4, 5] },
       { cols: 2, imgs: [6, 7] },
       { cols: 1, imgs: [8] },
+      { cols: 1, imgs: [9] },
     ]
   },
   taf: {
@@ -155,7 +169,7 @@ const projects = {
   },
   grounded2018: {
     color: 'pink',
-    name: 'Festival Grounded 2018: Intimacy in the age of AI',
+    name: 'Festival Grounded 2018',
     year: 2018,
     client: 'Pritličje',
     desc: ['Visual identity for the second edition of the Grounded festival.'],
@@ -420,6 +434,24 @@ const projects = {
       { cols: 2, imgs: [23, 24] },
     ]
   },
+  kersnikova: {
+    color: 'purple',
+    name: 'Kersnikova',
+    year: 2021,
+    desc: ['Visual identity and print design for Kersnikova.'],
+    tools: ['Photoshop', 'Illustrator', 'InDesign'],
+    images: [
+      `${IMG}/Kersnikova/Plakat-500x700-B2.webp`,
+      `${IMG}/Kersnikova/slika nova.webp`,
+      `${IMG}/Kersnikova/zlozenka2.webp`,
+      `${IMG}/Kersnikova/zvocnik_finished.webp`,
+    ],
+    layout: [
+      { cols: 1, imgs: [0] },
+      { cols: 2, imgs: [1, 2] },
+      { cols: 1, imgs: [3] },
+    ]
+  },
   natureta_renders: {
     color: 'green',
     name: 'Natureta Product Renders',
@@ -461,19 +493,6 @@ const projects = {
       { cols: 2, imgs: [1, 2] },
     ]
   },
-  poster: {
-    color: 'orange',
-    name: 'Poster Design',
-    year: 2020,
-    desc: ['Various poster design work.'],
-    tools: ['Photoshop', 'Illustrator'],
-    images: [
-      `${IMG}/Plakat-500x700-B2.webp`,
-    ],
-    layout: [
-      { cols: 1, imgs: [0] },
-    ]
-  }
 };
 
 const COLOR_HEX = {
@@ -485,8 +504,10 @@ const COLOR_HEX = {
 // Build flat list of grid items: one per image, tagged with project/year
 // Color gets filled in async after image loads
 const gridItems = [];
+const gridExclude = /screenshot|zbrush|Mockup|larga_vida_screenshot/i;
 for (const [projId, proj] of Object.entries(projects)) {
   for (const src of proj.images) {
+    if (gridExclude.test(src)) continue;
     gridItems.push({
       src,
       project: projId,
@@ -593,8 +614,12 @@ function renderGrid() {
     }
 
     const label = document.createElement('span');
-    label.className = 'item-label';
-    label.textContent = item.projectName;
+    label.className = 'item-label' + (item.project === 'lab' ? ' lab-label' : '');
+    if (item.project === 'lab') {
+      label.innerHTML = 'L<span style="font-weight:300">a</span>B';
+    } else {
+      label.textContent = item.projectName;
+    }
     div.appendChild(label);
 
     // Meta info for list view
@@ -608,6 +633,11 @@ function renderGrid() {
       if (gridEl.classList.contains('list-view')) {
         lightboxItems = [item.src];
         openLightbox(0);
+      } else if (item.project === 'lab') {
+        const labImages = projects.lab.images;
+        lightboxItems = labImages;
+        const idx = labImages.indexOf(item.src);
+        openLightbox(idx >= 0 ? idx : 0);
       } else {
         openProject(item.project);
       }
@@ -703,6 +733,7 @@ function setFilter(type, value) {
   }
   applyFilters();
   closeAllDropdowns();
+  setTimeout(() => window.scrollTo(0, 0), 50);
 }
 
 function applyFilters() {
@@ -918,28 +949,33 @@ function openProject(projId) {
       html += '</div>';
     }
     html += '</div></div>';
+    html += '<div class="lab-splash" id="labSplash">L<span>a</span>B</div>';
     overlayInner.innerHTML = html;
+    setTimeout(() => {
+      const splash = document.getElementById('labSplash');
+      if (splash) splash.classList.add('fade-out');
+    }, 2500);
   } else {
-    // Hero section — dark with main image
+    // Hero section — dark with main image only
     const heroSrc = proj.images[0];
     let html = `<div class="proj-hero-dark">`;
     html += `<div class="proj-hero-media">${mediaTag(heroSrc, proj.name)}</div>`;
-    html += `<div class="proj-hero-content">`;
-    html += `<h1 class="proj-title">${proj.name}</h1>`;
-    html += '<div class="proj-meta">';
-    if (proj.client) html += `<div><strong>Client</strong>${proj.client}</div>`;
-    if (proj.collab) html += `<div><strong>Collaboration</strong>${proj.collab}</div>`;
-    if (proj.year) html += `<div><strong>Year</strong>${proj.year}</div>`;
-    if (proj.location) html += `<div><strong>Location</strong>${proj.location}</div>`;
-    if (proj.theme) html += `<div><strong>Theme</strong>${proj.theme}</div>`;
-    if (proj.type) html += `<div><strong>Type</strong>${proj.type}</div>`;
-    if (proj.award) html += `<div><strong>Award</strong>${proj.award}</div>`;
-    html += '</div></div></div>';
+    html += '</div>';
 
-    // White sheet — alternating image/text sections
+    // White sheet — title, meta, description, then images
     html += '<div class="proj-white-sheet">';
 
-    // Intro text block
+    html += `<h1 class="proj-title-white">${proj.name}</h1>`;
+    html += '<div class="proj-meta-white">';
+    if (proj.client) html += `<span>${proj.client}</span>`;
+    if (proj.year) html += `<span>${proj.year}</span>`;
+    if (proj.collab) html += `<span>${proj.collab}</span>`;
+    if (proj.location) html += `<span>${proj.location}</span>`;
+    if (proj.theme) html += `<span>${proj.theme}</span>`;
+    if (proj.type) html += `<span>${proj.type}</span>`;
+    if (proj.award) html += `<span>${proj.award}</span>`;
+    html += '</div>';
+
     const descTexts = proj.desc && proj.desc.length > 0 ? proj.desc : [loremPool[0], loremPool[1]];
     html += '<div class="proj-intro">';
     descTexts.forEach(p => html += `<p>${p}</p>`);
@@ -953,28 +989,16 @@ function openProject(projId) {
     }
     html += '</div>';
 
-    // Alternating image-text rows (skip first image, used as hero)
+    // Dynamic 2-column grid layout with white space
     const remaining = proj.images.slice(1);
-    let loremIdx = 0;
+    html += '<div class="proj-media-grid">';
+    // Pattern: left, right, left, full, right, left, right, full...
+    const pattern = ['left', 'right', 'left', 'full', 'right', 'left', 'right', 'full'];
     for (let i = 0; i < remaining.length; i++) {
-      const src = remaining[i];
-      const isLeft = i % 2 === 0;
-      const text = proj.desc && proj.desc[i + 1]
-        ? proj.desc[i + 1]
-        : loremPool[loremIdx % loremPool.length];
-      loremIdx++;
-
-      if (i < remaining.length - 1 && remaining.length > 2) {
-        // Alternating layout
-        html += `<div class="proj-row ${isLeft ? 'img-left' : 'img-right'}">`;
-        html += `<div class="proj-row-media">${mediaTag(src, proj.name)}</div>`;
-        html += `<div class="proj-row-text"><p>${text}</p></div>`;
-        html += '</div>';
-      } else {
-        // Full-width for last image or small sets
-        html += `<div class="proj-row-full">${mediaTag(src, proj.name)}</div>`;
-      }
+      const pos = pattern[i % pattern.length];
+      html += `<div class="media-cell ${pos}">${mediaTag(remaining[i], proj.name)}</div>`;
     }
+    html += '</div>';
 
     html += '</div>';
     overlayInner.innerHTML = html;
@@ -999,7 +1023,7 @@ function openProject(projId) {
 
   // Wire up lightbox on all clickable media
   lightboxItems = proj.images;
-  const allMedia = overlayInner.querySelectorAll('.proj-row-media img, .proj-row-media video, .proj-row-full img, .proj-row-full video, .proj-gallery img, .proj-gallery video');
+  const allMedia = overlayInner.querySelectorAll('.media-cell img, .media-cell video, .proj-row-full img, .proj-row-full video, .proj-gallery img, .proj-gallery video');
   allMedia.forEach((el) => {
     const src = el.src || el.dataset.src;
     const idx = proj.images.indexOf(src);
@@ -1226,9 +1250,100 @@ const lightboxContent = document.getElementById('lightboxContent');
 const lightboxCounter = document.getElementById('lightboxCounter');
 let lightboxItems = [];
 let lightboxIndex = 0;
+let lbFrameRAF = null;
+let lbDirection = 'init';
+
+function drawHistogram(source, canvas) {
+  try {
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width, h = canvas.height;
+
+    // Sample source to small canvas
+    const tmp = document.createElement('canvas');
+    tmp.width = 100; tmp.height = 100;
+    const tctx = tmp.getContext('2d', { willReadFrequently: true });
+    tctx.drawImage(source, 0, 0, 100, 100);
+    const data = tctx.getImageData(0, 0, 100, 100).data;
+
+    // Build RGB histograms
+    const rHist = new Uint32Array(256);
+    const gHist = new Uint32Array(256);
+    const bHist = new Uint32Array(256);
+
+    for (let i = 0; i < data.length; i += 4) {
+      rHist[data[i]]++;
+      gHist[data[i + 1]]++;
+      bHist[data[i + 2]]++;
+    }
+
+    // Find max for scaling
+    let max = 1;
+    for (let i = 0; i < 256; i++) {
+      max = Math.max(max, rHist[i], gHist[i], bHist[i]);
+    }
+
+    // Draw
+    ctx.clearRect(0, 0, w, h);
+    const barW = w / 256;
+
+    // Draw each channel
+    function drawChannel(hist, color) {
+      ctx.beginPath();
+      ctx.moveTo(0, h);
+      for (let i = 0; i < 256; i++) {
+        const x = i * barW;
+        const barH = (hist[i] / max) * h;
+        ctx.lineTo(x, h - barH);
+      }
+      ctx.lineTo(w, h);
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.fill();
+    }
+
+    ctx.globalCompositeOperation = 'screen';
+    drawChannel(rHist, 'rgba(255,60,60,0.6)');
+    drawChannel(gHist, 'rgba(60,255,60,0.6)');
+    drawChannel(bHist, 'rgba(60,60,255,0.6)');
+    ctx.globalCompositeOperation = 'source-over';
+  } catch (e) {
+    // canvas tainted — skip
+  }
+}
+
+const lightboxStrip = document.getElementById('lightboxStrip');
+
+function buildLightboxStrip() {
+  lightboxStrip.innerHTML = '';
+  lightboxItems.forEach((src, i) => {
+    const isVid = src.endsWith('.webm') || src.endsWith('.mp4');
+    const thumbSrc = isVid ? src.replace(/\.(webm|mp4)$/, '_thumb.webp') : src;
+    const item = document.createElement('div');
+    item.className = 'lightbox-strip-item' + (i === lightboxIndex ? ' active' : '') + (isVid ? ' is-film' : '');
+    item.innerHTML = `<img src="${thumbSrc}" alt="" />`;
+    item.addEventListener('click', () => {
+      lbDirection = i > lightboxIndex ? 'right' : 'left';
+      lightboxIndex = i;
+      renderLightbox();
+      updateStripActive();
+    });
+    lightboxStrip.appendChild(item);
+  });
+}
+
+function updateStripActive() {
+  const items = lightboxStrip.querySelectorAll('.lightbox-strip-item');
+  items.forEach((item, i) => {
+    item.classList.toggle('active', i === lightboxIndex);
+  });
+  const active = lightboxStrip.querySelector('.active');
+  if (active) active.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+}
 
 function openLightbox(index) {
   lightboxIndex = index;
+  lbDirection = 'init';
+  buildLightboxStrip();
   renderLightbox();
   lightbox.classList.add('open');
 }
@@ -1236,17 +1351,62 @@ function openLightbox(index) {
 function closeLightbox() {
   lightbox.classList.remove('open');
   lightboxContent.innerHTML = '';
+  if (lbFrameRAF) cancelAnimationFrame(lbFrameRAF);
 }
 
 function renderLightbox() {
   const src = lightboxItems[lightboxIndex];
   const isVid = src.endsWith('.webm') || src.endsWith('.mp4');
+  lightboxContent.className = 'lightbox-content slide-' + lbDirection;
   if (isVid) {
     lightboxContent.innerHTML = `<video src="${src}" autoplay muted loop playsinline></video>`;
   } else {
     lightboxContent.innerHTML = `<img src="${src}" />`;
   }
   lightboxCounter.textContent = `${lightboxIndex + 1} / ${lightboxItems.length}`;
+
+  // File info
+  const info = document.getElementById('lightboxInfo');
+  const filename = src.split('/').pop();
+  const ext = filename.split('.').pop().toUpperCase();
+  const folder = src.split('/').slice(-2, -1)[0] || '';
+  const isVidFile = ext === 'WEBM' || ext === 'MP4';
+  info.innerHTML = `${filename}<br>${ext} ${isVidFile ? '· VIDEO' : '· IMAGE'}<br>${folder}`;
+
+  // Frame counter for videos
+  if (lbFrameRAF) cancelAnimationFrame(lbFrameRAF);
+  if (isVidFile) {
+    const vid = lightboxContent.querySelector('video');
+    if (vid) {
+      const fps = 24;
+      function updateFrameCount() {
+        const current = Math.floor(vid.currentTime * fps);
+        const total = Math.floor((vid.duration || 0) * fps);
+        info.innerHTML = `${filename}<br>${ext} · VIDEO<br>${folder}<br>F ${current} / ${total}`;
+        lbFrameRAF = requestAnimationFrame(updateFrameCount);
+      }
+      vid.addEventListener('loadeddata', updateFrameCount, { once: true });
+      if (vid.readyState >= 2) updateFrameCount();
+    }
+  }
+
+  // Draw histogram
+  const histCanvas = document.getElementById('lightboxHistogram');
+  if (!isVidFile) {
+    const imgEl = lightboxContent.querySelector('img');
+    if (imgEl) {
+      const drawHist = () => drawHistogram(imgEl, histCanvas);
+      if (imgEl.complete) drawHist();
+      else imgEl.addEventListener('load', drawHist, { once: true });
+    }
+  } else {
+    const vid = lightboxContent.querySelector('video');
+    if (vid) {
+      vid.addEventListener('loadeddata', () => drawHistogram(vid, histCanvas), { once: true });
+    }
+  }
+
+  updateStripActive();
 }
 
 document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
@@ -1255,19 +1415,21 @@ lightbox.addEventListener('click', (e) => {
 });
 
 document.getElementById('lightboxPrev').addEventListener('click', () => {
+  lbDirection = 'left';
   lightboxIndex = (lightboxIndex - 1 + lightboxItems.length) % lightboxItems.length;
   renderLightbox();
 });
 
 document.getElementById('lightboxNext').addEventListener('click', () => {
+  lbDirection = 'right';
   lightboxIndex = (lightboxIndex + 1) % lightboxItems.length;
   renderLightbox();
 });
 
 document.addEventListener('keydown', (e) => {
   if (!lightbox.classList.contains('open')) return;
-  if (e.key === 'ArrowRight') { lightboxIndex = (lightboxIndex + 1) % lightboxItems.length; renderLightbox(); }
-  if (e.key === 'ArrowLeft') { lightboxIndex = (lightboxIndex - 1 + lightboxItems.length) % lightboxItems.length; renderLightbox(); }
+  if (e.key === 'ArrowRight') { lbDirection = 'right'; lightboxIndex = (lightboxIndex + 1) % lightboxItems.length; renderLightbox(); }
+  if (e.key === 'ArrowLeft') { lbDirection = 'left'; lightboxIndex = (lightboxIndex - 1 + lightboxItems.length) % lightboxItems.length; renderLightbox(); }
 });
 
 // ========== GRID SIZE SLIDER ==========
@@ -1294,7 +1456,7 @@ function updateSlider() {
 
   // Fill dots and track
   const pct = ((val - sliderMin) / (sliderMax - sliderMin)) * 100;
-  gridSlider.style.background = `linear-gradient(to right, #222 ${pct}%, rgba(0,0,0,0.1) ${pct}%)`;
+  gridSlider.style.background = `linear-gradient(to right, #fff ${pct}%, rgba(0,0,0,0.1) ${pct}%)`;
 
   const dots = sliderDotsEl.querySelectorAll('.slider-dot');
   dots.forEach((dot, i) => {
@@ -1322,7 +1484,7 @@ if (mobileSlider && mobileDotsEl) {
     const val = parseInt(mobileSlider.value);
     gridEl.style.gridTemplateColumns = `repeat(${val}, 1fr)`;
     const pct = ((val - mMin) / (mMax - mMin)) * 100;
-    mobileSlider.style.background = `linear-gradient(to right, #222 ${pct}%, rgba(0,0,0,0.1) ${pct}%)`;
+    mobileSlider.style.background = `linear-gradient(to right, #fff ${pct}%, rgba(0,0,0,0.1) ${pct}%)`;
     mobileDotsEl.querySelectorAll('.slider-dot').forEach((dot, i) => {
       dot.classList.toggle('filled', i <= val - mMin);
     });
