@@ -331,8 +331,8 @@ if (!isMobileHome) {
 
   requestAnimationFrame(smoothScrollLoop);
 } else {
-  // Mobile: just update parallax on native scroll
-  window.addEventListener('scroll', updateParallax, { passive: true });
+  // Mobile: single scroll listener, no parallax (saves battery)
+  window.addEventListener('scroll', onMobileScroll, { passive: true });
 }
 
 // ========== PARALLAX ==========
@@ -359,7 +359,6 @@ function updateParallax() {
 
     const progress = Math.max(0, Math.min(1, -blockTop / vh));
 
-    // Title
     const titleScale = 1 + progress * 0.15;
     const titleOpacity = Math.max(0, 1 - progress * 1.3);
     const letterSpacing = progress * 0.5;
@@ -367,7 +366,6 @@ function updateParallax() {
     bd.titleName.style.opacity = titleOpacity;
     bd.titleName.style.letterSpacing = `${letterSpacing}em`;
 
-    // Scattered images — each at its own speed
     for (const img of bd.imgs) {
       const rect = img.el.getBoundingClientRect();
       const center = (rect.top + rect.height / 2 - vh / 2) / vh;
@@ -382,58 +380,108 @@ function updateParallax() {
   }
 }
 
-// ========== WATERMARK LETTER ROTATION ==========
+// ========== WATERMARK LETTERS ==========
 const wmEl = document.getElementById('watermarkText');
+let wmLetters = [];
+let wmLastScroll = 0;
+let wmResetTimer = null;
+const MAX_ROT = 35;
+
 if (wmEl) {
   const text = wmEl.textContent;
   wmEl.innerHTML = '';
-  const letters = [];
   for (const char of text) {
     const span = document.createElement('span');
     span.className = 'wm-letter';
     span.textContent = char === ' ' ? '\u00A0' : char;
     wmEl.appendChild(span);
-    letters.push(span);
+    wmLetters.push(span);
   }
-
-  const MAX_ROT = 35;
-  let lastScroll = 0;
-  let resetTimer = null;
-
-  window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
-    const delta = scrollY - lastScroll;
-    lastScroll = scrollY;
-
-    letters.forEach((letter, i) => {
-      const offset = i * 0.12;
-      const raw = delta * -(1.2 + offset);
-      const rot = Math.max(-MAX_ROT, Math.min(MAX_ROT, raw));
-      letter.style.transition = 'none';
-      letter.style.transform = `rotate(${rot}deg)`;
-    });
-
-    clearTimeout(resetTimer);
-    resetTimer = setTimeout(() => {
-      letters.forEach(letter => {
-        letter.style.transition = 'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)';
-        letter.style.transform = 'rotate(0deg)';
-      });
-    }, 80);
-  }, { passive: true });
 }
 
-// ========== HIDE NAVBAR ON SCROLL DOWN ==========
+// ========== SINGLE MOBILE SCROLL HANDLER ==========
 let navLastScroll = 0;
 const navBar = document.querySelector('.bottom-bar');
-if (navBar) {
-  window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
+
+function onMobileScroll() {
+  const scrollY = window.scrollY;
+  const vh = window.innerHeight;
+
+  // Update title opacity only (no parallax on images — saves battery)
+  for (let idx = 0; idx < blockData.length; idx++) {
+    const bd = blockData[idx];
+    const blockTop = bd.el.offsetTop - scrollY;
+    if (blockTop > vh * 2 || blockTop < -bd.el.offsetHeight - vh) continue;
+    const progress = Math.max(0, Math.min(1, -blockTop / vh));
+    bd.titleName.style.opacity = Math.max(0, 1 - progress * 1.3);
+
+    if (blockTop > -vh && blockTop < vh * 0.5) {
+      barName.textContent = projects[idx].name;
+      barCounter.textContent = `${idx + 1} / ${projects.length}`;
+    }
+  }
+
+  // Navbar hide/show
+  if (navBar) {
     if (scrollY > navLastScroll && scrollY > 100) {
       navBar.classList.add('bar-hidden');
     } else {
       navBar.classList.remove('bar-hidden');
     }
-    navLastScroll = scrollY;
-  }, { passive: true });
+  }
+
+  // Letter rotation
+  if (wmLetters.length) {
+    const delta = scrollY - wmLastScroll;
+    wmLetters.forEach((letter, i) => {
+      const raw = delta * -(1.2 + i * 0.12);
+      letter.style.transition = 'none';
+      letter.style.transform = `rotate(${Math.max(-MAX_ROT, Math.min(MAX_ROT, raw))}deg)`;
+    });
+    clearTimeout(wmResetTimer);
+    wmResetTimer = setTimeout(() => {
+      wmLetters.forEach(letter => {
+        letter.style.transition = 'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)';
+        letter.style.transform = 'rotate(0deg)';
+      });
+    }, 80);
+  }
+
+  wmLastScroll = scrollY;
+  navLastScroll = scrollY;
+}
+
+// ========== DESKTOP: separate listeners ==========
+if (!isMobileHome) {
+  if (wmLetters.length) {
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      const delta = scrollY - wmLastScroll;
+      wmLastScroll = scrollY;
+      wmLetters.forEach((letter, i) => {
+        const raw = delta * -(1.2 + i * 0.12);
+        letter.style.transition = 'none';
+        letter.style.transform = `rotate(${Math.max(-MAX_ROT, Math.min(MAX_ROT, raw))}deg)`;
+      });
+      clearTimeout(wmResetTimer);
+      wmResetTimer = setTimeout(() => {
+        wmLetters.forEach(letter => {
+          letter.style.transition = 'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)';
+          letter.style.transform = 'rotate(0deg)';
+        });
+      }, 80);
+    }, { passive: true });
+  }
+
+  if (navBar) {
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      if (scrollY > navLastScroll && scrollY > 100) {
+        navBar.classList.add('bar-hidden');
+      } else {
+        navBar.classList.remove('bar-hidden');
+      }
+      navLastScroll = scrollY;
+    }, { passive: true });
+  }
 }
