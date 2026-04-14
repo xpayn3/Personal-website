@@ -948,14 +948,38 @@ const loremPool = [
 
 function mediaTag(src, alt) {
   if (src.endsWith('.webm') || src.endsWith('.mp4')) {
+    if (isMobile) {
+      // On mobile show thumbnail instead of video to save memory
+      const thumb = src.replace(/\.(webm|mp4)$/, '_thumb.webp');
+      return `<img src="${thumb}" alt="${alt || ''}" loading="lazy" decoding="async" />`;
+    }
     return `<video data-src="${src}" muted loop playsinline preload="none"></video>`;
   }
   return `<img src="${src}" alt="${alt || ''}" loading="lazy" decoding="async" />`;
 }
 
+let currentOverlayObs = null;
+
+function cleanupOverlay() {
+  // Disconnect old observer
+  if (currentOverlayObs) {
+    currentOverlayObs.disconnect();
+    currentOverlayObs = null;
+  }
+  // Pause and destroy all videos
+  overlayInner.querySelectorAll('video').forEach(vid => {
+    vid.pause();
+    vid.removeAttribute('src');
+    vid.load();
+  });
+  overlayInner.innerHTML = '';
+}
+
 function openProject(projId) {
   const proj = projects[projId];
   if (!proj) return;
+
+  cleanupOverlay();
 
   const isLab = projId === 'lab';
 
@@ -1034,8 +1058,8 @@ function openProject(projId) {
     overlayInner.innerHTML = html;
   }
 
-  // Lazy-load overlay videos when they scroll into view (YouTube trick)
-  const overlayVideoObs = new IntersectionObserver((entries) => {
+  // Lazy-load overlay videos when they scroll into view
+  currentOverlayObs = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       const vid = entry.target;
       if (entry.isIntersecting) {
@@ -1049,7 +1073,7 @@ function openProject(projId) {
     });
   }, { root: overlay, rootMargin: '200px' });
 
-  overlayInner.querySelectorAll('video[data-src]').forEach(vid => overlayVideoObs.observe(vid));
+  overlayInner.querySelectorAll('video[data-src]').forEach(vid => currentOverlayObs.observe(vid));
 
   // Wire up lightbox on all clickable media
   lightboxItems = proj.images;
@@ -1258,6 +1282,7 @@ function closeMobileList() {
 mobileProjClose.addEventListener('click', closeMobileList);
 
 function closeOverlay() {
+  cleanupOverlay();
   overlay.classList.remove('open');
   overlayClose.classList.remove('visible');
   document.getElementById('projNav').classList.remove('visible');
