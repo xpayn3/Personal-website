@@ -958,6 +958,8 @@ html {
 .proj-hero-bg {
   position: sticky;
   top: 0;
+  left: 0;
+  right: 0;
   height: 90vh;
   overflow: hidden;
   z-index: 0;
@@ -967,7 +969,14 @@ html {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center;
   display: block;
+}
+
+@media (max-width: 768px) {
+  .proj-hero-bg {
+    height: 70vh;
+  }
 }
 
 /* keep old dark hero for lab */
