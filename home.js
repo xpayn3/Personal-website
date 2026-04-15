@@ -203,12 +203,17 @@ heroSrcs.forEach((item, i) => {
 
   if (isVideo(item.src)) {
     const v = document.createElement('video');
-    v.src = item.src;
     v.muted = true;
     v.loop = false;
-    v.autoplay = i === 0;
     v.playsInline = true;
-    v.preload = i === 0 ? 'auto' : 'none';
+    if (i === 0) {
+      v.src = item.src;
+      v.autoplay = true;
+      v.preload = 'auto';
+    } else {
+      v.dataset.src = item.src;
+      v.preload = 'none';
+    }
     slide.appendChild(v);
   } else {
     const img = document.createElement('img');
@@ -243,9 +248,8 @@ function goToHeroSlide(i) {
   const nextSlide = heroSlides.children[i];
   const nextVid = nextSlide && nextSlide.querySelector('video');
   if (nextVid) {
-    if (!nextVid.src || nextVid.preload === 'none') {
-      nextVid.preload = 'auto';
-      nextVid.load();
+    if (!nextVid.src && nextVid.dataset.src) {
+      nextVid.src = nextVid.dataset.src;
     }
     nextVid.currentTime = 0;
     nextVid.play().catch(() => {});
@@ -265,9 +269,9 @@ function preloadNextHeroVideo() {
   const nextIdx = (heroIdx + 1) % heroSrcs.length;
   const nextSlide = heroSlides.children[nextIdx];
   const nextVid = nextSlide && nextSlide.querySelector('video');
-  if (nextVid && nextVid.preload !== 'auto') {
+  if (nextVid && !nextVid.src && nextVid.dataset.src) {
+    nextVid.src = nextVid.dataset.src;
     nextVid.preload = 'auto';
-    nextVid.load();
   }
 }
 
