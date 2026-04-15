@@ -23,7 +23,16 @@
 
     <section class="hero-split">
       <div class="hero-split-left">
-        <div class="gameboy-container" id="gameboyContainer"></div>
+        <div class="gameboy-container" id="gameboyContainer">
+          <div class="gb-skeleton" id="gbSkeleton">
+            <div class="gb-loader-blocks">
+              <div class="gb-block"></div>
+              <div class="gb-block"></div>
+              <div class="gb-block"></div>
+              <div class="gb-block"></div>
+            </div>
+          </div>
+        </div>
         <p class="gameboy-hint">Drag to rotate &middot; Click buttons to navigate</p>
       </div>
       <div class="hero-split-right">
@@ -37,7 +46,7 @@
         </div>
         <div class="split-contact">
           <div class="about-links">
-            <a href="mailto:luka.grcar@me.com" class="about-icon-link"><i class="ri-mail-line"></i><span>Email me</span></a>
+            <a href="#" class="about-icon-link" id="openContactForm"><i class="ri-mail-line"></i><span>Email me</span></a>
             <a href="https://www.instagram.com/lukakluka/" target="_blank" rel="noopener noreferrer" class="about-icon-link"><i class="ri-instagram-line"></i><span>Instagram</span></a>
             <a href="https://www.behance.net/lukagrcar" target="_blank" rel="noopener noreferrer" class="about-icon-link"><i class="ri-behance-fill"></i><span>Behance</span></a>
           </div>
@@ -140,6 +149,54 @@
 
   <a href="index.html" class="watermark">Luka Grčar</a>
 
+  <!-- Contact Form Popup -->
+  <div class="contact-overlay" id="contactOverlay">
+    <div class="contact-form">
+      <button class="contact-close" id="contactClose">&times;</button>
+      <h2 class="contact-title">Get in touch</h2>
+      <p class="contact-sub">Have a project in mind? Let's talk.</p>
+      <form id="contactFormEl" action="https://formspree.io/f/xkgwqwqz" method="POST">
+        <div class="form-row">
+          <input type="text" name="name" placeholder="Your name *" required />
+          <input type="email" name="email" placeholder="Your email *" required />
+        </div>
+        <div class="form-row">
+          <input type="text" name="company" placeholder="Company / Brand" />
+          <input type="text" name="website" placeholder="Website URL" />
+        </div>
+        <div class="form-label">Project type</div>
+        <div class="form-chips" id="projTypeChips">
+          <label class="form-chip"><input type="checkbox" name="type" value="3D Animation" /><span>3D Animation</span></label>
+          <label class="form-chip"><input type="checkbox" name="type" value="Motion Graphics" /><span>Motion Graphics</span></label>
+          <label class="form-chip"><input type="checkbox" name="type" value="Product Viz" /><span>Product Viz</span></label>
+          <label class="form-chip"><input type="checkbox" name="type" value="Visual Identity" /><span>Visual Identity</span></label>
+          <label class="form-chip"><input type="checkbox" name="type" value="UX/UI Design" /><span>UX/UI Design</span></label>
+          <label class="form-chip"><input type="checkbox" name="type" value="Web Development" /><span>Web Development</span></label>
+          <label class="form-chip"><input type="checkbox" name="type" value="Projection Mapping" /><span>Projection Mapping</span></label>
+          <label class="form-chip"><input type="checkbox" name="type" value="Other" /><span>Other</span></label>
+        </div>
+        <div class="form-label">Budget range</div>
+        <div class="form-chips" id="budgetChips">
+          <label class="form-chip form-chip-radio"><input type="radio" name="budget" value="< €1k" /><span>&lt; €1k</span></label>
+          <label class="form-chip form-chip-radio"><input type="radio" name="budget" value="€1k - €5k" /><span>€1k – €5k</span></label>
+          <label class="form-chip form-chip-radio"><input type="radio" name="budget" value="€5k - €15k" /><span>€5k – €15k</span></label>
+          <label class="form-chip form-chip-radio"><input type="radio" name="budget" value="€15k+" /><span>€15k+</span></label>
+          <label class="form-chip form-chip-radio"><input type="radio" name="budget" value="Not sure" /><span>Not sure</span></label>
+        </div>
+        <div class="form-label">Timeline</div>
+        <div class="form-chips">
+          <label class="form-chip form-chip-radio"><input type="radio" name="timeline" value="ASAP" /><span>ASAP</span></label>
+          <label class="form-chip form-chip-radio"><input type="radio" name="timeline" value="1-2 weeks" /><span>1–2 weeks</span></label>
+          <label class="form-chip form-chip-radio"><input type="radio" name="timeline" value="1 month" /><span>1 month</span></label>
+          <label class="form-chip form-chip-radio"><input type="radio" name="timeline" value="Flexible" /><span>Flexible</span></label>
+        </div>
+        <textarea name="message" placeholder="Tell me about your project... *" rows="4" required></textarea>
+        <button type="submit" class="form-submit">Send message</button>
+      </form>
+      <p class="contact-note" id="contactNote"></p>
+    </div>
+  </div>
+
   <script>
   document.addEventListener('contextmenu', e => e.preventDefault());
   document.addEventListener('dragstart', e => e.preventDefault());
@@ -161,6 +218,43 @@
     if (!e.target.closest('.bottom-bar')) {
       document.querySelectorAll('.bar-dropdown').forEach(d => d.classList.remove('open'));
     }
+  });
+
+  // Contact form
+  const overlay = document.getElementById('contactOverlay');
+  document.getElementById('openContactForm').addEventListener('click', (e) => {
+    e.preventDefault();
+    overlay.classList.add('open');
+  });
+  document.getElementById('contactClose').addEventListener('click', () => {
+    overlay.classList.remove('open');
+  });
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+  document.getElementById('contactFormEl').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const note = document.getElementById('contactNote');
+    const btn = form.querySelector('.form-submit');
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+    try {
+      const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } });
+      if (res.ok) {
+        note.textContent = 'Message sent! I\'ll get back to you soon.';
+        note.style.color = '#4ade80';
+        form.reset();
+      } else {
+        note.textContent = 'Something went wrong. Try again.';
+        note.style.color = '#f87171';
+      }
+    } catch {
+      note.textContent = 'Network error. Try again.';
+      note.style.color = '#f87171';
+    }
+    btn.textContent = 'Send message';
+    btn.disabled = false;
   });
   </script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/build/three.min.js"></script>

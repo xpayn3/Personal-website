@@ -230,6 +230,10 @@
 
     gb.add(model);
 
+    // Remove skeleton loader
+    const skel = document.getElementById('gbSkeleton');
+    if (skel) skel.remove();
+
     // Get scaled bounds
     const sBox = new THREE.Box3().setFromObject(model);
     const sSize = sBox.getSize(new THREE.Vector3());
