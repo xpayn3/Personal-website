@@ -21,6 +21,11 @@
 
   <main class="about-page">
 
+    <section class="gameboy-section">
+      <div class="gameboy-container" id="gameboyContainer"></div>
+      <p class="gameboy-hint">Drag to rotate &middot; Click buttons to navigate</p>
+    </section>
+
     <section class="about-hero">
       <h1 class="about-name">Luka Grčar</h1>
       <p class="about-role">3D generalist &amp; UX graphic designer</p>
@@ -163,5 +168,13 @@
     }
   });
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/shaders/CopyShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/postprocessing/EffectComposer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/postprocessing/RenderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+  <script src="gameboy.js"></script>
 </body>
 </html>

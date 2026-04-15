@@ -1046,6 +1046,25 @@ img, video {
   padding: 80px 16px 120px;
 }
 
+.proj-header {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+.proj-header-thumb {
+  width: 120px;
+  height: 120px;
+  border-radius: 16px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.proj-header-info {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
 .proj-title-white {
   font-family: 'Instrument Sans', sans-serif;
   font-size: clamp(2rem, 5vw, 3.5rem);
@@ -1074,9 +1093,9 @@ img, video {
 /* intro text */
 .proj-intro {
   max-width: 640px;
-  margin: 0 auto 16px;
+  margin: 0 0 16px;
   padding: 0;
-  text-align: center;
+  text-align: left;
 }
 
 .proj-intro p {
@@ -1318,6 +1337,8 @@ img, video {
   .proj-hero-dark { padding: 60px 16px 40px; }
   .proj-hero-content { padding: 0; }
   .proj-white-sheet { padding: 40px 16px 80px; border-radius: 20px 20px 0 0; }
+  .proj-header { gap: 16px; }
+  .proj-header-thumb { width: 80px; height: 80px; border-radius: 12px; }
   .proj-row-full { padding: 0; margin-bottom: 40px; }
   .proj-intro { padding: 0; margin-bottom: 40px; }
   .proj-gallery { padding: 0; }

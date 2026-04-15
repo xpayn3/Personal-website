@@ -1017,7 +1017,6 @@ function cleanupOverlay() {
   overlayInner.querySelectorAll('video').forEach(vid => {
     vid.pause();
     vid.removeAttribute('src');
-    vid.load();
   });
   overlayInner.innerHTML = '';
 }
@@ -1072,6 +1071,13 @@ function openProject(projId) {
     // White sheet — title, meta, description, images, tools at bottom
     html += '<div class="proj-white-sheet">';
 
+    // Header: thumbnail on left, title + meta on right
+    const thumbSrcHeader = heroSrc.endsWith('.webm') || heroSrc.endsWith('.mp4')
+      ? heroSrc.replace(/\.(webm|mp4)$/, '_thumb.webp')
+      : heroSrc;
+    html += '<div class="proj-header">';
+    html += `<img src="${thumbSrcHeader}" alt="${proj.name}" class="proj-header-thumb" />`;
+    html += '<div class="proj-header-info">';
     html += `<h1 class="proj-title-white">${proj.name}</h1>`;
     html += '<div class="proj-meta-white">';
     if (proj.client) html += `<span>${proj.client}</span>`;
@@ -1082,6 +1088,7 @@ function openProject(projId) {
     if (proj.type) html += `<span>${proj.type}</span>`;
     if (proj.award) html += `<span>${proj.award}</span>`;
     html += '</div>';
+    html += '</div></div>';
 
     const descTexts = proj.desc && proj.desc.length > 0 ? proj.desc : [loremPool[0], loremPool[1]];
     html += '<div class="proj-intro">';
@@ -1415,7 +1422,7 @@ function openLightbox(index) {
 
 function closeLightbox() {
   const vid = lightboxContent.querySelector('video');
-  if (vid) { vid.pause(); vid.src = ''; }
+  if (vid) { vid.pause(); vid.removeAttribute('src'); }
   lightbox.classList.remove('open');
   lightboxContent.innerHTML = '';
   if (lbFrameRAF) cancelAnimationFrame(lbFrameRAF);
@@ -1428,7 +1435,7 @@ function closeLightbox() {
 function renderLightbox() {
   // Pause any playing video before switching
   const oldVid = lightboxContent.querySelector('video');
-  if (oldVid) { oldVid.pause(); oldVid.src = ''; }
+  if (oldVid) { oldVid.pause(); oldVid.removeAttribute('src'); }
 
   // Bounds check
   if (lightboxIndex < 0) lightboxIndex = 0;

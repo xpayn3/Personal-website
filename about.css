@@ -26,7 +26,7 @@ body {
 
 /* ========== HERO ========== */
 .about-hero {
-  padding: 140px 0 80px;
+  padding: 60px 0 80px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -54,6 +54,35 @@ body {
 .about-section {
   padding: 48px 0;
   border-bottom: 1px solid var(--border);
+}
+
+/* ========== GAMEBOY 3D ========== */
+.gameboy-section {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.gameboy-container {
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: pan-y;
+}
+.gameboy-container:active { cursor: grabbing; }
+.gameboy-container canvas { display: block; }
+.gameboy-hint {
+  position: absolute;
+  bottom: 24px;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 0.05em;
 }
 
 .section-label {
@@ -384,4 +413,5 @@ body {
   .about-page { padding: 0 20px 100px; }
   .about-hero { padding: 100px 0 60px; }
   .about-grid { grid-template-columns: 1fr; gap: 32px; }
+  .gameboy-section { height: 100svh; }
 }
