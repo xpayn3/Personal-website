@@ -961,11 +961,8 @@ const loremPool = [
 
 function mediaTag(src, alt) {
   if (src.endsWith('.webm') || src.endsWith('.mp4')) {
-    if (isMobile) {
-      const thumb = src.replace(/\.(webm|mp4)$/, '_thumb.webp');
-      return `<img src="${thumb}" alt="${alt || ''}" loading="lazy" decoding="async" />`;
-    }
-    return `<video data-src="${src}" muted loop playsinline preload="none"></video>`;
+    const thumb = src.replace(/\.(webm|mp4)$/, '_thumb.webp');
+    return `<video data-src="${src}" poster="${thumb}" muted loop playsinline preload="none"></video>`;
   }
   if (isMobile) {
     const mobileSrc = src.replace('Images/', 'Images/mobile/');
