@@ -16,6 +16,48 @@
   renderer.outputEncoding = THREE.sRGBEncoding;
   container.appendChild(renderer.domElement);
 
+  // Procedural studio environment map
+  const envScene = new THREE.Scene();
+  const envCam = new THREE.CubeCamera(0.1, 100, new THREE.WebGLCubeRenderTarget(128));
+  // Gradient sphere simulating a soft studio
+  const envGeo = new THREE.SphereGeometry(50, 32, 32);
+  const envMat = new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    uniforms: {
+      topColor: { value: new THREE.Color(0x334466) },
+      midColor: { value: new THREE.Color(0x1a1a2e) },
+      bottomColor: { value: new THREE.Color(0x0a0a12) },
+      hotspot1: { value: new THREE.Vector3(0.5, 0.7, 0.5) },
+      hotspot2: { value: new THREE.Vector3(-0.6, 0.3, 0.4) },
+    },
+    vertexShader: `
+      varying vec3 vWorldPos;
+      void main() {
+        vWorldPos = normalize(position);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 topColor, midColor, bottomColor;
+      uniform vec3 hotspot1, hotspot2;
+      varying vec3 vWorldPos;
+      void main() {
+        float y = vWorldPos.y * 0.5 + 0.5;
+        vec3 col = mix(bottomColor, midColor, smoothstep(0.0, 0.4, y));
+        col = mix(col, topColor, smoothstep(0.4, 1.0, y));
+        // Soft light hotspots
+        float h1 = pow(max(0.0, dot(normalize(vWorldPos), normalize(hotspot1))), 16.0);
+        float h2 = pow(max(0.0, dot(normalize(vWorldPos), normalize(hotspot2))), 24.0);
+        col += vec3(1.0, 0.95, 0.9) * h1 * 0.6;
+        col += vec3(0.85, 0.9, 1.0) * h2 * 0.3;
+        gl_FragColor = vec4(col, 1.0);
+      }
+    `
+  });
+  envScene.add(new THREE.Mesh(envGeo, envMat));
+  envCam.update(renderer, envScene);
+  scene.environment = envCam.renderTarget.texture;
+
   // Studio lighting — cinematic product setup
   scene.add(new THREE.AmbientLight(0xfff5ee, 0.3));
 
@@ -113,7 +155,8 @@
       const roughT = tl.load('gameboy/body_Roughness.webp');
       const metalT = tl.load('gameboy/body_Metallic.webp');
       const aoT = tl.load('gameboy/body_Mixed_AO.webp');
-      [baseT, normT, roughT, metalT, aoT].forEach(t => { t.flipY = false; });
+      const bumpT = tl.load('gameboy/body_Height.webp');
+      [baseT, normT, roughT, metalT, aoT, bumpT].forEach(t => { t.flipY = false; });
       baseT.encoding = THREE.sRGBEncoding;
 
       bodyMesh.material = new THREE.MeshStandardMaterial({
@@ -122,16 +165,44 @@
         roughnessMap: roughT,
         metalnessMap: metalT,
         aoMap: aoT,
+        bumpMap: bumpT,
+        bumpScale: 0.3,
         roughness: 1,
         metalness: 1,
+        envMap: envCam.renderTarget.texture,
+        envMapIntensity: 0.4,
       });
     }
 
-    // Glass: GLTF loads tex_0.png which now has Pikachu + baked alpha
+    // Light: red emissive
+    const lightMesh = parts['body-light'];
+    if (lightMesh) {
+      lightMesh.material = new THREE.MeshStandardMaterial({
+        color: 0x330000,
+        emissive: 0x000000,
+        emissiveIntensity: 0,
+        roughness: 0.2,
+        metalness: 0.0,
+      });
+      // Red point light — starts off
+      const ledBox = new THREE.Box3().setFromObject(lightMesh);
+      const ledCenter = ledBox.getCenter(new THREE.Vector3());
+      const ledGlow = new THREE.PointLight(0xff0000, 0, 8);
+      ledGlow.position.copy(ledCenter);
+      model.add(ledGlow);
+      // Store refs to turn on during boot
+      lightMesh.userData.ledGlow = ledGlow;
+    }
+
+    // Glass: GLTF loads tex_0 + add roughness map
     if (parts.glass) {
       const glassMat = parts.glass.material;
       glassMat.transparent = true;
       glassMat.depthWrite = false;
+      const glassRough = new THREE.TextureLoader().load('gameboy/screen_Roughness.webp');
+      glassRough.flipY = false;
+      glassMat.roughnessMap = glassRough;
+      glassMat.roughness = 1;
       glassMat.needsUpdate = true;
       parts.glass.renderOrder = 1;
 
@@ -247,13 +318,16 @@
   });
 
   // ========== SCREEN UI ==========
-  const C = { bg: '#9BBC0F', light: '#8BAC0F', dark: '#306230', ink: '#0F380F' };
+  // GBC LCD palette — slightly more saturated and warm like real hardware
+  const C = { bg: '#87a340', light: '#6d8a30', dark: '#3a5c21', ink: '#1a3000' };
   const menuItems = ['ABOUT', 'SKILLS', 'TOOLS', 'CLIENTS', 'AWARDS', 'CONTACT'];
   let screen = 'insert'; // starts waiting for cartridge
   let cursor = 0;
   let scroll = 0;
+  let detailCursor = 0; // cursor within detail list
   let bootTimer = 0;
   let cartInserted = false;
+  let detailVisibleCount = 5; // updated by drawScreen
 
   const details = {
     ABOUT: ['3D generalist &','UX graphic designer','','Ljubljana, Slovenia','','Crafting visual','experiences through','3D animation, motion','design & brand','strategy.','','Every project starts','with understanding','your vision.'],
@@ -294,6 +368,7 @@
     const menuItemH = Math.floor((ch - headerH - hintH - 10) / menuItems.length);
     const detailLineH = Math.floor((ch - headerH - hintH - 10) / 6);
     const detailVisible = Math.min(6, Math.floor((ch - headerH - hintH - 10) / detailLineH));
+    detailVisibleCount = detailVisible;
 
     if (screen === 'insert') {
       ctx.fillStyle = C.dark;
@@ -410,16 +485,28 @@
     } else if (screen === 'detail') {
       ctx.textAlign = 'left';
       const item = menuItems[cursor];
+      // Highlight header bar
+      ctx.fillStyle = C.light;
+      ctx.fillRect(cx + 6, cy + 2, cw - 12, headerH - 2);
       ctx.fillStyle = C.ink;
       ctx.font = 'bold 13px monospace';
-      ctx.fillText('\u25C0 ' + item, cx + 6, cy + 14);
+      ctx.fillText('\u25C0 ' + item, cx + 8, cy + 14);
       ctx.fillStyle = C.dark;
       ctx.fillRect(cx + 6, cy + headerH, cw - 12, 1);
       ctx.font = '12px monospace';
       const lines = details[item] || [];
       for (let i = 0; i < detailVisible && (scroll + i) < lines.length; i++) {
+        const ly = cy + headerH + 8 + i * detailLineH + detailLineH * 0.7;
+        const lineIdx = scroll + i;
+        // Highlight current cursor line
+        if (lineIdx === detailCursor) {
+          ctx.fillStyle = C.light;
+          ctx.fillRect(cx + 6, ly - detailLineH * 0.6, cw - 12, detailLineH * 0.85);
+          ctx.fillStyle = C.ink;
+          ctx.fillText('\u25B6', cx + 2, ly);
+        }
         ctx.fillStyle = C.ink;
-        ctx.fillText(lines[scroll + i], cx + 10, cy + headerH + 8 + i * detailLineH + detailLineH * 0.7);
+        ctx.fillText(lines[lineIdx], cx + 10, ly);
       }
       ctx.font = '13px monospace';
       if (lines.length > detailVisible) {
@@ -431,9 +518,19 @@
       ctx.font = '9px monospace';
       ctx.fillText('B=BACK  \u25C0\u25B6=PREV/NEXT', cx + 8, cy + ch + 8);
     }
-    // Scanlines
-    ctx.fillStyle = 'rgba(0,0,0,0.03)';
-    for (let y = cy; y < cy + ch; y += 3) ctx.fillRect(cx, y, cw, 1);
+    // LCD pixel grid effect — covers full green area
+    const gx = bz, gy = bz - shiftUp, gw = w - bz * 2, gh = h - bz - (bz - shiftUp);
+    ctx.fillStyle = 'rgba(0,0,0,0.025)';
+    for (let y = gy; y < gy + gh; y += 4) ctx.fillRect(gx, y, gw, 1);
+    for (let x = gx; x < gx + gw; x += 4) ctx.fillRect(x, gy, 1, gh);
+
+    // Subtle vignette on screen edges
+    const vGrad = ctx.createRadialGradient(gx + gw/2, gy + gh/2, gh * 0.3, gx + gw/2, gy + gh/2, gh * 0.8);
+    vGrad.addColorStop(0, 'rgba(0,0,0,0)');
+    vGrad.addColorStop(1, 'rgba(0,0,0,0.15)');
+    ctx.fillStyle = vGrad;
+    ctx.fillRect(gx, gy, gw, gh);
+
     ctx.restore();
     screenTex.needsUpdate = true;
   }
@@ -445,14 +542,18 @@
     if (screen === 'menu') {
       if (action === 'up') cursor = (cursor - 1 + menuItems.length) % menuItems.length;
       else if (action === 'down') cursor = (cursor + 1) % menuItems.length;
-      else if (action === 'a') { screen = 'detail'; scroll = 0; }
+      else if (action === 'a') { screen = 'detail'; scroll = 0; detailCursor = 0; }
     } else if (screen === 'detail') {
       const lines = details[menuItems[cursor]] || [];
-      if (action === 'up') scroll = Math.max(0, scroll - 1);
-      else if (action === 'down') scroll = Math.min(Math.max(0, lines.length - 6), scroll + 1);
-      else if (action === 'b') screen = 'menu';
-      else if (action === 'left') { cursor = (cursor - 1 + menuItems.length) % menuItems.length; scroll = 0; }
-      else if (action === 'right') { cursor = (cursor + 1) % menuItems.length; scroll = 0; }
+      if (action === 'up') {
+        detailCursor = Math.max(0, detailCursor - 1);
+        if (detailCursor < scroll) scroll = detailCursor;
+      } else if (action === 'down') {
+        detailCursor = Math.min(lines.length - 1, detailCursor + 1);
+        if (detailCursor >= scroll + detailVisibleCount) scroll = detailCursor - detailVisibleCount + 1;
+      } else if (action === 'b') { screen = 'menu'; }
+      else if (action === 'left') { cursor = (cursor - 1 + menuItems.length) % menuItems.length; scroll = 0; detailCursor = 0; }
+      else if (action === 'right') { cursor = (cursor + 1) % menuItems.length; scroll = 0; detailCursor = 0; }
     }
     drawScreen();
   }
@@ -469,6 +570,72 @@
     const hits = raycaster.intersectObjects(interactiveObjs, true);
     if (hits.length && hits[0].object.userData.action) {
       const obj = hits[0].object;
+
+      // Cartridge eject (click on inserted cartridge)
+      if (obj.userData.action === 'ejectCart') {
+        if (obj.userData.animating) return true;
+        obj.userData.animating = true;
+        const cart = parts.casette;
+        const baseY = cart.userData.baseY;
+        const ejectY = baseY + 80;
+        const ejectStart = performance.now();
+        const ejectDur = 1000;
+
+        // Turn off LED
+        const lm = parts['body-light'];
+        if (lm) {
+          lm.material.color.set(0x330000);
+          lm.material.emissive.set(0x000000);
+          lm.material.emissiveIntensity = 0;
+          lm.material.needsUpdate = true;
+          if (lm.userData.ledGlow) lm.userData.ledGlow.intensity = 0;
+        }
+
+        // Screen off
+        screen = 'insert';
+        cartInserted = false;
+        drawScreen();
+
+        function ejectAnim(now) {
+          const elapsed = now - ejectStart;
+          if (elapsed < ejectDur) {
+            const t = elapsed / ejectDur;
+            const ease = t * t;
+            cart.position.y = baseY + (ejectY - baseY) * ease;
+            // GB reacts
+            if (t < 0.2) {
+              gb.rotation.x += (Math.random() - 0.5) * 0.006;
+            }
+            requestAnimationFrame(ejectAnim);
+          } else {
+            cart.visible = false;
+            cart.position.y = baseY;
+            obj.userData.animating = false;
+            // Re-add insert hit zone
+            const slotHit = interactiveObjs.find(o => o.userData.action === 'insertCart');
+            if (!slotHit) {
+              // Recreate slot hit
+              const cBox = new THREE.Box3().setFromObject(cart);
+              const cSize = cBox.getSize(new THREE.Vector3());
+              const cCenter = cBox.getCenter(new THREE.Vector3());
+              const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+              const newSlot = new THREE.Mesh(
+                new THREE.BoxGeometry(cSize.x, cSize.y * 0.5, cSize.z * 2), hitMat
+              );
+              newSlot.position.set(cCenter.x, cCenter.y + cSize.y * 0.6, cCenter.z);
+              newSlot.userData.action = 'insertCart';
+              gb.children[0].add(newSlot);
+              interactiveObjs.push(newSlot);
+            }
+            // Remove eject from interactive
+            const idx = interactiveObjs.indexOf(cart);
+            if (idx !== -1) interactiveObjs.splice(idx, 1);
+            autoRotate = true;
+          }
+        }
+        requestAnimationFrame(ejectAnim);
+        return true;
+      }
 
       // Cartridge insert
       if (obj.userData.action === 'insertCart') {
@@ -499,6 +666,17 @@
             const c1 = 1.2;
             const ease = 1 + c1 * Math.pow(t - 1, 3) + Math.pow(t - 1, 2);
             cart.position.y = startY + (baseY - startY) * Math.min(1, ease);
+
+            // Physical reaction — GB pushes down as cart slides in
+            const pushDown = Math.sin(t * Math.PI) * 0.4;
+            gb.position.y -= pushDown * 0.016;
+
+            // Snap jolt when cart seats (last 10% of slide)
+            if (t > 0.88 && t < 0.95) {
+              gb.rotation.x += (Math.random() - 0.5) * 0.008;
+              gb.rotation.z += (Math.random() - 0.5) * 0.004;
+            }
+
             requestAnimationFrame(cartAnim);
           } else if (elapsed < slideDur + pauseDur) {
             cart.position.y = baseY;
@@ -513,7 +691,21 @@
             cart.position.y = baseY;
             screen = 'boot';
             bootTimer = 0;
+            // Turn on LED
+            const lm = parts['body-light'];
+            if (lm) {
+              lm.material.color.set(0xff1a1a);
+              lm.material.emissive.set(0xff0000);
+              lm.material.emissiveIntensity = 1.0;
+              lm.material.needsUpdate = true;
+              if (lm.userData.ledGlow) lm.userData.ledGlow.intensity = 0.1;
+            }
             drawScreen();
+
+            // Make cartridge clickable for ejecting
+            cart.userData.action = 'ejectCart';
+            cart.userData.animating = false;
+            if (interactiveObjs.indexOf(cart) === -1) interactiveObjs.push(cart);
           }
         }
         requestAnimationFrame(cartAnim);
@@ -529,14 +721,21 @@
 
       pressButton(obj.userData.action);
 
-      // Body reaction — nudge the whole gameboy
+      // Body reaction — nudge then spring back
       const nudge = 0.04;
       const action = obj.userData.action;
       const nudgeX = action === 'left' ? nudge : action === 'right' ? -nudge :
                      action === 'a' ? -nudge * 0.5 : action === 'b' ? nudge * 0.5 : 0;
       const nudgeY = action === 'up' ? -nudge : action === 'down' ? nudge : 0;
+      const preX = targetRot.x;
+      const preY = targetRot.y;
       targetRot.x += nudgeY;
       targetRot.y += nudgeX;
+      clearTimeout(gb.userData.nudgeTimer);
+      gb.userData.nudgeTimer = setTimeout(() => {
+        targetRot.x = preX;
+        targetRot.y = preY;
+      }, 100);
 
       if (obj.userData.isJoystick && parts.joystick) {
         const js = parts.joystick;
