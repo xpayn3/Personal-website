@@ -1119,29 +1119,31 @@
         ctx.fillStyle = C.dark;
         for (const s of snake) ctx.fillRect(gridX + s.x * cellW, gridY + s.y * cellH, cellW - 1, cellH - 1);
         ctx.fillStyle = C.light;
-        ctx.fillRect(cx + 10, cy + ch / 2 - 34, cw - 20, 72);
+        ctx.fillRect(cx + 6, cy + ch / 2 - 40, cw - 12, 90);
         ctx.strokeStyle = C.ink;
         ctx.lineWidth = 1;
-        ctx.strokeRect(cx + 10, cy + ch / 2 - 34, cw - 20, 72);
+        ctx.strokeRect(cx + 6, cy + ch / 2 - 40, cw - 12, 90);
         ctx.fillStyle = C.ink;
         ctx.textAlign = 'center';
         ctx.font = 'bold 9px "Press Start 2P", monospace';
-        ctx.fillText('GAME OVER', cx + cw / 2, cy + ch / 2 - 20);
-        ctx.font = '8px "Press Start 2P", monospace';
-        ctx.fillText('SCORE: ' + snakeScore, cx + cw / 2, cy + ch / 2 - 6);
+        ctx.fillText('GAME OVER', cx + cw / 2, cy + ch / 2 - 26);
+        ctx.font = '6px "Press Start 2P", monospace';
+        ctx.fillText('SCORE: ' + snakeScore, cx + cw / 2, cy + ch / 2 - 12);
         ctx.fillStyle = C.dark;
-        ctx.font = '8px "Press Start 2P", monospace';
+        ctx.font = '6px "Press Start 2P", monospace';
         const jokes = [
-          'Need a designer? I dont bite',
-          'Hire me before the snake does',
-          'My pixels are better than this',
-          'I design better than you play',
-          'This snake has better UX than your site',
+          ['Need a designer?', 'I dont bite'],
+          ['Hire me before', 'the snake does'],
+          ['My pixels are', 'better than this'],
+          ['I design better', 'than you play'],
+          ['This snake has better', 'UX than your site'],
         ];
-        ctx.fillText(jokes[snakeScore % jokes.length], cx + cw / 2, cy + ch / 2 + 10);
+        const joke = jokes[snakeScore % jokes.length];
+        ctx.fillText(joke[0], cx + cw / 2, cy + ch / 2 + 4);
+        ctx.fillText(joke[1], cx + cw / 2, cy + ch / 2 + 14);
         ctx.fillStyle = C.ink;
-        ctx.font = '9px "Press Start 2P", monospace';
-        ctx.fillText('A=RETRY  B=MENU', cx + cw / 2, cy + ch / 2 + 26);
+        ctx.font = '5px "Press Start 2P", monospace';
+        ctx.fillText('A=RETRY  B=MENU', cx + cw / 2, cy + ch / 2 + 34);
         ctx.textAlign = 'left';
       } else {
         // Playing — draw grid border
@@ -1191,17 +1193,32 @@
         }
         // Overlay
         ctx.fillStyle = C.light;
-        ctx.fillRect(cx + 15, cy + ch / 2 - 28, cw - 30, 56);
+        ctx.fillRect(cx + 6, cy + ch / 2 - 40, cw - 12, 90);
         ctx.strokeStyle = C.ink;
         ctx.lineWidth = 1;
-        ctx.strokeRect(cx + 15, cy + ch / 2 - 28, cw - 30, 56);
+        ctx.strokeRect(cx + 6, cy + ch / 2 - 40, cw - 12, 90);
         ctx.fillStyle = C.ink;
         ctx.font = 'bold 9px "Press Start 2P", monospace';
-        ctx.fillText(won ? 'YOU WIN!' : 'GAME OVER', cx + cw / 2, cy + ch / 2 - 12);
-        ctx.font = '8px "Press Start 2P", monospace';
-        ctx.fillText('SCORE: ' + brk.score, cx + cw / 2, cy + ch / 2 + 2);
+        ctx.fillText(won ? 'YOU WIN!' : 'GAME OVER', cx + cw / 2, cy + ch / 2 - 26);
+        ctx.font = '6px "Press Start 2P", monospace';
+        ctx.fillText('SCORE: ' + brk.score, cx + cw / 2, cy + ch / 2 - 12);
         ctx.fillStyle = C.dark;
-        ctx.fillText('A=RETRY  B=MENU', cx + cw / 2, cy + ch / 2 + 18);
+        ctx.font = '6px "Press Start 2P", monospace';
+        const brkJokes = won ? [
+          ['Not bad for a', 'designer right?'],
+          ['Now imagine what', 'I do with pixels'],
+          ['Broke all the bricks', 'and the competition'],
+        ] : [
+          ['Even my layouts', 'have fewer breaks'],
+          ['My CSS never', 'breaks like this'],
+          ['At least my designs', 'dont fall apart'],
+        ];
+        const bj = brkJokes[brk.score % brkJokes.length];
+        ctx.fillText(bj[0], cx + cw / 2, cy + ch / 2 + 4);
+        ctx.fillText(bj[1], cx + cw / 2, cy + ch / 2 + 14);
+        ctx.fillStyle = C.ink;
+        ctx.font = '5px "Press Start 2P", monospace';
+        ctx.fillText('A=RETRY  B=MENU', cx + cw / 2, cy + ch / 2 + 34);
       } else {
         // Playing
         const brickW = cw / BRK_COLS;
