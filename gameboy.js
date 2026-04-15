@@ -1436,12 +1436,16 @@
           trophyScreen = true;
         } else if (action === 'a' && menuItems[cursor] === 'PING ME') {
           const contactLinks = {
-            'luka.grcar@me.com': 'mailto:luka.grcar@me.com',
             '@lukakluka': 'https://www.instagram.com/lukakluka/',
             '/lukagrcar': 'https://www.behance.net/lukagrcar',
           };
           const line = (details['PING ME'][detailCursor] || '').trim();
-          if (contactLinks[line]) window.open(contactLinks[line], '_blank');
+          if (line === 'luka.grcar@me.com') {
+            const overlay = document.getElementById('contactOverlay');
+            if (overlay) overlay.classList.add('open');
+          } else if (contactLinks[line]) {
+            window.open(contactLinks[line], '_blank');
+          }
         } else if (action === 'a' && isProjects) {
           projScreen = true;
           projImgIdx = 0;
