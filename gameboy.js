@@ -427,7 +427,7 @@
   // ========== SCREEN UI ==========
   // GBC — high contrast, punchy colors
   const C = { bg: '#f0f0e8', light: '#d0d8c0', dark: '#404040', ink: '#000000' };
-  const menuItems = ['WHO AM I', 'STATS', 'LOADOUT', 'ALLIES', 'TROPHIES', 'PING ME', 'QUESTS', 'SNAKE'];
+  const menuItems = ['WHO AM I', 'STATS', 'LOADOUT', 'ALLIES', 'TROPHIES', 'PING ME', 'QUESTS', 'SNAKE', 'BREAKOUT'];
   let screen = 'insert'; // starts waiting for cartridge
   let cursor = 0;
   let scroll = 0;
@@ -547,6 +547,87 @@
   }
   let projImgIdx = 0; // which image within a project
 
+  // === BREAKOUT GAME ===
+  let brk = { started: false, alive: false, score: 0, lives: 3 };
+  let brkPadX = 0, brkBall = {x:0,y:0,dx:0,dy:0}, brkBricks = [];
+  const BRK_COLS = 9, BRK_ROWS = 5, BRK_PAD_W = 30, BRK_PAD_H = 4;
+  const brkColors = ['#dd3333','#dd8800','#ddcc00','#33aa33','#3388dd'];
+
+  function brkReset() {
+    brk.started = true;
+    brk.alive = true;
+    brk.score = 0;
+    brk.lives = 3;
+    brkBricks = [];
+    for (let r = 0; r < BRK_ROWS; r++) {
+      for (let c = 0; c < BRK_COLS; c++) {
+        brkBricks.push({ r, c, alive: true });
+      }
+    }
+    brkServeBall();
+  }
+
+  function brkServeBall() {
+    brkPadX = 0.5;
+    brkBall = { x: 0.5, y: 0.8, dx: (Math.random() - 0.5) * 0.02, dy: -0.015 };
+  }
+
+  function brkTick(cw, ch) {
+    if (!brk.alive) return;
+    const b = brkBall;
+    b.x += b.dx;
+    b.y += b.dy;
+
+    // Wall bounces
+    if (b.x <= 0 || b.x >= 1) b.dx = -b.dx;
+    if (b.y <= 0) b.dy = -b.dy;
+
+    // Bottom — lose life
+    if (b.y >= 1) {
+      brk.lives--;
+      if (brk.lives <= 0) {
+        brk.alive = false;
+        sfx.back();
+      } else {
+        brkServeBall();
+      }
+      return;
+    }
+
+    // Paddle bounce
+    const padL = brkPadX - 0.1, padR = brkPadX + 0.1;
+    if (b.y >= 0.88 && b.y <= 0.92 && b.x >= padL && b.x <= padR) {
+      b.dy = -Math.abs(b.dy);
+      // Angle based on where ball hits paddle
+      b.dx = (b.x - brkPadX) * 0.04;
+      sfx.navigate();
+    }
+
+    // Brick collision
+    const brkH = 0.35; // brick area height (top 35%)
+    const brickW = 1 / BRK_COLS;
+    const brickH = brkH / BRK_ROWS;
+    for (const brick of brkBricks) {
+      if (!brick.alive) continue;
+      const bl = brick.c * brickW;
+      const bt = brick.r * brickH + 0.02;
+      if (b.x >= bl && b.x <= bl + brickW && b.y >= bt && b.y <= bt + brickH) {
+        brick.alive = false;
+        b.dy = -b.dy;
+        brk.score++;
+        sfx.select();
+        // Speed up slightly
+        b.dy *= 1.02;
+        break;
+      }
+    }
+
+    // Win check
+    if (brkBricks.every(b => !b.alive)) {
+      brk.alive = false;
+    }
+  }
+
   function drawScreen() {
     const ctx = sCtx, w = SCR_W, h = SCR_H;
     ctx.save();
@@ -581,11 +662,11 @@
 
     if (screen === 'insert') {
       ctx.fillStyle = C.dark;
-      ctx.font = '7px "Press Start 2P", monospace';
+      ctx.font = '9px "Press Start 2P", monospace';
       ctx.textAlign = 'center';
       ctx.fillText('NO CARTRIDGE', cx + cw / 2, cy + ch / 2 - 24);
       ctx.fillStyle = C.ink;
-      ctx.font = 'bold 7px "Press Start 2P", monospace';
+      ctx.font = 'bold 9px "Press Start 2P", monospace';
       ctx.fillText('INSERT CART', cx + cw / 2, cy + ch / 2 - 6);
       ctx.fillText('TO PLAY', cx + cw / 2, cy + ch / 2 + 10);
 
@@ -596,12 +677,12 @@
         ctx.fillRect(cx + 20, cy + ch / 2 + 22, cw - 40, 20);
       }
       ctx.fillStyle = blinkon ? C.bg : C.ink;
-      ctx.font = 'bold 7px "Press Start 2P", monospace';
+      ctx.font = 'bold 9px "Press Start 2P", monospace';
       ctx.fillText('INSERT CARTRIDGE', cx + cw / 2 + 6, cy + ch / 2 + 36);
       ctx.fillText('\u25B6', cx + cw / 2 - 62, cy + ch / 2 + 35);
 
       ctx.fillStyle = C.dark;
-      ctx.font = '6px "Press Start 2P", monospace';
+      ctx.font = '8px "Press Start 2P", monospace';
       ctx.fillText('A = INSERT', cx + cw / 2, cy + ch + 8);
       ctx.textAlign = 'left';
     } else if (screen === 'boot') {
@@ -703,7 +784,7 @@
         const typeT = (elapsed - 2000) / 1000;
         const fullText = 'LUKA GRCAR';
         const chars = Math.floor(typeT * fullText.length);
-        ctx.font = '6px "Press Start 2P", monospace';
+        ctx.font = '8px "Press Start 2P", monospace';
         ctx.fillStyle = C.dark;
         ctx.fillText('by', midX, midY + 14);
         ctx.fillStyle = C.ink;
@@ -718,7 +799,7 @@
       // Phase 5: Loading bar (3000-4600ms)
       else {
         drawRainbow('PORTFOLIO', midX, midY - 4, 'bold 14px "Press Start 2P", monospace');
-        ctx.font = '6px "Press Start 2P", monospace';
+        ctx.font = '8px "Press Start 2P", monospace';
         ctx.fillStyle = C.dark;
         ctx.fillText('by', midX, midY + 14);
         ctx.fillStyle = C.ink;
@@ -741,7 +822,7 @@
           ctx.fillRect(barX + b * blockW + 1, barY + 1, blockW - 2, barH - 2);
         }
 
-        ctx.font = '5px "Press Start 2P", monospace';
+        ctx.font = '9px "Press Start 2P", monospace';
         ctx.fillStyle = C.dark;
         ctx.fillText('LOADING...', midX, barY + 16);
       }
@@ -753,8 +834,8 @@
       ctx.fillText('LUKA GRCAR', cx + 30, cy + 14);
       ctx.fillStyle = C.dark;
       ctx.fillRect(cx + 6, cy + headerH, cw - 12, 1);
-      ctx.font = 'bold 7px "Press Start 2P", monospace';
-      const rowH = 16;
+      ctx.font = 'bold 9px "Press Start 2P", monospace';
+      const rowH = 18;
       const menuTop = cy + headerH + 6;
       const menuVisible = Math.floor((ch - headerH - 10) / rowH);
       // Auto-scroll menu if cursor is past visible area
@@ -782,12 +863,12 @@
       // Scroll indicators
       if (menuItems.length > menuVisible) {
         ctx.fillStyle = C.dark;
-        ctx.font = '6px "Press Start 2P", monospace';
+        ctx.font = '8px "Press Start 2P", monospace';
         if (mScroll > 0) ctx.fillText('\u25B2', cx + cw - 12, menuTop + 6);
         if (mScroll + menuVisible < menuItems.length) ctx.fillText('\u25BC', cx + cw - 12, menuTop + menuVisible * rowH);
       }
       ctx.fillStyle = C.dark;
-      ctx.font = '6px "Press Start 2P", monospace';
+      ctx.font = '8px "Press Start 2P", monospace';
       ctx.fillText('A=SELECT  \u25B2\u25BC=MOVE', cx + 20, cy + ch + 8);
     } else if (screen === 'detail') {
       ctx.textAlign = 'left';
@@ -841,20 +922,20 @@
         // Award name
         ctx.fillStyle = C.ink;
         ctx.textAlign = 'center';
-        ctx.font = 'bold 7px "Press Start 2P", monospace';
+        ctx.font = 'bold 9px "Press Start 2P", monospace';
         ctx.fillText(awardName, tX, tY + 50);
         // Year
         ctx.fillStyle = C.dark;
-        ctx.font = '6px "Press Start 2P", monospace';
+        ctx.font = '8px "Press Start 2P", monospace';
         ctx.fillText(awardYear, tX, tY + 62);
         // Achievement text
-        ctx.font = '5px "Press Start 2P", monospace';
+        ctx.font = '9px "Press Start 2P", monospace';
         ctx.fillText('ACHIEVEMENT UNLOCKED', tX, tY + 76);
         ctx.textAlign = 'left';
 
         // Hint
         ctx.fillStyle = C.dark;
-        ctx.font = '6px "Press Start 2P", monospace';
+        ctx.font = '8px "Press Start 2P", monospace';
         ctx.fillText('B=BACK  \u25C0\u25B6=BROWSE', cx + 8, cy + ch + 8);
 
       } else if (projScreen && item === 'QUESTS') {
@@ -875,7 +956,7 @@
 
         // Description text (word-wrapped)
         ctx.fillStyle = C.ink;
-        ctx.font = '6px "Press Start 2P", monospace';
+        ctx.font = '8px "Press Start 2P", monospace';
         const words = desc.split(' ');
         let line = '', lineY = cy + headerH + 12;
         for (const word of words) {
@@ -902,13 +983,13 @@
           // Image counter
           if (thumbs.length > 1) {
             ctx.fillStyle = C.dark;
-            ctx.font = '5px "Press Start 2P", monospace';
+            ctx.font = '9px "Press Start 2P", monospace';
             ctx.fillText((projImgIdx + 1) + '/' + thumbs.length, ix + imgSize - 18, imgTop + imgSize - 4);
           }
         }
 
         ctx.fillStyle = C.dark;
-        ctx.font = '6px "Press Start 2P", monospace';
+        ctx.font = '8px "Press Start 2P", monospace';
         ctx.fillText('B=BACK  \u25C0\u25B6=IMAGES', cx + 8, cy + ch + 8);
       } else {
         // Normal detail list view
@@ -916,7 +997,7 @@
         ctx.fillStyle = C.ink;
         ctx.fillRect(cx + 6, cy + 2, cw - 12, headerH - 2);
         ctx.fillStyle = C.bg;
-        ctx.font = 'bold 8px "Press Start 2P", monospace';
+        ctx.font = 'bold 7px "Press Start 2P", monospace';
         ctx.fillText('\u25C0 ' + item, cx + 8, cy + 14);
         ctx.fillStyle = C.dark;
         ctx.fillRect(cx + 6, cy + headerH, cw - 12, 1);
@@ -973,14 +1054,14 @@
           }
           // Scroll indicators
           if (lines.length > visibleStats) {
-            ctx.font = '6px "Press Start 2P", monospace';
+            ctx.font = '8px "Press Start 2P", monospace';
             ctx.fillStyle = C.dark;
             if (scroll > 0) ctx.fillText('\u25B2', cx + cw - 10, cy + headerH + 8);
             if (scroll + visibleStats < lines.length) ctx.fillText('\u25BC', cx + cw - 10, cy + ch - 4);
           }
         } else {
           // Normal list
-          ctx.font = '7px "Press Start 2P", monospace';
+          ctx.font = '9px "Press Start 2P", monospace';
           for (let i = 0; i < detailVisible && (scroll + i) < lines.length; i++) {
             const ly = cy + headerH + 8 + i * detailLineH + detailLineH * 0.7;
             const lineIdx = scroll + i;
@@ -1003,14 +1084,14 @@
             }
           }
         }
-        ctx.font = '5px "Press Start 2P", monospace';
+        ctx.font = '9px "Press Start 2P", monospace';
         if (lines.length > detailVisible) {
           ctx.fillStyle = C.dark;
           if (scroll > 0) ctx.fillText('\u25B2', cx + cw - 14, cy + headerH + 10);
           if (scroll + detailVisible < lines.length) ctx.fillText('\u25BC', cx + cw - 14, cy + ch - hintH - 4);
         }
         ctx.fillStyle = C.dark;
-        ctx.font = '6px "Press Start 2P", monospace';
+        ctx.font = '8px "Press Start 2P", monospace';
         const hint = (item === 'QUESTS' || item === 'TROPHIES') ? 'A=VIEW  B=BACK  \u25B2\u25BC' : 'B=BACK  \u25C0\u25B6=PREV/NEXT';
         ctx.fillText(hint, cx + 8, cy + ch + 8);
       }
@@ -1025,9 +1106,9 @@
         // Start screen
         ctx.fillStyle = C.ink;
         ctx.textAlign = 'center';
-        ctx.font = 'bold 12px "Press Start 2P", monospace';
+        ctx.font = 'bold 14px "Press Start 2P", monospace';
         ctx.fillText('SNAKE', cx + cw / 2, cy + ch / 2 - 16);
-        ctx.font = '6px "Press Start 2P", monospace';
+        ctx.font = '8px "Press Start 2P", monospace';
         ctx.fillStyle = C.dark;
         ctx.fillText('A = START', cx + cw / 2, cy + ch / 2 + 6);
         ctx.fillText('B = BACK', cx + cw / 2, cy + ch / 2 + 20);
@@ -1046,10 +1127,10 @@
         ctx.textAlign = 'center';
         ctx.font = 'bold 9px "Press Start 2P", monospace';
         ctx.fillText('GAME OVER', cx + cw / 2, cy + ch / 2 - 20);
-        ctx.font = '6px "Press Start 2P", monospace';
+        ctx.font = '8px "Press Start 2P", monospace';
         ctx.fillText('SCORE: ' + snakeScore, cx + cw / 2, cy + ch / 2 - 6);
         ctx.fillStyle = C.dark;
-        ctx.font = '6px "Press Start 2P", monospace';
+        ctx.font = '8px "Press Start 2P", monospace';
         const jokes = [
           'Need a designer? I dont bite',
           'Hire me before the snake does',
@@ -1059,7 +1140,7 @@
         ];
         ctx.fillText(jokes[snakeScore % jokes.length], cx + cw / 2, cy + ch / 2 + 10);
         ctx.fillStyle = C.ink;
-        ctx.font = '5px "Press Start 2P", monospace';
+        ctx.font = '9px "Press Start 2P", monospace';
         ctx.fillText('A=RETRY  B=MENU', cx + cw / 2, cy + ch / 2 + 26);
         ctx.textAlign = 'left';
       } else {
@@ -1082,9 +1163,81 @@
 
         // Score
         ctx.fillStyle = C.ink;
-        ctx.font = '5px "Press Start 2P", monospace';
+        ctx.font = '9px "Press Start 2P", monospace';
         ctx.fillText('SCORE:' + snakeScore, cx + 4, cy + ch + 8);
       }
+    } else if (screen === 'breakout') {
+      ctx.textAlign = 'center';
+
+      if (!brk.started) {
+        // Start screen
+        ctx.fillStyle = C.ink;
+        ctx.font = 'bold 14px "Press Start 2P", monospace';
+        ctx.fillText('BREAKOUT', cx + cw / 2, cy + ch / 2 - 16);
+        ctx.font = '8px "Press Start 2P", monospace';
+        ctx.fillStyle = C.dark;
+        ctx.fillText('A = START', cx + cw / 2, cy + ch / 2 + 6);
+        ctx.fillText('B = BACK', cx + cw / 2, cy + ch / 2 + 20);
+      } else if (!brk.alive) {
+        // Game over or win
+        const won = brkBricks.every(b => !b.alive);
+        // Draw final state
+        const brickW = cw / BRK_COLS;
+        const brickH = (ch * 0.35) / BRK_ROWS;
+        for (const brick of brkBricks) {
+          if (!brick.alive) continue;
+          ctx.fillStyle = brkColors[brick.r % brkColors.length];
+          ctx.fillRect(cx + brick.c * brickW + 1, cy + brick.r * brickH + 4, brickW - 2, brickH - 2);
+        }
+        // Overlay
+        ctx.fillStyle = C.light;
+        ctx.fillRect(cx + 15, cy + ch / 2 - 28, cw - 30, 56);
+        ctx.strokeStyle = C.ink;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(cx + 15, cy + ch / 2 - 28, cw - 30, 56);
+        ctx.fillStyle = C.ink;
+        ctx.font = 'bold 9px "Press Start 2P", monospace';
+        ctx.fillText(won ? 'YOU WIN!' : 'GAME OVER', cx + cw / 2, cy + ch / 2 - 12);
+        ctx.font = '8px "Press Start 2P", monospace';
+        ctx.fillText('SCORE: ' + brk.score, cx + cw / 2, cy + ch / 2 + 2);
+        ctx.fillStyle = C.dark;
+        ctx.fillText('A=RETRY  B=MENU', cx + cw / 2, cy + ch / 2 + 18);
+      } else {
+        // Playing
+        const brickW = cw / BRK_COLS;
+        const brickH = (ch * 0.35) / BRK_ROWS;
+
+        // Draw bricks
+        for (const brick of brkBricks) {
+          if (!brick.alive) continue;
+          ctx.fillStyle = brkColors[brick.r % brkColors.length];
+          ctx.fillRect(cx + brick.c * brickW + 1, cy + brick.r * brickH + 4, brickW - 2, brickH - 2);
+        }
+
+        // Draw paddle
+        const padW = cw * 0.2;
+        const padX = cx + brkPadX * cw - padW / 2;
+        const padY = cy + ch * 0.88;
+        ctx.fillStyle = C.ink;
+        ctx.fillRect(padX, padY, padW, BRK_PAD_H);
+
+        // Draw ball
+        const ballX = cx + brkBall.x * cw;
+        const ballY = cy + brkBall.y * ch;
+        ctx.fillStyle = C.ink;
+        ctx.fillRect(ballX - 2, ballY - 2, 4, 4);
+
+        // Score + lives
+        ctx.fillStyle = C.ink;
+        ctx.font = '9px "Press Start 2P", monospace';
+        ctx.textAlign = 'left';
+        ctx.fillText('SCORE:' + brk.score, cx + 4, cy + ch + 8);
+        ctx.textAlign = 'right';
+        const hearts = '\u2665'.repeat(brk.lives);
+        ctx.fillStyle = '#dd3333';
+        ctx.fillText(hearts, cx + cw - 4, cy + ch + 8);
+      }
+      ctx.textAlign = 'left';
     }
     // LCD pixel grid effect — covers full green area
     const gx = bz, gy = bz - shiftUp, gw = w - bz * 2, gh = h - bz - (bz - shiftUp);
@@ -1218,6 +1371,8 @@
       else if (action === 'a') {
         if (menuItems[cursor] === 'SNAKE') {
           screen = 'snake'; snakeStarted = false; snakeAlive = false;
+        } else if (menuItems[cursor] === 'BREAKOUT') {
+          screen = 'breakout'; brk.started = false; brk.alive = false;
         } else {
           screen = 'detail'; scroll = 0; detailCursor = 0;
         }
@@ -1289,6 +1444,17 @@
         else if (action === 'down' && snakeDir.y !== -1) snakeNextDir = {x:0, y:1};
         else if (action === 'left' && snakeDir.x !== 1) snakeNextDir = {x:-1, y:0};
         else if (action === 'right' && snakeDir.x !== -1) snakeNextDir = {x:1, y:0};
+      }
+    } else if (screen === 'breakout') {
+      if (!brk.started) {
+        if (action === 'a') brkReset();
+        else if (action === 'b') screen = 'menu';
+      } else if (!brk.alive) {
+        if (action === 'a') brkReset();
+        else if (action === 'b') screen = 'menu';
+      } else {
+        if (action === 'left') brkPadX = Math.max(0.1, brkPadX - 0.08);
+        else if (action === 'right') brkPadX = Math.min(0.9, brkPadX + 0.08);
       }
     }
     drawScreen();
@@ -1567,14 +1733,16 @@
     prev = { x: e.clientX, y: e.clientY };
     autoRotate = false;
   });
+  let isTouchDevice = false;
   window.addEventListener('pointerup', (e) => {
-    if (isDragging && !dragMoved) raycast(e.clientX, e.clientY);
+    if (isDragging && !dragMoved && !isTouchDevice) raycast(e.clientX, e.clientY);
     isDragging = false;
   });
 
   // Touch
   let touchStartX = 0, touchStartY = 0, touchRotating = false;
   renderer.domElement.addEventListener('touchstart', (e) => {
+    isTouchDevice = true;
     if (e.touches.length !== 1) return;
     touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY;
     touchRotating = false;
@@ -1615,7 +1783,7 @@
 
   // Mouse wheel navigation
   renderer.domElement.addEventListener('wheel', (e) => {
-    if (screen === 'insert' || screen === 'snake') return;
+    if (screen === 'insert' || screen === 'snake' || screen === 'breakout') return;
     e.preventDefault();
     if (e.deltaY > 0) pressButton('down');
     else if (e.deltaY < 0) pressButton('up');
@@ -1641,6 +1809,10 @@
         snakeTick();
         drawScreen();
       }
+    }
+    else if (screen === 'breakout' && brk.alive && brk.started) {
+      brkTick();
+      drawScreen();
     }
     else if (screen === 'boot') { bootTimer += dt; drawScreen(); if (bootTimer > 4.8) { screen = 'menu'; drawScreen(); } }
     // Smooth push offset with lerp
