@@ -977,8 +977,11 @@ function mediaTag(src, alt) {
 let currentOverlayObs = null;
 let savedScrollY = 0;
 
+let scrollLocked = false;
+
 function lockScroll() {
   savedScrollY = window.scrollY;
+  scrollLocked = true;
   document.body.style.overflow = 'hidden';
   document.body.style.position = 'fixed';
   document.body.style.top = `-${savedScrollY}px`;
@@ -986,12 +989,25 @@ function lockScroll() {
 }
 
 function unlockScroll() {
+  scrollLocked = false;
   document.body.style.overflow = '';
   document.body.style.position = '';
   document.body.style.top = '';
   document.body.style.width = '';
   window.scrollTo(0, savedScrollY);
 }
+
+// Prevent any body scroll leaking on iOS
+document.addEventListener('touchmove', (e) => {
+  if (!scrollLocked) return;
+  const overlay = document.getElementById('overlay');
+  const lightbox = document.getElementById('lightbox');
+  const mobileProjList = document.getElementById('mobileProjList');
+  if (overlay && overlay.contains(e.target)) return;
+  if (lightbox && lightbox.contains(e.target)) return;
+  if (mobileProjList && mobileProjList.contains(e.target)) return;
+  e.preventDefault();
+}, { passive: false });
 
 function cleanupOverlay() {
   // Disconnect old observer
