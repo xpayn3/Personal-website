@@ -423,8 +423,10 @@ if (!isMobileHome) {
   window.addEventListener('wheel', (e) => {
     e.preventDefault();
     scrollVelocity += e.deltaY * 0.15;
+    if (!scrollRAF) scrollRAF = requestAnimationFrame(smoothScrollLoop);
   }, { passive: false });
 
+  let scrollRAF = null;
   function smoothScrollLoop() {
     scrollVelocity *= FRICTION;
     targetScroll += scrollVelocity;
@@ -433,7 +435,12 @@ if (!isMobileHome) {
     smoothScroll += (targetScroll - smoothScroll) * LERP;
     window.scrollTo(0, smoothScroll);
     updateParallax();
-    requestAnimationFrame(smoothScrollLoop);
+    // Stop loop when idle
+    if (Math.abs(scrollVelocity) > 0.1 || Math.abs(targetScroll - smoothScroll) > 0.5) {
+      scrollRAF = requestAnimationFrame(smoothScrollLoop);
+    } else {
+      scrollRAF = null;
+    }
   }
 
   window.addEventListener('scroll', () => {
@@ -443,7 +450,7 @@ if (!isMobileHome) {
     }
   }, { passive: true });
 
-  requestAnimationFrame(smoothScrollLoop);
+  scrollRAF = requestAnimationFrame(smoothScrollLoop);
 } else {
   // Mobile: single scroll listener, no parallax (saves battery)
   window.addEventListener('scroll', onMobileScroll, { passive: true });

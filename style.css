@@ -1433,9 +1433,6 @@ img, video {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.lightbox-content {
   margin-bottom: 120px;
   touch-action: pan-x;
 }

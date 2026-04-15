@@ -636,16 +636,16 @@ function renderGrid() {
       });
     }
 
-    // Preload project images on hover (YouTube trick — fetch before click)
+    // Preload project images on hover — limited to 3 links max per project
     if (!isMobile) {
       let preloaded = false;
       div.addEventListener('mouseenter', () => {
         if (preloaded) return;
         preloaded = true;
         const proj = projects[item.project];
-        if (!proj) return;
-        // Preload first 3 images of the project in background
+        if (!proj || !proj.images) return;
         proj.images.slice(0, 3).forEach(src => {
+          if (document.querySelector(`link[href="${src}"]`)) return;
           const link = document.createElement('link');
           link.rel = 'prefetch';
           link.href = src;
@@ -827,6 +827,7 @@ function applyFilters() {
   // Update dropdown active states
   document.querySelectorAll('.bar-dropdown button').forEach(btn => {
     const parent = btn.closest('.bar-dropdown');
+    if (!parent) return;
     const type = parent.id.replace('menu-', '');
     btn.classList.toggle('active', String(activeFilters[type]) === String(btn.dataset.value));
   });
@@ -1648,26 +1649,31 @@ if (wmEl) {
   let lastScroll = 0;
   let resetTimer = null;
 
+  let wmTick = false;
   window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
-    const delta = scrollY - lastScroll;
-    lastScroll = scrollY;
+    if (wmTick) return;
+    wmTick = true;
+    requestAnimationFrame(() => {
+      const scrollY = window.scrollY;
+      const delta = scrollY - lastScroll;
+      lastScroll = scrollY;
 
-    letters.forEach((letter, i) => {
-      const offset = i * 0.12;
-      const raw = delta * -(1.2 + offset);
-      const rot = Math.max(-MAX_ROT, Math.min(MAX_ROT, raw));
-      letter.style.transition = 'none';
-      letter.style.transform = `rotate(${rot}deg)`;
+      for (let i = 0; i < letters.length; i++) {
+        const raw = delta * -(1.2 + i * 0.12);
+        const rot = Math.max(-MAX_ROT, Math.min(MAX_ROT, raw));
+        letters[i].style.transition = 'none';
+        letters[i].style.transform = `rotate(${rot}deg)`;
+      }
+
+      clearTimeout(resetTimer);
+      resetTimer = setTimeout(() => {
+        for (let i = 0; i < letters.length; i++) {
+          letters[i].style.transition = 'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)';
+          letters[i].style.transform = 'rotate(0deg)';
+        }
+      }, 80);
+      wmTick = false;
     });
-
-    clearTimeout(resetTimer);
-    resetTimer = setTimeout(() => {
-      letters.forEach(letter => {
-        letter.style.transition = 'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)';
-        letter.style.transform = 'rotate(0deg)';
-      });
-    }, 80);
   }, { passive: true });
 }
 
