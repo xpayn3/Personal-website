@@ -1733,16 +1733,14 @@
     prev = { x: e.clientX, y: e.clientY };
     autoRotate = false;
   });
-  let isTouchDevice = false;
   window.addEventListener('pointerup', (e) => {
-    if (isDragging && !dragMoved && !isTouchDevice) raycast(e.clientX, e.clientY);
+    if (isDragging && !dragMoved && e.pointerType === 'mouse') raycast(e.clientX, e.clientY);
     isDragging = false;
   });
 
   // Touch
   let touchStartX = 0, touchStartY = 0, touchRotating = false;
   renderer.domElement.addEventListener('touchstart', (e) => {
-    isTouchDevice = true;
     if (e.touches.length !== 1) return;
     touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY;
     touchRotating = false;
