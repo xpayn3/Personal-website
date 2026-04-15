@@ -49,7 +49,7 @@ const projects = {
     year: 2022,
     client: 'Pritličje',
     theme: 'Responsibility',
-    desc: ['Visual identity and motion design for the Grounded festival 2022 edition.'],
+    desc: ['A bold visual system built from the ground up for Grounded 2022. We developed the complete identity through 3D renders, animated teasers, and projection-mapped visuals — crafting every element to feel immersive and unmistakably Grounded.'],
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects', 'Photoshop'],
     images: [
       `${IMG}/Grounded_2022/Grounded_2022_01.webp`,
@@ -85,7 +85,7 @@ const projects = {
     name: 'Festival Grounded 2021: The State',
     year: 2021,
     client: 'Pritličje',
-    desc: ['Visual identity and motion design for the Grounded festival 2021 edition.'],
+    desc: ['We shaped the entire visual world of Grounded 2021 — from poster series and sticker packs to social media templates and animated Instagram stories. Every asset was designed to feel cohesive, kinetic, and alive.'],
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects', 'Photoshop'],
     images: [
       `${IMG}/Grounded_2021/Grounded_SerijaPlakatov.webp`,
@@ -116,7 +116,7 @@ const projects = {
     year: 2021,
     client: "The Athlete's Foot",
     type: '#worldsneakerday',
-    desc: ["Social media animation and motion design for The Athlete's Foot sneaker brand."],
+    desc: ["We brought sneaker culture to life through high-energy 3D animation and motion graphics for The Athlete's Foot. Every frame was crafted to stop the scroll — bold compositions, dynamic camera work, and product renders that make you want to reach through the screen."],
     tools: ['Cinema 4D', 'AfterEffects', 'Photoshop'],
     images: [
       `${IMG}/Athletesfoot/taf_anim_v.webm`,
@@ -174,7 +174,7 @@ const projects = {
     name: 'Festival Grounded 2018',
     year: 2018,
     client: 'Pritličje',
-    desc: ['Visual identity for the second edition of the Grounded festival.'],
+    desc: ['The second edition of Grounded explored intimacy in the digital age. We translated that tension into a visual identity — layered renders, glowing textures, and a typographic system that felt both human and synthetic.'],
     tools: ['Cinema 4D', 'Photoshop', 'Illustrator'],
     images: [
       `${IMG}/Grounded_2018/plakat.webp`,
@@ -195,7 +195,7 @@ const projects = {
     name: 'Mesta pešcem — TamTam',
     year: 2018,
     award: 'Mestni plakat leta — TamTam 2018',
-    desc: ['Award-winning city poster design for TamTam.'],
+    desc: ['A poster that won City Poster of the Year at TamTam 2018. We combined bold typography with layered urban imagery to deliver a message about pedestrian-first cities — a single sheet that sparked conversation across Ljubljana.'],
     tools: ['Photoshop', 'Illustrator'],
     images: [
       `${IMG}/TamTam_Hoja--moj-transport_plakat-tisk.webp`,
@@ -208,7 +208,7 @@ const projects = {
     color: 'purple',
     name: 'AppointMENT 4.0',
     year: 2019,
-    desc: ['Visual identity design for the AppointMENT 4.0 event.'],
+    desc: ['We designed the complete visual identity for AppointMENT 4.0 — a music and arts event where every visual element, from posters to digital assets, was built around abstract 3D forms and experimental typography.'],
     tools: ['Cinema 4D', 'Photoshop', 'Illustrator'],
     images: [
       `${IMG}/AppointMENT_4.0/AppointMENT_poster.webp`,
@@ -222,7 +222,7 @@ const projects = {
     name: "Halloween — The Athlete's Foot",
     year: 2021,
     client: "The Athlete's Foot",
-    desc: ['3D animation and social media content for Halloween campaign.'],
+    desc: ['We sculpted and rendered a full Halloween universe for The Athlete\'s Foot — from ZBrush character models to animated social media sequences. Dark, detailed, and designed to haunt every feed it landed on.'],
     tools: ['Cinema 4D', 'ZBrush', 'Redshift', 'AfterEffects'],
     images: [
       `${IMG}/Athletesfoot_halloween/Athletesfoot_halloween_01.webp`,
@@ -255,7 +255,7 @@ const projects = {
     name: "Black Friday — The Athlete's Foot",
     year: 2021,
     client: "The Athlete's Foot",
-    desc: ['3D animation and motion graphics for Black Friday campaign.'],
+    desc: ['High-impact 3D animation for The Athlete\'s Foot Black Friday campaign. We created explosive product reveals and kinetic type sequences — everything engineered for maximum visual punch in a crowded retail moment.'],
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects'],
     images: [
       `${IMG}/Athletesfoot_blackfriday/Athletesfoot_blackfriday_anim_01.webp`,
@@ -273,7 +273,7 @@ const projects = {
     color: 'orange',
     name: 'LargaVida Limited Edition',
     year: 2022,
-    desc: ['Design for LargaVida limited edition product line.'],
+    desc: ['We designed the complete visual language for LargaVida\'s limited edition release — from packaging to digital presence. Clean, premium, and built to stand out on shelf and screen alike.'],
     tools: ['Photoshop', 'Illustrator'],
     images: [
       `${IMG}/LargaVida/01_larga_vida_desktop.webp`,
@@ -292,7 +292,7 @@ const projects = {
     color: 'white',
     name: 'NewEdge Magazine',
     year: 2020,
-    desc: ['Editorial design for NewEdge magazine.'],
+    desc: ['We crafted the editorial design system for NewEdge — a magazine that bridges digital culture and print craft. Every spread was treated as a composition, balancing bold imagery with refined typography.'],
     tools: ['InDesign', 'Photoshop', 'Illustrator'],
     images: [
       `${IMG}/NewEdge_magazine/NewEdge_magazine_01.webp`,
@@ -386,7 +386,7 @@ const projects = {
     color: 'orange',
     name: 'Radenci — Prostorska Projekcija',
     year: 2022,
-    desc: ['Spatial projection mapping installation in Radenci.'],
+    desc: ['An immersive projection mapping installation in Radenci — transforming architectural surfaces into living canvases. We designed and rendered every visual sequence, syncing light, motion, and space into a single experience.'],
     tools: ['Cinema 4D', 'Resolume', 'AfterEffects'],
     images: Array.from({ length: 25 }, (_, i) => {
       const names = [
@@ -479,7 +479,7 @@ const projects = {
     color: 'pink',
     name: 'Kersnikova',
     year: 2021,
-    desc: ['Visual identity and print design for Kersnikova.'],
+    desc: ['We developed the visual identity and print collateral for Kersnikova — posters, brochures, and spatial graphics that translate the institution\'s experimental spirit into bold, accessible design.'],
     tools: ['Photoshop', 'Illustrator', 'InDesign'],
     images: [
       `${IMG}/Kersnikova/Plakat-500x700-B2.webp`,
@@ -497,7 +497,7 @@ const projects = {
     color: 'yellow',
     name: 'Natureta Product Renders',
     year: 2023,
-    desc: ['3D product renders and visualization for Natureta.'],
+    desc: ['Photorealistic 3D product renders for Natureta — each jar, label, and surface rendered with obsessive attention to material and light. We created visuals that blur the line between photography and CGI.'],
     tools: ['Cinema 4D', 'Redshift', 'Photoshop'],
     images: [
       `${IMG}/Natureta product renders/izdelki.webp`,
@@ -522,7 +522,7 @@ const projects = {
     color: 'orange',
     name: 'Natureta 100 Let',
     year: 2023,
-    desc: ['Product photography and visual design for Natureta.'],
+    desc: ['Visual design celebrating 100 years of Natureta — we crafted a campaign that honors the brand\'s heritage while feeling fresh and contemporary. From concept to final delivery, every detail was considered.'],
     tools: ['Photoshop', 'Cinema 4D'],
     images: [
       `${IMG}/Natureta/Prebranec-Natureta-657f495f8b596.webp`,
