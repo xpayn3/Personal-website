@@ -8,10 +8,10 @@
   <link rel="icon" href="data:," />
   <meta name="theme-color" content="#0a0a0a" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="description" content="3D generalist & UX graphic designer based in Ljubljana, Slovenia." />
+  <meta name="description" content="3D generalist & UX designer based in Ljubljana, Slovenia." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Sans:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="about.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
@@ -21,26 +21,21 @@
 
   <main class="about-page">
 
-    <section class="gameboy-section">
-      <div class="gameboy-container" id="gameboyContainer"></div>
-      <p class="gameboy-hint">Drag to rotate &middot; Click buttons to navigate</p>
-    </section>
-
-    <section class="about-hero">
-      <h1 class="about-name">Luka Grčar</h1>
-      <p class="about-role">3D generalist &amp; UX graphic designer</p>
-      <p class="about-location">Ljubljana, Slovenia</p>
-    </section>
-
-    <section class="about-section">
-      <div class="about-grid">
-        <div class="about-col">
-          <div class="section-label">About</div>
-          <p class="about-text">We craft visual experiences that move people. Through 3D animation, motion design, and thoughtful brand strategy, we help our clients stand out and connect with their audiences on a deeper level.</p>
-          <p class="about-text">Every project starts with understanding your vision. We listen, we explore, and we deliver work that exceeds expectations — on time, every time.</p>
+    <section class="hero-split">
+      <div class="hero-split-left">
+        <div class="gameboy-container" id="gameboyContainer"></div>
+        <p class="gameboy-hint">Drag to rotate &middot; Click buttons to navigate</p>
+      </div>
+      <div class="hero-split-right">
+        <h1 class="about-name">About</h1>
+        <p class="about-role">3D generalist &amp; UX designer</p>
+        <p class="about-location">Ljubljana, Slovenia</p>
+        <div class="split-about">
+          <p class="about-text">We build immersive digital experiences that blur the line between web and reality. From interactive 3D product showcases to WebGL-powered worlds you can touch, rotate, and play with — right in the browser.</p>
+          <p class="about-text">Our work lives at the intersection of design, animation, and code. We don't just make things look good — we make them feel alive. Every interaction is intentional, every animation is crafted, and every pixel is considered.</p>
+          <p class="about-text">Whether it's a fully playable Game Boy in your browser, a cinematic product viewer, or a brand experience that stops the scroll — we bring ideas to life in ways that surprise and delight.</p>
         </div>
-        <div class="about-col">
-          <div class="section-label">Contact</div>
+        <div class="split-contact">
           <div class="about-links">
             <a href="mailto:luka.grcar@me.com" class="about-icon-link"><i class="ri-mail-line"></i><span>Email me</span></a>
             <a href="https://www.instagram.com/lukakluka/" target="_blank" rel="noopener noreferrer" class="about-icon-link"><i class="ri-instagram-line"></i><span>Instagram</span></a>
@@ -48,8 +43,6 @@
           </div>
           <p class="about-text" style="margin-top: 24px; font-size: 0.75rem; color: rgba(255,255,255,0.25);">Open for new projects.<br>Let's create something together.</p>
         </div>
-      </div>
-    </section>
 
     <section class="about-section">
       <div class="about-grid">
@@ -85,7 +78,6 @@
     </section>
 
     <section class="about-section">
-      <div class="section-label">Selected Clients</div>
       <div class="clients-list">
         <span>Festival Grounded</span>
         <span>The Athlete's Foot</span>
@@ -134,6 +126,9 @@
       <span>&copy; 2025 Luka Grčar. All rights reserved.</span>
     </footer>
 
+      </div><!-- .hero-split-right -->
+    </section><!-- .hero-split -->
+
   </main>
 
   <!-- ===== FLOATING BOTTOM BAR ===== -->
@@ -175,6 +170,6 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/postprocessing/EffectComposer.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/postprocessing/RenderPass.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
-  <script src="gameboy.js"></script>
+  <script src="gameboy.js?v=5"></script>
 </body>
 </html>
