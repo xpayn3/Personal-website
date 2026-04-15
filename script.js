@@ -969,7 +969,7 @@ function mediaTag(src, alt) {
   }
   if (isMobile) {
     const mobileSrc = src.replace('Images/', 'Images/mobile/');
-    return `<img src="${mobileSrc}" alt="${alt || ''}" loading="lazy" decoding="async" onerror="this.src='${src}'" />`;
+    return `<img src="${mobileSrc}" alt="${alt || ''}" loading="lazy" decoding="async" />`;
   }
   return `<img src="${src}" alt="${alt || ''}" loading="lazy" decoding="async" />`;
 }
