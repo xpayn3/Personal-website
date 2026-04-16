@@ -212,7 +212,10 @@
   const parts = {};
 
   // === LOAD GLTF ===
+  const dracoLoader = new THREE.DRACOLoader();
+  dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/libs/draco/');
   const loader = new THREE.GLTFLoader();
+  loader.setDRACOLoader(dracoLoader);
   loader.load('gameboy/gameboy.gltf', (gltf) => {
     const model = gltf.scene;
 

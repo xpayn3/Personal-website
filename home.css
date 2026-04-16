@@ -18,7 +18,7 @@
 }
 
 .loader-text {
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: var(--font-display);
   font-size: clamp(1.5rem, 4vw, 2.5rem);
   font-weight: 700;
   color: #111;
@@ -65,7 +65,7 @@ img, video {
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
 }
 
 /* ========== HERO CAROUSEL ========== */
@@ -182,7 +182,7 @@ body {
 }
 
 .title-name {
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: var(--font-display);
   font-size: clamp(2rem, 5vw, 4rem);
   font-weight: 800;
   letter-spacing: -0.04em;
@@ -314,7 +314,7 @@ body {
   transform-origin: bottom center;
   background: #141414;
   border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   padding: 6px;
   display: flex;
   flex-direction: column;
@@ -341,7 +341,7 @@ body {
   display: block;
   color: #fff;
   text-decoration: none;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 0.75rem;
   padding: 8px 14px;
   border-radius: 8px;
@@ -355,7 +355,7 @@ body {
   position: fixed;
   top: 20px;
   left: 24px;
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: var(--font-display);
   font-size: 1.2rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -372,18 +372,6 @@ body {
   will-change: transform;
 }
 
-.watermark-right {
-  position: fixed;
-  top: 20px;
-  right: 24px;
-  font-family: 'Instrument Sans', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  color: #999;
-  z-index: 90;
-  pointer-events: none;
-}
 
 /* ========== END CTA ========== */
 .home-cta {
@@ -405,7 +393,7 @@ body {
 
 .cta-line {
   display: block;
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: var(--font-display);
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.04em;
@@ -418,7 +406,7 @@ body {
 
 .cta-line-1 {
   font-size: clamp(1rem, 2vw, 1.4rem);
-  color: #999;
+  color: var(--color-text-muted);
   font-weight: 400;
   letter-spacing: 0.3em;
   text-transform: uppercase;
@@ -453,13 +441,13 @@ body {
 }
 
 .cta-link {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   font-size: 1rem;
   color: #111;
   text-decoration: none;
   padding: 16px 40px;
   border: 1px solid rgba(0,0,0,0.15);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.6s ease 0.5s,

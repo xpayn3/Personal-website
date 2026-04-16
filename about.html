@@ -5,10 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Luka Grčar — About</title>
   <meta name="robots" content="noai, noimageai" />
-  <link rel="icon" href="data:," />
+  <link rel="icon" type="image/png" href="favicon.png" />
   <meta name="theme-color" content="#0a0a0a" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="description" content="3D generalist & UX designer based in Ljubljana, Slovenia." />
+  <meta name="description" content="About Luka Grčar — 3D generalist & motion designer based in Ljubljana, Slovenia." />
+  <link rel="canonical" href="https://lukagrcar.com/about.html" />
+  <meta property="og:title" content="Luka Grčar — About" />
+  <meta property="og:description" content="3D generalist & motion designer based in Ljubljana, Slovenia." />
+  <meta property="og:image" content="https://lukagrcar.com/og-image.png" />
+  <meta property="og:url" content="https://lukagrcar.com/about.html" />
+  <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Sans:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
@@ -164,6 +170,7 @@
   </nav>
 
   <a href="index.html" class="watermark">Luka Grčar</a>
+  <a href="#" class="contact-btn" id="contactBtnFloat">Contact</a>
 
   <!-- Contact Form Popup -->
   <div class="contact-overlay" id="contactOverlay">
@@ -243,6 +250,10 @@
     e.preventDefault();
     overlay.classList.add('open');
   });
+  document.getElementById('contactBtnFloat').addEventListener('click', (e) => {
+    e.preventDefault();
+    overlay.classList.add('open');
+  });
   document.getElementById('contactClose').addEventListener('click', () => {
     overlay.classList.remove('open');
   });
@@ -276,6 +287,7 @@
   </script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/build/three.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/GLTFLoader.js"></script>
-  <script defer src="gameboy.js?v=8"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/DRACOLoader.js"></script>
+  <script defer src="gameboy.js?v=9"></script>
 </body>
 </html>

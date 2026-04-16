@@ -14,6 +14,7 @@ const projects = {
       'With over 30 years of experience in bridge weigh-in-motion measurements, bridge assessments and traffic data, Cestel is one of the world\'s leading companies in the fields of high-speed weigh-in-motion and traffic analysis.',
       'Animation that showcases CESTEL measurement process in an abstract way that is engaging for the watchers. Animation will be used for informational purposes and showcase of their system.'
     ],
+    brief: 'Visualize a complex measurement system in an engaging, accessible way.',
     tools: ['Cinema 4D', 'Redshift', 'Sound Design', 'Photoshop', 'AfterEffects'],
     images: [
       `${IMG}/Cestel_project/cestel_anim_01_v.webm`,
@@ -52,6 +53,7 @@ const projects = {
     client: 'Pritličje',
     theme: 'Responsibility',
     desc: ['A bold visual system built from the ground up for Grounded 2022. We developed the complete identity through 3D renders, animated teasers, and projection-mapped visuals — crafting every element to feel immersive and unmistakably Grounded.'],
+    brief: 'Create a complete visual identity for the 2022 festival edition.',
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects', 'Photoshop'],
     images: [
       `${IMG}/Grounded_2022/Grounded_2022_01.webp`,
@@ -89,6 +91,7 @@ const projects = {
     year: 2021,
     client: 'Pritličje',
     desc: ['We shaped the entire visual world of Grounded 2021 — from poster series and sticker packs to social media templates and animated Instagram stories. Every asset was designed to feel cohesive, kinetic, and alive.'],
+    brief: 'Design every visual touchpoint — from posters to animated stories.',
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects', 'Photoshop'],
     images: [
       `${IMG}/Grounded_2021/Grounded_IG.webm`,
@@ -125,6 +128,7 @@ const projects = {
     client: "The Athlete's Foot",
     type: '#worldsneakerday',
     desc: ["We brought sneaker culture to life through high-energy 3D animation and motion graphics for The Athlete's Foot. Every frame was crafted to stop the scroll — bold compositions, dynamic camera work, and product renders that make you want to reach through the screen."],
+    brief: 'Make sneaker product launches stop the scroll on social media.',
     tools: ['Cinema 4D', 'AfterEffects', 'Photoshop', 'Substance 3D'],
     images: [
       `${IMG}/Athletesfoot/taf_anim_v.webm`,
@@ -159,6 +163,7 @@ const projects = {
       'Solidarity, elimination of inequality and peaceful co-existence assume the existence of truth, and truthfulness as the value of public action. In the post-truth world, these assumptions no longer exist.',
       'Those in positions of power often lie without legal or other social sanction. The ruling party-owned media spreads lies about those who resist them. Social networks increase the reach of conspiracy theories, while platforms are placed in the role of arbiters of truth.'
     ],
+    brief: 'Build an identity around truth and resistance in a post-truth era.',
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects', 'Photoshop'],
     images: [
       `${IMG}/Grounded_2020/Grounded_poster_2.webp`,
@@ -186,6 +191,7 @@ const projects = {
     year: 2018,
     client: 'Pritličje',
     desc: ['The second edition of Grounded explored intimacy in the digital age. We translated that tension into a visual identity — layered renders, glowing textures, and a typographic system that felt both human and synthetic.'],
+    brief: 'Translate the tension of digital intimacy into a festival identity.',
     tools: ['Cinema 4D', 'Photoshop', 'Illustrator'],
     images: [
       `${IMG}/Grounded_2018/plakat.webp`,
@@ -208,6 +214,7 @@ const projects = {
     year: 2018,
     award: 'Mestni plakat leta — TamTam 2018',
     desc: ['A poster that won City Poster of the Year at TamTam 2018. We combined bold typography with layered urban imagery to deliver a message about pedestrian-first cities — a single sheet that sparked conversation across Ljubljana.'],
+    brief: 'Design a city poster that sparks conversation about pedestrian rights.',
     tools: ['Photoshop', 'Illustrator'],
     images: [
       `${IMG}/TamTam_Hoja--moj-transport_plakat-tisk.webp`,
@@ -222,6 +229,7 @@ const projects = {
     name: 'AppointMENT 4.0',
     year: 2019,
     desc: ['We designed the complete visual identity for AppointMENT 4.0 — a music and arts event where every visual element, from posters to digital assets, was built around abstract 3D forms and experimental typography.'],
+    brief: 'Build a visual identity for a music and arts event from scratch.',
     tools: ['Cinema 4D', 'Photoshop', 'Illustrator'],
     images: [
       `${IMG}/AppointMENT_4.0/AppointMENT_poster.webp`,
@@ -237,6 +245,7 @@ const projects = {
     year: 2021,
     client: "The Athlete's Foot",
     desc: ['For The Athlete\'s Foot Halloween campaign, we built an entire dark universe from scratch — grotesque characters, fog-drenched environments, and cinematic product shots that turned a seasonal retail push into something people actually wanted to watch.', 'The technical backbone of this project was photogrammetry. Every sneaker was hand-scanned using a DSLR rig — roughly 200–300 photos per shoe, shot from every conceivable angle under controlled lighting. Those images were then processed into raw point clouds, millions of vertices that captured every stitch, crease, and texture detail of the physical product.', 'From there, the real work began. Each point cloud was imported into ZBrush for cleanup — removing noise, filling gaps, rebuilding topology into something render-ready. The poly counts were enormous. A single shoe could easily hit 8–10 million polygons before decimation, and the full scenes with characters and environments pushed workstations to their absolute limits.'],
+    brief: 'Turn a seasonal retail campaign into something cinematic and shareable.',
     tools: ['Cinema 4D', 'ZBrush', 'Redshift', 'AfterEffects', 'Substance 3D'],
     images: [
       `${IMG}/Athletesfoot_halloween/Athletesfoot_halloween_01.webp`,
@@ -271,6 +280,7 @@ const projects = {
     year: 2021,
     client: "The Athlete's Foot",
     desc: ['High-impact 3D animation for The Athlete\'s Foot Black Friday campaign. We created explosive product reveals and kinetic type sequences — everything engineered for maximum visual punch in a crowded retail moment.'],
+    brief: 'Maximum visual impact for a crowded Black Friday retail moment.',
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects', 'Substance 3D'],
     images: [
       `${IMG}/Athletesfoot_blackfriday/Athletesfoot_blackfriday_anim_01.webp`,
@@ -290,6 +300,7 @@ const projects = {
     name: 'LargaVida Limited Edition',
     year: 2022,
     desc: ['We designed the complete visual language for LargaVida\'s limited edition release — from packaging to digital presence. Clean, premium, and built to stand out on shelf and screen alike.'],
+    brief: 'Design premium packaging and digital presence for a limited release.',
     tools: ['Photoshop', 'Illustrator'],
     images: [
       `${IMG}/LargaVida/01_larga_vida_desktop.webp`,
@@ -310,6 +321,7 @@ const projects = {
     name: 'NewEdge Magazine',
     year: 2020,
     desc: ['We crafted the editorial design system for NewEdge — a magazine that bridges digital culture and print craft. Every spread was treated as a composition, balancing bold imagery with refined typography.'],
+    brief: 'Create an editorial design system bridging digital culture and print.',
     tools: ['InDesign', 'Photoshop', 'Illustrator'],
     images: [
       `${IMG}/NewEdge_magazine/NewEdge_magazine_01.webp`,
@@ -332,6 +344,7 @@ const projects = {
     year: 2023,
     client: 'Pritličje',
     desc: ['Visual identity, 3D animation and motion design for the Grounded festival 2023 edition.'],
+    brief: 'Visual identity and 3D animation for the 2023 festival edition.',
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects'],
     images: [
       `${IMG}/Grounded_2023/Grounded_2023_01.webm`,
@@ -357,6 +370,7 @@ const projects = {
     year: 2025,
     client: 'Pritličje',
     desc: ['Visual identity and motion design for the Grounded festival 2025 edition.'],
+    brief: 'Visual identity and motion design for the 2025 festival edition.',
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects'],
     images: [
       `${IMG}/Grounded 2025/gr2025cover.webp`,
@@ -378,6 +392,7 @@ const projects = {
     year: 2024,
     client: 'Pritličje',
     desc: ['Visual identity and motion design for the Grounded festival 2024 edition.'],
+    brief: 'Visual identity and motion design for the 2024 festival edition.',
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects', 'Photoshop'],
     images: [
       `${IMG}/Grounded_2024/Grounded_2024_01.webp`,
@@ -409,6 +424,7 @@ const projects = {
     name: 'Radenci — Prostorska Projekcija',
     year: 2022,
     desc: ['An immersive projection mapping installation in Radenci — transforming architectural surfaces into living canvases. We designed and rendered every visual sequence, syncing light, motion, and space into a single experience.'],
+    brief: 'Transform architectural surfaces into a living projection experience.',
     tools: ['Cinema 4D', 'AfterEffects'],
     images: Array.from({ length: 31 }, (_, i) => {
       const names = [
@@ -523,6 +539,7 @@ const projects = {
     name: 'Kersnikova',
     year: 2021,
     desc: ['We developed the visual identity and print collateral for Kersnikova — posters, brochures, and spatial graphics that translate the institution\'s experimental spirit into bold, accessible design.'],
+    brief: 'Translate an experimental institution\'s spirit into accessible design.',
     tools: ['Photoshop', 'Illustrator', 'InDesign'],
     images: [
       `${IMG}/Kersnikova/Plakat-500x700-B2.webp`,
@@ -542,6 +559,7 @@ const projects = {
     name: 'Natureta Product Renders',
     year: 2023,
     desc: ['Photorealistic 3D product renders for Natureta — each jar, label, and surface rendered with obsessive attention to material and light. We created visuals that blur the line between photography and CGI.'],
+    brief: 'Create photorealistic product renders that rival studio photography.',
     tools: ['Cinema 4D', 'Redshift', 'Photoshop'],
     images: [
       `${IMG}/Natureta product renders/izdelki.webp`,
@@ -568,6 +586,7 @@ const projects = {
     name: 'Natureta 100 Let',
     year: 2023,
     desc: ['Visual design celebrating 100 years of Natureta — we crafted a campaign that honors the brand\'s heritage while feeling fresh and contemporary. From concept to final delivery, every detail was considered.'],
+    brief: 'Celebrate 100 years of heritage while feeling fresh and modern.',
     tools: ['Photoshop', 'Cinema 4D'],
     images: [
       `${IMG}/Natureta/Prebranec-Natureta-657f495f8b596.webp`,
@@ -1124,6 +1143,7 @@ document.addEventListener('touchmove', (e) => {
 
 let overlayLenis = null;
 let overlayScrollTriggers = [];
+let overlayTickerFn = null;
 
 function initOverlayParallax() {
   // Lenis smooth scroll on the overlay container
@@ -1135,7 +1155,8 @@ function initOverlayParallax() {
   });
 
   overlayLenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add((time) => { if (overlayLenis) overlayLenis.raf(time * 1000); });
+  overlayTickerFn = (time) => { if (overlayLenis) overlayLenis.raf(time * 1000); };
+  gsap.ticker.add(overlayTickerFn);
   gsap.ticker.lagSmoothing(0);
 
   // Parallax: images drift up inside their cropped container
@@ -1159,6 +1180,10 @@ function initOverlayParallax() {
 }
 
 function cleanupOverlayParallax() {
+  if (overlayTickerFn) {
+    gsap.ticker.remove(overlayTickerFn);
+    overlayTickerFn = null;
+  }
   if (overlayLenis) {
     overlayLenis.destroy();
     overlayLenis = null;
@@ -1254,6 +1279,9 @@ function openProject(projId) {
 
     const descTexts = proj.desc && proj.desc.length > 0 ? proj.desc : [loremPool[0], loremPool[1]];
     html += '<div class="proj-intro">';
+    if (proj.brief) {
+      html += '<div class="proj-brief"><span class="proj-brief-label">Brief</span><p>' + proj.brief + '</p></div>';
+    }
     descTexts.forEach(p => html += `<p>${p}</p>`);
     if (proj.link) {
       html += `<p><a href="${proj.link}" target="_blank" rel="noopener noreferrer">${proj.link} ↗</a></p>`;
@@ -1343,8 +1371,19 @@ function openProject(projId) {
     const firstSrc = proj.images[0];
     const pillThumb = firstSrc.endsWith('.webm') || firstSrc.endsWith('.mp4')
       ? firstSrc.replace(/\.(webm|mp4)$/, '_thumb.webp') : firstSrc;
-    pill.innerHTML = `<img src="${pillThumb}" alt="" class="proj-pill-thumb" /><span class="proj-pill-name">${proj.name}</span>`;
+    pill.innerHTML = `<div class="proj-pill-icon"><svg class="proj-pill-progress" viewBox="0 0 36 36"><circle cx="18" cy="18" r="16" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2.5"/><circle class="proj-pill-ring" cx="18" cy="18" r="16" fill="none" stroke="#fff" stroke-width="2.5" stroke-dasharray="100.53" stroke-dashoffset="100.53" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg><img src="${pillThumb}" alt="" class="proj-pill-thumb" /></div><span class="proj-pill-name">${proj.name}</span>`;
+    pill.style.cursor = 'pointer';
+    pill.addEventListener('click', () => {
+      if (overlayLenis) {
+        overlayLenis.scrollTo(0, { duration: 1.2 });
+      } else {
+        overlay.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
     overlay.appendChild(pill);
+
+    const ring = pill.querySelector('.proj-pill-ring');
+    const circumference = 2 * Math.PI * 16; // 100.53
 
     const header = overlayInner.querySelector('.proj-header');
     if (header) {
@@ -1353,6 +1392,15 @@ function openProject(projId) {
       }, { root: overlay, threshold: 0 });
       pillObs.observe(header);
     }
+
+    // Update scroll progress ring
+    overlay.addEventListener('scroll', function pillScroll() {
+      if (!pill.parentNode) { overlay.removeEventListener('scroll', pillScroll); return; }
+      const scrollTop = overlay.scrollTop;
+      const scrollHeight = overlay.scrollHeight - overlay.clientHeight;
+      const progress = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
+      ring.style.strokeDashoffset = circumference * (1 - progress);
+    });
   }
 
   overlay.classList.add('open');
@@ -1361,6 +1409,18 @@ function openProject(projId) {
   const tc = document.getElementById('themeColor');
   if (tc) tc.content = '#111111';
   overlay.scrollTop = 0;
+
+  // Update page meta for sharing
+  document.title = proj.name + ' — Luka Grčar';
+  let ogTitle = document.querySelector('meta[property="og:title"]');
+  let ogDesc = document.querySelector('meta[property="og:description"]');
+  let ogImg = document.querySelector('meta[property="og:image"]');
+  if (ogTitle) ogTitle.content = proj.name + ' — Luka Grčar';
+  if (ogDesc) ogDesc.content = (proj.desc && proj.desc[0]) ? proj.desc[0].substring(0, 160) : 'Portfolio of Luka Grčar';
+  const ogThumb = proj.images[0].endsWith('.webm') || proj.images[0].endsWith('.mp4')
+    ? proj.images[0].replace(/\.(webm|mp4)$/, '_thumb.webp')
+    : proj.images[0];
+  if (ogImg) ogImg.content = 'https://lukagrcar.com/' + ogThumb;
 
   // Init smooth scroll + parallax after DOM settles
   requestAnimationFrame(() => initOverlayParallax());
@@ -1504,7 +1564,16 @@ function closeOverlay() {
   if (pill) pill.remove();
   overlay.classList.remove('open');
   overlayClose.classList.remove('visible');
+  // Force unlock in case count got out of sync
+  scrollLockCount = 1;
   unlockScroll();
+  document.title = 'Luka Grčar — Portfolio';
+  let ogTitle = document.querySelector('meta[property="og:title"]');
+  let ogDesc = document.querySelector('meta[property="og:description"]');
+  let ogImg = document.querySelector('meta[property="og:image"]');
+  if (ogTitle) ogTitle.content = 'Luka Grčar — Portfolio';
+  if (ogDesc) ogDesc.content = '3D generalist & motion designer based in Ljubljana, Slovenia.';
+  if (ogImg) ogImg.content = 'https://lukagrcar.com/og-image.png';
   const tc = document.getElementById('themeColor');
   if (tc) tc.content = '#ffffff';
   setTimeout(() => { overlayClose.style.display = ''; }, 500);

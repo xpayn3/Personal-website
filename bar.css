@@ -22,11 +22,6 @@
   gap: 0;
 }
 
-.bottom-bar.bar-hidden {
-  transform: translateX(-50%) translateY(calc(100% + 30px));
-  opacity: 0;
-  pointer-events: none;
-}
 
 .bar-section { position: relative; }
 
@@ -81,4 +76,32 @@
   opacity: 0;
   width: 0;
   margin: 0;
+}
+
+/* Floating contact button — top right */
+.contact-btn {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  z-index: 90;
+  padding: 10px 20px;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-text);
+  text-decoration: none;
+  background: var(--color-surface);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
+  transition: background var(--duration-fast), transform var(--duration-fast);
+}
+
+.contact-btn:hover {
+  background: #0a2fff;
+  color: #fff;
+  border-color: #0a2fff;
+  transform: scale(1.03);
 }

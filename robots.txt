@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
+Sitemap: https://lukagrcar.com/sitemap.xml
 
 # Block AI training bots
 User-agent: GPTBot
