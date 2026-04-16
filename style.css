@@ -668,6 +668,7 @@ img, video {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: y mandatory;
+  overscroll-behavior: contain;
   padding: 0 24px;
   mask-image: linear-gradient(to bottom, transparent 0%, black 35%, black 65%, transparent 100%);
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 35%, black 65%, transparent 100%);
@@ -1318,6 +1319,30 @@ img, video {
 }
 
 /* ========== LIGHTBOX ========== */
+.lb-swipe-hint {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.lb-swipe-hint span {
+  font-size: 1.4rem;
+}
+
 .lightbox {
   position: fixed;
   inset: 0;
@@ -1585,7 +1610,7 @@ img, video {
     z-index: 90;
     align-items: center;
     justify-content: center;
-    padding: 20px 6px;
+    padding: 60px 10px;
     background: rgba(255,255,255,0.5);
     backdrop-filter: blur(20px) saturate(1.4);
     -webkit-backdrop-filter: blur(20px) saturate(1.4);
@@ -1600,9 +1625,9 @@ img, video {
   .mobile-slider-pill input[type="range"] {
     -webkit-appearance: none;
     appearance: none;
-    width: 100px;
+    width: 200px;
     transform: rotate(-90deg);
-    margin: 0 -40px;
+    margin: 0 -90px;
     height: 6px;
     background: rgba(0,0,0,0.08);
     border-radius: 3px;
@@ -1845,6 +1870,9 @@ img, video {
   z-index: 90;
   text-decoration: none;
   cursor: pointer;
+  height: 36px;
+  display: flex;
+  align-items: center;
 }
 
 .watermark .wm-letter {
@@ -1873,7 +1901,10 @@ img, video {
 }
 
 @media (max-width: 768px) {
-  .grid { grid-template-columns: repeat(3, 1fr); padding: 16px 16px 90px; gap: 10px; }
+  .grid { grid-template-columns: repeat(3, 1fr); padding: 80px 16px 90px; gap: 6px; }
+  .grid-item { border-radius: 10px; padding: 4px; }
+  .grid-item img, .grid-item video { border-radius: 8px; }
+  .hover-video-wrap { top: 4px; left: 4px; right: 4px; bottom: 4px; border-radius: 8px; }
   .bottom-bar { max-width: calc(100vw - 24px); width: auto; }
   .bar-toggle, .bar-reset { font-size: 0.9rem; padding: 10px 16px; }
   .proj-gallery .row-2, .proj-gallery .row-3 {
@@ -1883,7 +1914,7 @@ img, video {
 }
 
 @media (max-width: 480px) {
-  .grid { grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 16px 16px 90px; }
+  .grid { grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 80px 16px 90px; }
   .bar-toggle, .bar-reset { font-size: 0.9rem; padding: 10px 16px; }
 }
 

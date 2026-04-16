@@ -1079,7 +1079,12 @@ document.addEventListener('touchmove', (e) => {
   const mobileProjList = document.getElementById('mobileProjList');
   if (overlay && overlay.contains(e.target)) return;
   if (lightbox && lightbox.contains(e.target)) return;
-  if (mobileProjList && mobileProjList.contains(e.target)) return;
+  if (mobileProjList && mobileProjList.contains(e.target)) {
+    const scroll = document.getElementById('mobileProjScroll');
+    if (scroll && scroll.contains(e.target)) return;
+    e.preventDefault();
+    return;
+  }
   e.preventDefault();
 }, { passive: false });
 
@@ -1446,6 +1451,54 @@ function closeOverlay() {
 }
 
 overlayClose.addEventListener('click', closeOverlay);
+
+// Swipe down to close overlay (mobile, only when scrolled to top)
+if (isMobile) {
+  let ovTouchY = 0, ovDragging = false, ovDragY = 0;
+  overlay.addEventListener('touchstart', (e) => {
+    if (overlay.scrollTop <= 5) {
+      ovTouchY = e.touches[0].clientY;
+      ovDragging = true;
+      ovDragY = 0;
+    }
+  }, { passive: true });
+  overlay.addEventListener('touchmove', (e) => {
+    if (!ovDragging) return;
+    const dy = e.touches[0].clientY - ovTouchY;
+    if (dy > 0 && overlay.scrollTop <= 0) {
+      ovDragY = dy;
+      const progress = Math.min(dy / 200, 1);
+      overlayInner.style.transition = 'none';
+      overlayInner.style.transform = `translateY(${dy}px) scale(${1 - progress * 0.05})`;
+      overlayInner.style.opacity = 1 - progress * 0.3;
+    } else {
+      ovDragging = false;
+      overlayInner.style.transform = '';
+      overlayInner.style.opacity = '';
+    }
+  }, { passive: true });
+  overlay.addEventListener('touchend', () => {
+    if (!ovDragging) return;
+    ovDragging = false;
+    if (ovDragY > 120) {
+      overlayInner.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+      overlayInner.style.transform = 'translateY(100vh) scale(0.9)';
+      overlayInner.style.opacity = '0';
+      setTimeout(() => {
+        closeOverlay();
+        overlayInner.style.transform = '';
+        overlayInner.style.opacity = '';
+        overlayInner.style.transition = '';
+      }, 300);
+    } else {
+      overlayInner.style.transition = 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s ease';
+      overlayInner.style.transform = '';
+      overlayInner.style.opacity = '';
+      setTimeout(() => { overlayInner.style.transition = ''; }, 300);
+    }
+    ovDragY = 0;
+  }, { passive: true });
+}
 overlay.addEventListener('click', (e) => {
   if (e.target === overlay) closeOverlay();
 });
@@ -1647,20 +1700,85 @@ function renderLightbox() {
 
 document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
 
-// Swipe in lightbox
-let lbTouchX = 0;
-lightboxContent.addEventListener('touchstart', (e) => { lbTouchX = e.touches[0].clientX; }, { passive: true });
+// Swipe in lightbox — reactive drag down to close
+let lbTouchX = 0, lbTouchY = 0, lbDragging = false, lbDragY = 0;
+
+// "Swipe down to close" hint behind the content
+const lbSwipeHint = document.createElement('div');
+lbSwipeHint.className = 'lb-swipe-hint';
+lbSwipeHint.innerHTML = '<span>↓</span> Swipe to close';
+lightbox.appendChild(lbSwipeHint);
+
+lightboxContent.addEventListener('touchstart', (e) => {
+  lbTouchX = e.touches[0].clientX;
+  lbTouchY = e.touches[0].clientY;
+  lbDragging = true;
+  lbDragY = 0;
+  lightboxContent.style.transition = 'none';
+}, { passive: true });
+
+lightboxContent.addEventListener('touchmove', (e) => {
+  if (!lbDragging) return;
+  const dy = e.touches[0].clientY - lbTouchY;
+  const dx = e.touches[0].clientX - lbTouchX;
+  // Only track vertical drag downward
+  if (dy > 0 && Math.abs(dy) > Math.abs(dx)) {
+    lbDragY = dy;
+    const progress = Math.min(dy / 200, 1);
+    const scale = 1 - progress * 0.1;
+    lightboxContent.style.transform = `translateY(${dy}px) scale(${scale})`;
+    lightboxContent.style.opacity = 1 - progress * 0.3;
+    lbSwipeHint.style.opacity = progress;
+  }
+}, { passive: true });
+
 lightboxContent.addEventListener('touchend', (e) => {
-  const diff = lbTouchX - e.changedTouches[0].clientX;
-  if (Math.abs(diff) > 50) {
-    if (diff > 0) { lbDirection = 'right'; lightboxIndex = (lightboxIndex + 1) % lightboxItems.length; }
+  if (!lbDragging) return;
+  lbDragging = false;
+  const diffX = lbTouchX - e.changedTouches[0].clientX;
+
+  if (lbDragY > 100) {
+    // Commit close — animate out
+    lightboxContent.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+    lightboxContent.style.transform = 'translateY(100vh) scale(0.8)';
+    lightboxContent.style.opacity = '0';
+    lbSwipeHint.style.opacity = '0';
+    setTimeout(() => {
+      closeLightbox();
+      lightboxContent.style.transform = '';
+      lightboxContent.style.opacity = '';
+      lightboxContent.style.transition = '';
+    }, 300);
+    return;
+  }
+
+  // Snap back
+  lightboxContent.style.transition = 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s ease';
+  lightboxContent.style.transform = '';
+  lightboxContent.style.opacity = '';
+  lbSwipeHint.style.opacity = '0';
+  setTimeout(() => { lightboxContent.style.transition = ''; }, 300);
+
+  // Horizontal swipe for prev/next (only if no vertical drag)
+  if (lbDragY < 20 && Math.abs(diffX) > 50) {
+    if (diffX > 0) { lbDirection = 'right'; lightboxIndex = (lightboxIndex + 1) % lightboxItems.length; }
     else { lbDirection = 'left'; lightboxIndex = (lightboxIndex - 1 + lightboxItems.length) % lightboxItems.length; }
     renderLightbox();
   }
+  lbDragY = 0;
 }, { passive: true });
 lightbox.addEventListener('click', (e) => {
   if (e.target === lightbox) closeLightbox();
 });
+
+// Mouse wheel navigation in lightbox
+lightbox.addEventListener('wheel', (e) => {
+  if (!lightbox.classList.contains('open')) return;
+  e.preventDefault();
+  if (e.deltaY > 0) { lbDirection = 'right'; lightboxIndex = (lightboxIndex + 1) % lightboxItems.length; }
+  else { lbDirection = 'left'; lightboxIndex = (lightboxIndex - 1 + lightboxItems.length) % lightboxItems.length; }
+  renderLightbox();
+}, { passive: false });
 
 document.getElementById('lightboxPrev').addEventListener('click', () => {
   lbDirection = 'left';
