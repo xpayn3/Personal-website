@@ -133,6 +133,7 @@ const projects = {
       `${IMG}/Athletesfoot/screenshot_04.webp`,
       `${IMG}/Athletesfoot/taf_vertical.webm`,
       `${IMG}/Athletesfoot/taf_landscape.webm`,
+      `${IMG}/Athletesfoot/puma.webp`,
     ],
     layout: [
       { cols: 1, imgs: [9] },
@@ -354,15 +355,16 @@ const projects = {
     desc: ['Visual identity and motion design for the Grounded festival 2025 edition.'],
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects'],
     images: [
-      `${IMG}/Grounded 2025/Grounded_2025_01.webm`,
-      `${IMG}/Grounded 2025/Grounded_2025_02.webm`,
-      `${IMG}/Grounded 2025/Grounded_2025_03.webm`,
+      `${IMG}/Grounded 2025/gr2025cover.webp`,
       `${IMG}/Grounded 2025/Grounded_2025_web.webm`,
+      `${IMG}/Grounded 2025/IG_story_01.webm`,
+      `${IMG}/Grounded 2025/IG_story_02.webm`,
+      `${IMG}/Grounded 2025/IG_story_03.webm`,
     ],
     layout: [
       { cols: 1, imgs: [0] },
-      { cols: 2, imgs: [1, 2] },
-      { cols: 1, imgs: [3] },
+      { cols: 1, imgs: [1] },
+      { cols: 3, imgs: [2, 3, 4] },
     ]
   },
   grounded2024: {
@@ -404,7 +406,7 @@ const projects = {
     year: 2022,
     desc: ['An immersive projection mapping installation in Radenci — transforming architectural surfaces into living canvases. We designed and rendered every visual sequence, syncing light, motion, and space into a single experience.'],
     tools: ['Cinema 4D', 'AfterEffects'],
-    images: Array.from({ length: 25 }, (_, i) => {
+    images: Array.from({ length: 31 }, (_, i) => {
       const names = [
         'P1_S1_K01_0323.webp','P1_S1_K02_0533.webp','P1_S1_K02_i1_0460.webp',
         'P1_S2_K04_0110.webp','P1_S2_K05_0238.webp','P1_S3_K03_0282.webp',
@@ -414,7 +416,9 @@ const projects = {
         'P2_S1_K02_0806.webp','P2_S1_K03_0182.webp','P2_S1_K03_B_i1_0397.webp',
         'P2_S2_K01_0376.webp','P2_S2_K01_0701.webp','P2_S2_K01_0841.webp',
         'P2_S3_K03_0482.webp','P2_S3_K03_B_02_0605.webp','P2_S3_K05_0026.webp',
-        'P2_S3_K05_0477.webp'
+        'P2_S3_K05_0477.webp',
+        'IMG_4065.webp','IMG_4069.webp','IMG_4073.webp',
+        'IMG_4075.webp','IMG_4100.webp','IMG_4101.webp'
       ];
       return `${IMG}/Radenci_prostorska_projekcija/${names[i]}`;
     }),
@@ -429,6 +433,8 @@ const projects = {
       { cols: 3, imgs: [17, 18, 19] },
       { cols: 2, imgs: [20, 21] },
       { cols: 3, imgs: [22, 23, 24] },
+      { cols: 3, imgs: [25, 26, 27] },
+      { cols: 3, imgs: [28, 29, 30] },
     ]
   },
   lab: {
@@ -1069,13 +1075,14 @@ function lockScroll() {
 function unlockScroll() {
   scrollLockCount = Math.max(0, scrollLockCount - 1);
   if (scrollLockCount === 0) {
-    document.documentElement.style.overflow = '';
-    document.body.style.overflow = '';
+    const y = savedScrollY;
     document.body.style.position = '';
     document.body.style.top = '';
+    window.scrollTo(0, y);
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
     document.body.style.width = '';
     document.body.classList.remove('scroll-locked');
-    requestAnimationFrame(() => window.scrollTo(0, savedScrollY));
   }
 }
 
@@ -1322,6 +1329,28 @@ function openProject(projId) {
   });
 
 
+  // Floating title pill — appears when scrolling past project header
+  const existingPill = document.getElementById('projFloatingPill');
+  if (existingPill) existingPill.remove();
+  if (!isLab) {
+    const pill = document.createElement('div');
+    pill.id = 'projFloatingPill';
+    pill.className = 'proj-floating-pill';
+    const firstSrc = proj.images[0];
+    const pillThumb = firstSrc.endsWith('.webm') || firstSrc.endsWith('.mp4')
+      ? firstSrc.replace(/\.(webm|mp4)$/, '_thumb.webp') : firstSrc;
+    pill.innerHTML = `<img src="${pillThumb}" alt="" class="proj-pill-thumb" /><span class="proj-pill-name">${proj.name}</span>`;
+    overlay.appendChild(pill);
+
+    const header = overlayInner.querySelector('.proj-header');
+    if (header) {
+      const pillObs = new IntersectionObserver((entries) => {
+        pill.classList.toggle('visible', !entries[0].isIntersecting);
+      }, { root: overlay, threshold: 0 });
+      pillObs.observe(header);
+    }
+  }
+
   overlay.classList.add('open');
   overlayClose.classList.add('visible');
   lockScroll();
@@ -1465,9 +1494,13 @@ function closeMobileList() {
 mobileProjClose.addEventListener('click', closeMobileList);
 
 function closeOverlay() {
+  overlayClose.style.display = 'none';
   cleanupOverlay();
   overlay.classList.remove('open');
   overlayClose.classList.remove('visible');
+  const pill = document.getElementById('projFloatingPill');
+  if (pill) pill.remove();
+  setTimeout(() => { overlayClose.style.display = ''; }, 500);
   unlockScroll();
   const tc = document.getElementById('themeColor');
   if (tc) tc.content = '#ffffff';
