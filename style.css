@@ -354,6 +354,15 @@ img, video {
   will-change: transform, opacity;
 }
 
+.bar-dropdown::before {
+  content: '';
+  position: absolute;
+  bottom: -18px;
+  left: 0;
+  right: 0;
+  height: 18px;
+}
+
 .bar-dropdown.open {
   visibility: visible;
   opacity: 1;
