@@ -1036,12 +1036,12 @@ const loremPool = [
   'The final deliverables included a full suite of animated assets optimized for social media, web, and large-format display.',
 ];
 
-function mediaTag(src, alt) {
+function mediaTag(src, alt, fullRes) {
   if (src.endsWith('.webm') || src.endsWith('.mp4')) {
     const thumb = src.replace(/\.(webm|mp4)$/, '_thumb.webp');
     return `<video data-src="${src}" poster="${thumb}" muted loop playsinline preload="none"></video>`;
   }
-  if (isMobile) {
+  if (isMobile && !fullRes) {
     const mobileSrc = src.replace('Images/', 'Images/mobile/');
     return `<img src="${mobileSrc}" alt="${alt || ''}" loading="lazy" decoding="async" />`;
   }
@@ -1060,6 +1060,7 @@ function lockScroll() {
   document.body.style.position = 'fixed';
   document.body.style.top = `-${savedScrollY}px`;
   document.body.style.width = '100%';
+  document.body.style.touchAction = 'none';
 }
 
 function unlockScroll() {
@@ -1068,6 +1069,7 @@ function unlockScroll() {
   document.body.style.position = '';
   document.body.style.top = '';
   document.body.style.width = '';
+  document.body.style.touchAction = '';
   window.scrollTo(0, savedScrollY);
 }
 
@@ -1172,7 +1174,7 @@ function openProject(projId) {
     for (const row of proj.layout) {
       html += `<div class="gallery-row row-${row.cols}">`;
       for (const idx of row.imgs) {
-        if (proj.images[idx]) html += mediaTag(proj.images[idx], proj.name);
+        if (proj.images[idx]) html += mediaTag(proj.images[idx], proj.name, true);
       }
       html += '</div>';
     }
@@ -1255,7 +1257,7 @@ function openProject(projId) {
     const pattern = ['left', 'right', 'left', 'full', 'right', 'left', 'right', 'full'];
     for (let i = 0; i < remaining.length; i++) {
       const pos = pattern[i % pattern.length];
-      html += `<div class="media-cell ${pos}">${mediaTag(remaining[i], proj.name)}</div>`;
+      html += `<div class="media-cell ${pos}">${mediaTag(remaining[i], proj.name, true)}</div>`;
     }
     html += '</div>';
 
