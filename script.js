@@ -1051,42 +1051,65 @@ function mediaTag(src, alt, fullRes) {
 let currentOverlayObs = null;
 let savedScrollY = 0;
 
-let scrollLocked = false;
+let scrollLockCount = 0;
 
 function lockScroll() {
-  savedScrollY = window.scrollY;
-  scrollLocked = true;
-  document.body.style.overflow = 'hidden';
-  document.body.style.position = 'fixed';
-  document.body.style.top = `-${savedScrollY}px`;
-  document.body.style.width = '100%';
-  document.body.style.touchAction = 'none';
+  if (scrollLockCount === 0) {
+    savedScrollY = window.scrollY;
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${savedScrollY}px`;
+    document.body.style.width = '100%';
+    document.body.style.touchAction = 'none';
+  }
+  scrollLockCount++;
 }
 
 function unlockScroll() {
-  scrollLocked = false;
-  document.body.style.overflow = '';
-  document.body.style.position = '';
-  document.body.style.top = '';
-  document.body.style.width = '';
-  document.body.style.touchAction = '';
-  window.scrollTo(0, savedScrollY);
+  scrollLockCount = Math.max(0, scrollLockCount - 1);
+  if (scrollLockCount === 0) {
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    document.body.style.touchAction = '';
+    window.scrollTo(0, savedScrollY);
+  }
+}
+
+// Check if element is at scroll boundary (iOS rubber-band leak prevention)
+function isAtScrollBoundary(el, dy) {
+  if (dy < 0 && el.scrollTop <= 0) return true;
+  if (dy > 0 && el.scrollTop + el.clientHeight >= el.scrollHeight - 1) return true;
+  return false;
 }
 
 // Prevent any body scroll leaking on iOS
+let lastTouchY = 0;
+document.addEventListener('touchstart', (e) => {
+  lastTouchY = e.touches[0].clientY;
+}, { passive: true });
+
 document.addEventListener('touchmove', (e) => {
-  if (!scrollLocked) return;
-  const overlay = document.getElementById('overlay');
-  const lightbox = document.getElementById('lightbox');
-  const mobileProjList = document.getElementById('mobileProjList');
-  if (overlay && overlay.contains(e.target)) return;
-  if (lightbox && lightbox.contains(e.target)) return;
-  if (mobileProjList && mobileProjList.contains(e.target)) {
-    const scroll = document.getElementById('mobileProjScroll');
-    if (scroll && scroll.contains(e.target)) return;
-    e.preventDefault();
-    return;
+  if (scrollLockCount === 0) return;
+  const dy = lastTouchY - e.touches[0].clientY;
+  lastTouchY = e.touches[0].clientY;
+
+  // Find the nearest scrollable parent of the touch target
+  let scrollable = null;
+  let el = e.target;
+  while (el && el !== document.body) {
+    if (el.scrollHeight > el.clientHeight && getComputedStyle(el).overflowY !== 'hidden') {
+      scrollable = el;
+      break;
+    }
+    el = el.parentElement;
   }
+
+  // If inside a scrollable container and NOT at boundary, allow scroll
+  if (scrollable && !isAtScrollBoundary(scrollable, dy)) return;
+
+  // Block everything else
   e.preventDefault();
 }, { passive: false });
 
@@ -1454,53 +1477,6 @@ function closeOverlay() {
 
 overlayClose.addEventListener('click', closeOverlay);
 
-// Swipe down to close overlay (mobile, only when scrolled to top)
-if (isMobile) {
-  let ovTouchY = 0, ovDragging = false, ovDragY = 0;
-  overlay.addEventListener('touchstart', (e) => {
-    if (overlay.scrollTop <= 5) {
-      ovTouchY = e.touches[0].clientY;
-      ovDragging = true;
-      ovDragY = 0;
-    }
-  }, { passive: true });
-  overlay.addEventListener('touchmove', (e) => {
-    if (!ovDragging) return;
-    const dy = e.touches[0].clientY - ovTouchY;
-    if (dy > 0 && overlay.scrollTop <= 0) {
-      ovDragY = dy;
-      const progress = Math.min(dy / 200, 1);
-      overlayInner.style.transition = 'none';
-      overlayInner.style.transform = `translateY(${dy}px) scale(${1 - progress * 0.05})`;
-      overlayInner.style.opacity = 1 - progress * 0.3;
-    } else {
-      ovDragging = false;
-      overlayInner.style.transform = '';
-      overlayInner.style.opacity = '';
-    }
-  }, { passive: true });
-  overlay.addEventListener('touchend', () => {
-    if (!ovDragging) return;
-    ovDragging = false;
-    if (ovDragY > 120) {
-      overlayInner.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-      overlayInner.style.transform = 'translateY(100vh) scale(0.9)';
-      overlayInner.style.opacity = '0';
-      setTimeout(() => {
-        closeOverlay();
-        overlayInner.style.transform = '';
-        overlayInner.style.opacity = '';
-        overlayInner.style.transition = '';
-      }, 300);
-    } else {
-      overlayInner.style.transition = 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s ease';
-      overlayInner.style.transform = '';
-      overlayInner.style.opacity = '';
-      setTimeout(() => { overlayInner.style.transition = ''; }, 300);
-    }
-    ovDragY = 0;
-  }, { passive: true });
-}
 overlay.addEventListener('click', (e) => {
   if (e.target === overlay) closeOverlay();
 });
