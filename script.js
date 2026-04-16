@@ -91,6 +91,7 @@ const projects = {
     desc: ['We shaped the entire visual world of Grounded 2021 — from poster series and sticker packs to social media templates and animated Instagram stories. Every asset was designed to feel cohesive, kinetic, and alive.'],
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects', 'Photoshop'],
     images: [
+      `${IMG}/Grounded_2021/Grounded_IG.webm`,
       `${IMG}/Grounded_2021/Grounded_SerijaPlakatov.webp`,
       `${IMG}/Grounded_2021/GR_render0034.webp`,
       `${IMG}/Grounded_2021/Grounded_instagram-profil.webp`,
@@ -100,9 +101,12 @@ const projects = {
       `${IMG}/Grounded_2021/Statika_1.webp`,
       `${IMG}/Grounded_2021/Statika_2_1.webp`,
       `${IMG}/Grounded_2021/Statika_teme_2.webp`,
-      `${IMG}/Grounded_2021/Grounded_2021_IG.webm`,
       `${IMG}/Grounded_2021/Grounded_2021_insta2.webm`,
       `${IMG}/Grounded_2021/Grounded_2021_post.webm`,
+      `${IMG}/Grounded_2021/Grounded_FBcover.webm`,
+      `${IMG}/Grounded_2021/Story 3.webm`,
+      `${IMG}/Grounded_2021/izvajalci_render_2.webm`,
+      `${IMG}/Grounded_2021/GR_anim_web.webm`,
     ],
     layout: [
       { cols: 1, imgs: [0] },
@@ -1076,13 +1080,13 @@ function unlockScroll() {
   scrollLockCount = Math.max(0, scrollLockCount - 1);
   if (scrollLockCount === 0) {
     const y = savedScrollY;
-    document.body.style.position = '';
-    document.body.style.top = '';
-    window.scrollTo(0, y);
+    // Remove overflow first so scrollTo works
     document.documentElement.style.overflow = '';
     document.body.style.overflow = '';
-    document.body.style.width = '';
     document.body.classList.remove('scroll-locked');
+    // Remove fixed positioning and restore scroll in one go
+    document.body.style.cssText = '';
+    window.scrollTo({ top: y, behavior: 'instant' });
   }
 }
 
@@ -1496,14 +1500,14 @@ mobileProjClose.addEventListener('click', closeMobileList);
 function closeOverlay() {
   overlayClose.style.display = 'none';
   cleanupOverlay();
-  overlay.classList.remove('open');
-  overlayClose.classList.remove('visible');
   const pill = document.getElementById('projFloatingPill');
   if (pill) pill.remove();
-  setTimeout(() => { overlayClose.style.display = ''; }, 500);
+  overlay.classList.remove('open');
+  overlayClose.classList.remove('visible');
   unlockScroll();
   const tc = document.getElementById('themeColor');
   if (tc) tc.content = '#ffffff';
+  setTimeout(() => { overlayClose.style.display = ''; }, 500);
 }
 
 overlayClose.addEventListener('click', closeOverlay);

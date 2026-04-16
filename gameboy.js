@@ -431,7 +431,7 @@
   // ========== SCREEN UI ==========
   // GBC — high contrast, punchy colors
   const C = { bg: '#f0f0e8', light: '#d0d8c0', dark: '#404040', ink: '#000000' };
-  const menuItems = ['WHO AM I', 'STATS', 'LOADOUT', 'ALLIES', 'TROPHIES', 'PING ME', 'QUESTS', 'SNAKE', 'BREAKOUT'];
+  const menuItems = ['ABOUT ME', 'STATS', 'LOADOUT', 'ALLIES', 'TROPHIES', 'PING ME', 'QUESTS', 'SNAKE', 'BREAKOUT'];
   let screen = 'insert'; // starts waiting for cartridge
   let cursor = 0;
   let scroll = 0;
@@ -441,11 +441,47 @@
   let lastInteraction = 0;
   let screenOff = false;
   let detailVisibleCount = 5; // updated by drawScreen
+  let lcdTransition = false;
+  let lcdPhase = 0;       // 0=wipe-in, 1=hold, 2=wipe-out
+  let lcdProgress = 0;
+  let lcdStart = 0;
+  let lcdPendingFn = null;
+
+  const LCD_WIPE_IN = 180;
+  const LCD_HOLD = 60;
+  const LCD_WIPE_OUT = 200;
+  const LCD_STRIPS = 12;
+
+  function lcdFlash(fn) {
+    if (lcdTransition) { fn(); drawScreen(); return; }
+    lcdTransition = true;
+    lcdPhase = 0;
+    lcdProgress = 0;
+    lcdStart = performance.now();
+    lcdPendingFn = fn;
+    requestAnimationFrame(lcdAnimate);
+  }
+
+  function lcdAnimate(now) {
+    const elapsed = now - lcdStart;
+    if (lcdPhase === 0) {
+      lcdProgress = Math.min(1, elapsed / LCD_WIPE_IN);
+      if (lcdProgress >= 1) { lcdPhase = 1; lcdStart = now; if (lcdPendingFn) { lcdPendingFn(); lcdPendingFn = null; } }
+    } else if (lcdPhase === 1) {
+      lcdProgress = 1;
+      if (elapsed >= LCD_HOLD) { lcdPhase = 2; lcdStart = now; }
+    } else {
+      lcdProgress = Math.min(1, elapsed / LCD_WIPE_OUT);
+      if (lcdProgress >= 1) { lcdTransition = false; drawScreen(); return; }
+    }
+    drawScreen();
+    if (lcdTransition) requestAnimationFrame(lcdAnimate);
+  }
 
   const details = {
-    'WHO AM I': ['3D generalist &','UX designer','','Ljubljana, Slovenia','','Crafting visual','experiences through','3D animation, motion','design & brand','strategy.','','Every project starts','with understanding','your vision.'],
+    'ABOUT ME': ['3D generalist &','UX designer','','Ljubljana, Slovenia','','Crafting visual','experiences through','3D animation, motion','design & brand','strategy.','','[bike]','','Giant Propel','Advanced Pro 1','','When not pushing','pixels, pushing','pedals.','','[photo]'],
     'STATS': ['3D Anim|92','Motion GFX|88','Product Viz|85','Identity|78','Creative Dir|74','UX/UI|70','Projection|82','Social|65'],
-    'LOADOUT': ['# Cinema 4D','# Houdini','# Redshift','# After Effects','# Photoshop','# Illustrator','# InDesign','# ZBrush','# Figma','','## AI','# ChatGPT','# Midjourney','# Claude','# Stable Diffusion','# DALL-E','# Runway','# Sora','# ComfyUI','# Cursor'],
+    'LOADOUT': ['Cinema 4D','Houdini','Redshift','After Effects','Photoshop','Illustrator','InDesign','ZBrush','Figma','','AI','ChatGPT','Midjourney','Claude','Stable Diffusion','DALL-E','Runway','Sora','ComfyUI','Cursor'],
     'ALLIES': ['Festival Grounded',"Athlete's Foot",'Cestel','Natureta','LargaVida','NewEdge Magazine','Kersnikova','Pritlicje','Studio ENKI'],
     'TROPHIES': ['WEBSI Prvak|2022','Netko|2022','Diggit Zlata|2022','Awwwards HM|2022','CSSDA 7xKudo|2022','CSSREEL 2xFD|2022','BestCSS 2xSD|2022','WEBSI Prvak|2021','Netko 2xFOTD|2021','Awwwards HM|2021','CSSDA 2xKudo|2021'],
     'PING ME': ['','Email:','luka.grcar@me.com','','Instagram:','@lukakluka','','Behance:','/lukagrcar'],
@@ -487,6 +523,13 @@
     }
     projThumbs.push(imgs);
   }
+
+  // About me images
+  const aboutPhotos = {};
+  const photoImg = new Image(); photoImg.src = 'gameboy/photo_2026-04-16_22-04-39.jpg';
+  photoImg.onload = () => { aboutPhotos.photo = photoImg; drawScreen(); };
+  const bikeImg = new Image(); bikeImg.src = 'gameboy/photo_2026-04-16_22-04-23.jpg';
+  bikeImg.onload = () => { aboutPhotos.bike = bikeImg; drawScreen(); };
 
   // Project detail screen state
   let projScreen = false;
@@ -641,18 +684,21 @@
     ctx.fillRect(0, 0, w, h);
     ctx.imageSmoothingEnabled = false;
 
+    // LCD transition is drawn as overlay after content — skip early return
+
     // Black bezel border (large margin so content stays inside glass window)
-    const bz = 50;
+    const bzV = 50;
+    const bzH = 45;
     const bzBottom = 60;
     const shiftUp = 15;
     ctx.fillStyle = '#111';
-    ctx.fillRect(0, 0, w, bz - shiftUp);
+    ctx.fillRect(0, 0, w, bzV - shiftUp);
     ctx.fillRect(0, h - bzBottom - shiftUp, w, bzBottom + shiftUp);
-    ctx.fillRect(0, 0, bz, h);
-    ctx.fillRect(w - bz, 0, bz, h);
+    ctx.fillRect(0, 0, bzH, h);
+    ctx.fillRect(w - bzH, 0, bzH, h);
 
     // Content area inside bezel (shifted up, shorter)
-    const cx = bz, cy = bz - shiftUp, cw = w - bz * 2, ch = h - bz - bzBottom - shiftUp;
+    const cx = bzH, cy = bzV - shiftUp, cw = w - bzH * 2, ch = h - bzV - bzBottom - shiftUp;
     ctx.fillStyle = C.bg;
     ctx.fillRect(cx, cy, cw, ch);
 
@@ -764,16 +810,16 @@
           }
         }
       }
-      // Phase 3: Flash to white, then logo appears (1600-2000ms)
-      else if (elapsed < 2000) {
-        const t = (elapsed - 1600) / 400;
-        if (t < 0.3) {
+      // Phase 3: Flash to white, then logo appears (1600-2200ms)
+      else if (elapsed < 2200) {
+        const t = (elapsed - 1600) / 600;
+        if (t < 0.25) {
           // White flash
           ctx.fillStyle = '#fff';
           ctx.fillRect(cx, cy, cw, ch);
         } else {
           // Fade to normal bg with logo
-          const fade = (t - 0.3) / 0.7;
+          const fade = (t - 0.25) / 0.75;
           ctx.fillStyle = C.bg;
           ctx.fillRect(cx, cy, cw, ch);
           ctx.globalAlpha = fade;
@@ -781,11 +827,15 @@
           ctx.globalAlpha = 1;
         }
       }
-      // Phase 4: Logo + "by LUKA GRCAR" types in (2000-3000ms)
-      else if (elapsed < 3000) {
+      // Phase 4: Logo + typing + loading bar together (2200-4600ms)
+      else {
         drawRainbow('PORTFOLIO', midX, midY - 4, 'bold 14px "Press Start 2P", monospace');
 
-        const typeT = (elapsed - 2000) / 1000;
+        const phaseElapsed = elapsed - 2200;
+        const phaseDur = 2400;
+
+        // Typing
+        const typeT = Math.min(1, phaseElapsed / 1600);
         const fullText = 'LUKA GRCAR';
         const chars = Math.floor(typeT * fullText.length);
         ctx.font = '8px "Press Start 2P", monospace';
@@ -799,15 +849,6 @@
           const tw = ctx.measureText(fullText.substring(0, chars)).width;
           ctx.fillRect(midX + tw / 2 + 1, midY + 18, 4, 8);
         }
-      }
-      // Phase 5: Loading bar (3000-4600ms)
-      else {
-        drawRainbow('PORTFOLIO', midX, midY - 4, 'bold 14px "Press Start 2P", monospace');
-        ctx.font = '8px "Press Start 2P", monospace';
-        ctx.fillStyle = C.dark;
-        ctx.fillText('by', midX, midY + 14);
-        ctx.fillStyle = C.ink;
-        ctx.fillText('LUKA GRCAR', midX, midY + 26);
 
         // Loading bar
         const barW = cw * 0.5;
@@ -817,8 +858,7 @@
         ctx.strokeStyle = C.dark;
         ctx.lineWidth = 1;
         ctx.strokeRect(barX, barY, barW, barH);
-        const loadT = Math.min(1, (elapsed - 3000) / 1400);
-        // Chunky loading — fills in blocks
+        const loadT = Math.min(1, phaseElapsed / phaseDur);
         const blocks = Math.floor(loadT * 12);
         const blockW = barW / 12;
         ctx.fillStyle = C.ink;
@@ -867,9 +907,9 @@
       // Scroll indicators
       if (menuItems.length > menuVisible) {
         ctx.fillStyle = C.dark;
-        ctx.font = '8px "Press Start 2P", monospace';
-        if (mScroll > 0) ctx.fillText('\u25B2', cx + cw - 12, menuTop + 6);
-        if (mScroll + menuVisible < menuItems.length) ctx.fillText('\u25BC', cx + cw - 12, menuTop + menuVisible * rowH);
+        ctx.font = '12px "Press Start 2P", monospace';
+        if (mScroll > 0) ctx.fillText('\u25B2', cx + cw - 16, menuTop + 8);
+        if (mScroll + menuVisible < menuItems.length) ctx.fillText('\u25BC', cx + cw - 16, menuTop + menuVisible * rowH);
       }
       ctx.fillStyle = C.dark;
       ctx.font = '8px "Press Start 2P", monospace';
@@ -1058,41 +1098,126 @@
           }
           // Scroll indicators
           if (lines.length > visibleStats) {
-            ctx.font = '8px "Press Start 2P", monospace';
+            ctx.font = '12px "Press Start 2P", monospace';
             ctx.fillStyle = C.dark;
-            if (scroll > 0) ctx.fillText('\u25B2', cx + cw - 10, cy + headerH + 8);
-            if (scroll + visibleStats < lines.length) ctx.fillText('\u25BC', cx + cw - 10, cy + ch - 4);
+            if (scroll > 0) ctx.fillText('\u25B2', cx + cw - 14, cy + headerH + 10);
+            if (scroll + visibleStats < lines.length) ctx.fillText('\u25BC', cx + cw - 14, cy + ch - 4);
+          }
+        } else if (item === 'ABOUT ME') {
+          // Custom layout with inline images
+          ctx.font = '9px "Press Start 2P", monospace';
+          const imgH = 6; // image takes 6 line slots
+          // Build virtual rows: each line = 1 slot, images = imgH slots
+          const slots = [];
+          for (let li = 0; li < lines.length; li++) {
+            if (lines[li] === '[photo]' || lines[li] === '[bike]') {
+              for (let s = 0; s < imgH; s++) slots.push({ type: 'img', key: lines[li] === '[photo]' ? 'photo' : 'bike', line: li, sub: s });
+            } else {
+              slots.push({ type: 'text', line: li });
+            }
+          }
+          detailVisibleCount = Math.floor((ch - headerH - 20) / detailLineH);
+          const visSlots = detailVisibleCount;
+          const contentTop = cy + headerH + 8;
+          const clipTop = cy + headerH;
+          const clipBot = cy + ch - hintH;
+
+          // Set up clip for all content
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(cx, clipTop, cw, clipBot - clipTop);
+          ctx.clip();
+
+          // Draw text lines
+          for (let i = 0; i < visSlots && (scroll + i) < slots.length; i++) {
+            const slot = slots[scroll + i];
+            if (slot.type === 'text') {
+              const sy = contentTop + i * detailLineH;
+              const ly = sy + detailLineH * 0.7;
+              ctx.fillStyle = C.ink;
+              ctx.fillText(lines[slot.line], cx + 10, ly);
+            }
+          }
+
+          // Draw images — compute position from their sub=0 slot absolute index
+          const drawn = {};
+          for (let i = 0; i < visSlots && (scroll + i) < slots.length; i++) {
+            const slot = slots[scroll + i];
+            if (slot.type === 'img' && !drawn[slot.key]) {
+              drawn[slot.key] = true;
+              const photo = aboutPhotos[slot.key];
+              if (photo && photo.complete) {
+                const totalImgH = imgH * detailLineH - 4;
+                const imgW = cw - 24;
+                const aspect = photo.width / photo.height;
+                let dw = imgW, dh = imgW / aspect;
+                if (dh > totalImgH) { dh = totalImgH; dw = dh * aspect; }
+                const ix = cx + (cw - dw) / 2;
+                // slot at visible index i has sub offset — compute where sub=0 would be
+                const imgTopY = contentTop + (i - slot.sub) * detailLineH;
+                ctx.drawImage(photo, ix, imgTopY, dw, dh);
+                ctx.strokeStyle = C.dark;
+                ctx.lineWidth = 1;
+                ctx.strokeRect(ix, imgTopY, dw, dh);
+              }
+            }
+          }
+
+          ctx.restore();
+
+          // Scroll indicators
+          ctx.font = '12px "Press Start 2P", monospace';
+          if (slots.length > visSlots) {
+            ctx.fillStyle = C.dark;
+            if (scroll > 0) ctx.fillText('\u25B2', cx + cw - 18, cy + headerH + 12);
+            if (scroll + visSlots < slots.length) ctx.fillText('\u25BC', cx + cw - 18, cy + ch - hintH - 4);
           }
         } else {
-          // Normal list
-          ctx.font = '9px "Press Start 2P", monospace';
+          // Normal list — same layout as menu
+          ctx.font = 'bold 9px "Press Start 2P", monospace';
+          const rowH = 18;
+          const listTop = cy + headerH + 6;
+          ctx.textBaseline = 'middle';
           for (let i = 0; i < detailVisible && (scroll + i) < lines.length; i++) {
-            const ly = cy + headerH + 8 + i * detailLineH + detailLineH * 0.7;
             const lineIdx = scroll + i;
+            const y = listTop + i * rowH;
+            const midRow = y + rowH / 2 + 2;
             const isSel = lineIdx === detailCursor;
+            const lineText = lines[lineIdx];
             if (isSel) {
               ctx.fillStyle = C.ink;
-              ctx.fillRect(cx + 6, ly - detailLineH * 0.6, cw - 12, detailLineH * 0.85);
-              ctx.fillText('\u25B6', cx + 2, ly - 1);
-            }
-            ctx.fillStyle = isSel ? C.bg : C.ink;
-            const lineText = lines[lineIdx];
-            if (lineText.includes('|')) {
-              const [name, year] = lineText.split('|');
-              ctx.fillText(name, cx + 10, ly);
-              ctx.textAlign = 'right';
-              ctx.fillText(year, cx + cw - 6, ly);
-              ctx.textAlign = 'left';
+              ctx.fillRect(cx + 6, y + 1, cw - 12, rowH - 2);
+              ctx.fillStyle = C.bg;
+              ctx.fillText('\u25B6', cx + 8, midRow);
+              if (lineText.includes('|')) {
+                const [name, year] = lineText.split('|');
+                ctx.fillText(name, cx + 22, midRow);
+                ctx.textAlign = 'right';
+                ctx.fillText(year, cx + cw - 8, midRow);
+                ctx.textAlign = 'left';
+              } else {
+                ctx.fillText(lineText, cx + 22, midRow);
+              }
             } else {
-              ctx.fillText(lineText, cx + 10, ly);
+              ctx.fillStyle = C.ink;
+              if (lineText.includes('|')) {
+                const [name, year] = lineText.split('|');
+                ctx.fillText(name, cx + 22, midRow);
+                ctx.textAlign = 'right';
+                ctx.fillText(year, cx + cw - 8, midRow);
+                ctx.textAlign = 'left';
+              } else {
+                ctx.fillText(lineText, cx + 22, midRow);
+              }
             }
           }
+          ctx.textBaseline = 'alphabetic';
         }
-        ctx.font = '9px "Press Start 2P", monospace';
+        ctx.font = '12px "Press Start 2P", monospace';
         if (lines.length > detailVisible) {
           ctx.fillStyle = C.dark;
-          if (scroll > 0) ctx.fillText('\u25B2', cx + cw - 14, cy + headerH + 10);
-          if (scroll + detailVisible < lines.length) ctx.fillText('\u25BC', cx + cw - 14, cy + ch - hintH - 4);
+          if (scroll > 0) ctx.fillText('\u25B2', cx + cw - 18, cy + headerH + 12);
+          if (scroll + detailVisible < lines.length) ctx.fillText('\u25BC', cx + cw - 18, cy + ch - hintH - 4);
         }
         ctx.fillStyle = C.dark;
         ctx.font = '8px "Press Start 2P", monospace';
@@ -1261,7 +1386,7 @@
       ctx.textAlign = 'left';
     }
     // LCD pixel grid effect — covers full green area
-    const gx = bz, gy = bz - shiftUp, gw = w - bz * 2, gh = h - bz - (bz - shiftUp);
+    const gx = bzH, gy = bzV - shiftUp, gw = w - bzH * 2, gh = h - bzV - (bzV - shiftUp);
     ctx.fillStyle = 'rgba(0,0,0,0.025)';
     for (let y = gy; y < gy + gh; y += 2) ctx.fillRect(gx, y, gw, 1);
     for (let x = gx; x < gx + gw; x += 2) ctx.fillRect(x, gy, 1, gh);
@@ -1272,6 +1397,30 @@
     vGrad.addColorStop(1, 'rgba(0,0,0,0.15)');
     ctx.fillStyle = vGrad;
     ctx.fillRect(gx, gy, gw, gh);
+
+    // LCD wipe overlay — horizontal strips cascade down
+    if (lcdTransition) {
+      const stripH = h / LCD_STRIPS;
+      for (let i = 0; i < LCD_STRIPS; i++) {
+        const delay = i / LCD_STRIPS;
+        let alpha;
+        if (lcdPhase === 0) {
+          // Wipe in: strips cascade down, covering screen
+          const t = Math.max(0, Math.min(1, (lcdProgress - delay * 0.6) / 0.4));
+          alpha = t * t;
+        } else if (lcdPhase === 1) {
+          alpha = 1;
+        } else {
+          // Wipe out: strips cascade down, revealing new screen
+          const t = Math.max(0, Math.min(1, (lcdProgress - delay * 0.6) / 0.4));
+          alpha = 1 - t * t;
+        }
+        if (alpha > 0) {
+          ctx.fillStyle = `rgba(10, 26, 10, ${alpha})`;
+          ctx.fillRect(0, i * stripH, w, stripH);
+        }
+      }
+    }
 
     ctx.restore();
     screenTex.needsUpdate = true;
@@ -1391,11 +1540,11 @@
       else if (action === 'down') cursor = (cursor + 1) % menuItems.length;
       else if (action === 'a') {
         if (menuItems[cursor] === 'SNAKE') {
-          screen = 'snake'; snakeStarted = false; snakeAlive = false;
+          lcdFlash(() => { screen = 'snake'; snakeStarted = false; snakeAlive = false; });
         } else if (menuItems[cursor] === 'BREAKOUT') {
-          screen = 'breakout'; brk.started = false; brk.alive = false;
+          lcdFlash(() => { screen = 'breakout'; brk.started = false; brk.alive = false; });
         } else {
-          screen = 'detail'; scroll = 0; detailCursor = 0;
+          lcdFlash(() => { screen = 'detail'; scroll = 0; detailCursor = 0; });
         }
       }
     } else if (screen === 'detail') {
@@ -1424,6 +1573,16 @@
         else if (action === 'right') {
           projImgIdx = (projImgIdx + 1) % imgCount;
         }
+      } else if (menuItems[cursor] === 'ABOUT ME') {
+        // ABOUT ME uses slot-based scrolling (images take multiple slots)
+        const imgH = 6;
+        let totalSlots = 0;
+        for (const l of lines) { totalSlots += (l === '[photo]' || l === '[bike]') ? imgH : 1; }
+        if (action === 'up') { scroll = Math.max(0, scroll - 1); }
+        else if (action === 'down') { scroll = Math.min(Math.max(0, totalSlots - detailVisibleCount), scroll + 1); }
+        else if (action === 'b') { lcdFlash(() => { screen = 'menu'; projScreen = false; trophyScreen = false; }); }
+        else if (action === 'left') { lcdFlash(() => { cursor = (cursor - 1 + menuItems.length) % menuItems.length; scroll = 0; detailCursor = 0; projScreen = false; trophyScreen = false; }); }
+        else if (action === 'right') { lcdFlash(() => { cursor = (cursor + 1) % menuItems.length; scroll = 0; detailCursor = 0; projScreen = false; trophyScreen = false; }); }
       } else {
         // Normal detail list
         if (action === 'up') {
@@ -1450,19 +1609,18 @@
           projScreen = true;
           projImgIdx = 0;
         } else if (action === 'b') {
-          screen = 'menu';
-          projScreen = false; trophyScreen = false;
+          lcdFlash(() => { screen = 'menu'; projScreen = false; trophyScreen = false; });
         }
-        else if (action === 'left') { cursor = (cursor - 1 + menuItems.length) % menuItems.length; scroll = 0; detailCursor = 0; projScreen = false; trophyScreen = false; }
-        else if (action === 'right') { cursor = (cursor + 1) % menuItems.length; scroll = 0; detailCursor = 0; projScreen = false; trophyScreen = false; }
+        else if (action === 'left') { lcdFlash(() => { cursor = (cursor - 1 + menuItems.length) % menuItems.length; scroll = 0; detailCursor = 0; projScreen = false; trophyScreen = false; }); }
+        else if (action === 'right') { lcdFlash(() => { cursor = (cursor + 1) % menuItems.length; scroll = 0; detailCursor = 0; projScreen = false; trophyScreen = false; }); }
       }
     } else if (screen === 'snake') {
       if (!snakeStarted) {
         if (action === 'a') snakeReset();
-        else if (action === 'b') screen = 'menu';
+        else if (action === 'b') lcdFlash(() => { screen = 'menu'; });
       } else if (!snakeAlive) {
         if (action === 'a') snakeReset();
-        else if (action === 'b') screen = 'menu';
+        else if (action === 'b') lcdFlash(() => { screen = 'menu'; });
       } else {
         // Direction controls — prevent 180 turns
         if (action === 'up' && snakeDir.y !== 1) snakeNextDir = {x:0, y:-1};
@@ -1473,10 +1631,10 @@
     } else if (screen === 'breakout') {
       if (!brk.started) {
         if (action === 'a') brkReset();
-        else if (action === 'b') screen = 'menu';
+        else if (action === 'b') lcdFlash(() => { screen = 'menu'; });
       } else if (!brk.alive) {
         if (action === 'a') brkReset();
-        else if (action === 'b') screen = 'menu';
+        else if (action === 'b') lcdFlash(() => { screen = 'menu'; });
       } else {
         if (action === 'left') brkPadX = Math.max(0.1, brkPadX - 0.08);
         else if (action === 'right') brkPadX = Math.min(0.9, brkPadX + 0.08);
@@ -1499,8 +1657,11 @@
       const obj = hits[0].object;
 
 
-      // Cartridge eject (click on inserted cartridge)
+      // Cartridge eject (click on inserted cartridge) — only from back
       if (obj.userData.action === 'ejectCart') {
+        // Normalize rotation to 0..2PI range, only allow eject when viewing the back
+        const normY = ((gb.rotation.y % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+        if (normY < Math.PI * 0.6 || normY > Math.PI * 1.4) return true;
         if (obj.userData.animating) return true;
         initAudio();
         obj.userData.animating = true;
@@ -1863,7 +2024,7 @@
       brkTick();
       drawScreen();
     }
-    else if (screen === 'boot') { bootTimer += dt; drawScreen(); if (bootTimer > 4.8) { screen = 'menu'; drawScreen(); } }
+    else if (screen === 'boot') { bootTimer += dt; drawScreen(); if (bootTimer > 4.6) { screen = 'menu'; drawScreen(); } }
     // Smooth push offset with lerp
     const targetPush = gb.userData.pushOffset || 0;
     gb.userData.currentPush = (gb.userData.currentPush || 0) + (targetPush - (gb.userData.currentPush || 0)) * 0.25;

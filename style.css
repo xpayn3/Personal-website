@@ -79,8 +79,6 @@ html:has(body.scroll-locked) {
   transition: background 0.25s ease;
   contain: layout style paint;
   container-type: inline-size;
-  content-visibility: auto;
-  contain-intrinsic-size: 200px;
 }
 
 .grid-item img,
@@ -408,6 +406,13 @@ html:has(body.scroll-locked) {
 }
 
 /* color swatches in dropdown */
+#menu-nav,
+#menu-category,
+.bar-dropdown.color-grid {
+  max-height: none;
+  overflow: visible;
+}
+
 /* nav links in dropdown */
 .bar-nav-link {
   display: block;
