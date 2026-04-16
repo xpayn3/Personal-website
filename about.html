@@ -12,12 +12,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Sans:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="tokens.css" />
   <link rel="stylesheet" href="about.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" />
+  <link rel="stylesheet" href="bar.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" media="print" onload="this.media='all'" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
-<body>
+<body class="theme-dark">
 
   <main class="about-page">
 
@@ -46,11 +48,11 @@
         </div>
         <div class="split-contact">
           <div class="about-links">
-            <a href="#" class="about-icon-link" id="openContactForm"><i class="ri-mail-line"></i><span>Email me</span></a>
+            <a href="#" class="about-icon-link" id="openContactForm"><i class="ri-mail-line"></i><span>Contact me</span></a>
             <a href="https://www.instagram.com/lukakluka/" target="_blank" rel="noopener noreferrer" class="about-icon-link"><i class="ri-instagram-line"></i><span>Instagram</span></a>
             <a href="https://www.behance.net/lukagrcar" target="_blank" rel="noopener noreferrer" class="about-icon-link"><i class="ri-behance-fill"></i><span>Behance</span></a>
+            <a href="https://www.linkedin.com/in/luka-grcar-9534b695/" target="_blank" rel="noopener noreferrer" class="about-icon-link"><i class="ri-linkedin-box-fill"></i><span>LinkedIn</span></a>
           </div>
-          <p class="about-text" style="margin-top: 24px; font-size: 0.75rem; color: rgba(255,255,255,0.25);">Open for new projects.<br>Let's create something together.</p>
         </div>
 
     <section class="about-section">
@@ -71,16 +73,30 @@
         <div class="about-col">
           <div class="section-label">Tools</div>
           <div class="skills-list">
-            <span class="skill-tag"><i class="ri-box-3-line"></i>Cinema 4D</span>
-            <span class="skill-tag"><i class="ri-tornado-line"></i>Houdini</span>
-            <span class="skill-tag"><i class="ri-lightbulb-line"></i>Redshift</span>
-            <span class="skill-tag"><i class="ri-movie-line"></i>After Effects</span>
-            <span class="skill-tag"><i class="ri-image-edit-line"></i>Photoshop</span>
-            <span class="skill-tag"><i class="ri-pen-nib-line"></i>Illustrator</span>
-            <span class="skill-tag"><i class="ri-layout-line"></i>InDesign</span>
-            <span class="skill-tag"><i class="ri-shapes-line"></i>ZBrush</span>
-            <span class="skill-tag"><i class="ri-code-line"></i>Figma</span>
-            <span class="skill-tag"><i class="ri-film-line"></i>Resolume</span>
+            <span class="skill-tag"><img src="Images/tools/Cinema4D-Logo-Icon-Small.png" class="skill-icon" width="16" height="16" alt="">Cinema 4D</span>
+            <span class="skill-tag"><img src="Images/tools/Houdini3D_icon.png" class="skill-icon" width="16" height="16" alt="">Houdini</span>
+            <span class="skill-tag"><img src="Images/tools/Redshift-Logo-Icon-Small.png" class="skill-icon" width="16" height="16" alt="">Redshift</span>
+            <span class="skill-tag"><img src="Images/tools/after-effects-1.svg" class="skill-icon" width="16" height="16" alt="">After Effects</span>
+            <span class="skill-tag"><img src="Images/tools/adobe-photoshop.svg" class="skill-icon" width="16" height="16" alt="">Photoshop</span>
+            <span class="skill-tag"><img src="Images/tools/adobe-illustrator-cc-3.svg" class="skill-icon" width="16" height="16" alt="">Illustrator</span>
+            <span class="skill-tag"><img src="Images/tools/adobe-indesign-cc-icon.svg" class="skill-icon" width="16" height="16" alt="">InDesign</span>
+            <span class="skill-tag"><img src="Images/tools/ZBrush-new-logo.jpg 1.png" class="skill-icon" width="16" height="16" alt="">ZBrush</span>
+            <span class="skill-tag"><img src="Images/tools/substance-3d-painter-1.svg" class="skill-icon" width="16" height="16" alt="">Substance 3D</span>
+            <span class="skill-tag"><img src="Images/tools/figma-icon.svg" class="skill-icon" width="16" height="16" alt="">Figma</span>
+          </div>
+        </div>
+        <div class="about-col">
+          <div class="section-label">AI</div>
+          <div class="skills-list">
+            <a href="https://chatgpt.com" target="_blank" rel="noopener noreferrer" class="skill-tag">ChatGPT</a>
+            <a href="https://www.midjourney.com" target="_blank" rel="noopener noreferrer" class="skill-tag">Midjourney</a>
+            <a href="https://claude.ai" target="_blank" rel="noopener noreferrer" class="skill-tag">Claude</a>
+            <a href="https://stability.ai" target="_blank" rel="noopener noreferrer" class="skill-tag">Stable Diffusion</a>
+            <a href="https://openai.com/dall-e" target="_blank" rel="noopener noreferrer" class="skill-tag">DALL·E</a>
+            <a href="https://runwayml.com" target="_blank" rel="noopener noreferrer" class="skill-tag">Runway</a>
+            <a href="https://sora.com" target="_blank" rel="noopener noreferrer" class="skill-tag">Sora</a>
+            <a href="https://www.comfyui.com" target="_blank" rel="noopener noreferrer" class="skill-tag">ComfyUI</a>
+            <a href="https://www.cursor.com" target="_blank" rel="noopener noreferrer" class="skill-tag">Cursor</a>
           </div>
         </div>
       </div>
@@ -141,10 +157,10 @@
   </main>
 
   <!-- ===== FLOATING BOTTOM BAR ===== -->
-  <nav class="bottom-bar bar-animate-in">
-    <a href="index.html" class="bar-social">Home</a>
-    <a href="grid.html" class="bar-social">Index</a>
-    <a href="about.html" class="bar-social active">About</a>
+  <nav class="bottom-bar">
+    <a href="index.html" class="bar-link">Home</a>
+    <a href="grid.html" class="bar-link">Index</a>
+    <a href="about.html" class="bar-link active">About</a>
   </nav>
 
   <a href="index.html" class="watermark">Luka Grčar</a>
@@ -258,13 +274,8 @@
     btn.disabled = false;
   });
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/GLTFLoader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/shaders/CopyShader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/postprocessing/EffectComposer.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/postprocessing/RenderPass.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
-  <script src="gameboy.js?v=5"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/build/three.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script defer src="gameboy.js?v=8"></script>
 </body>
 </html>

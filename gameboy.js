@@ -445,7 +445,7 @@
   const details = {
     'WHO AM I': ['3D generalist &','UX designer','','Ljubljana, Slovenia','','Crafting visual','experiences through','3D animation, motion','design & brand','strategy.','','Every project starts','with understanding','your vision.'],
     'STATS': ['3D Anim|92','Motion GFX|88','Product Viz|85','Identity|78','Creative Dir|74','UX/UI|70','Projection|82','Social|65'],
-    'LOADOUT': ['# Cinema 4D','# Houdini','# Redshift','# After Effects','# Photoshop','# Illustrator','# InDesign','# ZBrush','# Figma','# Resolume'],
+    'LOADOUT': ['# Cinema 4D','# Houdini','# Redshift','# After Effects','# Photoshop','# Illustrator','# InDesign','# ZBrush','# Figma','','## AI','# ChatGPT','# Midjourney','# Claude','# Stable Diffusion','# DALL-E','# Runway','# Sora','# ComfyUI','# Cursor'],
     'ALLIES': ['Festival Grounded',"Athlete's Foot",'Cestel','Natureta','LargaVida','NewEdge Magazine','Kersnikova','Pritlicje','Studio ENKI'],
     'TROPHIES': ['WEBSI Prvak|2022','Netko|2022','Diggit Zlata|2022','Awwwards HM|2022','CSSDA 7xKudo|2022','CSSREEL 2xFD|2022','BestCSS 2xSD|2022','WEBSI Prvak|2021','Netko 2xFOTD|2021','Awwwards HM|2021','CSSDA 2xKudo|2021'],
     'PING ME': ['','Email:','luka.grcar@me.com','','Instagram:','@lukakluka','','Behance:','/lukagrcar'],
@@ -1498,14 +1498,6 @@
     if (hits.length && hits[0].object.userData.action) {
       const obj = hits[0].object;
 
-      // Cartridge eject/insert — only when back is visible
-      if (obj.userData.action === 'ejectCart' || obj.userData.action === 'insertCart') {
-        // Normalize rotation to 0-2PI
-        let ry = gb.rotation.y % (Math.PI * 2);
-        if (ry < 0) ry += Math.PI * 2;
-        // Back faces camera roughly between 90° and 270° (PI/2 to 3PI/2)
-        if (ry < Math.PI * 0.35 || ry > Math.PI * 1.65) return false;
-      }
 
       // Cartridge eject (click on inserted cartridge)
       if (obj.userData.action === 'ejectCart') {
@@ -1744,12 +1736,46 @@
   let autoRotate = true;
   let targetCamZ = 180; // default zoom
 
+  // === BUTTON HOVER ===
+  let hoveredBtn = null;
+  function updateHover(cx, cy) {
+    if (!interactiveObjs.length) return;
+    const r = renderer.domElement.getBoundingClientRect();
+    pointer.x = ((cx - r.left) / r.width) * 2 - 1;
+    pointer.y = -((cy - r.top) / r.height) * 2 + 1;
+    raycaster.setFromCamera(pointer, camera);
+    const hits = raycaster.intersectObjects(interactiveObjs, true);
+    const hit = hits.length && hits[0].object.userData.action ? hits[0].object : null;
+    let btn = hit && hit.material && hit.material.visible !== false ? hit :
+              hit && hit.userData.isJoystick && parts.joystick ? parts.joystick :
+              hit && (hit.userData.action === 'ejectCart' || hit.userData.action === 'insertCart') && parts.casette && parts.casette.visible ? parts.casette : null;
+    if (btn === hoveredBtn) return;
+    if (hoveredBtn && hoveredBtn.material && hoveredBtn.material.emissive) {
+      hoveredBtn.material.emissive.set(hoveredBtn.userData._origEmissive || 0x000000);
+      hoveredBtn.material.emissiveIntensity = hoveredBtn.userData._origEmissiveInt || 0;
+    }
+    hoveredBtn = btn;
+    if (btn && btn.material && btn.material.emissive) {
+      if (btn.userData._origEmissive === undefined) {
+        btn.userData._origEmissive = btn.material.emissive.getHex();
+        btn.userData._origEmissiveInt = btn.material.emissiveIntensity;
+      }
+      const col = btn.material.color || new THREE.Color(0xffffff);
+      btn.material.emissive.copy(col);
+      btn.material.emissiveIntensity = 0.35;
+    }
+    renderer.domElement.style.cursor = hit ? 'pointer' : '';
+  }
+
   renderer.domElement.addEventListener('pointerdown', (e) => {
     isDragging = true; dragMoved = false;
     prev = { x: e.clientX, y: e.clientY };
   });
   renderer.domElement.addEventListener('pointermove', (e) => {
-    if (!isDragging) return;
+    if (!isDragging) {
+      updateHover(e.clientX, e.clientY);
+      return;
+    }
     const dx = e.clientX - prev.x, dy = e.clientY - prev.y;
     if (Math.abs(dx) + Math.abs(dy) > 3) dragMoved = true;
     targetRot.y += dx * 0.008;

@@ -12,7 +12,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="tokens.css" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" media="print" onload="this.media='all'" />
+  <link rel="stylesheet" href="bar.css" />
+  <link rel="stylesheet" href="footer.css" />
   <link rel="preload" as="script" href="script.js" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
@@ -21,51 +25,25 @@
 
   <!-- ===== GRID ===== -->
   <main class="grid" id="grid"></main>
-  <div class="no-results" id="noResults">No matches found</div>
+  <div class="no-results" id="noResults">No matches found yet<button class="no-results-btn" id="clearFiltersBtn">Clear filters</button></div>
 
   <!-- ===== FOOTER ===== -->
   <footer class="site-footer">
-    <div class="footer-marquee">
-      <div class="footer-marquee-track">
-        <span>Available for freelance</span>
-        <span>&mdash;</span>
-        <span>3D &middot; Motion &middot; UX &middot; Identity</span>
-        <span>&mdash;</span>
-        <span>Ljubljana, Slovenia</span>
-        <span>&mdash;</span>
-        <span>Available for freelance</span>
-        <span>&mdash;</span>
-        <span>3D &middot; Motion &middot; UX &middot; Identity</span>
-        <span>&mdash;</span>
-        <span>Ljubljana, Slovenia</span>
-        <span>&mdash;</span>
-      </div>
+    <div class="footer-hero">
+      <p class="footer-cta-label">Let's work together</p>
+      <h2 class="footer-cta-heading">Got a project<br>in mind?</h2>
+      <a href="mailto:luka.grcar@me.com" class="footer-cta-btn">Get in touch &nearr;</a>
     </div>
-    <div class="footer-main">
-      <div class="footer-left">
-        <div class="footer-name-big">Luka<br>Grčar</div>
-        <p class="footer-tagline">3D generalist &amp; UX graphic designer</p>
-      </div>
-      <div class="footer-right">
-        <div class="footer-links-grid">
-          <a href="mailto:luka.grcar@me.com" class="footer-link-item">
-            <span class="footer-link-label">Email</span>
-            <span class="footer-link-arrow">&nearr;</span>
-          </a>
-          <a href="https://www.instagram.com/lukakluka/" target="_blank" rel="noopener noreferrer" class="footer-link-item">
-            <span class="footer-link-label">Instagram</span>
-            <span class="footer-link-arrow">&nearr;</span>
-          </a>
-          <a href="https://www.behance.net/lukagrcar" target="_blank" rel="noopener noreferrer" class="footer-link-item">
-            <span class="footer-link-label">Behance</span>
-            <span class="footer-link-arrow">&nearr;</span>
-          </a>
-        </div>
-      </div>
+    <div class="footer-links-row">
+      <a href="mailto:luka.grcar@me.com">Email</a>
+      <a href="https://www.instagram.com/lukakluka/" target="_blank" rel="noopener noreferrer">Instagram</a>
+      <a href="https://www.behance.net/lukagrcar" target="_blank" rel="noopener noreferrer">Behance</a>
+      <a href="https://www.linkedin.com/in/luka-grcar-9534b695/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
     </div>
-    <div class="footer-bar">
-      <span>&copy; 2025 Luka Grčar</span>
-      <span>All rights reserved</span>
+    <div class="footer-bottom">
+      <span class="footer-name-sm">Luka Grčar</span>
+      <span class="footer-loc">Ljubljana, Slovenia</span>
+      <span class="footer-copy">&copy; 2025 &mdash; All rights reserved</span>
     </div>
   </footer>
 
@@ -101,7 +79,7 @@
   <!-- ===== FLOATING BOTTOM BAR ===== -->
   <nav class="bottom-bar bar-animate-in" id="bottomBar">
     <div class="bar-section">
-      <button class="bar-toggle active" data-menu="nav">Index</button>
+      <button class="bar-toggle active" data-menu="nav"><i class="ri-menu-line" style="margin-right:6px;font-size:1rem"></i>Index</button>
       <div class="bar-dropdown" id="menu-nav">
         <a href="grid.html" class="bar-nav-link active">Index</a>
         <a href="about.html" class="bar-nav-link">About</a>
@@ -110,7 +88,7 @@
     </div>
     <div class="bar-divider"></div>
     <div class="bar-section">
-      <button class="bar-toggle" data-menu="project" id="projectToggle"><img class="proj-toggle-thumb" id="projToggleThumb" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /><span id="projToggleText">Project</span></button>
+      <button class="bar-toggle" data-menu="project" id="projectToggle"><img class="proj-toggle-thumb" id="projToggleThumb" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" /><span id="projToggleText">Projects</span></button>
       <div class="bar-dropdown" id="menu-project"></div>
     </div>
     <div class="bar-section">
@@ -118,11 +96,8 @@
       <div class="bar-dropdown" id="menu-color"></div>
     </div>
     <div class="bar-section">
-      <button class="bar-toggle" data-menu="type" id="typeToggle">Type</button>
-      <div class="bar-dropdown" id="menu-type">
-        <button data-value="image" id="filterImages">Images</button>
-        <button data-value="video" id="filterVideos">Videos</button>
-      </div>
+      <button class="bar-toggle" data-menu="category" id="categoryToggle">Type</button>
+      <div class="bar-dropdown" id="menu-category"></div>
     </div>
     <button class="bar-reset" id="resetFilters">All</button>
     <div class="bar-slider">

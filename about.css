@@ -11,9 +11,9 @@
 html { scroll-behavior: smooth; touch-action: manipulation; -ms-touch-action: manipulation; }
 
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
   min-height: 100vh;
 }
 
@@ -219,6 +219,7 @@ body {
   border-radius: 999px;
   font-size: 0.8rem;
   color: var(--dim);
+  text-decoration: none;
   transition: border-color 0.2s, color 0.2s;
   display: inline-flex;
   align-items: center;
@@ -228,6 +229,21 @@ body {
 .skill-tag i {
   font-size: 0.9rem;
   opacity: 0.5;
+}
+
+.skill-icon {
+  width: 16px;
+  height: 16px;
+  max-width: 16px;
+  max-height: 16px;
+  object-fit: contain;
+  flex-shrink: 0;
+  opacity: 0.7;
+  border-radius: 3px;
+}
+
+.skill-tag:hover .skill-icon {
+  opacity: 1;
 }
 
 .skill-tag:hover {
@@ -293,8 +309,8 @@ body {
 
 .award-line {
   flex: 1;
-  height: 1px;
-  background: var(--border);
+  height: 0;
+  background: none;
   margin: 0 16px;
   min-width: 20px;
 }
@@ -313,90 +329,9 @@ body {
 }
 
 /* ========== BOTTOM BAR ========== */
-.bottom-bar {
-  position: fixed;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 16px;
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  border: 1px solid rgba(0,0,0,0.06);
-  border-radius: 999px;
-  z-index: 100;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-}
-
-.bar-section { position: relative; }
-
-.bar-toggle {
-  background: none;
-  border: none;
-  color: #222;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.9rem;
-  padding: 12px 22px;
-  cursor: pointer;
-  border-radius: 999px;
-  transition: background 0.2s;
-  display: flex;
-  align-items: center;
-}
-
-.bar-toggle:hover { background: rgba(0,0,0,0.05); }
-
-.bar-social {
-  color: #222;
-  text-decoration: none;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.9rem;
-  padding: 12px 22px;
-  border-radius: 999px;
-  transition: background 0.2s;
-  white-space: nowrap;
-}
-
-.bar-social:hover {
-  background: rgba(0,0,0,0.05);
-}
-
-.bar-social.active {
-  background: rgba(0,0,0,0.08);
-  color: #111;
-  font-weight: 600;
-}
-
-.bar-divider {
-  width: 1px;
-  height: 24px;
-  background: rgba(0,0,0,0.1);
-  margin: 0 4px;
-  flex-shrink: 0;
-}
+/* About-specific bar overrides */
 
 /* contraction animation on page load */
-.bar-animate-in {
-  animation: barContract 0.6s cubic-bezier(0.32,0.72,0,1) both;
-}
-
-@keyframes barContract {
-  0% {
-    padding: 10px 60px;
-    gap: 20px;
-    opacity: 0.5;
-    transform: translateX(-50%) scaleX(1.3);
-  }
-  100% {
-    padding: 10px 16px;
-    gap: 6px;
-    opacity: 1;
-    transform: translateX(-50%) scaleX(1);
-  }
-}
 
 .bar-dropdown {
   position: absolute;

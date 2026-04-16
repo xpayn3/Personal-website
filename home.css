@@ -1,9 +1,9 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg: #ffffff;
-  --text: #111;
-  --accent: #0066ff;
+  --bg: var(--color-bg);
+  --text: var(--color-text);
+  --accent: var(--color-accent);
 }
 
 .loader {
@@ -271,91 +271,7 @@ body {
 
 
 /* ========== BOTTOM BAR ========== */
-.bottom-bar {
-  position: fixed;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 16px;
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  border: 1px solid rgba(0,0,0,0.06);
-  border-radius: 999px;
-  z-index: 100;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-}
-
-.bar-section { position: relative; }
-
-.bar-toggle {
-  background: none;
-  border: none;
-  color: #fff;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.9rem;
-  padding: 12px 22px;
-  cursor: pointer;
-  border-radius: 999px;
-  transition: background 0.2s;
-  display: flex;
-  align-items: center;
-}
-
-.bar-toggle:hover { background: rgba(255,255,255,0.1); }
-
-.bottom-bar {
-  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease, gap 0.3s ease;
-}
-
-.bottom-bar.compact {
-  gap: 0;
-}
-
-.bottom-bar.bar-hidden {
-  transform: translateX(-50%) translateY(calc(100% + 30px));
-  opacity: 0;
-  pointer-events: none;
-}
-
-.bar-link {
-  color: #222;
-  text-decoration: none;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.9rem;
-  padding: 12px 22px;
-  border-radius: 999px;
-  transition: background 0.2s;
-  white-space: nowrap;
-}
-
-.bar-link:hover {
-  background: rgba(0,0,0,0.05);
-}
-
-.bar-link.active {
-  background: rgba(0,0,0,0.08);
-  color: #111;
-  font-weight: 600;
-}
-
-.bar-divider {
-  width: 1px;
-  height: 24px;
-  background: rgba(0,0,0,0.1);
-  margin: 0 6px;
-  flex-shrink: 0;
-  transition: opacity 0.3s ease, width 0.3s ease, margin 0.3s ease;
-}
-
-.bar-divider.hidden {
-  opacity: 0;
-  width: 0;
-  margin: 0;
-}
+/* Home-specific bar overrides */
 
 .bar-collapsible {
   transition: opacity 0.3s ease, max-width 0.3s ease, padding 0.3s ease, margin 0.3s ease;
@@ -563,119 +479,7 @@ body {
 }
 
 /* ========== FOOTER (shared) ========== */
-.site-footer {
-  background: #0a2fff;
-  color: #fff;
-  position: relative;
-  overflow: hidden;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.footer-marquee {
-  border-top: 1px solid rgba(255,255,255,0.08);
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  padding: 14px 0;
-  overflow: hidden;
-}
-
-.footer-marquee-track {
-  display: flex;
-  gap: 32px;
-  white-space: nowrap;
-  animation: marquee 20s linear infinite;
-  font-size: 0.7rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.3);
-}
-
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-.footer-main {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
-  padding: 80px 48px;
-  flex: 1;
-  align-content: center;
-}
-
-.footer-name-big {
-  font-family: 'Instrument Sans', sans-serif;
-  font-size: clamp(3rem, 8vw, 6rem);
-  font-weight: 800;
-  line-height: 0.95;
-  letter-spacing: -0.04em;
-  margin-bottom: 20px;
-}
-
-.footer-tagline {
-  font-size: 0.85rem;
-  color: rgba(255,255,255,0.4);
-}
-
-.footer-right {
-  display: flex;
-  align-items: flex-end;
-}
-
-.footer-links-grid {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.footer-link-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  text-decoration: none;
-  color: #fff;
-  transition: padding-left 0.3s ease;
-}
-
-.footer-link-item:first-child {
-  border-top: 1px solid rgba(255,255,255,0.08);
-}
-
-.footer-link-item:hover {
-  padding-left: 12px;
-}
-
-.footer-link-label { font-size: 1rem; font-weight: 500; }
-
-.footer-link-arrow {
-  font-size: 1.2rem;
-  opacity: 0.4;
-  transition: opacity 0.3s, transform 0.3s;
-}
-
-.footer-link-item:hover .footer-link-arrow {
-  opacity: 1;
-  transform: translate(4px, -4px);
-}
-
-.footer-bar {
-  display: flex;
-  justify-content: space-between;
-  padding: 20px 48px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  font-size: 0.65rem;
-  color: rgba(255,255,255,0.2);
-}
-
-@media (max-width: 768px) {
-  .footer-main { grid-template-columns: 1fr; gap: 40px; padding: 48px 24px; }
-  .footer-bar { padding: 16px 24px; }
-}
+/* Footer styles now in style.css — shared across pages */
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {

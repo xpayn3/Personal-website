@@ -1,0 +1,99 @@
+/* ========== SHARED FOOTER ========== */
+.site-footer {
+  background: #0a2fff;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.footer-hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 48px;
+  gap: 24px;
+}
+
+.footer-cta-label {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.4);
+}
+
+.footer-cta-heading {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 10vw, 7rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+
+.footer-cta-btn {
+  display: inline-block;
+  margin-top: var(--space-lg);
+  padding: var(--space-lg) 40px;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: var(--radius-pill);
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: background var(--duration-normal), border-color var(--duration-normal), transform var(--duration-normal);
+}
+
+.footer-cta-btn:hover {
+  background: #fff;
+  color: #0a2fff;
+  border-color: #fff;
+  transform: scale(1.03);
+}
+
+.footer-links-row {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2xl);
+  padding: var(--space-2xl) var(--space-3xl);
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.footer-links-row a {
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: color var(--duration-fast);
+}
+
+.footer-links-row a:hover {
+  color: #fff;
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px var(--space-3xl);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 768px) {
+  .footer-hero { padding: 60px 24px; }
+  .footer-links-row { flex-wrap: wrap; gap: 20px; padding: 24px; }
+  .footer-bottom { flex-direction: column; gap: 8px; padding: 16px 24px; text-align: center; }
+}

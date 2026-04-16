@@ -4,6 +4,7 @@ const IMG = 'Images';
 const projects = {
   cestel: {
     color: 'black',
+    category: ['Motion', '3D'],
     name: 'CESTEL Animation',
     year: 2023,
     client: 'Cestel',
@@ -45,6 +46,7 @@ const projects = {
   },
   grounded2022: {
     color: 'black',
+    category: ['Motion', '3D'],
     name: 'Festival Grounded 2022',
     year: 2022,
     client: 'Pritličje',
@@ -82,6 +84,7 @@ const projects = {
   },
   grounded2021: {
     color: 'gray',
+    category: ['Motion', '3D'],
     name: 'Festival Grounded 2021: The State',
     year: 2021,
     client: 'Pritličje',
@@ -112,12 +115,13 @@ const projects = {
   },
   taf: {
     color: 'blue',
+    category: ['Motion', '3D', 'Photogrammetry'],
     name: "The Athlete's Foot",
     year: 2021,
     client: "The Athlete's Foot",
     type: '#worldsneakerday',
     desc: ["We brought sneaker culture to life through high-energy 3D animation and motion graphics for The Athlete's Foot. Every frame was crafted to stop the scroll — bold compositions, dynamic camera work, and product renders that make you want to reach through the screen."],
-    tools: ['Cinema 4D', 'AfterEffects', 'Photoshop'],
+    tools: ['Cinema 4D', 'AfterEffects', 'Photoshop', 'Substance 3D'],
     images: [
       `${IMG}/Athletesfoot/taf_anim_v.webm`,
       `${IMG}/Athletesfoot/taf_image_01.webp`,
@@ -141,6 +145,7 @@ const projects = {
   },
   grounded2020: {
     color: 'black',
+    category: ['Motion', '3D'],
     name: 'Festival Grounded: Truth',
     year: 2020,
     client: 'Pritličje',
@@ -171,6 +176,7 @@ const projects = {
   },
   grounded2018: {
     color: 'blue',
+    category: ['Print', 'Branding'],
     name: 'Festival Grounded 2018',
     year: 2018,
     client: 'Pritličje',
@@ -192,6 +198,7 @@ const projects = {
   },
   tamtam: {
     color: 'blue',
+    category: ['Print'],
     name: 'Mesta pešcem — TamTam',
     year: 2018,
     award: 'Mestni plakat leta — TamTam 2018',
@@ -206,6 +213,7 @@ const projects = {
   },
   ment: {
     color: 'purple',
+    category: ['Motion', '3D'],
     name: 'AppointMENT 4.0',
     year: 2019,
     desc: ['We designed the complete visual identity for AppointMENT 4.0 — a music and arts event where every visual element, from posters to digital assets, was built around abstract 3D forms and experimental typography.'],
@@ -219,11 +227,12 @@ const projects = {
   },
   halloween: {
     color: 'purple',
+    category: ['Photogrammetry', '3D', 'Motion'],
     name: "Halloween — The Athlete's Foot",
     year: 2021,
     client: "The Athlete's Foot",
-    desc: ['We sculpted and rendered a full Halloween universe for The Athlete\'s Foot — from ZBrush character models to animated social media sequences. Dark, detailed, and designed to haunt every feed it landed on.'],
-    tools: ['Cinema 4D', 'ZBrush', 'Redshift', 'AfterEffects'],
+    desc: ['For The Athlete\'s Foot Halloween campaign, we built an entire dark universe from scratch — grotesque characters, fog-drenched environments, and cinematic product shots that turned a seasonal retail push into something people actually wanted to watch.', 'The technical backbone of this project was photogrammetry. Every sneaker was hand-scanned using a DSLR rig — roughly 200–300 photos per shoe, shot from every conceivable angle under controlled lighting. Those images were then processed into raw point clouds, millions of vertices that captured every stitch, crease, and texture detail of the physical product.', 'From there, the real work began. Each point cloud was imported into ZBrush for cleanup — removing noise, filling gaps, rebuilding topology into something render-ready. The poly counts were enormous. A single shoe could easily hit 8–10 million polygons before decimation, and the full scenes with characters and environments pushed workstations to their absolute limits.'],
+    tools: ['Cinema 4D', 'ZBrush', 'Redshift', 'AfterEffects', 'Substance 3D'],
     images: [
       `${IMG}/Athletesfoot_halloween/Athletesfoot_halloween_01.webp`,
       `${IMG}/Athletesfoot_halloween/Athletesfoot_halloween_02.webp`,
@@ -252,11 +261,12 @@ const projects = {
   },
   blackfriday: {
     color: 'gray',
+    category: ['Motion', '3D'],
     name: "Black Friday — The Athlete's Foot",
     year: 2021,
     client: "The Athlete's Foot",
     desc: ['High-impact 3D animation for The Athlete\'s Foot Black Friday campaign. We created explosive product reveals and kinetic type sequences — everything engineered for maximum visual punch in a crowded retail moment.'],
-    tools: ['Cinema 4D', 'Redshift', 'AfterEffects'],
+    tools: ['Cinema 4D', 'Redshift', 'AfterEffects', 'Substance 3D'],
     images: [
       `${IMG}/Athletesfoot_blackfriday/Athletesfoot_blackfriday_anim_01.webp`,
       `${IMG}/Athletesfoot_blackfriday/Athletesfoot_blackfriday_anim_02.webp`,
@@ -271,6 +281,7 @@ const projects = {
   },
   largavida: {
     color: 'orange',
+    category: ['Print', 'Branding'],
     name: 'LargaVida Limited Edition',
     year: 2022,
     desc: ['We designed the complete visual language for LargaVida\'s limited edition release — from packaging to digital presence. Clean, premium, and built to stand out on shelf and screen alike.'],
@@ -290,6 +301,7 @@ const projects = {
   },
   newedge: {
     color: 'white',
+    category: ['Print'],
     name: 'NewEdge Magazine',
     year: 2020,
     desc: ['We crafted the editorial design system for NewEdge — a magazine that bridges digital culture and print craft. Every spread was treated as a composition, balancing bold imagery with refined typography.'],
@@ -310,6 +322,7 @@ const projects = {
   },
   grounded2023: {
     color: 'blue',
+    category: ['Motion', '3D'],
     name: 'Festival Grounded 2023',
     year: 2023,
     client: 'Pritličje',
@@ -334,6 +347,7 @@ const projects = {
   },
   grounded2025: {
     color: 'black',
+    category: ['Motion', '3D'],
     name: 'Festival Grounded 2025',
     year: 2025,
     client: 'Pritličje',
@@ -353,6 +367,7 @@ const projects = {
   },
   grounded2024: {
     color: 'blue',
+    category: ['Motion', '3D'],
     name: 'Festival Grounded 2024',
     year: 2024,
     client: 'Pritličje',
@@ -384,10 +399,11 @@ const projects = {
   },
   radenci: {
     color: 'orange',
+    category: ['Motion'],
     name: 'Radenci — Prostorska Projekcija',
     year: 2022,
     desc: ['An immersive projection mapping installation in Radenci — transforming architectural surfaces into living canvases. We designed and rendered every visual sequence, syncing light, motion, and space into a single experience.'],
-    tools: ['Cinema 4D', 'Resolume', 'AfterEffects'],
+    tools: ['Cinema 4D', 'AfterEffects'],
     images: Array.from({ length: 25 }, (_, i) => {
       const names = [
         'P1_S1_K01_0323.webp','P1_S1_K02_0533.webp','P1_S1_K02_i1_0460.webp',
@@ -417,6 +433,7 @@ const projects = {
   },
   lab: {
     color: 'gray',
+    category: ['Lab'],
     name: 'Lab — Experiments',
     desc: ['Personal experiments, 3D explorations, and creative coding projects.'],
     tools: ['Cinema 4D', 'Houdini', 'Redshift'],
@@ -477,6 +494,7 @@ const projects = {
   },
   kersnikova: {
     color: 'pink',
+    category: ['Print', 'Branding'],
     name: 'Kersnikova',
     year: 2021,
     desc: ['We developed the visual identity and print collateral for Kersnikova — posters, brochures, and spatial graphics that translate the institution\'s experimental spirit into bold, accessible design.'],
@@ -495,6 +513,7 @@ const projects = {
   },
   natureta_renders: {
     color: 'yellow',
+    category: ['3D'],
     name: 'Natureta Product Renders',
     year: 2023,
     desc: ['Photorealistic 3D product renders for Natureta — each jar, label, and surface rendered with obsessive attention to material and light. We created visuals that blur the line between photography and CGI.'],
@@ -520,6 +539,7 @@ const projects = {
   },
   natureta: {
     color: 'orange',
+    category: ['3D', 'Branding'],
     name: 'Natureta 100 Let',
     year: 2023,
     desc: ['Visual design celebrating 100 years of Natureta — we crafted a campaign that honors the brand\'s heritage while feeling fresh and contemporary. From concept to final delivery, every detail was considered.'],
@@ -555,6 +575,7 @@ for (const [projId, proj] of Object.entries(projects)) {
       projectName: proj.name,
       year: proj.year,
       color: proj.color || 'gray',
+      category: proj.category || [],
     });
   }
 }
@@ -583,6 +604,7 @@ function renderGrid() {
     div.dataset.year = item.year;
     div.dataset.color = item.color;
     div.dataset.type = (isVideo || isAnim) ? 'video' : 'image';
+    div.dataset.category = (item.category || []).join(',');
 
     // On mobile: use tiny 300px images, on desktop: use thumbs for videos, full for images
     let gridSrc;
@@ -610,9 +632,12 @@ function renderGrid() {
       let vid = null;
       let hoverTimer = null;
       // Preload video element on hover with slight delay to avoid drive-by loads
+      let wrap = null;
       div.addEventListener('mouseenter', () => {
         hoverTimer = setTimeout(() => {
           if (!vid) {
+            wrap = document.createElement('div');
+            wrap.className = 'hover-video-wrap';
             vid = document.createElement('video');
             vid.src = item.src;
             vid.muted = true;
@@ -620,10 +645,11 @@ function renderGrid() {
             vid.playsInline = true;
             vid.preload = 'metadata';
             vid.className = 'hover-video';
-            div.appendChild(vid);
+            wrap.appendChild(vid);
+            div.appendChild(wrap);
           }
           vid.play().catch(() => {});
-          vid.style.opacity = '1';
+          wrap.style.opacity = '1';
         }, 150);
       });
       div.addEventListener('mouseleave', () => {
@@ -631,7 +657,7 @@ function renderGrid() {
         if (vid) {
           vid.pause();
           vid.currentTime = 0;
-          vid.style.opacity = '0';
+          wrap.style.opacity = '0';
         }
       });
     }
@@ -658,6 +684,21 @@ function renderGrid() {
     label.className = 'item-label' + (item.project === 'lab' ? ' lab-label' : '');
     if (item.project === 'lab') {
       label.innerHTML = 'L<span style="font-weight:300">a</span>B';
+      let labInterval = null;
+      div.addEventListener('mouseenter', () => {
+        labInterval = setInterval(() => {
+          const chars = ['L','a','B'];
+          label.innerHTML = chars.map(c => {
+            const up = Math.random() > 0.5;
+            const w = Math.random() > 0.5 ? '300' : '700';
+            return `<span style="font-weight:${w}">${up ? c.toUpperCase() : c.toLowerCase()}</span>`;
+          }).join('');
+        }, 250);
+      });
+      div.addEventListener('mouseleave', () => {
+        clearInterval(labInterval);
+        label.innerHTML = 'L<span style="font-weight:300">a</span>B';
+      });
     } else {
       label.textContent = item.projectName;
     }
@@ -714,12 +755,12 @@ const lazyObserver = new IntersectionObserver((entries) => {
 document.querySelectorAll('.grid-item').forEach(item => lazyObserver.observe(item));
 
 // ========== FILTERS ==========
-let activeFilters = { project: null, year: null, color: null, type: null };
+let activeFilters = { project: null, year: null, color: null, category: null };
 
 function buildDropdowns() {
   // Project dropdown
   const projMenu = document.getElementById('menu-project');
-  const projNames = [...new Set(gridItems.map(i => i.project))].sort();
+  const projNames = [...new Set(gridItems.map(i => i.project))].filter(id => id !== 'lab').sort();
   for (const id of projNames) {
     const btn = document.createElement('button');
     btn.className = 'proj-filter-btn';
@@ -764,9 +805,20 @@ function buildColorDropdown() {
 buildDropdowns();
 buildColorDropdown();
 
-// Type filter buttons
-document.getElementById('filterImages').addEventListener('click', (e) => { e.stopPropagation(); setFilter('type', 'image'); });
-document.getElementById('filterVideos').addEventListener('click', (e) => { e.stopPropagation(); setFilter('type', 'video'); });
+// Category filter dropdown
+(function buildCategoryDropdown() {
+  const catMenu = document.getElementById('menu-category');
+  const allCats = new Set();
+  Object.values(projects).forEach(p => (p.category || []).forEach(c => allCats.add(c)));
+  const sorted = [...allCats].sort();
+  for (const cat of sorted) {
+    const btn = document.createElement('button');
+    btn.dataset.value = cat;
+    btn.textContent = cat;
+    btn.addEventListener('click', (e) => { e.stopPropagation(); setFilter('category', cat); });
+    catMenu.appendChild(btn);
+  }
+})();
 
 function setFilter(type, value) {
   if (activeFilters[type] === value) {
@@ -789,7 +841,7 @@ function applyFilters() {
     if (activeFilters.project && item.dataset.project !== activeFilters.project) show = false;
     if (activeFilters.year && item.dataset.year !== String(activeFilters.year)) show = false;
     if (activeFilters.color && item.dataset.color !== activeFilters.color) show = false;
-    if (activeFilters.type && item.dataset.type !== activeFilters.type) show = false;
+    if (activeFilters.category && !(item.dataset.category || '').split(',').includes(activeFilters.category)) show = false;
 
     const isHidden = item.classList.contains('hidden');
     if (show && isHidden) toShow.push(item);
@@ -815,7 +867,10 @@ function applyFilters() {
 
   // Show/hide no results
   const visibleCount = gridEl.querySelectorAll('.grid-item:not(.hidden)').length;
-  document.getElementById('noResults').classList.toggle('visible', visibleCount === 0);
+  const noMatch = visibleCount === 0;
+  document.getElementById('noResults').classList.toggle('visible', noMatch);
+  const footer = document.querySelector('.site-footer');
+  if (footer) footer.style.display = noMatch ? 'none' : '';
 
   // Update toggle button states (skip nav)
   document.querySelectorAll('.bar-toggle').forEach(btn => {
@@ -845,16 +900,16 @@ function applyFilters() {
     projToggleThumb.src = isVid ? firstSrc.replace(/\.(webm|mp4)$/, '_thumb.webp') : firstSrc;
     projToggleThumb.classList.add('visible');
   } else {
-    projToggleText.textContent = 'Project';
+    projToggleText.textContent = 'Projects';
     projToggleThumb.classList.remove('visible');
   }
 
-  // Update type button text
-  const typeToggle = document.getElementById('typeToggle');
-  if (activeFilters.type) {
-    typeToggle.textContent = activeFilters.type === 'image' ? 'Images' : 'Videos';
+  // Update category button text
+  const categoryToggle = document.getElementById('categoryToggle');
+  if (activeFilters.category) {
+    categoryToggle.textContent = activeFilters.category;
   } else {
-    typeToggle.textContent = 'Type';
+    categoryToggle.textContent = 'Type';
   }
 
   // Show/hide "All" reset button
@@ -888,13 +943,19 @@ document.getElementById('resetFilters').addEventListener('click', (e) => {
   const btn = e.currentTarget;
   btn.style.animation = 'barItemOut 0.3s cubic-bezier(0.32,0.72,0,1) forwards';
   setTimeout(() => {
-    activeFilters = { project: null, year: null, color: null, type: null };
+    activeFilters = { project: null, year: null, color: null, category: null };
     applyFilters();
     closeAllDropdowns();
     btn.style.animation = '';
   }, 250);
 });
 
+
+document.getElementById('clearFiltersBtn').addEventListener('click', () => {
+  activeFilters = { project: null, year: null, color: null, category: null };
+  applyFilters();
+  closeAllDropdowns();
+});
 
 // ========== DROPDOWN TOGGLE ==========
 function closeAllDropdowns() {
@@ -1098,6 +1159,28 @@ function openProject(projId) {
     }
     html += '</div>';
 
+    // Tools — right after description
+    const toolIcons = {
+      'Cinema 4D': 'Images/tools/Cinema4D-Logo-Icon-Small.png',
+      'Redshift': 'Images/tools/Redshift-Logo-Icon-Small.png',
+      'AfterEffects': 'Images/tools/after-effects-1.svg',
+      'Photoshop': 'Images/tools/adobe-photoshop.svg',
+      'InDesign': 'Images/tools/adobe-indesign-cc-icon.svg',
+      'Illustrator': 'Images/tools/adobe-illustrator-cc-3.svg',
+      'Houdini': 'Images/tools/Houdini3D_icon.png',
+      'ZBrush': 'Images/tools/ZBrush-new-logo.jpg 1.png',
+      'Substance 3D': 'Images/tools/substance-3d-painter-1.svg',
+    };
+    if (proj.tools) {
+      html += '<div class="proj-tools-inline"><span class="proj-tools-label">Tools</span><div class="proj-tools-list">';
+      proj.tools.forEach(t => {
+        const iconSrc = toolIcons[t];
+        const icon = iconSrc ? `<img src="${iconSrc}" alt="${t}" class="tool-icon" />` : '';
+        html += `<span>${icon}${t}</span>`;
+      });
+      html += '</div></div>';
+    }
+
     // Dynamic 2-column grid layout with white space
     const remaining = proj.images.slice(1);
     html += '<div class="proj-media-grid">';
@@ -1109,12 +1192,7 @@ function openProject(projId) {
     }
     html += '</div>';
 
-    // Tools at bottom
-    if (proj.tools) {
-      html += '<div class="proj-tools-bottom">';
-      proj.tools.forEach(t => html += `<span>${t}</span>`);
-      html += '</div>';
-    }
+    html += `<div class="proj-copyright">&copy; ${proj.year || new Date().getFullYear()} Luka Grčar. All rights reserved. All work shown is original and may not be reproduced without permission.</div>`;
 
     html += '</div>';
     overlayInner.innerHTML = html;
@@ -1561,7 +1639,7 @@ function updateSlider() {
 
   // Fill dots and track
   const pct = ((val - sliderMin) / (sliderMax - sliderMin)) * 100;
-  gridSlider.style.background = `linear-gradient(to right, #fff ${pct}%, rgba(0,0,0,0.1) ${pct}%)`;
+  gridSlider.style.background = `linear-gradient(to right, #111 ${pct}%, rgba(0,0,0,0.15) ${pct}%)`;
 
   const dots = sliderDotsEl.querySelectorAll('.slider-dot');
   dots.forEach((dot, i) => {
