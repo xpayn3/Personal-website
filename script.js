@@ -1068,7 +1068,54 @@ document.addEventListener('touchmove', (e) => {
   e.preventDefault();
 }, { passive: false });
 
+let overlayLenis = null;
+let overlayScrollTriggers = [];
+
+function initOverlayParallax() {
+  // Lenis smooth scroll on the overlay container
+  overlayLenis = new Lenis({
+    wrapper: overlay,
+    content: overlayInner,
+    lerp: 0.07,
+    smoothWheel: true,
+  });
+
+  overlayLenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add((time) => { if (overlayLenis) overlayLenis.raf(time * 1000); });
+  gsap.ticker.lagSmoothing(0);
+
+  // Parallax: images drift up inside their cropped container
+  gsap.registerPlugin(ScrollTrigger);
+  overlayInner.querySelectorAll('.media-cell img, .media-cell video').forEach(el => {
+    const st = gsap.fromTo(el, {
+      yPercent: -5,
+    }, {
+      yPercent: 5,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: el.parentElement,
+        scroller: overlay,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: true,
+      }
+    });
+    overlayScrollTriggers.push(st.scrollTrigger || ScrollTrigger.getAll().pop());
+  });
+}
+
+function cleanupOverlayParallax() {
+  if (overlayLenis) {
+    overlayLenis.destroy();
+    overlayLenis = null;
+  }
+  overlayScrollTriggers.forEach(st => st && st.kill());
+  overlayScrollTriggers = [];
+  ScrollTrigger.getAll().forEach(st => st.kill());
+}
+
 function cleanupOverlay() {
+  cleanupOverlayParallax();
   // Disconnect old observer
   if (currentOverlayObs) {
     currentOverlayObs.disconnect();
@@ -1238,6 +1285,9 @@ function openProject(projId) {
   const tc = document.getElementById('themeColor');
   if (tc) tc.content = '#111111';
   overlay.scrollTop = 0;
+
+  // Init smooth scroll + parallax after DOM settles
+  requestAnimationFrame(() => initOverlayParallax());
 }
 
 

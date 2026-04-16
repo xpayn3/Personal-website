@@ -1049,14 +1049,21 @@ img, video {
   grid-column: 2;
 }
 
+.media-cell {
+  overflow: hidden;
+  border-radius: 12px;
+}
+
 .media-cell img,
 .media-cell video {
   width: 100%;
   height: auto;
   display: block;
-  border-radius: 12px;
+  border-radius: 0;
   cursor: pointer;
   transition: opacity 0.2s;
+  will-change: transform;
+  transform: scale(1.15);
 }
 
 .media-cell img:hover,
