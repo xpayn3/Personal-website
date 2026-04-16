@@ -1056,11 +1056,12 @@ let scrollLockCount = 0;
 function lockScroll() {
   if (scrollLockCount === 0) {
     savedScrollY = window.scrollY;
+    document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
     document.body.style.position = 'fixed';
     document.body.style.top = `-${savedScrollY}px`;
     document.body.style.width = '100%';
-    document.body.style.touchAction = 'none';
+    document.body.classList.add('scroll-locked');
   }
   scrollLockCount++;
 }
@@ -1068,49 +1069,46 @@ function lockScroll() {
 function unlockScroll() {
   scrollLockCount = Math.max(0, scrollLockCount - 1);
   if (scrollLockCount === 0) {
+    document.documentElement.style.overflow = '';
     document.body.style.overflow = '';
     document.body.style.position = '';
     document.body.style.top = '';
     document.body.style.width = '';
-    document.body.style.touchAction = '';
-    window.scrollTo(0, savedScrollY);
+    document.body.classList.remove('scroll-locked');
+    requestAnimationFrame(() => window.scrollTo(0, savedScrollY));
   }
 }
 
-// Check if element is at scroll boundary (iOS rubber-band leak prevention)
-function isAtScrollBoundary(el, dy) {
-  if (dy < 0 && el.scrollTop <= 0) return true;
-  if (dy > 0 && el.scrollTop + el.clientHeight >= el.scrollHeight - 1) return true;
-  return false;
-}
-
-// Prevent any body scroll leaking on iOS
-let lastTouchY = 0;
+// iOS scroll leak prevention — block touchmove on non-scrollable areas,
+// prevent bounce at scroll boundaries
+let _touchStartY = 0;
 document.addEventListener('touchstart', (e) => {
-  lastTouchY = e.touches[0].clientY;
+  _touchStartY = e.touches[0].clientY;
 }, { passive: true });
 
 document.addEventListener('touchmove', (e) => {
   if (scrollLockCount === 0) return;
-  const dy = lastTouchY - e.touches[0].clientY;
-  lastTouchY = e.touches[0].clientY;
 
-  // Find the nearest scrollable parent of the touch target
+  // Find nearest scrollable ancestor
   let scrollable = null;
   let el = e.target;
-  while (el && el !== document.body) {
-    if (el.scrollHeight > el.clientHeight && getComputedStyle(el).overflowY !== 'hidden') {
-      scrollable = el;
-      break;
-    }
+  while (el && el !== document.body && el !== document.documentElement) {
+    const style = getComputedStyle(el);
+    const isScrollable = el.scrollHeight > el.clientHeight + 1 &&
+      (style.overflowY === 'auto' || style.overflowY === 'scroll');
+    if (isScrollable) { scrollable = el; break; }
     el = el.parentElement;
   }
 
-  // If inside a scrollable container and NOT at boundary, allow scroll
-  if (scrollable && !isAtScrollBoundary(scrollable, dy)) return;
+  // No scrollable parent — block
+  if (!scrollable) { e.preventDefault(); return; }
 
-  // Block everything else
-  e.preventDefault();
+  // At scroll boundary — block to prevent rubber-band leak
+  const dy = _touchStartY - e.touches[0].clientY;
+  const st = scrollable.scrollTop;
+  const atTop = st <= 0 && dy < 0;
+  const atBottom = st + scrollable.clientHeight >= scrollable.scrollHeight - 1 && dy > 0;
+  if (atTop || atBottom) e.preventDefault();
 }, { passive: false });
 
 let overlayLenis = null;

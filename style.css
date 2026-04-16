@@ -42,6 +42,16 @@ img, video {
   pointer-events: auto;
 }
 
+/* Prevent background scroll while overlay/lightbox is open */
+body.scroll-locked .grid,
+body.scroll-locked .site-footer {
+  touch-action: none !important;
+}
+
+html:has(body.scroll-locked) {
+  overflow: hidden !important;
+}
+
 /* ========== SQUARE GRID ========== */
 .grid {
   display: grid;
