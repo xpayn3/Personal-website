@@ -134,12 +134,15 @@ img, video {
   -webkit-touch-callout: none;
 }
 
-html, body {
-  background: #fff;
+html {
+  background: #000;
 }
 body {
+  background: #fff;
   color: var(--text);
   font-family: var(--font-body);
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 /* ========== HERO CAROUSEL ========== */
