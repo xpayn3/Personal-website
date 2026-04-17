@@ -2452,6 +2452,14 @@
   renderer.domElement.addEventListener('pointermove', (e) => {
     if (!isDragging) {
       updateHover(e.clientX, e.clientY);
+      // Subtle tilt toward mouse position (only when not auto-rotating)
+      if (!autoRotate) {
+        const r = renderer.domElement.getBoundingClientRect();
+        const mx = (e.clientX - r.left) / r.width - 0.5;
+        const my = (e.clientY - r.top) / r.height - 0.5;
+        gb.userData.nudgeY = mx * 0.08;
+        gb.userData.nudgeX = my * 0.06;
+      }
       return;
     }
     const dx = e.clientX - prev.x, dy = e.clientY - prev.y;
