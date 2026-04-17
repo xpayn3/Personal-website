@@ -4,7 +4,6 @@
 // slider, watermark rotation, and the #project=X auto-open handoff.
 
 // Data lives in projects.js (wrapped in an IIFE) and is exposed via window.*
-const IMG = window.IMG;
 const projects = window.projects;
 const COLOR_HEX = window.COLOR_HEX;
 const gridItems = window.gridItems;

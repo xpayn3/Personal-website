@@ -55,7 +55,7 @@ html {
   touch-action: manipulation;
   -ms-touch-action: manipulation;
   /* Reserve the scrollbar gutter so locking body scroll (when opening the
-     project iframe) doesn't cause the page to jump sideways. */
+     project overlay) doesn't cause the page to jump sideways. */
   scrollbar-gutter: stable;
 }
 
@@ -213,7 +213,7 @@ body {
   line-height: 1;
   text-align: center;
   padding: 0 24px;
-  will-change: transform, opacity;
+  will-change: transform, opacity, letter-spacing;
 }
 
 
@@ -366,16 +366,6 @@ body {
   object-fit: cover;
   display: block;
 }
-
-/* ========== PARALLAX DRIVEN BY JS ========== */
-.title-name {
-  will-change: transform, opacity, letter-spacing;
-}
-
-.scatter-img {
-  will-change: transform;
-}
-
 
 /* ========== BOTTOM BAR ========== */
 /* Home-specific bar overrides */
@@ -574,8 +564,7 @@ body {
   border-color: #111;
 }
 
-/* ========== FOOTER (shared) ========== */
-/* Footer styles now in style.css — shared across pages */
+/* Footer styles live in footer.css — shared across pages. */
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {

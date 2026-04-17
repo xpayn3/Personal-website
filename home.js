@@ -485,10 +485,11 @@ projects.forEach((proj, idx) => {
     imageLayer.appendChild(el);
   }
 
-  // Click to open project — overlay the grid's project view on top of home
-  // via an iframe so user never sees the intermediate grid page.
+  // Click to open the shared slide-up project overlay (owned by overlay.js).
   imageLayer.style.cursor = 'pointer';
-  imageLayer.addEventListener('click', () => openHomeProject(proj.id));
+  imageLayer.addEventListener('click', () => {
+    if (typeof window.openProject === 'function') window.openProject(proj.id);
+  });
 
   block.appendChild(imageLayer);
   container.appendChild(block);
@@ -527,15 +528,6 @@ cta.innerHTML = `
   <a href="grid.html" class="cta-link">View all projects &rarr;</a>
 `;
 container.appendChild(cta);
-
-// ========== PROJECT OVERLAY ==========
-// overlay.js owns the slide-up project detail view. Home just hands off the
-// project id — same overlay behavior as the grid page.
-function openHomeProject(projId) {
-  if (typeof window.openProject === 'function') {
-    window.openProject(projId);
-  }
-}
 
 // ========== CTA SCROLL ANIMATION ==========
 const ctaEl = document.querySelector('.home-cta');
@@ -686,9 +678,6 @@ if (wmEl) {
 }
 
 // ========== SINGLE MOBILE SCROLL HANDLER ==========
-let navLastScroll = 0;
-const navBar = document.querySelector('.bottom-bar');
-
 function onMobileScroll() {
   const scrollY = window.scrollY;
   const vh = window.innerHeight;
@@ -734,7 +723,6 @@ function onMobileScroll() {
   }
 
   wmLastScroll = scrollY;
-  navLastScroll = scrollY;
 }
 
 // Initial bar-visibility sync — handlers above only run on scroll, but we
