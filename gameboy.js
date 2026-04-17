@@ -105,6 +105,54 @@
       setTimeout(() => playTone(131, 0.8, 'triangle', 0.08), 200);
       setTimeout(() => playTone(196, 0.6, 'triangle', 0.06), 600);
     },
+    bootSnake: () => {
+      // Rattlesnake rattle — rapid ascending clicks
+      for (let i = 0; i < 12; i++) {
+        setTimeout(() => playTone(200 + i * 50, 0.03, 'square', 0.04), i * 40);
+      }
+      // Hiss — filtered noise burst
+      setTimeout(() => playTone(120, 0.3, 'sawtooth', 0.05), 500);
+      // Dramatic low thud
+      setTimeout(() => playTone(60, 0.4, 'triangle', 0.1), 800);
+      // Final strike — two sharp notes
+      setTimeout(() => playTone(880, 0.08, 'square', 0.07), 1000);
+      setTimeout(() => playTone(1100, 0.15, 'square', 0.07), 1080);
+    },
+    bootFrogger: () => {
+      // Ribbit sounds — ascending chirps
+      for (let i = 0; i < 4; i++) {
+        setTimeout(() => {
+          playTone(300 + i * 100, 0.06, 'square', 0.05);
+          setTimeout(() => playTone(500 + i * 100, 0.08, 'square', 0.05), 60);
+        }, i * 200);
+      }
+      // Splash
+      setTimeout(() => playTone(150, 0.15, 'triangle', 0.06), 900);
+      setTimeout(() => playTone(100, 0.2, 'triangle', 0.05), 1000);
+      // Ready hop
+      setTimeout(() => playTone(440, 0.08, 'square', 0.05), 1400);
+      setTimeout(() => playTone(660, 0.08, 'square', 0.05), 1500);
+      setTimeout(() => playTone(880, 0.15, 'square', 0.06), 1600);
+    },
+    bootBreakout: () => {
+      // Arcade coin insert sound
+      playTone(988, 0.06, 'square', 0.06);
+      setTimeout(() => playTone(1319, 0.12, 'square', 0.06), 80);
+      // Bricks loading in — staccato clicks ascending
+      for (let i = 0; i < 8; i++) {
+        setTimeout(() => playTone(300 + i * 80, 0.02, 'square', 0.04), 400 + i * 60);
+      }
+      // Power-up whoosh
+      setTimeout(() => {
+        for (let i = 0; i < 20; i++) {
+          setTimeout(() => playTone(200 + i * 40, 0.02, 'sine', 0.03), i * 20);
+        }
+      }, 900);
+      // Ready tone
+      setTimeout(() => playTone(523, 0.15, 'square', 0.06), 1400);
+      setTimeout(() => playTone(659, 0.15, 'square', 0.06), 1500);
+      setTimeout(() => playTone(784, 0.25, 'square', 0.06), 1600);
+    },
   };
 
   // === THREE.JS SETUP ===
@@ -205,7 +253,6 @@
   screenTex.minFilter = THREE.NearestFilter;
   screenTex.flipY = false;
 
-  let glowMat = null;
   let interactiveObjs = [];
 
   // Named mesh references
@@ -371,6 +418,7 @@
       parts.casette.userData.hintGeoW = cSize.x * 0.9;
       parts.casette.userData.hintGeoH = cSize.y * 0.25;
       slotHit.userData.hint = hint;
+
     }
 
     // === BUTTON INTERACTION ===
@@ -434,7 +482,36 @@
   // ========== SCREEN UI ==========
   // GBC — high contrast, punchy colors
   const C = { bg: '#f0f0e8', light: '#d0d8c0', dark: '#404040', ink: '#000000' };
-  const menuItems = ['ABOUT ME', 'STATS', 'LOADOUT', 'ALLIES', 'TROPHIES', 'PING ME', 'QUESTS', 'SNAKE', 'BREAKOUT'];
+  // Cartridge data — two swappable carts
+  const cartridges = {
+    portfolio: {
+      label: 'PORTFOLIO',
+      header: 'LUKA GRCAR',
+      menuItems: ['ABOUT ME', 'STATS', 'LOADOUT', 'ALLIES', 'TROPHIES', 'PING ME', 'QUESTS'],
+    },
+    snake: {
+      label: 'SNAKE',
+      header: 'SNAKE',
+      menuItems: ['SNAKE'],
+      autoStart: true,
+    },
+    breakout: {
+      label: 'BREAKOUT',
+      header: 'BREAKOUT',
+      menuItems: ['BREAKOUT'],
+      autoStart: true,
+    },
+    frogger: {
+      label: 'FROGGER',
+      header: 'FROGGER',
+      menuItems: ['FROGGER'],
+      autoStart: true,
+    }
+  };
+  let activeCart = null; // 'portfolio' or 'games'
+  let currentMenuItems = cartridges.portfolio.menuItems;
+  let currentHeader = cartridges.portfolio.header;
+
   let screen = 'insert'; // starts waiting for cartridge
   let cursor = 0;
   let scroll = 0;
@@ -443,6 +520,9 @@
   let cartInserted = false;
   let lastInteraction = 0;
   let screenOff = false;
+  let screenSaver = false;
+  let ssX = 0.3, ssY = 0.3, ssDx = 0.2, ssDy = 0.15;
+  let ssHue = 0;
   let detailVisibleCount = 5; // updated by drawScreen
   let lcdTransition = false;
   let lcdPhase = 0;       // 0=wipe-in, 1=hold, 2=wipe-out
@@ -542,7 +622,7 @@
   const SNAKE_COLS = 18, SNAKE_ROWS = 14;
   let snake = [], snakeDir = {x:1,y:0}, snakeNextDir = {x:1,y:0};
   let snakeFood = null, snakeScore = 0, snakeAlive = false, snakeStarted = false;
-  let snakeTickTimer = 0, snakeSpeed = 0.12; // seconds per tick
+  let snakeTickTimer = 0, snakeSpeed = 0.16; // seconds per tick
 
   function snakeReset() {
     const midX = Math.floor(SNAKE_COLS / 2);
@@ -553,7 +633,7 @@
     snakeScore = 0;
     snakeAlive = true;
     snakeStarted = true;
-    snakeSpeed = 0.12;
+    snakeSpeed = 0.16;
     snakePlaceFood();
   }
 
@@ -590,7 +670,7 @@
       snakeScore++;
       sfx.select();
       snakePlaceFood();
-      if (snakeSpeed > 0.06) snakeSpeed -= 0.005; // speed up
+      // constant speed — no acceleration
     } else {
       snake.pop();
     }
@@ -622,7 +702,7 @@
     brkBall = { x: 0.5, y: 0.8, dx: (Math.random() - 0.5) * 0.02, dy: -0.015 };
   }
 
-  function brkTick(cw, ch) {
+  function brkTick() {
     if (!brk.alive) return;
     const b = brkBall;
     b.x += b.dx;
@@ -678,6 +758,99 @@
     }
   }
 
+  // ========== FROGGER GAME ==========
+  const FROG_COLS = 11, FROG_ROWS = 11;
+  let frog = { started: false, alive: false, score: 0, lives: 3, best: 0 };
+  let frogX = 5, frogY = 10; // grid position (bottom = 10, top = 0)
+  let frogLanes = []; // each lane: { type, items: [{x, w}], speed, dir }
+
+  function frogReset() {
+    frog = { started: true, alive: true, score: 0, lives: 3, best: 0 };
+    frogX = 5; frogY = 10;
+    frogLanes = [];
+    // Row 0: safe zone (goal)
+    // Rows 1-4: water with logs
+    // Row 5: safe median
+    // Rows 6-9: road with cars
+    // Row 10: start (safe)
+    for (let r = 0; r < FROG_ROWS; r++) {
+      if (r === 0 || r === 5 || r === 10) {
+        frogLanes.push({ type: 'safe', items: [], speed: 0, dir: 1 });
+      } else if (r >= 1 && r <= 4) {
+        // Water lanes with logs
+        const dir = r % 2 === 0 ? 1 : -1;
+        const speed = 0.3 + r * 0.08;
+        const logW = 2 + (r % 2);
+        const items = [];
+        for (let i = 0; i < 3; i++) {
+          items.push({ x: i * (FROG_COLS / 3) + (r * 1.5) % 3, w: logW });
+        }
+        frogLanes.push({ type: 'water', items, speed, dir });
+      } else {
+        // Road lanes with cars
+        const dir = r % 2 === 0 ? 1 : -1;
+        const speed = 0.4 + (r - 5) * 0.1;
+        const carW = 1.5;
+        const items = [];
+        for (let i = 0; i < 3; i++) {
+          items.push({ x: i * (FROG_COLS / 3) + (r * 2) % 4, w: carW });
+        }
+        frogLanes.push({ type: 'road', items, speed, dir });
+      }
+    }
+  }
+
+  function frogTick(dt) {
+    if (!frog.alive || !frog.started) return;
+    // Move lane items
+    for (const lane of frogLanes) {
+      for (const item of lane.items) {
+        item.x += lane.speed * lane.dir * dt;
+        // Wrap around
+        if (item.x > FROG_COLS + 2) item.x = -item.w;
+        if (item.x + item.w < -2) item.x = FROG_COLS;
+      }
+    }
+    // Check collision
+    const lane = frogLanes[frogY];
+    if (lane.type === 'road') {
+      for (const car of lane.items) {
+        if (frogX >= car.x - 0.3 && frogX <= car.x + car.w + 0.3) {
+          frogDie(); return;
+        }
+      }
+    } else if (lane.type === 'water') {
+      let onLog = false;
+      for (const log of lane.items) {
+        if (frogX >= log.x - 0.3 && frogX <= log.x + log.w - 0.7) {
+          onLog = true;
+          frogX += lane.speed * lane.dir * dt; // ride the log
+          break;
+        }
+      }
+      if (!onLog) { frogDie(); return; }
+      // Fell off screen
+      if (frogX < -1 || frogX > FROG_COLS + 1) { frogDie(); return; }
+    }
+    // Reached top
+    if (frogY === 0) {
+      frog.score += 10;
+      frog.best = Math.max(frog.best, frog.score);
+      sfx.select();
+      frogX = 5; frogY = 10;
+    }
+  }
+
+  function frogDie() {
+    frog.lives--;
+    sfx.back();
+    if (frog.lives <= 0) {
+      frog.alive = false;
+    } else {
+      frogX = 5; frogY = 10;
+    }
+  }
+
   function drawScreen() {
     const ctx = sCtx, w = SCR_W, h = SCR_H;
     ctx.save();
@@ -708,7 +881,7 @@
     // Derive spacing from content height
     const headerH = 20;
     const hintH = 14;
-    const menuItemH = Math.floor((ch - headerH - hintH - 10) / menuItems.length);
+    const menuItemH = Math.floor((ch - headerH - hintH - 10) / currentMenuItems.length);
     const detailLineH = Math.floor((ch - headerH - hintH - 10) / 6);
     const detailVisible = Math.min(6, Math.floor((ch - headerH - hintH - 10) / detailLineH));
     detailVisibleCount = detailVisible;
@@ -741,11 +914,6 @@
     } else if (screen === 'boot') {
       ctx.textAlign = 'center';
       const elapsed = bootTimer * 1000;
-      // Dark phases get black bg, light phases get normal bg
-      if (elapsed < 1600) {
-        ctx.fillStyle = '#000';
-        ctx.fillRect(cx, cy, cw, ch + 30);
-      }
       const midX = cx + cw / 2;
       const midY = cy + ch / 2;
       const rc = ['#dd3333','#dd8800','#ddcc00','#33aa33','#3388dd','#6633cc','#dd3388','#dd5500','#3399aa'];
@@ -762,11 +930,212 @@
         ctx.textAlign = 'center';
       }
 
+      // === SNAKE BOOT ===
+      if (activeCart === 'snake') {
+        ctx.fillStyle = '#000';
+        ctx.fillRect(cx, cy, cw, ch + 30);
+        const snakeGreen = '#33dd33';
+
+        if (elapsed < 800) {
+          // Phase 1: Grid lines appear
+          const t = elapsed / 800;
+          ctx.strokeStyle = `rgba(51,221,51,${t * 0.15})`;
+          ctx.lineWidth = 1;
+          for (let gx = cx; gx < cx + cw; gx += 12) { ctx.beginPath(); ctx.moveTo(gx, cy); ctx.lineTo(gx, cy + ch); ctx.stroke(); }
+          for (let gy = cy; gy < cy + ch; gy += 12) { ctx.beginPath(); ctx.moveTo(cx, gy); ctx.lineTo(cx + cw, gy); ctx.stroke(); }
+        } else if (elapsed < 2400) {
+          // Phase 2: Snake slithers across screen
+          ctx.strokeStyle = 'rgba(51,221,51,0.15)';
+          ctx.lineWidth = 1;
+          for (let gx = cx; gx < cx + cw; gx += 12) { ctx.beginPath(); ctx.moveTo(gx, cy); ctx.lineTo(gx, cy + ch); ctx.stroke(); }
+          for (let gy = cy; gy < cy + ch; gy += 12) { ctx.beginPath(); ctx.moveTo(cx, gy); ctx.lineTo(cx + cw, gy); ctx.stroke(); }
+
+          const st = (elapsed - 800) / 1600;
+          const segSize = 10;
+          const segs = 12;
+          for (let i = 0; i < segs; i++) {
+            const progress = Math.max(0, Math.min(1, st * 2 - i * 0.06));
+            const sx = cx + progress * (cw + segs * segSize) - i * segSize;
+            const sy = midY + Math.sin((progress * 8 + i * 0.5)) * 20;
+            ctx.fillStyle = i === 0 ? '#44ff44' : snakeGreen;
+            ctx.fillRect(sx, sy - segSize / 2, segSize - 1, segSize - 1);
+          }
+          // Food dots
+          ctx.fillStyle = '#ff4444';
+          for (let f = 0; f < 5; f++) {
+            const fx = cx + 30 + f * (cw / 5);
+            const fy = midY + Math.sin(f * 2.1) * 25;
+            if (st * (cw + segs * segSize) > fx - cx) continue;
+            ctx.fillRect(fx - 3, fy - 3, 6, 6);
+          }
+        } else if (elapsed < 3200) {
+          // Phase 3: Title reveal
+          const t = (elapsed - 2400) / 800;
+          ctx.fillStyle = snakeGreen;
+          ctx.font = 'bold 18px "Press Start 2P", monospace';
+          ctx.globalAlpha = Math.min(1, t * 2);
+          ctx.fillText('SNAKE', midX, midY - 8);
+          ctx.font = '7px "Press Start 2P", monospace';
+          ctx.fillStyle = '#88ff88';
+          ctx.fillText('PRESS A TO START', midX, midY + 20);
+          ctx.globalAlpha = 1;
+        } else {
+          // Phase 4: Hold title + loading
+          ctx.fillStyle = snakeGreen;
+          ctx.font = 'bold 18px "Press Start 2P", monospace';
+          ctx.fillText('SNAKE', midX, midY - 8);
+          ctx.font = '7px "Press Start 2P", monospace';
+          ctx.fillStyle = '#88ff88';
+          if (Math.floor(elapsed / 400) % 2) ctx.fillText('PRESS A TO START', midX, midY + 20);
+          // Loading dots
+          const dots = Math.floor((elapsed - 3200) / 200) % 4;
+          ctx.fillStyle = snakeGreen;
+          ctx.fillText('.'.repeat(dots), midX, midY + 40);
+        }
+      }
+      // === BREAKOUT BOOT ===
+      else if (activeCart === 'breakout') {
+        ctx.fillStyle = '#111';
+        ctx.fillRect(cx, cy, cw, ch + 30);
+        const brkColors = ['#ff4444','#ff8800','#ffcc00','#44dd44','#4488ff'];
+
+        if (elapsed < 1200) {
+          // Phase 1: Bricks build in row by row
+          const t = elapsed / 1200;
+          const rows = 5, cols = 9;
+          const bw = (cw - 20) / cols, bh = 8;
+          const startY = cy + 20;
+          for (let r = 0; r < rows; r++) {
+            const rowT = Math.max(0, Math.min(1, t * rows - r));
+            if (rowT <= 0) continue;
+            for (let c = 0; c < cols; c++) {
+              const colT = Math.max(0, Math.min(1, rowT * cols - c * 0.3));
+              ctx.globalAlpha = colT;
+              ctx.fillStyle = brkColors[r % brkColors.length];
+              ctx.fillRect(cx + 10 + c * bw + 1, startY + r * (bh + 2), bw - 2, bh);
+            }
+          }
+          ctx.globalAlpha = 1;
+        } else if (elapsed < 2800) {
+          // Phase 2: Ball bouncing, breaking bricks
+          const rows = 5, cols = 9;
+          const bw = (cw - 20) / cols, bh = 8;
+          const startY = cy + 20;
+          const bt = (elapsed - 1200) / 1600;
+          const broken = Math.floor(bt * 8);
+
+          for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+              if (r === 0 && c < broken) continue;
+              ctx.fillStyle = brkColors[r % brkColors.length];
+              ctx.fillRect(cx + 10 + c * bw + 1, startY + r * (bh + 2), bw - 2, bh);
+            }
+          }
+          // Ball
+          const ballX = cx + 20 + (bt * cw * 3) % cw;
+          const ballY = cy + ch * 0.4 + Math.abs(Math.sin(bt * 12)) * (ch * 0.4);
+          ctx.fillStyle = '#fff';
+          ctx.beginPath();
+          ctx.arc(ballX, ballY, 3, 0, Math.PI * 2);
+          ctx.fill();
+          // Paddle
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(midX - 15, cy + ch - 12, 30, 4);
+        } else if (elapsed < 3600) {
+          // Phase 3: Title
+          const t = (elapsed - 2800) / 800;
+          ctx.globalAlpha = Math.min(1, t * 2);
+          ctx.fillStyle = '#ff8800';
+          ctx.font = 'bold 16px "Press Start 2P", monospace';
+          ctx.fillText('BREAKOUT', midX, midY - 8);
+          ctx.font = '7px "Press Start 2P", monospace';
+          ctx.fillStyle = '#ffcc00';
+          ctx.fillText('PRESS A TO START', midX, midY + 20);
+          ctx.globalAlpha = 1;
+        } else {
+          // Phase 4: Hold + blink
+          ctx.fillStyle = '#ff8800';
+          ctx.font = 'bold 16px "Press Start 2P", monospace';
+          ctx.fillText('BREAKOUT', midX, midY - 8);
+          ctx.font = '7px "Press Start 2P", monospace';
+          ctx.fillStyle = '#ffcc00';
+          if (Math.floor(elapsed / 400) % 2) ctx.fillText('PRESS A TO START', midX, midY + 20);
+          const dots = Math.floor((elapsed - 3600) / 200) % 4;
+          ctx.fillStyle = '#ff8800';
+          ctx.fillText('.'.repeat(dots), midX, midY + 40);
+        }
+      }
+      // === FROGGER BOOT ===
+      else if (activeCart === 'frogger') {
+        ctx.fillStyle = '#0a1a0a';
+        ctx.fillRect(cx, cy, cw, ch + 30);
+
+        if (elapsed < 1000) {
+          // Phase 1: Water ripples appear
+          const t = elapsed / 1000;
+          ctx.strokeStyle = `rgba(68,136,255,${t * 0.3})`;
+          ctx.lineWidth = 1;
+          for (let y = cy + 10; y < cy + ch / 2; y += 12) {
+            const wave = Math.sin(y * 0.1 + elapsed * 0.003) * 8;
+            ctx.beginPath(); ctx.moveTo(cx, y);
+            for (let x = cx; x < cx + cw; x += 4) { ctx.lineTo(x, y + Math.sin(x * 0.05 + wave) * 3); }
+            ctx.stroke();
+          }
+          // Road lines at bottom
+          ctx.fillStyle = `rgba(100,100,100,${t * 0.4})`;
+          for (let y = cy + ch * 0.55; y < cy + ch; y += 14) {
+            ctx.fillRect(cx, y, cw, 1);
+          }
+        } else if (elapsed < 2400) {
+          // Phase 2: Frog hops across
+          const t = (elapsed - 1000) / 1400;
+          // Background
+          ctx.fillStyle = '#224488'; ctx.fillRect(cx, cy, cw, ch / 2);
+          ctx.fillStyle = '#333'; ctx.fillRect(cx, cy + ch / 2, cw, ch / 2);
+          // Frog hopping
+          const hopCount = Math.floor(t * 5);
+          const hopProgress = (t * 5) % 1;
+          const frogBX = midX;
+          const frogBY = cy + ch - 20 - hopCount * (ch / 6);
+          const jumpH = Math.sin(hopProgress * Math.PI) * 12;
+          ctx.fillStyle = '#33dd33';
+          ctx.fillRect(frogBX - 5, frogBY - jumpH - 5, 10, 10);
+          // Eyes
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(frogBX - 4, frogBY - jumpH - 7, 3, 3);
+          ctx.fillRect(frogBX + 1, frogBY - jumpH - 7, 3, 3);
+        } else if (elapsed < 3200) {
+          // Phase 3: Title
+          const t = (elapsed - 2400) / 800;
+          ctx.globalAlpha = Math.min(1, t * 2);
+          ctx.fillStyle = '#33dd33';
+          ctx.font = 'bold 16px "Press Start 2P", monospace';
+          ctx.fillText('FROGGER', midX, midY - 8);
+          ctx.font = '7px "Press Start 2P", monospace';
+          ctx.fillStyle = '#88ff88';
+          ctx.fillText('PRESS A TO PLAY', midX, midY + 20);
+          ctx.globalAlpha = 1;
+        } else {
+          ctx.fillStyle = '#33dd33';
+          ctx.font = 'bold 16px "Press Start 2P", monospace';
+          ctx.fillText('FROGGER', midX, midY - 8);
+          ctx.font = '7px "Press Start 2P", monospace';
+          ctx.fillStyle = '#88ff88';
+          if (Math.floor(elapsed / 400) % 2) ctx.fillText('PRESS A TO PLAY', midX, midY + 20);
+        }
+      }
+      // === PORTFOLIO BOOT (original) ===
+      else {
+      // Dark phases get black bg, light phases get normal bg
+      if (elapsed < 1600) {
+        ctx.fillStyle = '#000';
+        ctx.fillRect(cx, cy, cw, ch + 30);
+      }
+
       // Phase 1: Black screen power on (0-400ms)
       if (elapsed < 400) {
         ctx.fillStyle = '#000';
         ctx.fillRect(cx, cy, cw, ch);
-        // Single horizontal scan line sweeping down
         const scanY = cy + (ch * elapsed / 400);
         ctx.fillStyle = 'rgba(255,255,255,0.06)';
         ctx.fillRect(cx, scanY - 2, cw, 4);
@@ -776,12 +1145,8 @@
         ctx.fillStyle = '#000';
         ctx.fillRect(cx, cy, cw, ch);
         const t = (elapsed - 400) / 1200;
-
-        // Colorful diamond expanding with rainbow rays
         const size = t * 30;
         const colors = ['#ff4444', '#ffaa00', '#44dd44', '#4488ff', '#aa44ff'];
-
-        // Rainbow diamond
         for (let c = colors.length - 1; c >= 0; c--) {
           const s = size * (1 - c * 0.15);
           if (s <= 0) continue;
@@ -794,12 +1159,9 @@
           ctx.closePath();
           ctx.fill();
         }
-        // White core
         ctx.fillStyle = '#fff';
         const core = size * 0.2;
         ctx.fillRect(midX - core / 2, midY - core / 2, core, core);
-
-        // Colorful sparkle rays
         if (t > 0.3) {
           ctx.lineWidth = 2;
           const rayLen = size * 1.5 * Math.min(1, (t - 0.3) / 0.4);
@@ -817,29 +1179,27 @@
       else if (elapsed < 2200) {
         const t = (elapsed - 1600) / 600;
         if (t < 0.25) {
-          // White flash
           ctx.fillStyle = '#fff';
           ctx.fillRect(cx, cy, cw, ch);
         } else {
-          // Fade to normal bg with logo
           const fade = (t - 0.25) / 0.75;
           ctx.fillStyle = C.bg;
           ctx.fillRect(cx, cy, cw, ch);
           ctx.globalAlpha = fade;
-          drawRainbow('PORTFOLIO', midX, midY - 4, 'bold 14px "Press Start 2P", monospace');
+          drawRainbow(activeCart ? cartridges[activeCart].label : 'PORTFOLIO', midX, midY - 4, 'bold 14px "Press Start 2P", monospace');
           ctx.globalAlpha = 1;
         }
       }
       // Phase 4: Logo + typing + loading bar together (2200-4600ms)
       else {
-        drawRainbow('PORTFOLIO', midX, midY - 4, 'bold 14px "Press Start 2P", monospace');
+        drawRainbow(activeCart ? cartridges[activeCart].label : 'PORTFOLIO', midX, midY - 4, 'bold 14px "Press Start 2P", monospace');
 
         const phaseElapsed = elapsed - 2200;
         const phaseDur = 2400;
 
         // Typing
         const typeT = Math.min(1, phaseElapsed / 1600);
-        const fullText = 'LUKA GRCAR';
+        const fullText = currentHeader;
         const chars = Math.floor(typeT * fullText.length);
         ctx.font = '8px "Press Start 2P", monospace';
         ctx.fillStyle = C.dark;
@@ -873,12 +1233,13 @@
         ctx.fillStyle = C.dark;
         ctx.fillText('LOADING...', midX, barY + 16);
       }
+      } // end portfolio boot
       ctx.textAlign = 'left';
     } else if (screen === 'menu') {
       ctx.textAlign = 'left';
       ctx.fillStyle = C.ink;
       ctx.font = 'bold 9px "Press Start 2P", monospace';
-      ctx.fillText('LUKA GRCAR', cx + 30, cy + 14);
+      ctx.fillText(currentHeader, cx + 30, cy + 14);
       ctx.fillStyle = C.dark;
       ctx.fillRect(cx + 6, cy + headerH, cw - 12, 1);
       ctx.font = 'bold 9px "Press Start 2P", monospace';
@@ -890,7 +1251,7 @@
       if (cursor < gb.userData.menuScroll) gb.userData.menuScroll = cursor;
       if (cursor >= gb.userData.menuScroll + menuVisible) gb.userData.menuScroll = cursor - menuVisible + 1;
       const mScroll = gb.userData.menuScroll;
-      for (let i = 0; i < menuVisible && (mScroll + i) < menuItems.length; i++) {
+      for (let i = 0; i < menuVisible && (mScroll + i) < currentMenuItems.length; i++) {
         const idx = mScroll + i;
         const y = menuTop + i * rowH;
         const midY = y + rowH / 2 + 2;
@@ -900,26 +1261,26 @@
           ctx.fillRect(cx + 6, y + 1, cw - 12, rowH - 2);
           ctx.fillStyle = C.bg;
           ctx.fillText('\u25B6', cx + 8, midY);
-          ctx.fillText(menuItems[idx], cx + 22, midY);
+          ctx.fillText(currentMenuItems[idx], cx + 22, midY);
         } else {
           ctx.fillStyle = C.ink;
-          ctx.fillText(menuItems[idx], cx + 22, midY);
+          ctx.fillText(currentMenuItems[idx], cx + 22, midY);
         }
         ctx.textBaseline = 'alphabetic';
       }
       // Scroll indicators
-      if (menuItems.length > menuVisible) {
+      if (currentMenuItems.length > menuVisible) {
         ctx.fillStyle = C.dark;
         ctx.font = '12px "Press Start 2P", monospace';
         if (mScroll > 0) ctx.fillText('\u25B2', cx + cw - 16, menuTop + 8);
-        if (mScroll + menuVisible < menuItems.length) ctx.fillText('\u25BC', cx + cw - 16, menuTop + menuVisible * rowH);
+        if (mScroll + menuVisible < currentMenuItems.length) ctx.fillText('\u25BC', cx + cw - 16, menuTop + menuVisible * rowH);
       }
       ctx.fillStyle = C.dark;
       ctx.font = '8px "Press Start 2P", monospace';
       ctx.fillText('A=SELECT  \u25B2\u25BC=MOVE', cx + 20, cy + ch + 8);
     } else if (screen === 'detail') {
       ctx.textAlign = 'left';
-      const item = menuItems[cursor];
+      const item = currentMenuItems[cursor];
 
       if (trophyScreen && item === 'TROPHIES') {
         // Achievement unlock screen
@@ -1301,21 +1662,23 @@
         ctx.fillText('SCORE:' + snakeScore, cx + 4, cy + ch + 8);
       }
     } else if (screen === 'breakout') {
+      // Black background for breakout
+      ctx.fillStyle = '#000';
+      ctx.fillRect(cx, cy, cw, ch + 30);
       ctx.textAlign = 'center';
 
       if (!brk.started) {
         // Start screen
-        ctx.fillStyle = C.ink;
+        ctx.fillStyle = '#ff8800';
         ctx.font = 'bold 14px "Press Start 2P", monospace';
         ctx.fillText('BREAKOUT', cx + cw / 2, cy + ch / 2 - 16);
         ctx.font = '8px "Press Start 2P", monospace';
-        ctx.fillStyle = C.dark;
+        ctx.fillStyle = '#888';
         ctx.fillText('A = START', cx + cw / 2, cy + ch / 2 + 6);
         ctx.fillText('B = BACK', cx + cw / 2, cy + ch / 2 + 20);
       } else if (!brk.alive) {
         // Game over or win
         const won = brkBricks.every(b => !b.alive);
-        // Draw final state
         const brickW = cw / BRK_COLS;
         const brickH = (ch * 0.35) / BRK_ROWS;
         for (const brick of brkBricks) {
@@ -1324,17 +1687,17 @@
           ctx.fillRect(cx + brick.c * brickW + 1, cy + brick.r * brickH + 4, brickW - 2, brickH - 2);
         }
         // Overlay
-        ctx.fillStyle = C.light;
+        ctx.fillStyle = 'rgba(0,0,0,0.85)';
         ctx.fillRect(cx + 6, cy + ch / 2 - 40, cw - 12, 90);
-        ctx.strokeStyle = C.ink;
+        ctx.strokeStyle = '#555';
         ctx.lineWidth = 1;
         ctx.strokeRect(cx + 6, cy + ch / 2 - 40, cw - 12, 90);
-        ctx.fillStyle = C.ink;
+        ctx.fillStyle = '#fff';
         ctx.font = 'bold 9px "Press Start 2P", monospace';
         ctx.fillText(won ? 'YOU WIN!' : 'GAME OVER', cx + cw / 2, cy + ch / 2 - 26);
         ctx.font = '6px "Press Start 2P", monospace';
         ctx.fillText('SCORE: ' + brk.score, cx + cw / 2, cy + ch / 2 - 12);
-        ctx.fillStyle = C.dark;
+        ctx.fillStyle = '#888';
         ctx.font = '6px "Press Start 2P", monospace';
         const brkJokes = won ? [
           ['Not bad for a', 'designer right?'],
@@ -1348,7 +1711,7 @@
         const bj = brkJokes[brk.score % brkJokes.length];
         ctx.fillText(bj[0], cx + cw / 2, cy + ch / 2 + 4);
         ctx.fillText(bj[1], cx + cw / 2, cy + ch / 2 + 14);
-        ctx.fillStyle = C.ink;
+        ctx.fillStyle = '#aaa';
         ctx.font = '5px "Press Start 2P", monospace';
         ctx.fillText('A=RETRY  B=MENU', cx + cw / 2, cy + ch / 2 + 34);
       } else {
@@ -1356,33 +1719,136 @@
         const brickW = cw / BRK_COLS;
         const brickH = (ch * 0.35) / BRK_ROWS;
 
-        // Draw bricks
         for (const brick of brkBricks) {
           if (!brick.alive) continue;
           ctx.fillStyle = brkColors[brick.r % brkColors.length];
           ctx.fillRect(cx + brick.c * brickW + 1, cy + brick.r * brickH + 4, brickW - 2, brickH - 2);
         }
 
-        // Draw paddle
+        // Paddle
         const padW = cw * 0.2;
         const padX = cx + brkPadX * cw - padW / 2;
         const padY = cy + ch * 0.88;
-        ctx.fillStyle = C.ink;
+        ctx.fillStyle = '#fff';
         ctx.fillRect(padX, padY, padW, BRK_PAD_H);
 
-        // Draw ball
+        // Ball
         const ballX = cx + brkBall.x * cw;
         const ballY = cy + brkBall.y * ch;
-        ctx.fillStyle = C.ink;
+        ctx.fillStyle = '#fff';
         ctx.fillRect(ballX - 2, ballY - 2, 4, 4);
 
         // Score + lives
-        ctx.fillStyle = C.ink;
+        ctx.fillStyle = '#fff';
         ctx.font = '9px "Press Start 2P", monospace';
         ctx.textAlign = 'left';
         ctx.fillText('SCORE:' + brk.score, cx + 4, cy + ch + 8);
         ctx.textAlign = 'right';
         const hearts = '\u2665'.repeat(brk.lives);
+        ctx.fillStyle = '#dd3333';
+        ctx.fillText(hearts, cx + cw - 4, cy + ch + 8);
+      }
+      ctx.textAlign = 'left';
+    } else if (screen === 'frogger') {
+      ctx.textAlign = 'center';
+      const cellW = cw / FROG_COLS, cellH = ch / FROG_ROWS;
+
+      if (!frog.started) {
+        ctx.fillStyle = '#0a1a0a';
+        ctx.fillRect(cx, cy, cw, ch + 30);
+        ctx.fillStyle = '#33dd33';
+        ctx.font = 'bold 14px "Press Start 2P", monospace';
+        ctx.fillText('FROGGER', cx + cw / 2, cy + ch / 2 - 16);
+        ctx.font = '8px "Press Start 2P", monospace';
+        ctx.fillStyle = '#888';
+        ctx.fillText('A = START', cx + cw / 2, cy + ch / 2 + 6);
+        ctx.fillText('B = BACK', cx + cw / 2, cy + ch / 2 + 20);
+      } else if (!frog.alive) {
+        ctx.fillStyle = 'rgba(0,0,0,0.85)';
+        ctx.fillRect(cx, cy, cw, ch + 30);
+        ctx.fillStyle = '#ff4444';
+        ctx.font = 'bold 12px "Press Start 2P", monospace';
+        ctx.fillText('SPLAT!', cx + cw / 2, cy + ch / 2 - 20);
+        ctx.fillStyle = '#fff';
+        ctx.font = '8px "Press Start 2P", monospace';
+        ctx.fillText('SCORE: ' + frog.score, cx + cw / 2, cy + ch / 2);
+        ctx.fillStyle = '#888';
+        ctx.font = '6px "Press Start 2P", monospace';
+        const frogJokes = [
+          ['Why did the frog', 'cross the road?'],
+          ['Ribbit in peace', ''],
+          ['My layouts cross', 'better than this'],
+        ];
+        const fj = frogJokes[frog.score % frogJokes.length];
+        ctx.fillText(fj[0], cx + cw / 2, cy + ch / 2 + 18);
+        ctx.fillText(fj[1], cx + cw / 2, cy + ch / 2 + 28);
+        ctx.fillStyle = '#aaa';
+        ctx.font = '5px "Press Start 2P", monospace';
+        ctx.fillText('A=RETRY  B=MENU', cx + cw / 2, cy + ch / 2 + 46);
+      } else {
+        // Draw lanes
+        for (let r = 0; r < FROG_ROWS; r++) {
+          const lane = frogLanes[r];
+          const ly = cy + r * cellH;
+
+          if (lane.type === 'safe') {
+            ctx.fillStyle = r === 0 ? '#1a4a1a' : '#2a2a1a';
+            ctx.fillRect(cx, ly, cw, cellH + 1);
+            if (r === 0) {
+              // Goal lilypads
+              ctx.fillStyle = '#33aa33';
+              for (let p = 1; p < FROG_COLS; p += 3) {
+                ctx.beginPath();
+                ctx.arc(cx + p * cellW + cellW / 2, ly + cellH / 2, cellW * 0.35, 0, Math.PI * 2);
+                ctx.fill();
+              }
+            }
+          } else if (lane.type === 'water') {
+            ctx.fillStyle = '#1a3366';
+            ctx.fillRect(cx, ly, cw, cellH + 1);
+            // Logs
+            ctx.fillStyle = '#8B4513';
+            for (const log of lane.items) {
+              ctx.fillRect(cx + log.x * cellW, ly + 2, log.w * cellW, cellH - 4);
+              ctx.fillStyle = '#A0522D';
+              ctx.fillRect(cx + log.x * cellW + 2, ly + 3, log.w * cellW - 4, cellH - 6);
+              ctx.fillStyle = '#8B4513';
+            }
+          } else if (lane.type === 'road') {
+            ctx.fillStyle = '#333';
+            ctx.fillRect(cx, ly, cw, cellH + 1);
+            // Lane markings
+            ctx.fillStyle = '#555';
+            ctx.fillRect(cx, ly, cw, 1);
+            // Cars
+            for (const car of lane.items) {
+              ctx.fillStyle = ['#dd3333','#3388dd','#ddaa00','#dd55aa'][r % 4];
+              ctx.fillRect(cx + car.x * cellW, ly + 2, car.w * cellW, cellH - 4);
+              // Windshield
+              ctx.fillStyle = '#88ccff';
+              const wx = lane.dir > 0 ? cx + (car.x + car.w * 0.6) * cellW : cx + car.x * cellW + 2;
+              ctx.fillRect(wx, ly + 3, car.w * cellW * 0.25, cellH - 6);
+            }
+          }
+        }
+
+        // Frog
+        const fx = cx + frogX * cellW + cellW / 2;
+        const fy = cy + frogY * cellH + cellH / 2;
+        ctx.fillStyle = '#33dd33';
+        ctx.fillRect(fx - cellW * 0.35, fy - cellH * 0.35, cellW * 0.7, cellH * 0.7);
+        // Eyes
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(fx - cellW * 0.25, fy - cellH * 0.35, 3, 3);
+        ctx.fillRect(fx + cellW * 0.1, fy - cellH * 0.35, 3, 3);
+
+        // HUD
+        ctx.fillStyle = '#fff';
+        ctx.font = '8px "Press Start 2P", monospace';
+        ctx.textAlign = 'left';
+        ctx.fillText('SCORE:' + frog.score, cx + 4, cy + ch + 8);
+        ctx.textAlign = 'right';
+        const hearts = '\u2665'.repeat(frog.lives);
         ctx.fillStyle = '#dd3333';
         ctx.fillText(hearts, cx + cw - 4, cy + ch + 8);
       }
@@ -1430,12 +1896,32 @@
   }
 
   // ========== BUTTON ACTIONS ==========
+  // Reusable: select and insert a cartridge by ID
+  function selectCartridge(cartId) {
+    if (screen !== 'insert') return;
+    activeCart = cartId;
+    currentMenuItems = cartridges[cartId].menuItems;
+    currentHeader = cartridges[cartId].header;
+    // Wake screen if sleeping, then insert
+    if (screenOff) {
+      screenOff = false;
+      screenSaver = false;
+      if (parts.screen) {
+        parts.screen.material.emissiveIntensity = 1.0;
+        parts.screen.material.color.set(0xffffff);
+      }
+    }
+    lastInteraction = performance.now();
+    pressButton('a');
+  }
+
   function pressButton(action) {
     initAudio();
     lastInteraction = performance.now();
     if (screenOff) {
       // Wake up screen
       screenOff = false;
+      screenSaver = false;
       if (parts.screen) {
         parts.screen.material.emissiveIntensity = 1.0;
         parts.screen.material.color.set(0xffffff);
@@ -1450,21 +1936,28 @@
 
     if (screen === 'insert') {
       if (action === 'a') {
-        // Trigger cartridge insert from screen
+        // Default to portfolio if no cart selected
+        if (!activeCart) {
+          activeCart = 'portfolio';
+          currentMenuItems = cartridges.portfolio.menuItems;
+          currentHeader = cartridges.portfolio.header;
+        }
+        // Original insert logic
         const slotHit = interactiveObjs.find(o => o.userData.action === 'insertCart');
         if (slotHit) {
-          // Simulate clicking the slot
-          const fakeHits = [{ object: slotHit }];
-          slotHit.userData.action = 'insertCart';
-          // Fire the insert logic by calling raycast internals
+          // Fire the insert logic
           cartInserted = true;
           autoRotate = false;
           sfx.cartIn();
           // Delay boot so cart is visibly sliding first
+          window.dispatchEvent(new CustomEvent('gb-inserted', { detail: activeCart }));
           setTimeout(() => {
             screen = 'boot';
             bootTimer = 0;
-            sfx.boot();
+            if (activeCart === 'snake') sfx.bootSnake();
+            else if (activeCart === 'breakout') sfx.bootBreakout();
+            else if (activeCart === 'frogger') sfx.bootFrogger();
+            else sfx.boot();
             targetCamZ = 130;
             const lm0 = parts['body-light'];
             if (lm0) {
@@ -1484,7 +1977,7 @@
           const cart = parts.casette;
           if (cart) {
             const baseY = cart.userData.baseY;
-            const startY = baseY + 80;
+            const startY = baseY + 160;
             cart.position.y = startY;
             cart.visible = true;
             cart.userData.rotStarted = false;
@@ -1539,22 +2032,22 @@
     }
     if (screen === 'boot') return; // can't skip boot animation
     if (screen === 'menu') {
-      if (action === 'up') cursor = (cursor - 1 + menuItems.length) % menuItems.length;
-      else if (action === 'down') cursor = (cursor + 1) % menuItems.length;
+      if (action === 'up') cursor = (cursor - 1 + currentMenuItems.length) % currentMenuItems.length;
+      else if (action === 'down') cursor = (cursor + 1) % currentMenuItems.length;
       else if (action === 'a') {
-        if (menuItems[cursor] === 'SNAKE') {
+        if (currentMenuItems[cursor] === 'SNAKE') {
           lcdFlash(() => { screen = 'snake'; snakeStarted = false; snakeAlive = false; });
-        } else if (menuItems[cursor] === 'BREAKOUT') {
+        } else if (currentMenuItems[cursor] === 'BREAKOUT') {
           lcdFlash(() => { screen = 'breakout'; brk.started = false; brk.alive = false; });
         } else {
           lcdFlash(() => { screen = 'detail'; scroll = 0; detailCursor = 0; });
         }
       }
     } else if (screen === 'detail') {
-      const isProjects = menuItems[cursor] === 'QUESTS';
-      const lines = details[menuItems[cursor]] || [];
+      const isProjects = currentMenuItems[cursor] === 'QUESTS';
+      const lines = details[currentMenuItems[cursor]] || [];
 
-      const isTrophies = menuItems[cursor] === 'TROPHIES';
+      const isTrophies = currentMenuItems[cursor] === 'TROPHIES';
 
       if (trophyScreen && isTrophies) {
         if (action === 'b') { trophyScreen = false; }
@@ -1576,7 +2069,7 @@
         else if (action === 'right') {
           projImgIdx = (projImgIdx + 1) % imgCount;
         }
-      } else if (menuItems[cursor] === 'ABOUT ME') {
+      } else if (currentMenuItems[cursor] === 'ABOUT ME') {
         // ABOUT ME uses slot-based scrolling (images take multiple slots)
         const imgH = 6;
         let totalSlots = 0;
@@ -1584,8 +2077,8 @@
         if (action === 'up') { scroll = Math.max(0, scroll - 1); }
         else if (action === 'down') { scroll = Math.min(Math.max(0, totalSlots - detailVisibleCount), scroll + 1); }
         else if (action === 'b') { lcdFlash(() => { screen = 'menu'; projScreen = false; trophyScreen = false; }); }
-        else if (action === 'left') { lcdFlash(() => { cursor = (cursor - 1 + menuItems.length) % menuItems.length; scroll = 0; detailCursor = 0; projScreen = false; trophyScreen = false; }); }
-        else if (action === 'right') { lcdFlash(() => { cursor = (cursor + 1) % menuItems.length; scroll = 0; detailCursor = 0; projScreen = false; trophyScreen = false; }); }
+        else if (action === 'left') { lcdFlash(() => { cursor = (cursor - 1 + currentMenuItems.length) % currentMenuItems.length; scroll = 0; detailCursor = 0; projScreen = false; trophyScreen = false; }); }
+        else if (action === 'right') { lcdFlash(() => { cursor = (cursor + 1) % currentMenuItems.length; scroll = 0; detailCursor = 0; projScreen = false; trophyScreen = false; }); }
       } else {
         // Normal detail list
         if (action === 'up') {
@@ -1596,7 +2089,7 @@
           if (detailCursor >= scroll + detailVisibleCount) scroll = detailCursor - detailVisibleCount + 1;
         } else if (action === 'a' && isTrophies) {
           trophyScreen = true;
-        } else if (action === 'a' && menuItems[cursor] === 'PING ME') {
+        } else if (action === 'a' && currentMenuItems[cursor] === 'PING ME') {
           const contactLinks = {
             '@lukakluka': 'https://www.instagram.com/lukakluka/',
             '/lukagrcar': 'https://www.behance.net/lukagrcar',
@@ -1614,8 +2107,8 @@
         } else if (action === 'b') {
           lcdFlash(() => { screen = 'menu'; projScreen = false; trophyScreen = false; });
         }
-        else if (action === 'left') { lcdFlash(() => { cursor = (cursor - 1 + menuItems.length) % menuItems.length; scroll = 0; detailCursor = 0; projScreen = false; trophyScreen = false; }); }
-        else if (action === 'right') { lcdFlash(() => { cursor = (cursor + 1) % menuItems.length; scroll = 0; detailCursor = 0; projScreen = false; trophyScreen = false; }); }
+        else if (action === 'left') { lcdFlash(() => { cursor = (cursor - 1 + currentMenuItems.length) % currentMenuItems.length; scroll = 0; detailCursor = 0; projScreen = false; trophyScreen = false; }); }
+        else if (action === 'right') { lcdFlash(() => { cursor = (cursor + 1) % currentMenuItems.length; scroll = 0; detailCursor = 0; projScreen = false; trophyScreen = false; }); }
       }
     } else if (screen === 'snake') {
       if (!snakeStarted) {
@@ -1642,6 +2135,19 @@
         if (action === 'left') brkPadX = Math.max(0.1, brkPadX - 0.08);
         else if (action === 'right') brkPadX = Math.min(0.9, brkPadX + 0.08);
       }
+    } else if (screen === 'frogger') {
+      if (!frog.started) {
+        if (action === 'a') frogReset();
+        else if (action === 'b') lcdFlash(() => { screen = 'menu'; });
+      } else if (!frog.alive) {
+        if (action === 'a') frogReset();
+        else if (action === 'b') lcdFlash(() => { screen = 'menu'; });
+      } else {
+        if (action === 'up' && frogY > 0) { frogY--; frog.score++; sfx.navigate(); }
+        else if (action === 'down' && frogY < FROG_ROWS - 1) { frogY++; sfx.navigate(); }
+        else if (action === 'left' && frogX > 0) { frogX--; sfx.navigate(); }
+        else if (action === 'right' && frogX < FROG_COLS - 1) { frogX++; sfx.navigate(); }
+      }
     }
     drawScreen();
   }
@@ -1658,6 +2164,9 @@
     const hits = raycaster.intersectObjects(interactiveObjs, true);
     if (hits.length && hits[0].object.userData.action) {
       const obj = hits[0].object;
+      // Wake from screensaver/dim on any interaction
+      screenOff = false; screenSaver = false; lastInteraction = performance.now();
+      if (parts.screen) { parts.screen.material.emissiveIntensity = 1.0; parts.screen.material.color.set(0xffffff); }
 
 
       // Cartridge eject (click on inserted cartridge) — only from back
@@ -1672,7 +2181,7 @@
         targetCamZ = 180; // zoom back out
         const cart = parts.casette;
         const baseY = cart.userData.baseY;
-        const ejectY = baseY + 80;
+        const ejectY = baseY + 160;
         const ejectStart = performance.now();
         const ejectDur = 1000;
 
@@ -1689,6 +2198,8 @@
         // Screen off
         screen = 'insert';
         cartInserted = false;
+        scroll = 0; detailCursor = 0; cursor = 0;
+        projScreen = false; trophyScreen = false;
         drawScreen();
 
         function ejectAnim(now) {
@@ -1742,20 +2253,23 @@
             const idx = interactiveObjs.indexOf(obj);
             if (idx !== -1) interactiveObjs.splice(idx, 1);
             if (obj.parent) obj.parent.remove(obj);
+            activeCart = null;
             autoRotate = true;
+            window.dispatchEvent(new Event('gb-ejected'));
           }
         }
         requestAnimationFrame(ejectAnim);
         return true;
       }
 
-      // Cartridge insert
+      // Cartridge insert (slot click)
       if (obj.userData.action === 'insertCart') {
         if (cartInserted) return true;
         initAudio();
         cartInserted = true;
         autoRotate = false;
         sfx.cartIn();
+        window.dispatchEvent(new CustomEvent('gb-inserted', { detail: activeCart }));
         setTimeout(() => {
           screen = 'boot';
           bootTimer = 0;
@@ -1782,7 +2296,7 @@
 
         // Show cartridge far above, then slide it in from top of canvas
         const baseY = cart.userData.baseY;
-        const startY = baseY + 80;
+        const startY = baseY + 160;
         cart.position.y = startY;
         cart.visible = true;
 
@@ -1996,7 +2510,7 @@
 
   // Mouse wheel navigation
   renderer.domElement.addEventListener('wheel', (e) => {
-    if (screen === 'insert' || screen === 'snake' || screen === 'breakout') return;
+    if (screen === 'insert' || screen === 'snake' || screen === 'breakout' || screen === 'frogger') return;
     e.preventDefault();
     if (e.deltaY > 0) pressButton('down');
     else if (e.deltaY < 0) pressButton('up');
@@ -2027,7 +2541,22 @@
       brkTick();
       drawScreen();
     }
-    else if (screen === 'boot') { bootTimer += dt; drawScreen(); if (bootTimer > 4.6) { screen = 'menu'; drawScreen(); } }
+    else if (screen === 'frogger' && frog.alive && frog.started) {
+      frogTick(dt);
+      drawScreen();
+    }
+    else if (screen === 'boot') {
+      bootTimer += dt; drawScreen();
+      const bootEnd = (activeCart && cartridges[activeCart].autoStart) ? 4.0 : 4.6;
+      if (bootTimer > bootEnd) {
+        if (activeCart && cartridges[activeCart].autoStart) {
+          screen = activeCart === 'snake' ? 'snake' : activeCart === 'frogger' ? 'drive' : 'breakout';
+        } else {
+          screen = 'menu';
+        }
+        drawScreen();
+      }
+    }
     // Smooth push offset with lerp
     const targetPush = gb.userData.pushOffset || 0;
     gb.userData.currentPush = (gb.userData.currentPush || 0) + (targetPush - (gb.userData.currentPush || 0)) * 0.25;
@@ -2042,14 +2571,72 @@
     camera.position.z += (targetCamZ - camera.position.z) * 0.03;
 
     // Screen sleep after 6s of no interaction
-    if (!screenOff && screen !== 'boot' && lastInteraction > 0) {
-      if (now - lastInteraction > 8000) {
+    if (screen !== 'boot' && lastInteraction > 0) {
+      const idle = now - lastInteraction;
+      if (!screenOff && idle > 8000) {
         screenOff = true;
         if (parts.screen) {
           parts.screen.material.emissiveIntensity = 0;
           parts.screen.material.color.set(0x222222);
         }
       }
+      if (!screenSaver && idle > 13000) {
+        screenSaver = true;
+        if (parts.screen) {
+          parts.screen.material.emissiveIntensity = 0.4;
+          parts.screen.material.color.set(0x111111);
+        }
+      }
+    }
+    // DVD screensaver — bouncing photo
+    if (screenSaver && parts.screen) {
+      const sctx = sCtx, sw = SCR_W, sh = SCR_H;
+      sctx.save();
+      sctx.translate(0, sh);
+      sctx.scale(1, -1);
+      sctx.fillStyle = '#000';
+      sctx.fillRect(0, 0, sw, sh);
+
+      const imgW = 75, imgH = 75;
+      // Match the screen content area (same bezels as drawScreen)
+      const ssBzH = 45, ssBzV = 50, ssBzBottom = 58, ssShift = 15;
+      const ssAreaX = ssBzH;
+      const ssAreaY = ssBzV - ssShift;
+      const ssAreaW = sw - ssBzH * 2 - imgW;
+      const ssAreaH = sh - ssBzV - ssBzBottom - imgH;
+      ssX += ssDx * dt;
+      ssY += ssDy * dt;
+      if (ssX <= 0 || ssX >= 1) { ssDx *= -1; ssX = Math.max(0, Math.min(1, ssX)); ssHue = (ssHue + 60) % 360; }
+      if (ssY <= 0 || ssY >= 1) { ssDy *= -1; ssY = Math.max(0, Math.min(1, ssY)); ssHue = (ssHue + 60) % 360; }
+
+      const drawX = ssAreaX + ssX * ssAreaW;
+      const drawY = ssAreaY + ssY * ssAreaH;
+
+      if (aboutPhotos.photo) {
+        // Draw image cropped to square + monochrome + hue tint
+        const img = aboutPhotos.photo;
+        const cropSize = Math.min(img.width, img.height);
+        const sx = (img.width - cropSize) / 2;
+        const sy = (img.height - cropSize) / 2;
+        sctx.drawImage(img, sx, sy, cropSize, cropSize, drawX, drawY, imgW, imgH);
+        // Desaturate with grayscale overlay
+        sctx.globalCompositeOperation = 'saturation';
+        sctx.fillStyle = '#888';
+        sctx.fillRect(drawX, drawY, imgW, imgH);
+        // Apply hue tint
+        sctx.globalCompositeOperation = 'multiply';
+        sctx.fillStyle = `hsl(${ssHue}, 70%, 60%)`;
+        sctx.fillRect(drawX, drawY, imgW, imgH);
+        sctx.globalCompositeOperation = 'source-over';
+      } else {
+        sctx.fillStyle = '#fff';
+        sctx.font = 'bold 8px "Press Start 2P", monospace';
+        sctx.textAlign = 'center';
+        sctx.fillText('LG', drawX + imgW / 2, drawY + imgH / 2 + 3);
+      }
+
+      sctx.restore();
+      screenTex.needsUpdate = true;
     }
     renderer.render(scene, camera);
   }
@@ -2068,4 +2655,52 @@
   lastInteraction = performance.now();
   drawScreen();
   requestAnimationFrame(animate);
+
+  // Expose cart swap for HTML UI
+  window.gbSelectCartridge = selectCartridge;
+  window.gbEjectCartridge = function() {
+    if (!cartInserted) return;
+    const cart = parts.casette;
+    if (!cart) return;
+    initAudio();
+    sfx.cartOut();
+    targetCamZ = 180;
+    const baseY = cart.userData.baseY;
+    const ejectY = baseY + 160;
+    const ejectStart = performance.now();
+    const ejectDur = 1000;
+    const lm = parts['body-light'];
+    if (lm) { lm.material.color.set(0x330000); lm.material.emissive.set(0x000000); lm.material.emissiveIntensity = 0; lm.material.needsUpdate = true; if (lm.userData.ledGlow) lm.userData.ledGlow.intensity = 0; }
+    screen = 'insert'; cartInserted = false; activeCart = null;
+    scroll = 0; detailCursor = 0; cursor = 0; projScreen = false; trophyScreen = false;
+    drawScreen();
+    window.dispatchEvent(new Event('gb-ejected'));
+    // Remove eject hit zone
+    const ejectIdx = interactiveObjs.findIndex(o => o.userData.action === 'ejectCart');
+    if (ejectIdx !== -1) { const e = interactiveObjs[ejectIdx]; if (e.parent) e.parent.remove(e); interactiveObjs.splice(ejectIdx, 1); }
+    function ejectAnim(now) {
+      const elapsed = now - ejectStart;
+      if (elapsed < ejectDur) {
+        cart.position.y = baseY + (ejectY - baseY) * (elapsed / ejectDur) * (elapsed / ejectDur);
+        requestAnimationFrame(ejectAnim);
+      } else {
+        cart.visible = false; cart.position.y = baseY; autoRotate = true;
+        // Recreate insert slot hit zone
+        if (!interactiveObjs.find(o => o.userData.action === 'insertCart')) {
+          const cBox = new THREE.Box3().setFromObject(cart);
+          const cSize = cBox.getSize(new THREE.Vector3());
+          const cCenter = cBox.getCenter(new THREE.Vector3());
+          const newSlot = new THREE.Mesh(
+            new THREE.BoxGeometry(cSize.x * 2, cSize.y * 1.5, 0.5),
+            new THREE.MeshBasicMaterial({ visible: false })
+          );
+          newSlot.position.set(cCenter.x, cCenter.y, cCenter.z - cSize.z * 0.5);
+          newSlot.userData.action = 'insertCart';
+          gb.children[0].add(newSlot);
+          interactiveObjs.push(newSlot);
+        }
+      }
+    }
+    requestAnimationFrame(ejectAnim);
+  };
 })();

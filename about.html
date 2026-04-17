@@ -47,6 +47,30 @@
         <h1 class="about-name">About</h1>
         <p class="about-role">3D generalist &amp; UX designer</p>
         <p class="about-location">Ljubljana, Slovenia</p>
+
+        <div class="cart-picker">
+          <div class="section-label">Cartridges</div>
+          <div class="cart-list" id="cartList">
+            <button class="cart-item" data-cart="portfolio">
+              <span class="cart-icon">📁</span>
+              <span class="cart-label">Portfolio</span>
+            </button>
+            <button class="cart-item" data-cart="snake">
+              <span class="cart-icon">🐍</span>
+              <span class="cart-label">Snake</span>
+            </button>
+            <button class="cart-item" data-cart="breakout">
+              <span class="cart-icon">🧱</span>
+              <span class="cart-label">Breakout</span>
+            </button>
+            <button class="cart-item" data-cart="frogger">
+              <span class="cart-icon">🐸</span>
+              <span class="cart-label">Frogger</span>
+            </button>
+          </div>
+          <p class="cart-hint">Pick a cartridge to explore — swap anytime</p>
+        </div>
+
         <div class="split-about">
           <p class="about-text">We build immersive digital experiences that blur the line between web and reality. From interactive 3D product showcases to WebGL-powered worlds you can touch, rotate, and play with — right in the browser.</p>
           <p class="about-text">Our work lives at the intersection of design, animation, and code. We don't just make things look good — we make them feel alive. Every interaction is intentional, every animation is crafted, and every pixel is considered.</p>
@@ -285,9 +309,74 @@
     btn.disabled = false;
   });
   </script>
+  <script>
+  (function() {
+    let insertedCart = null;
+    const btns = document.querySelectorAll('.cart-item');
+
+    const cartIcons = { portfolio: '📁', snake: '🐍', breakout: '🧱', frogger: '🐸' };
+    function updateCartUI() {
+      btns.forEach(btn => {
+        if (btn.classList.contains('loading')) return;
+        const id = btn.dataset.cart;
+        const icon = btn.querySelector('.cart-icon');
+        if (id === insertedCart) {
+          btn.classList.add('inserted');
+          btn.classList.remove('disabled');
+          icon.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="7" y1="11" x2="7" y2="3"/><polyline points="3,6 7,2 11,6"/></svg>';
+        } else {
+          btn.classList.remove('inserted');
+          btn.classList.toggle('disabled', insertedCart !== null);
+          icon.textContent = cartIcons[id];
+        }
+      });
+    }
+
+    let cartBusy = false;
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (cartBusy) return;
+        cartBusy = true;
+        btns.forEach(b => b.style.pointerEvents = 'none');
+        const id = btn.dataset.cart;
+        const icon = btn.querySelector('.cart-icon');
+        icon.innerHTML = '<span class="cart-spinner"></span>';
+        btn.classList.add('loading');
+        if (id === insertedCart) {
+          insertedCart = null;
+          if (window.gbEjectCartridge) window.gbEjectCartridge();
+          setTimeout(() => { btn.classList.remove('loading'); updateCartUI(); cartBusy = false; btns.forEach(b => b.style.pointerEvents = ''); }, 1200);
+        } else if (insertedCart === null) {
+          insertedCart = id;
+          if (window.gbSelectCartridge) window.gbSelectCartridge(id);
+          setTimeout(() => { btn.classList.remove('loading'); updateCartUI(); cartBusy = false; btns.forEach(b => b.style.pointerEvents = ''); }, 3500);
+        } else {
+          cartBusy = false;
+          btns.forEach(b => b.style.pointerEvents = '');
+        }
+      });
+    });
+
+    // Listen for eject from GameBoy side
+    window.addEventListener('gb-ejected', () => {
+      insertedCart = null;
+      cartBusy = false;
+      btns.forEach(b => { b.style.pointerEvents = ''; b.classList.remove('loading'); });
+      updateCartUI();
+    });
+
+    // Listen for insert from GameBoy side (A button / slot click)
+    window.addEventListener('gb-inserted', (e) => {
+      insertedCart = e.detail || 'portfolio';
+      updateCartUI();
+    });
+
+    updateCartUI();
+  })();
+  </script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/build/three.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/GLTFLoader.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/DRACOLoader.js"></script>
-  <script defer src="gameboy.js?v=9"></script>
+  <script defer src="gameboy.js?v=10"></script>
 </body>
 </html>
