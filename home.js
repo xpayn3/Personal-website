@@ -437,47 +437,22 @@ if (ctaEl) {
   ctaObs.observe(ctaEl);
 }
 
-// ========== SMOOTH SCROLL PHYSICS (desktop only) ==========
+// ========== SCROLL HANDLER ==========
+// Let the browser drive scrolling natively — custom wheel physics fought
+// Safari's own momentum and landed with a visible jump on release. We just
+// rAF-throttle parallax updates to scroll events.
 
 if (!isMobileHome) {
-  let smoothScroll = window.scrollY;
-  let targetScroll = window.scrollY;
-  let scrollVelocity = 0;
-  const FRICTION = 0.92;
-  const LERP = 0.08;
-
-  window.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    scrollVelocity += e.deltaY * 0.15;
-    if (!scrollRAF) scrollRAF = requestAnimationFrame(smoothScrollLoop);
-  }, { passive: false });
-
   let scrollRAF = null;
-  function smoothScrollLoop() {
-    scrollVelocity *= FRICTION;
-    targetScroll += scrollVelocity;
-    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    targetScroll = Math.max(0, Math.min(maxScroll, targetScroll));
-    smoothScroll += (targetScroll - smoothScroll) * LERP;
-    window.scrollTo(0, smoothScroll);
-    updateParallax();
-    // Stop loop when idle
-    if (Math.abs(scrollVelocity) > 0.1 || Math.abs(targetScroll - smoothScroll) > 0.5) {
-      scrollRAF = requestAnimationFrame(smoothScrollLoop);
-    } else {
-      scrollRAF = null;
-    }
-  }
-
   window.addEventListener('scroll', () => {
-    if (Math.abs(scrollVelocity) < 0.5) {
-      smoothScroll = window.scrollY;
-      targetScroll = window.scrollY;
-    }
     updateHeroParallax(window.scrollY, window.innerHeight);
+    if (scrollRAF) return;
+    scrollRAF = requestAnimationFrame(() => {
+      scrollRAF = null;
+      updateParallax();
+    });
   }, { passive: true });
-
-  scrollRAF = requestAnimationFrame(smoothScrollLoop);
+  updateParallax();
 } else {
   // Mobile: single scroll listener, no parallax (saves battery)
   window.addEventListener('scroll', onMobileScroll, { passive: true });
