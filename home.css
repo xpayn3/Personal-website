@@ -3,9 +3,14 @@
 /* ===== HOME INTRO (below carousel) ===== */
 .home-intro {
   position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
   padding: clamp(80px, 18vh, 220px) 24px clamp(80px, 14vh, 180px);
   background: var(--color-bg);
   z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .intro-inner {
   max-width: 1440px;
@@ -205,6 +210,7 @@ body {
   position: absolute;
   left: clamp(20px, 3vw, 32px);
   bottom: clamp(56px, 10vh, 120px);
+  cursor: pointer;
   font-family: var(--font-display);
   font-size: clamp(2.5rem, 8vw, 7.5rem);
   font-weight: 200;
@@ -212,16 +218,60 @@ body {
   line-height: 0.95;
   color: #fff;
   text-transform: uppercase;
-  pointer-events: none;
   z-index: 5;
   max-width: 80vw;
-  mix-blend-mode: difference;
   will-change: transform;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
 
 .hero-dots { display: none; }
+
+/* ===== Meta line above the hero title (click title to type it) ===== */
+.hero-slide-meta {
+  --meta-scroll-fade: 1;
+  position: absolute;
+  left: clamp(20px, 3vw, 32px);
+  bottom: calc(clamp(56px, 10vh, 120px) + clamp(120px, 14vw, 180px));
+  max-width: min(80vw, 620px);
+  font-family: var(--font-body);
+  font-size: clamp(0.72rem, 1vw, 0.82rem);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  white-space: pre-line;
+  color: #fff;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.hero-slide-meta.visible {
+  opacity: var(--meta-scroll-fade);
+  transform: translateY(0);
+}
+.hero-slide-meta::after {
+  content: '';
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  background: currentColor;
+  animation: metaCaret 1s steps(2) infinite;
+}
+@keyframes metaCaret {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@media (max-width: 768px) {
+  .hero-slide-meta {
+    bottom: calc(100px + clamp(120px, 22vw, 200px));
+    font-size: 0.68rem;
+  }
+}
 
 
 .hero-scroll-hint {
@@ -288,6 +338,7 @@ body {
   line-height: 1;
   text-align: center;
   padding: 0 24px;
+  color: #111;
   will-change: transform, opacity, letter-spacing;
 }
 

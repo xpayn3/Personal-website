@@ -214,7 +214,12 @@ const heroEl = document.getElementById('heroCarousel');
 // Hero carousel — single Grounded 2025 reel,
 // independent of the scroll-showcase project list below.
 const heroSrcs = [
-  { src: `${IMG}/Grounded 2025/IG_story_02.webm`, name: 'Grounded 2025', shiftDown: true },
+  {
+    src: `${IMG}/Grounded 2025/IG_story_02.webm`,
+    name: 'Grounded 2025',
+    meta: '2025 · Pritličje · Cinema 4D / Redshift / AfterEffects\nVisual identity and motion design for the 2025 festival edition.',
+    shiftDown: true,
+  },
 ];
 const HERO_AUTO_MS = 7000;
 const heroVideos = new Array(heroSrcs.length);
@@ -248,11 +253,51 @@ heroSrcs.forEach((item, i) => {
     slide.appendChild(img);
   }
 
+  const meta = document.createElement('div');
+  meta.className = 'hero-slide-meta';
+  meta.setAttribute('aria-hidden', 'true');
+  slide.appendChild(meta);
+
   const title = document.createElement('div');
   title.className = 'hero-slide-title';
   title.textContent = item.name;
+  title.setAttribute('role', 'button');
+  title.setAttribute('tabindex', '0');
   slide.appendChild(title);
   heroSlides.appendChild(slide);
+
+  // Meta line typewriter — toggled by clicking the title
+  const metaText = item.meta || '';
+  let typeTimer = null;
+  let metaOpen = false;
+  function typeMeta() {
+    if (!metaText) return;
+    clearInterval(typeTimer);
+    meta.textContent = '';
+    meta.classList.add('visible');
+    let i = 0;
+    typeTimer = setInterval(() => {
+      meta.textContent = metaText.slice(0, ++i);
+      if (i >= metaText.length) clearInterval(typeTimer);
+    }, 28);
+  }
+  function hideMeta() {
+    clearInterval(typeTimer);
+    meta.classList.remove('visible');
+    setTimeout(() => { if (!metaOpen) meta.textContent = ''; }, 250);
+  }
+  title.addEventListener('click', () => {
+    metaOpen = !metaOpen;
+    if (metaOpen) typeMeta(); else hideMeta();
+  });
+  title.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); title.click(); }
+  });
+
+  // Auto-type on first load (slight delay so the hero has a moment to settle).
+  if (metaText && i === 0) {
+    setTimeout(() => { metaOpen = true; typeMeta(); }, 900);
+  }
 
   if (heroSrcs.length > 1) {
     const dot = document.createElement('div');
@@ -440,8 +485,19 @@ if (ctaEl) {
 // ========== PARALLAX ==========
 const blocks = document.querySelectorAll('.project-block');
 
+// Cache each block's absolute document position — block.offsetTop is relative
+// to the nearest positioned ancestor (scroll-container is position: relative
+// for z-index stacking over the sticky hero), which would return 0 and break
+// the title-fade math. We walk offsetParent chain once instead.
+function absoluteTop(el) {
+  let y = 0;
+  let n = el;
+  while (n) { y += n.offsetTop; n = n.offsetParent; }
+  return y;
+}
 const blockData = Array.from(blocks).map(block => ({
   el: block,
+  top: absoluteTop(block),
   titleName: block.querySelector('.title-name'),
   heroImg: block.querySelector('.hero-scatter'),
   infoTag: block.querySelector('.hero-info-tag'),
@@ -450,6 +506,16 @@ const blockData = Array.from(blocks).map(block => ({
     speed: parseFloat(img.dataset.speed || 0.1),
   })),
 }));
+function recomputeBlockTops() {
+  for (const bd of blockData) bd.top = absoluteTop(bd.el);
+}
+window.addEventListener('resize', recomputeBlockTops, { passive: true });
+// Recompute once fonts + images finish loading — initial offsets are stale
+// otherwise (text reflows when webfont swaps, lazy images push content down).
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => setTimeout(recomputeBlockTops, 100));
+}
+window.addEventListener('load', () => setTimeout(recomputeBlockTops, 50), { once: true });
 
 const heroMediaEl = () => document.querySelector('.hero-slide video, .hero-slide img');
 const heroTitleEl = () => document.querySelector('.hero-slide-title');
@@ -467,6 +533,12 @@ function updateHeroParallax(scrollY, vh) {
     title.style.transform = `translate3d(0, ${-scrollY * 0.5}px, 0)`;
     title.style.opacity = '1';
   }
+  // Meta fades out fast as soon as the user starts scrolling
+  const meta = document.querySelector('.hero-slide-meta');
+  if (meta) {
+    const fade = Math.max(0, 1 - scrollY / (vh * 0.18));
+    meta.style.setProperty('--meta-scroll-fade', String(fade));
+  }
 }
 
 function updateParallax() {
@@ -476,7 +548,7 @@ function updateParallax() {
 
   for (let idx = 0; idx < blockData.length; idx++) {
     const bd = blockData[idx];
-    const blockTop = bd.el.offsetTop - scrollY;
+    const blockTop = bd.top - scrollY;
 
     if (blockTop > vh * 2 || blockTop < -bd.el.offsetHeight - vh) continue;
 
@@ -558,7 +630,7 @@ function onMobileScroll() {
   // Update title opacity only (no parallax on images — saves battery)
   for (let idx = 0; idx < blockData.length; idx++) {
     const bd = blockData[idx];
-    const blockTop = bd.el.offsetTop - scrollY;
+    const blockTop = bd.top - scrollY;
     if (blockTop > vh * 2 || blockTop < -bd.el.offsetHeight - vh) continue;
     const titleProgress = Math.max(0, Math.min(1, (-blockTop - vh * 0.5) / (vh * 0.5)));
     bd.titleName.style.opacity = Math.max(0, 1 - titleProgress * 1.5);

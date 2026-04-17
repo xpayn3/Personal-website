@@ -475,14 +475,21 @@ html:has(body.scroll-locked) {
 
 .media-cell {
   min-height: 0;
+  max-height: 100vh;
+  max-height: 100dvh;
   overflow: hidden;
   border-radius: var(--radius-lg);
+  position: relative;
 }
 
 .media-cell img,
 .media-cell video {
   width: 100%;
   height: auto;
+  max-height: 100vh;
+  max-height: 100dvh;
+  object-fit: cover;
+  object-position: center;
   display: block;
   border-radius: 0;
   cursor: pointer;
