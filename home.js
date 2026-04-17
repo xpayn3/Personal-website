@@ -475,7 +475,6 @@ if (!isMobileHome) {
       targetScroll = window.scrollY;
     }
     updateHeroParallax(window.scrollY, window.innerHeight);
-    updateThemeColor(window.scrollY, window.innerHeight);
   }, { passive: true });
 
   scrollRAF = requestAnimationFrame(smoothScrollLoop);
@@ -500,26 +499,6 @@ const blockData = Array.from(blocks).map(block => ({
 
 const heroMediaEl = () => document.querySelector('.hero-slide video, .hero-slide img');
 const heroTitleEl = () => document.querySelector('.hero-slide-title');
-
-// Flip iOS Safari chrome color to match the section in view: black over hero,
-// white over light content, blue over the footer. Keeps the rubber-band gap
-// from flashing white on the bottom.
-let themeColorLast = null;
-function updateThemeColor(scrollY, vh) {
-  const tc = document.getElementById('themeColor');
-  if (!tc) return;
-  const footer = document.querySelector('.site-footer');
-  const footerTop = footer ? footer.offsetTop : Infinity;
-  const docBottom = document.documentElement.scrollHeight - window.innerHeight;
-  let next;
-  if (scrollY >= footerTop - vh * 0.3 || scrollY >= docBottom - 4) next = '#0a2fff';
-  else if (scrollY < vh * 0.85) next = '#000000';
-  else next = '#ffffff';
-  if (next !== themeColorLast) {
-    themeColorLast = next;
-    tc.setAttribute('content', next);
-  }
-}
 
 function updateHeroParallax(scrollY, vh) {
   const progress = Math.max(0, Math.min(1, scrollY / vh));
@@ -621,7 +600,6 @@ function onMobileScroll() {
   const vh = window.innerHeight;
 
   updateHeroParallax(scrollY, vh);
-  updateThemeColor(scrollY, vh);
 
   // Update title opacity only (no parallax on images — saves battery)
   for (let idx = 0; idx < blockData.length; idx++) {
