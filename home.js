@@ -437,27 +437,6 @@ if (ctaEl) {
   ctaObs.observe(ctaEl);
 }
 
-// ========== SCROLL HANDLER ==========
-// Let the browser drive scrolling natively — custom wheel physics fought
-// Safari's own momentum and landed with a visible jump on release. We just
-// rAF-throttle parallax updates to scroll events.
-
-if (!isMobileHome) {
-  let scrollRAF = null;
-  window.addEventListener('scroll', () => {
-    updateHeroParallax(window.scrollY, window.innerHeight);
-    if (scrollRAF) return;
-    scrollRAF = requestAnimationFrame(() => {
-      scrollRAF = null;
-      updateParallax();
-    });
-  }, { passive: true });
-  updateParallax();
-} else {
-  // Mobile: single scroll listener, no parallax (saves battery)
-  window.addEventListener('scroll', onMobileScroll, { passive: true });
-}
-
 // ========== PARALLAX ==========
 const blocks = document.querySelectorAll('.project-block');
 
@@ -646,3 +625,79 @@ if (!isMobileHome) {
   }
 
 }
+
+// ========== SCROLL HANDLER ==========
+// Desktop: smooth wheel physics (momentum + lerp) drive window.scrollY,
+// parallax updates in the same rAF loop so transforms stay synced with
+// the scroll position we just set. Mobile (incl. iOS Safari): native
+// scroll + continuous rAF parallax while scrolling, stops 200ms after idle.
+(function initScrollHandler() {
+  let lastAppliedScrollY = -1;
+  function applyParallax(y) {
+    const vh = window.innerHeight;
+    if (y === lastAppliedScrollY) return;
+    lastAppliedScrollY = y;
+    updateHeroParallax(y, vh);
+    if (!isMobileHome) updateParallax();
+    else onMobileScroll();
+  }
+
+  if (!isMobileHome) {
+    let targetScroll = window.scrollY;
+    let smoothScroll = window.scrollY;
+    let velocity = 0;
+    let rafId = null;
+    const FRICTION = 0.88;
+    const LERP = 0.12;
+
+    function maxY() { return document.documentElement.scrollHeight - window.innerHeight; }
+
+    function loop() {
+      velocity *= FRICTION;
+      targetScroll = Math.max(0, Math.min(maxY(), targetScroll + velocity));
+      smoothScroll += (targetScroll - smoothScroll) * LERP;
+      if (Math.abs(targetScroll - smoothScroll) < 0.4) smoothScroll = targetScroll;
+      window.scrollTo(0, smoothScroll);
+      applyParallax(smoothScroll);
+      if (Math.abs(velocity) > 0.05 || Math.abs(targetScroll - smoothScroll) > 0.5) {
+        rafId = requestAnimationFrame(loop);
+      } else {
+        rafId = null;
+      }
+    }
+
+    window.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      velocity += e.deltaY * 0.12;
+      if (!rafId) rafId = requestAnimationFrame(loop);
+    }, { passive: false });
+
+    // Keyboard / scrollbar / scrollTo should still work — sync when the
+    // page moved by something other than the wheel loop.
+    window.addEventListener('scroll', () => {
+      if (rafId) return;
+      const y = window.scrollY;
+      smoothScroll = y;
+      targetScroll = y;
+      applyParallax(y);
+    }, { passive: true });
+
+    applyParallax(window.scrollY);
+  } else {
+    let scrollLoopId = null;
+    let scrollStopTimer = null;
+    function scrollTick() {
+      applyParallax(window.scrollY);
+      scrollLoopId = requestAnimationFrame(scrollTick);
+    }
+    window.addEventListener('scroll', () => {
+      if (!scrollLoopId) scrollLoopId = requestAnimationFrame(scrollTick);
+      clearTimeout(scrollStopTimer);
+      scrollStopTimer = setTimeout(() => {
+        if (scrollLoopId) cancelAnimationFrame(scrollLoopId);
+        scrollLoopId = null;
+      }, 200);
+    }, { passive: true });
+    applyParallax(window.scrollY);
+  }
+})();

@@ -93,6 +93,11 @@
   line-height: 1;
   color: #fff;
   mix-blend-mode: difference;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   text-decoration: none;
   background: none;
   backdrop-filter: none;
