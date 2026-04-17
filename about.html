@@ -51,7 +51,7 @@
         <div class="cart-picker">
           <div class="section-label">Cartridges</div>
           <div class="cart-list" id="cartList">
-            <button class="cart-item" data-cart="portfolio">
+            <button class="cart-item pulse-hint" data-cart="portfolio">
               <span class="cart-icon">📁</span>
               <span class="cart-label">Portfolio</span>
             </button>
@@ -352,6 +352,8 @@
     btns.forEach(btn => {
       btn.addEventListener('click', () => {
         if (cartBusy) return;
+        // First interaction — drop the first-load pulse hint.
+        btns.forEach(b => b.classList.remove('pulse-hint'));
         cartBusy = true;
         htmlFlowOwned = true;
         btns.forEach(b => b.style.pointerEvents = 'none');
@@ -397,6 +399,7 @@
     // Listen for insert from GameBoy side (A button / slot click)
     window.addEventListener('gb-inserted', (e) => {
       insertedCart = e.detail || 'portfolio';
+      btns.forEach(b => b.classList.remove('pulse-hint'));
       updateCartUI();
     });
 
@@ -406,6 +409,6 @@
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/build/three.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/GLTFLoader.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/DRACOLoader.js"></script>
-  <script defer src="gameboy.js?v=46"></script>
+  <script defer src="gameboy.js?v=48"></script>
 </body>
 </html>

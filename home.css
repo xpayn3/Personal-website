@@ -119,33 +119,6 @@ body {
   pointer-events: none;
 }
 
-/* Full-screen iframe overlay for project detail — opened from the home
-   scroll showcase. Single fade-in on the frame; the overlay inside is
-   pre-positioned (no slide) in embed mode so we don't double-animate. */
-#homeProjFrame {
-  position: fixed;
-  inset: 0;
-  z-index: 99999;
-  background: #000;
-  overflow: hidden;
-  animation: projFrameIn 0.4s ease-out both;
-}
-#homeProjFrame iframe {
-  width: 100%;
-  height: 100%;
-  border: 0;
-  display: block;
-}
-@keyframes projFrameIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-#homeProjFrame.closing { animation: projFrameOut 0.3s ease both; }
-@keyframes projFrameOut {
-  from { opacity: 1; }
-  to   { opacity: 0; }
-}
-
 .hero-slide-title {
   position: absolute;
   bottom: 32px;
@@ -248,13 +221,15 @@ body {
 .image-layer {
   position: relative;
   z-index: 2;
-  background: var(--bg);
+  background: transparent;
   overflow: visible;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  padding: 0 24px;
+  /* Extra top padding gives the big title a beat to breathe before the hero
+     slides into frame. */
+  padding: 40vh 24px 0;
 }
 
 .scatter-img {
@@ -278,6 +253,87 @@ body {
 
 .scatter-img.hero-scatter img,
 .scatter-img.hero-scatter video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Project info pill in bottom-left of the hero — fades in once the hero
+   covers the big title behind it (opacity driven by updateParallax). */
+.hero-info-tag {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px 12px 12px;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  max-width: 60%;
+}
+/* Higher specificity than `.scatter-img.hero-scatter img` which otherwise
+   stretches this thumb to full hero width. Fixed size as fallback; JS
+   syncs it to match the text column height. */
+.scatter-img.hero-scatter .hero-info-tag img.hero-info-thumb {
+  width: 58px;
+  height: 58px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+  display: block;
+  box-shadow: none;
+}
+.hero-info-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.hero-info-year {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+.hero-info-name {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+.hero-info-cta {
+  margin-top: 4px;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+}
+@media (max-width: 768px) {
+  .hero-info-tag { left: 12px; bottom: 12px; padding: 10px 12px 10px 10px; gap: 10px; max-width: 75%; }
+  .hero-info-name { font-size: 1.05rem; }
+  .scatter-img.hero-scatter .hero-info-tag img.hero-info-thumb { border-radius: 8px; }
+}
+
+/* Portrait (9:16-style) secondary media gets square-cropped so the layout
+   doesn't get tall awkward columns. Flagged from JS on load/loadedmetadata. */
+.scatter-img.side-scatter-tall {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+.scatter-img.side-scatter-tall img,
+.scatter-img.side-scatter-tall video {
   width: 100%;
   height: 100%;
   object-fit: cover;

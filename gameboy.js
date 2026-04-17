@@ -304,11 +304,12 @@
       }
     });
 
+    // Hide the whole gameboy until every texture is loaded — otherwise meshes
+    // pop in one-by-one as their async textures resolve, which looks cheap.
+    // We still run the rest of init (cart slot, buttons, hit-zones) so by the
+    // time the reveal happens everything is wired up.
     gb.add(model);
-
-    // Remove skeleton loader
-    const skel = document.getElementById('gbSkeleton');
-    if (skel) skel.remove();
+    model.visible = false;
 
     // Get scaled bounds
     const sBox = new THREE.Box3().setFromObject(model);
@@ -331,33 +332,53 @@
 
     }
 
-    // Body: apply full texture set
-    const bodyMesh = parts['body-body'];
-    if (bodyMesh) {
-      const tl = new THREE.TextureLoader();
-      const baseT = tl.load('gameboy/body_Base_Color.webp');
-      const normT = tl.load('gameboy/body_Normal.webp');
-      const roughT = tl.load('gameboy/body_Roughness.webp');
-      const metalT = tl.load('gameboy/body_Metallic.webp');
-      const aoT = tl.load('gameboy/body_Mixed_AO.webp');
-      const bumpT = tl.load('gameboy/body_Height.webp');
-      [baseT, normT, roughT, metalT, aoT, bumpT].forEach(t => { t.flipY = false; });
-      baseT.encoding = THREE.sRGBEncoding;
+    // Body + glass textures — load in parallel, apply once all resolve, then
+    // reveal the model and drop the skeleton loader in one shot.
+    const tl = new THREE.TextureLoader();
+    const texPaths = [
+      'gameboy/body_Base_Color.webp',
+      'gameboy/body_Normal.webp',
+      'gameboy/body_Roughness.webp',
+      'gameboy/body_Metallic.webp',
+      'gameboy/body_Mixed_AO.webp',
+      'gameboy/body_Height.webp',
+      'gameboy/screen_Roughness.webp',
+    ];
+    const texPromises = texPaths.map(p => new Promise((resolve) => tl.load(p, resolve, undefined, () => resolve(null))));
+    Promise.all(texPromises).then(([baseT, normT, roughT, metalT, aoT, bumpT, glassRoughT]) => {
+      const allBody = [baseT, normT, roughT, metalT, aoT, bumpT].filter(Boolean);
+      allBody.forEach(t => { t.flipY = false; });
+      if (baseT) baseT.encoding = THREE.sRGBEncoding;
 
-      bodyMesh.material = new THREE.MeshStandardMaterial({
-        map: baseT,
-        normalMap: normT,
-        roughnessMap: roughT,
-        metalnessMap: metalT,
-        aoMap: aoT,
-        bumpMap: bumpT,
-        bumpScale: 0.3,
-        roughness: 1,
-        metalness: 1,
-        envMap: envCam.renderTarget.texture,
-        envMapIntensity: 0.4,
-      });
-    }
+      const bodyMesh = parts['body-body'];
+      if (bodyMesh && baseT) {
+        bodyMesh.material = new THREE.MeshStandardMaterial({
+          map: baseT,
+          normalMap: normT || null,
+          roughnessMap: roughT || null,
+          metalnessMap: metalT || null,
+          aoMap: aoT || null,
+          bumpMap: bumpT || null,
+          bumpScale: 0.3,
+          roughness: 1,
+          metalness: 1,
+          envMap: envCam.renderTarget.texture,
+          envMapIntensity: 0.4,
+        });
+      }
+
+      if (parts.glass && glassRoughT) {
+        glassRoughT.flipY = false;
+        parts.glass.material.roughnessMap = glassRoughT;
+        parts.glass.material.roughness = 1;
+        parts.glass.material.needsUpdate = true;
+      }
+
+      // All materials in place — reveal everything at once and clear loader.
+      model.visible = true;
+      const skel = document.getElementById('gbSkeleton');
+      if (skel) skel.remove();
+    });
 
     // Light: red translucent LED — glass housing with light passing through
     const lightMesh = parts['body-light'];
@@ -387,16 +408,12 @@
       lightMesh.userData.ledGlow = ledGlow;
     }
 
-    // Glass: GLTF loads tex_0 + add roughness map
+    // Glass: GLTF loads tex_0 + transparency; roughness map is applied in
+    // the Promise.all above so it lands at the same moment as the body maps.
     if (parts.glass) {
       const glassMat = parts.glass.material;
       glassMat.transparent = true;
       glassMat.depthWrite = false;
-      const glassRough = new THREE.TextureLoader().load('gameboy/screen_Roughness.webp');
-      glassRough.flipY = false;
-      glassMat.roughnessMap = glassRough;
-      glassMat.roughness = 1;
-      glassMat.needsUpdate = true;
       parts.glass.renderOrder = 1;
 
       // Toggle glass visibility with G key
@@ -2454,6 +2471,50 @@
   }
 
   // ========== BUTTON ACTIONS ==========
+  // Power LED state helpers — keep color/emissive/glow in sync.
+  function setLedActive() {
+    const lm = parts['body-light'];
+    if (!lm) return;
+    lm.material.color.set(0xff1a1a);
+    lm.material.emissive.set(0xff0000);
+    lm.material.emissiveIntensity = 1.0;
+    lm.material.needsUpdate = true;
+    if (lm.userData.ledGlow) lm.userData.ledGlow.intensity = 0.1;
+  }
+  function setLedInactive() {
+    const lm = parts['body-light'];
+    if (!lm) return;
+    lm.material.color.set(0x992020);
+    lm.material.emissive.set(0x330000);
+    lm.material.emissiveIntensity = 0.25;
+    lm.material.needsUpdate = true;
+    if (lm.userData.ledGlow) lm.userData.ledGlow.intensity = 0;
+  }
+  // Cart-specific boot jingle
+  function playBootSoundFor(cartId) {
+    if (cartId === 'snake') sfx.bootSnake();
+    else if (cartId === 'breakout') sfx.bootBreakout();
+    else if (cartId === 'frogger') sfx.bootFrogger();
+    else sfx.boot();
+  }
+  // Quick mechanical dip used when a cart is slotted in
+  function cartPushDip() {
+    setTimeout(() => {
+      gb.userData.pushOffset = -1.2;
+      setTimeout(() => { gb.userData.pushOffset = -0.5; }, 80);
+      setTimeout(() => { gb.userData.pushOffset = 0; }, 160);
+    }, 200);
+  }
+  // Wake the screen from dim/screensaver on any interaction
+  function wakeScreen() {
+    screenOff = false;
+    screenSaver = false;
+    if (parts.screen) {
+      parts.screen.material.emissiveIntensity = 1.0;
+      parts.screen.material.color.set(0xffffff);
+    }
+  }
+
   // Reusable: select and insert a cartridge by ID
   function selectCartridge(cartId) {
     if (screen !== 'insert') return;
@@ -2461,14 +2522,7 @@
     currentMenuItems = cartridges[cartId].menuItems;
     currentHeader = cartridges[cartId].header;
     // Wake screen if sleeping, then insert
-    if (screenOff) {
-      screenOff = false;
-      screenSaver = false;
-      if (parts.screen) {
-        parts.screen.material.emissiveIntensity = 1.0;
-        parts.screen.material.color.set(0xffffff);
-      }
-    }
+    if (screenOff) wakeScreen();
     lastInteraction = performance.now();
     pressButton('a', false);
   }
@@ -2477,22 +2531,17 @@
     initAudio();
     lastInteraction = performance.now();
     if (screenOff) {
-      // Wake up screen
-      screenOff = false;
-      screenSaver = false;
-      if (parts.screen) {
-        parts.screen.material.emissiveIntensity = 1.0;
-        parts.screen.material.color.set(0xffffff);
-      }
+      // Wake up screen — consume this press just to wake up
+      wakeScreen();
       drawScreen();
-      return; // consume this press just to wake up
+      return;
     }
     // Play click sound only for physical presses on the 3D gameboy — not for
     // keyboard/scroll/HTML-panel navigation.
     if (fromPhysical) {
-      if (action === 'up' || action === 'down' || action === 'left' || action === 'right') sfx.navigate();
-      else if (action === 'a') sfx.select();
+      if (action === 'a') sfx.select();
       else if (action === 'b') sfx.back();
+      else sfx.navigate(); // up/down/left/right
     }
 
     if (screen === 'insert') {
@@ -2515,26 +2564,11 @@
           setTimeout(() => {
             screen = 'boot';
             bootTimer = 0;
-            if (activeCart === 'snake') sfx.bootSnake();
-            else if (activeCart === 'breakout') sfx.bootBreakout();
-            else if (activeCart === 'frogger') sfx.bootFrogger();
-            else sfx.boot();
+            playBootSoundFor(activeCart);
             targetCamZ = 130;
-            const lm0 = parts['body-light'];
-            if (lm0) {
-              lm0.material.color.set(0xff1a1a);
-              lm0.material.emissive.set(0xff0000);
-              lm0.material.emissiveIntensity = 1.0;
-              lm0.material.needsUpdate = true;
-              if (lm0.userData.ledGlow) lm0.userData.ledGlow.intensity = 0.1;
-            }
+            setLedActive();
           }, 800);
-          // Quick dip after 200ms delay
-          setTimeout(() => {
-            gb.userData.pushOffset = -1.2;
-            setTimeout(() => { gb.userData.pushOffset = -0.5; }, 80);
-            setTimeout(() => { gb.userData.pushOffset = 0; }, 160);
-          }, 200);
+          cartPushDip();
           const cart = parts.casette;
           if (cart) {
             const baseY = cart.userData.baseY;
@@ -2749,10 +2783,7 @@
           break;
       }
     } else if (screen === 'snake') {
-      if (!snakeStarted) {
-        if (action === 'a') snakeReset();
-        else if (action === 'b') lcdFlash(() => { screen = 'menu'; });
-      } else if (!snakeAlive) {
+      if (!snakeStarted || !snakeAlive) {
         if (action === 'a') snakeReset();
         else if (action === 'b') lcdFlash(() => { screen = 'menu'; });
       } else {
@@ -2763,10 +2794,7 @@
         else if (action === 'right' && snakeDir.x !== -1) snakeNextDir = {x:1, y:0};
       }
     } else if (screen === 'breakout') {
-      if (!brk.started) {
-        if (action === 'a') brkReset();
-        else if (action === 'b') lcdFlash(() => { screen = 'menu'; });
-      } else if (!brk.alive) {
+      if (!brk.started || !brk.alive) {
         if (action === 'a') brkReset();
         else if (action === 'b') lcdFlash(() => { screen = 'menu'; });
       } else {
@@ -2774,10 +2802,7 @@
         else if (action === 'right') brkPadX = Math.min(0.9, brkPadX + 0.08);
       }
     } else if (screen === 'frogger') {
-      if (!frog.started) {
-        if (action === 'a') frogReset();
-        else if (action === 'b') lcdFlash(() => { screen = 'menu'; });
-      } else if (!frog.alive) {
+      if (!frog.started || !frog.alive) {
         if (action === 'a') frogReset();
         else if (action === 'b') lcdFlash(() => { screen = 'menu'; });
       } else {
@@ -2803,8 +2828,8 @@
     if (hits.length && hits[0].object.userData.action) {
       const obj = hits[0].object;
       // Wake from screensaver/dim on any interaction
-      screenOff = false; screenSaver = false; lastInteraction = performance.now();
-      if (parts.screen) { parts.screen.material.emissiveIntensity = 1.0; parts.screen.material.color.set(0xffffff); }
+      wakeScreen();
+      lastInteraction = performance.now();
 
 
       // Cartridge eject (click on inserted cartridge) — only from back
@@ -2824,14 +2849,7 @@
         const ejectDur = 1000;
 
         // Turn off LED — keep a faint red tint so it doesn't look dead black
-        const lm = parts['body-light'];
-        if (lm) {
-          lm.material.color.set(0x992020);
-          lm.material.emissive.set(0x330000);
-          lm.material.emissiveIntensity = 0.25;
-          lm.material.needsUpdate = true;
-          if (lm.userData.ledGlow) lm.userData.ledGlow.intensity = 0;
-        }
+        setLedInactive();
 
         // Screen off
         screen = 'insert';
@@ -2913,23 +2931,11 @@
         setTimeout(() => {
           screen = 'boot';
           bootTimer = 0;
-          sfx.boot();
+          playBootSoundFor(activeCart);
           targetCamZ = 130;
-          const lm1 = parts['body-light'];
-          if (lm1) {
-            lm1.material.color.set(0xff1a1a);
-            lm1.material.emissive.set(0xff0000);
-            lm1.material.emissiveIntensity = 1.0;
-            lm1.material.needsUpdate = true;
-            if (lm1.userData.ledGlow) lm1.userData.ledGlow.intensity = 0.1;
-          }
+          setLedActive();
         }, 800);
-        // Quick dip
-        setTimeout(() => {
-          gb.userData.pushOffset = -1.2;
-          setTimeout(() => { gb.userData.pushOffset = -0.5; }, 80);
-          setTimeout(() => { gb.userData.pushOffset = 0; }, 160);
-        }, 200);
+        cartPushDip();
 
         const cart = parts.casette;
         if (!cart) return true;
@@ -2963,11 +2969,6 @@
             const c1 = 1.2;
             const ease = 1 + c1 * Math.pow(t - 1, 3) + Math.pow(t - 1, 2);
             cart.position.y = startY + (baseY - startY) * Math.min(1, ease);
-
-            // Physical reaction — GB pushes down as cart slides in
-
-            // Snap jolt when cart seats (last 10% of slide)
-
             requestAnimationFrame(cartAnim);
           } else if (elapsed < slideDur + pauseDur) {
             cart.position.y = baseY;
@@ -3064,9 +3065,17 @@
     raycaster.setFromCamera(pointer, camera);
     const hits = raycaster.intersectObjects(interactiveObjs, true);
     const hit = hits.length && hits[0].object.userData.action ? hits[0].object : null;
-    let btn = hit && hit.material && hit.material.visible !== false ? hit :
-              hit && hit.userData.isJoystick && parts.joystick ? parts.joystick :
-              hit && (hit.userData.action === 'ejectCart' || hit.userData.action === 'insertCart') && parts.casette && parts.casette.visible ? parts.casette : null;
+    // Map the raw hit to the mesh we actually want to glow.
+    let btn = null;
+    if (hit) {
+      if (hit.material && hit.material.visible !== false) {
+        btn = hit;
+      } else if (hit.userData.isJoystick && parts.joystick) {
+        btn = parts.joystick;
+      } else if ((hit.userData.action === 'ejectCart' || hit.userData.action === 'insertCart') && parts.casette && parts.casette.visible) {
+        btn = parts.casette;
+      }
+    }
     if (btn === hoveredBtn) return;
     if (hoveredBtn && hoveredBtn.material && hoveredBtn.material.emissive) {
       hoveredBtn.material.emissive.set(hoveredBtn.userData._origEmissive || 0x000000);
@@ -3145,20 +3154,23 @@
     touchRotating = false;
   });
 
-  // Keyboard
+  // Keyboard — arrows + Enter/Escape (and z/x alts) drive menu nav silently.
+  const KEY_ACTIONS = {
+    ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right',
+    Enter: 'a', z: 'a', Escape: 'b', x: 'b',
+  };
   window.addEventListener('keydown', (e) => {
     if (!isVisible || screen === 'insert') return;
-    if (e.key === 'ArrowUp') { e.preventDefault(); pressButton('up', false); }
-    else if (e.key === 'ArrowDown') { e.preventDefault(); pressButton('down', false); }
-    else if (e.key === 'ArrowLeft') { e.preventDefault(); pressButton('left', false); }
-    else if (e.key === 'ArrowRight') { e.preventDefault(); pressButton('right', false); }
-    else if (e.key === 'Enter' || e.key === 'z') { e.preventDefault(); pressButton('a', false); }
-    else if (e.key === 'Escape' || e.key === 'x') { e.preventDefault(); pressButton('b', false); }
+    const action = KEY_ACTIONS[e.key];
+    if (!action) return;
+    e.preventDefault();
+    pressButton(action, false);
   });
 
-  // Mouse wheel navigation
+  // Mouse wheel navigation — disabled during gameplay and on the insert screen
+  const WHEEL_BLOCKED = new Set(['insert', 'snake', 'breakout', 'frogger']);
   renderer.domElement.addEventListener('wheel', (e) => {
-    if (screen === 'insert' || screen === 'snake' || screen === 'breakout' || screen === 'frogger') return;
+    if (WHEEL_BLOCKED.has(screen)) return;
     e.preventDefault();
     if (e.deltaY > 0) pressButton('down', false);
     else if (e.deltaY < 0) pressButton('up', false);
@@ -3209,7 +3221,8 @@
       const bootEnd = (activeCart && cartridges[activeCart].autoStart) ? 4.0 : 4.6;
       if (bootTimer > bootEnd) {
         if (activeCart && cartridges[activeCart].autoStart) {
-          screen = activeCart === 'snake' ? 'snake' : activeCart === 'frogger' ? 'frogger' : 'breakout';
+          // Game carts boot straight into play; other carts (portfolio) land in the menu.
+          screen = activeCart;
         } else {
           screen = 'menu';
         }
@@ -3249,7 +3262,7 @@
     gb.rotation.x += (targetRot.x + (gb.userData.nudgeX || 0) - gb.rotation.x) * 0.06;
     camera.position.z += (targetCamZ - camera.position.z) * 0.03;
 
-    // Screen sleep after 6s of no interaction. The DVD screensaver stage is
+    // Screen sleep after 8s of no interaction. The DVD screensaver stage is
     // skipped on the insert screen so the "insert cartridge" prompt remains
     // readable; the dim-off state still applies. Options views are always
     // live-updating (battery, credits, link cable) — don't dim them.
@@ -3358,8 +3371,7 @@
     const ejectY = baseY + 160;
     const ejectStart = performance.now();
     const ejectDur = 1000;
-    const lm = parts['body-light'];
-    if (lm) { lm.material.color.set(0x992020); lm.material.emissive.set(0x330000); lm.material.emissiveIntensity = 0.25; lm.material.needsUpdate = true; if (lm.userData.ledGlow) lm.userData.ledGlow.intensity = 0; }
+    setLedInactive();
     screen = 'insert'; cartInserted = false; activeCart = null;
     scroll = 0; detailCursor = 0; cursor = 0; projScreen = false; trophyScreen = false;
     drawScreen();

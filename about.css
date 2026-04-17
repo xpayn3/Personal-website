@@ -137,6 +137,17 @@ body {
   pointer-events: none;
 }
 
+/* First-load pulse so users notice the Portfolio cart. Removed as soon as
+   any cart is clicked or another becomes inserted. */
+.cart-item.pulse-hint {
+  animation: cartPulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  border-color: rgba(255,255,255,0.35);
+}
+@keyframes cartPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.35), 0 0 0 0 rgba(255,255,255,0.12); }
+  50%      { box-shadow: 0 0 0 6px rgba(255,255,255,0),   0 0 24px 4px rgba(255,255,255,0.18); }
+}
+
 .cart-icon {
   font-size: 1.8rem;
   line-height: 1;

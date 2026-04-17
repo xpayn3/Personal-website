@@ -59,8 +59,8 @@ const projects = [
     hero: `${IMG}/Grounded 2025/gr2025cover.webp`,
     floats: [
       `${IMG}/Grounded 2025/Grounded_2025_web.webm`,
-      `${IMG}/Grounded 2025/Grounded_2025_02.webm`,
-      `${IMG}/Grounded 2025/Grounded_2025_03.webm`,
+      `${IMG}/Grounded 2025/IG_story_01.webm`,
+      `${IMG}/Grounded 2025/IG_story_03.webm`,
     ]
   },
   {
@@ -451,15 +451,37 @@ projects.forEach((proj, idx) => {
   const heroEl = document.createElement('div');
   heroEl.className = 'scatter-img hero-scatter';
   heroEl.appendChild(createMedia(proj.hero));
+  // Project info tag — fades in once the hero covers the big title behind it.
+  const tag = document.createElement('div');
+  tag.className = 'hero-info-tag';
+  const thumbSrc = isVideo(proj.hero) ? proj.hero.replace(/\.(webm|mp4)$/, '_thumb.webp') : proj.hero;
+  tag.innerHTML =
+    `<img class="hero-info-thumb" src="${thumbSrc}" alt="" loading="lazy" />` +
+    `<div class="hero-info-text">` +
+      `<span class="hero-info-year">${proj.year}</span>` +
+      `<span class="hero-info-name">${proj.name}</span>` +
+      `<span class="hero-info-cta">View project \u2192</span>` +
+    `</div>`;
+  heroEl.appendChild(tag);
   imageLayer.appendChild(heroEl);
 
-  // Secondary — flow in, alternate left/right
-  for (let i = 0; i < proj.floats.length; i++) {
+  // Secondary — cap at 3, detect tall (portrait) media so CSS can square-crop it.
+  const floatsToShow = proj.floats.slice(0, 3);
+  for (let i = 0; i < floatsToShow.length; i++) {
     const el = document.createElement('div');
     el.className = 'scatter-img side-scatter';
     const speeds = [0.08, -0.12, 0.18, -0.06, 0.14];
     el.dataset.speed = speeds[i % speeds.length];
-    el.appendChild(createMedia(proj.floats[i]));
+    const media = createMedia(floatsToShow[i]);
+    el.appendChild(media);
+    const checkTall = (w, h) => { if (w && h && h > w * 1.05) el.classList.add('side-scatter-tall'); };
+    if (media.tagName === 'IMG') {
+      if (media.complete) checkTall(media.naturalWidth, media.naturalHeight);
+      else media.addEventListener('load', () => checkTall(media.naturalWidth, media.naturalHeight), { once: true });
+    } else if (media.tagName === 'VIDEO') {
+      if (media.readyState >= 1) checkTall(media.videoWidth, media.videoHeight);
+      else media.addEventListener('loadedmetadata', () => checkTall(media.videoWidth, media.videoHeight), { once: true });
+    }
     imageLayer.appendChild(el);
   }
 
@@ -474,6 +496,26 @@ projects.forEach((proj, idx) => {
 
 barCounter.textContent = `1 / ${projects.length}`;
 
+// Size each info-pill thumb to exactly match its text column's measured
+// height. Aspect-ratio + flex stretch + auto width otherwise creates a
+// circular dependency; this is the simplest reliable fix.
+function syncInfoTagThumbs() {
+  document.querySelectorAll('.hero-info-tag').forEach(tag => {
+    const txt = tag.querySelector('.hero-info-text');
+    const thumb = tag.querySelector('.hero-info-thumb');
+    if (!txt || !thumb) return;
+    const h = Math.round(txt.getBoundingClientRect().height);
+    if (h < 20) return;
+    thumb.style.width = h + 'px';
+    thumb.style.height = h + 'px';
+  });
+}
+requestAnimationFrame(() => requestAnimationFrame(syncInfoTagThumbs));
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(syncInfoTagThumbs);
+}
+window.addEventListener('resize', syncInfoTagThumbs);
+
 // ========== END CTA ==========
 const cta = document.createElement('div');
 cta.className = 'home-cta';
@@ -486,48 +528,13 @@ cta.innerHTML = `
 `;
 container.appendChild(cta);
 
-// ========== PROJECT OVERLAY (iframe embed of grid.html) ==========
+// ========== PROJECT OVERLAY ==========
+// overlay.js owns the slide-up project detail view. Home just hands off the
+// project id — same overlay behavior as the grid page.
 function openHomeProject(projId) {
-  const existing = document.getElementById('homeProjFrame');
-  if (existing) existing.remove();
-
-  const frame = document.createElement('div');
-  frame.id = 'homeProjFrame';
-  const iframe = document.createElement('iframe');
-  // Use hash (not ?query) — Safari's Advanced Privacy Protection strips
-  // unrecognized query params from iframes, which breaks embed mode.
-  iframe.src = `grid.html#embed=1&project=${encodeURIComponent(projId)}`;
-  iframe.title = 'Project';
-  iframe.setAttribute('allow', 'autoplay; fullscreen');
-  frame.appendChild(iframe);
-  document.body.appendChild(frame);
-
-  // Lock body scroll
-  const savedY = window.scrollY;
-  document.body.style.position = 'fixed';
-  document.body.style.top = `-${savedY}px`;
-  document.body.style.width = '100%';
-  document.body.style.overflow = 'hidden';
-
-  let closing = false;
-  function teardown() {
-    if (closing) return;
-    closing = true;
-    frame.classList.add('closing');
-    // Let the exit animation play, then tear down
-    setTimeout(() => {
-      frame.remove();
-      document.body.style.cssText = '';
-      window.scrollTo({ top: savedY, behavior: 'instant' });
-    }, 350);
-    window.removeEventListener('message', onMsg);
+  if (typeof window.openProject === 'function') {
+    window.openProject(projId);
   }
-  function onMsg(e) {
-    if (e && e.data === 'close-project') teardown();
-  }
-  window.addEventListener('message', onMsg);
-  // Expose for potential keyboard/back-button closure hooks
-  frame._teardown = teardown;
 }
 
 // ========== CTA SCROLL ANIMATION ==========
@@ -592,6 +599,8 @@ const blocks = document.querySelectorAll('.project-block');
 const blockData = Array.from(blocks).map(block => ({
   el: block,
   titleName: block.querySelector('.title-name'),
+  heroImg: block.querySelector('.hero-scatter'),
+  infoTag: block.querySelector('.hero-info-tag'),
   sideImgs: Array.from(block.querySelectorAll('.side-scatter')).map(img => ({
     el: img,
     speed: parseFloat(img.dataset.speed || 0.1),
@@ -617,6 +626,22 @@ function updateParallax() {
     bd.titleName.style.transform = `scale(${titleScale})`;
     bd.titleName.style.opacity = titleOpacity;
     bd.titleName.style.letterSpacing = `${letterSpacing}em`;
+
+    // Hero scale — starts smaller when block first enters, grows to full size
+    // as side images scroll past (desktop-only; mobile skips updateParallax).
+    if (bd.heroImg) {
+      const blockH = bd.el.offsetHeight;
+      const travel = Math.max(1, blockH - vh);
+      const scrolled = Math.max(0, -blockTop);
+      const scaleProgress = Math.max(0, Math.min(1, scrolled / travel));
+      const heroScale = 0.82 + scaleProgress * 0.18;
+      bd.heroImg.style.transform = `translateY(-50%) scale(${heroScale})`;
+    }
+
+    // Info tag — fades in once the big title is mostly faded.
+    if (bd.infoTag) {
+      bd.infoTag.style.opacity = Math.max(0, Math.min(1, (titleProgress - 0.6) / 0.3));
+    }
 
     // Side images parallax
     for (const img of bd.sideImgs) {

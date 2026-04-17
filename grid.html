@@ -20,19 +20,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="tokens.css" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="overlay.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" media="print" onload="this.media='all'" />
   <link rel="stylesheet" href="bar.css" />
   <link rel="stylesheet" href="footer.css" />
   <link rel="preload" as="script" href="script.js" />
-  <script>
-  /* Embed-mode flag applied before <body> renders so the grid chrome never
-     flashes when this page is loaded inside the home iframe overlay. Uses a
-     hash (not ?query) because Safari's Advanced Privacy Protection strips
-     query params from iframes. */
-  if (new URLSearchParams(location.hash.slice(1)).get('embed') === '1') {
-    document.documentElement.classList.add('embed-mode');
-  }
-  </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 <script type="application/ld+json">
@@ -156,6 +148,8 @@
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="projects.js" defer></script>
+  <script src="overlay.js" defer></script>
   <script src="script.js" defer></script>
   <script>
   // Disable right-click
