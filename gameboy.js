@@ -7,10 +7,12 @@
   let audioCtx = null;
   function initAudio() {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    loadClicks();
   }
 
   function playTone(freq, dur, type, vol) {
     if (!audioCtx) return;
+    if (typeof soundMuted !== 'undefined' && soundMuted) return;
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.type = type || 'square';
@@ -23,16 +25,40 @@
     osc.stop(audioCtx.currentTime + dur);
   }
 
+  // N64 controller click samples — 16 distinct press/release snippets packed
+  // into one ogg; we decode once and play random slices for button sfx.
+  let clickBuffer = null;
+  const CLICK_STARTS = [0.02, 0.24, 0.95, 1.14, 1.85, 2.03, 2.72, 2.90, 3.60, 3.78, 4.50, 4.70, 5.37, 5.57, 6.25, 6.42];
+  const CLICK_DUR = 0.16;
+  let clickLoading = false;
+  function loadClicks() {
+    if (clickBuffer || clickLoading || !audioCtx) return;
+    clickLoading = true;
+    fetch('gameboy/clicks.ogg')
+      .then(r => r.arrayBuffer())
+      .then(buf => new Promise((res, rej) => audioCtx.decodeAudioData(buf, res, rej)))
+      .then(decoded => { clickBuffer = decoded; })
+      .catch(() => { clickLoading = false; });
+  }
+  function playClick(vol) {
+    if (!audioCtx || soundMuted) return;
+    if (!clickBuffer) { loadClicks(); return; }
+    const start = CLICK_STARTS[Math.floor(Math.random() * CLICK_STARTS.length)];
+    const src = audioCtx.createBufferSource();
+    const gain = audioCtx.createGain();
+    gain.gain.value = vol || 0.28;
+    // Tiny pitch variation so repeats don't feel identical
+    src.playbackRate.value = 0.92 + Math.random() * 0.18;
+    src.buffer = clickBuffer;
+    src.connect(gain);
+    gain.connect(audioCtx.destination);
+    src.start(0, start, CLICK_DUR);
+  }
+
   const sfx = {
-    navigate: () => playTone(800, 0.06, 'square', 0.06),
-    select: () => {
-      playTone(600, 0.08, 'square', 0.07);
-      setTimeout(() => playTone(900, 0.1, 'square', 0.07), 60);
-    },
-    back: () => {
-      playTone(500, 0.08, 'square', 0.06);
-      setTimeout(() => playTone(350, 0.1, 'square', 0.06), 60);
-    },
+    navigate: () => playClick(0.22),
+    select: () => playClick(0.32),
+    back: () => playClick(0.22),
     cartIn: () => {
       if (!audioCtx) return;
       // Slide friction — filtered noise
@@ -333,19 +359,23 @@
       });
     }
 
-    // Light: red emissive
+    // Light: red translucent LED — glass housing with light passing through
     const lightMesh = parts['body-light'];
     if (lightMesh) {
       lightMesh.material = new THREE.MeshPhysicalMaterial({
-        color: 0x440000,
-        emissive: 0x110000,
-        emissiveIntensity: 0.2,
-        roughness: 0.1,
+        color: 0xff2020,
+        emissive: 0xff0000,
+        emissiveIntensity: 0.6,
+        roughness: 0.05,
         metalness: 0.0,
+        transmission: 1.0,       // let light pass through the housing
+        ior: 1.5,                // glass refraction
+        thickness: 0.6,          // volume inside the lens
+        attenuationColor: 0xff3030,
+        attenuationDistance: 0.4,
         clearcoat: 1.0,
-        clearcoatRoughness: 0.05,
+        clearcoatRoughness: 0.02,
         transparent: true,
-        opacity: 0.85,
       });
       // Red point light — starts off
       const ledBox = new THREE.Box3().setFromObject(lightMesh);
@@ -487,25 +517,25 @@
     portfolio: {
       label: 'PORTFOLIO',
       header: 'LUKA GRCAR',
-      menuItems: ['ABOUT ME', 'STATS', 'LOADOUT', 'ALLIES', 'TROPHIES', 'PING ME', 'QUESTS'],
+      menuItems: ['ABOUT ME', 'STATS', 'LOADOUT', 'ALLIES', 'TROPHIES', 'PING ME', 'QUESTS', 'OPTIONS'],
     },
     snake: {
       label: 'SNAKE',
       header: 'SNAKE',
-      menuItems: ['SNAKE'],
-      autoStart: true,
+      menuItems: ['PLAY', 'HIGH SCORES', 'SOUND TEST', 'CHEATS', 'ERASE SAVE'],
+      autoStart: false,
     },
     breakout: {
       label: 'BREAKOUT',
       header: 'BREAKOUT',
-      menuItems: ['BREAKOUT'],
-      autoStart: true,
+      menuItems: ['PLAY', 'HIGH SCORES', 'SOUND TEST', 'CHEATS', 'ERASE SAVE'],
+      autoStart: false,
     },
     frogger: {
       label: 'FROGGER',
       header: 'FROGGER',
-      menuItems: ['FROGGER'],
-      autoStart: true,
+      menuItems: ['PLAY', 'HIGH SCORES', 'SOUND TEST', 'CHEATS', 'ERASE SAVE'],
+      autoStart: false,
     }
   };
   let activeCart = null; // 'portfolio' or 'games'
@@ -569,7 +599,66 @@
     'TROPHIES': ['WEBSI Prvak|2022','Netko|2022','Diggit Zlata|2022','Awwwards HM|2022','CSSDA 7xKudo|2022','CSSREEL 2xFD|2022','BestCSS 2xSD|2022','WEBSI Prvak|2021','Netko 2xFOTD|2021','Awwwards HM|2021','CSSDA 2xKudo|2021'],
     'PING ME': ['','Email:','luka.grcar@me.com','','Instagram:','@lukakluka','','Behance:','/lukagrcar'],
     'QUESTS': ['CESTEL','Grounded 22','Grounded 21',"Athletes Foot",'Grounded 20','Grounded 18','TamTam','AppointMENT','Halloween','Black Friday','LargaVida','NewEdge','Grounded 23','Grounded 25','Grounded 24','Lab','Kersnikova','Natureta Renders','Natureta 100'],
+    'OPTIONS': ['PALETTE','CONTRAST','SOUND','BATTERY','LINK CABLE','CREDITS','DIP SWITCHES','SERIAL NO.','DEV MODE'],
   };
+
+  // ============ OPTIONS STATE ============
+  const palettes = [
+    { id: 'DMG',    bg: '#9bbc0f', ink: '#0f380f', dark: '#306230', light: '#8bac0f' }, // classic DMG green
+    { id: 'POCKET', bg: '#c4cfa1', ink: '#1a1a1a', dark: '#555555', light: '#8a8e63' }, // Pocket gray-green
+    { id: 'COLOR',  bg: '#f0f0e8', light: '#d0d8c0', dark: '#404040', ink: '#000000' }, // GBC default (current)
+    { id: 'BERRY',  bg: '#f8c4c4', ink: '#3a1010', dark: '#8a2a2a', light: '#e08080' },
+    { id: 'GRAPE',  bg: '#c8b0e8', ink: '#2a1040', dark: '#5a3090', light: '#9870d0' },
+    { id: 'DARK',   bg: '#101014', ink: '#cfcfcf', dark: '#505058', light: '#8a8a90' }, // night mode
+  ];
+  let paletteIdx = 2; // start on COLOR (matches original scheme)
+  const applyPalette = () => {
+    const p = palettes[paletteIdx];
+    C.bg = p.bg; C.ink = p.ink; C.dark = p.dark; C.light = p.light;
+  };
+  applyPalette();
+
+  let contrastLevel = 5; // 0–9, drives screen emissive dimming
+  let soundMuted = false;
+  const batteryStart = performance.now();
+  const dipSwitches = [
+    { label: 'TURBO',    on: false },
+    { label: 'INVERT',   on: false },
+    { label: 'EXTRA LIVES', on: false },
+    { label: 'DEMO MODE', on: false },
+  ];
+  let dipCursor = 0;
+  let soundTestCursor = 0;
+  const soundTestTracks = [
+    { label: '01 NAV',    play: () => sfx.navigate() },
+    { label: '02 SELECT', play: () => sfx.select() },
+    { label: '03 BACK',   play: () => sfx.back() },
+    { label: '04 CARTIN', play: () => sfx.cartIn() },
+    { label: '05 CARTOUT',play: () => sfx.cartOut() },
+    { label: '06 BOOT',   play: () => sfx.boot() },
+    { label: '07 SNAKE',  play: () => sfx.bootSnake() },
+    { label: '08 BRK',    play: () => sfx.bootBreakout() },
+    { label: '09 FROG',   play: () => sfx.bootFrogger() },
+  ];
+  let cheatSeq = []; // last 8 button presses for cheat codes
+  let cheatUnlocked = false;
+  let creditScroll = 0;
+  const creditsText = [
+    '== LUKAGRCAR.COM ==',
+    '', 'DIRECTOR', 'LUKA GRCAR', '',
+    'CODE', 'LUKA GRCAR', 'CLAUDE CODE', '',
+    '3D & MOTION', 'LUKA GRCAR', '',
+    'MUSIC', 'WEB AUDIO API', '',
+    'SPECIAL THANKS', 'COFFEE', 'NIGHTS', 'PIXELS', '',
+    'MADE IN', 'LJUBLJANA','SLOVENIA','',
+    '(C) 2025','ALL RIGHTS','RESERVED','',
+    'INSERT COIN TO','CONTINUE ><',
+    '', '', '',
+  ];
+  let currentOption = null;
+  let optCursor = 0;
+  // Helper: dim factor 0.2–1.0 from contrastLevel
+  const contrastFactor = () => 0.2 + (contrastLevel / 9) * 0.8;
 
   const projDescs = [
     'Bridge weigh-in-motion animation for Cestel',
@@ -931,66 +1020,139 @@
       }
 
       // === SNAKE BOOT ===
+      // Scary pit-viper head emerges from the dark, eyes first, then strikes
+      // at the camera showing fangs + forked tongue, then retracts for title.
       if (activeCart === 'snake') {
         ctx.fillStyle = '#000';
         ctx.fillRect(cx, cy, cw, ch + 30);
         const snakeGreen = '#33dd33';
 
-        if (elapsed < 800) {
-          // Phase 1: Grid lines appear
-          const t = elapsed / 800;
-          ctx.strokeStyle = `rgba(51,221,51,${t * 0.15})`;
-          ctx.lineWidth = 1;
-          for (let gx = cx; gx < cx + cw; gx += 12) { ctx.beginPath(); ctx.moveTo(gx, cy); ctx.lineTo(gx, cy + ch); ctx.stroke(); }
-          for (let gy = cy; gy < cy + ch; gy += 12) { ctx.beginPath(); ctx.moveTo(cx, gy); ctx.lineTo(cx + cw, gy); ctx.stroke(); }
-        } else if (elapsed < 2400) {
-          // Phase 2: Snake slithers across screen
-          ctx.strokeStyle = 'rgba(51,221,51,0.15)';
-          ctx.lineWidth = 1;
-          for (let gx = cx; gx < cx + cw; gx += 12) { ctx.beginPath(); ctx.moveTo(gx, cy); ctx.lineTo(gx, cy + ch); ctx.stroke(); }
-          for (let gy = cy; gy < cy + ch; gy += 12) { ctx.beginPath(); ctx.moveTo(cx, gy); ctx.lineTo(cx + cw, gy); ctx.stroke(); }
+        // Helper: draw a menacing pixel-art viper head at (hx,hy) with unit px
+        const drawViper = (hx, hy, px, mouthOpen, eyePulse) => {
+          // Head silhouette — trapezoid widest at top narrowing to snout
+          // Build in rows of pixels for a chunky retro look
+          const rows = [
+            // [w-in-px-units, shade]  ; shade: 1=dark outline, 2=mid body, 3=light scales
+            { w: 14, sh: 1, off: 0 },     // row 0 - top outline
+            { w: 18, sh: 2, off: 0 },     // row 1
+            { w: 20, sh: 2, off: 0 },     // row 2
+            { w: 20, sh: 3, off: 0 },     // row 3 (scales)
+            { w: 18, sh: 2, off: 0 },     // row 4 - eye row will overlay
+            { w: 18, sh: 2, off: 0 },     // row 5
+            { w: 16, sh: 2, off: 0 },     // row 6
+            { w: 14, sh: 3, off: 0 },     // row 7 (belly)
+            { w: 10, sh: 2, off: 0 },     // row 8
+            { w: 8,  sh: 1, off: 0 },     // row 9 - snout
+          ];
+          const shades = { 1: '#063a06', 2: '#0f6f0f', 3: '#22a622' };
+          for (let r = 0; r < rows.length; r++) {
+            const { w, sh } = rows[r];
+            ctx.fillStyle = shades[sh];
+            ctx.fillRect(hx - (w * px) / 2, hy - 6 * px + r * px, w * px, px);
+          }
+          // Hood spikes (rising from top corners) — makes it look alert/menacing
+          ctx.fillStyle = shades[1];
+          ctx.fillRect(hx - 9 * px, hy - 9 * px, px, 3 * px);
+          ctx.fillRect(hx + 8 * px, hy - 9 * px, px, 3 * px);
+          ctx.fillRect(hx - 5 * px, hy - 10 * px, px, 4 * px);
+          ctx.fillRect(hx + 4 * px, hy - 10 * px, px, 4 * px);
 
-          const st = (elapsed - 800) / 1600;
-          const segSize = 10;
-          const segs = 12;
-          for (let i = 0; i < segs; i++) {
-            const progress = Math.max(0, Math.min(1, st * 2 - i * 0.06));
-            const sx = cx + progress * (cw + segs * segSize) - i * segSize;
-            const sy = midY + Math.sin((progress * 8 + i * 0.5)) * 20;
-            ctx.fillStyle = i === 0 ? '#44ff44' : snakeGreen;
-            ctx.fillRect(sx, sy - segSize / 2, segSize - 1, segSize - 1);
+          // Eye sockets (dark pits)
+          ctx.fillStyle = '#000';
+          ctx.fillRect(hx - 7 * px, hy - 3 * px, 4 * px, 2 * px);
+          ctx.fillRect(hx + 3 * px, hy - 3 * px, 4 * px, 2 * px);
+          // Eyes — glowing red slits with yellow core (pulse strength variable)
+          const g = Math.floor(40 - eyePulse * 30);
+          ctx.fillStyle = `rgb(255,${g},${g})`;
+          ctx.fillRect(hx - 7 * px, hy - 2 * px, 4 * px, px);
+          ctx.fillRect(hx + 3 * px, hy - 2 * px, 4 * px, px);
+          ctx.fillStyle = '#ffe04a';
+          ctx.fillRect(hx - 6 * px, hy - 2 * px, px, px);
+          ctx.fillRect(hx + 5 * px, hy - 2 * px, px, px);
+          // Nostril slits
+          ctx.fillStyle = '#022002';
+          ctx.fillRect(hx - 2 * px, hy + 2 * px, px, px);
+          ctx.fillRect(hx + 1 * px, hy + 2 * px, px, px);
+
+          // Mouth + fangs
+          if (mouthOpen) {
+            // Gaping maw
+            ctx.fillStyle = '#000';
+            ctx.fillRect(hx - 5 * px, hy + 3 * px, 10 * px, 5 * px);
+            ctx.fillStyle = '#4a0808';
+            ctx.fillRect(hx - 4 * px, hy + 4 * px, 8 * px, 3 * px);
+            // Fangs — white with shadow
+            ctx.fillStyle = '#f5f5d5';
+            ctx.fillRect(hx - 4 * px, hy + 3 * px, px, 4 * px);
+            ctx.fillRect(hx + 3 * px, hy + 3 * px, px, 4 * px);
+            // Fang tips
+            ctx.fillRect(hx - 4 * px, hy + 7 * px, px, px);
+            ctx.fillRect(hx + 3 * px, hy + 7 * px, px, px);
           }
-          // Food dots
-          ctx.fillStyle = '#ff4444';
-          for (let f = 0; f < 5; f++) {
-            const fx = cx + 30 + f * (cw / 5);
-            const fy = midY + Math.sin(f * 2.1) * 25;
-            if (st * (cw + segs * segSize) > fx - cx) continue;
-            ctx.fillRect(fx - 3, fy - 3, 6, 6);
+
+          // Forked tongue flicking in and out
+          const flickPhase = (performance.now() % 600) / 600;
+          const flickLen = mouthOpen ? 6 : (flickPhase < 0.5 ? 3 + flickPhase * 4 : 0);
+          if (flickLen > 0) {
+            ctx.fillStyle = '#ff3355';
+            ctx.fillRect(hx - 0.5 * px, hy + 4 * px, px, flickLen * px);
+            // Fork
+            ctx.fillRect(hx - 2.5 * px, hy + (4 + flickLen) * px, px, 2 * px);
+            ctx.fillRect(hx + 1.5 * px, hy + (4 + flickLen) * px, px, 2 * px);
           }
-        } else if (elapsed < 3200) {
-          // Phase 3: Title reveal
-          const t = (elapsed - 2400) / 800;
+        };
+
+        // Always show faint scanline grid
+        ctx.strokeStyle = 'rgba(51,221,51,0.08)';
+        ctx.lineWidth = 1;
+        for (let gy = cy; gy < cy + ch; gy += 4) { ctx.beginPath(); ctx.moveTo(cx, gy); ctx.lineTo(cx + cw, gy); ctx.stroke(); }
+
+        if (elapsed < 700) {
+          // Phase 1: darkness, two distant red pinpoints fade in (eyes approaching)
+          const t = elapsed / 700;
+          const a = Math.max(0, (t - 0.25) / 0.75);
+          ctx.fillStyle = `rgba(255,30,30,${a})`;
+          ctx.fillRect(midX - 10, midY - 2, 3, 2);
+          ctx.fillRect(midX + 7, midY - 2, 3, 2);
+        } else if (elapsed < 2000) {
+          // Phase 2: head materializes and grows — scale 0.4 → 1.1
+          const t = (elapsed - 700) / 1300;
+          const scale = 0.4 + t * 0.7;
+          ctx.globalAlpha = Math.min(1, t * 2.5);
+          drawViper(midX, midY + 8, scale * 3, false, Math.sin(elapsed * 0.012) * 0.5 + 0.5);
+          ctx.globalAlpha = 1;
+        } else if (elapsed < 2900) {
+          // Phase 3: STRIKE — head lunges forward, mouth opens wide, red flash
+          const t = (elapsed - 2000) / 900;
+          const scale = 1.1 + Math.sin(t * Math.PI) * 1.1; // push forward, pull back
+          // Flash frame on strike impact
+          if (t > 0.2 && t < 0.35) {
+            ctx.fillStyle = 'rgba(180,30,30,0.35)';
+            ctx.fillRect(cx, cy, cw, ch);
+          }
+          drawViper(midX, midY + 8, scale * 3, t > 0.15, 1);
+        } else if (elapsed < 3600) {
+          // Phase 4: retract + SNAKE title slashes in
+          const t = (elapsed - 2900) / 700;
+          const scale = 1.2 - t * 0.4;
+          ctx.globalAlpha = 1 - t * 0.4;
+          drawViper(midX, midY - 8, scale * 3, false, 0.8);
+          ctx.globalAlpha = 1;
           ctx.fillStyle = snakeGreen;
-          ctx.font = 'bold 18px "Press Start 2P", monospace';
+          ctx.font = 'bold 20px "Press Start 2P", monospace';
           ctx.globalAlpha = Math.min(1, t * 2);
-          ctx.fillText('SNAKE', midX, midY - 8);
-          ctx.font = '7px "Press Start 2P", monospace';
-          ctx.fillStyle = '#88ff88';
-          ctx.fillText('PRESS A TO START', midX, midY + 20);
+          const slashOff = (1 - Math.min(1, t * 2)) * 80;
+          ctx.fillText('SNAKE', midX + slashOff, cy + ch - 30);
           ctx.globalAlpha = 1;
         } else {
-          // Phase 4: Hold title + loading
+          // Phase 5: hold — small head silhouette + title + blinking prompt
+          drawViper(midX, midY - 18, 2, false, Math.sin(elapsed * 0.01) * 0.5 + 0.5);
           ctx.fillStyle = snakeGreen;
-          ctx.font = 'bold 18px "Press Start 2P", monospace';
-          ctx.fillText('SNAKE', midX, midY - 8);
+          ctx.font = 'bold 20px "Press Start 2P", monospace';
+          ctx.fillText('SNAKE', midX, cy + ch - 30);
           ctx.font = '7px "Press Start 2P", monospace';
           ctx.fillStyle = '#88ff88';
-          if (Math.floor(elapsed / 400) % 2) ctx.fillText('PRESS A TO START', midX, midY + 20);
-          // Loading dots
-          const dots = Math.floor((elapsed - 3200) / 200) % 4;
-          ctx.fillStyle = snakeGreen;
-          ctx.fillText('.'.repeat(dots), midX, midY + 40);
+          if (Math.floor(elapsed / 400) % 2) ctx.fillText('PRESS A TO START', midX, cy + ch - 12);
         }
       }
       // === BREAKOUT BOOT ===
@@ -1124,115 +1286,214 @@
           if (Math.floor(elapsed / 400) % 2) ctx.fillText('PRESS A TO PLAY', midX, midY + 20);
         }
       }
-      // === PORTFOLIO BOOT (original) ===
+      // === PORTFOLIO BOOT ===
+      // CRT-style scan reveal: Luka's photo fills the screen, building from
+      // top to bottom with a glowing scanline. Ahead of the scan is a chunky
+      // pixelated preview that sharpens as the scanline passes over it.
+      // Helper: overlay RGB subpixel stripes to emulate an old TFT matrix.
       else {
-      // Dark phases get black bg, light phases get normal bg
-      if (elapsed < 1600) {
+        const drawTftRgbOverlay = (tctx, dx, dy, dw, dh) => {
+          tctx.save();
+          tctx.globalCompositeOperation = 'multiply';
+          // Per-column R / G / B tint, 1px stripes looping every 3 cols
+          for (let x = dx; x < dx + dw; x++) {
+            const col = (x - dx) % 3;
+            tctx.fillStyle = col === 0 ? '#ffb2b2' : col === 1 ? '#b2ffb2' : '#b2b2ff';
+            tctx.fillRect(x, dy, 1, dh);
+          }
+          tctx.globalCompositeOperation = 'source-over';
+          // Slight dark seam between "subpixel triplets" every 3 cols for extra texture
+          tctx.fillStyle = 'rgba(0,0,0,0.12)';
+          for (let x = dx; x < dx + dw; x += 3) tctx.fillRect(x, dy, 1, dh);
+          tctx.restore();
+        };
+        // Full boot area = content + hint strip below, so there's no light/dark
+        // seam between them during the CRT animation.
+        const bootH = ch + 30;
         ctx.fillStyle = '#000';
-        ctx.fillRect(cx, cy, cw, ch + 30);
-      }
+        ctx.fillRect(cx, cy, cw, bootH);
 
-      // Phase 1: Black screen power on (0-400ms)
-      if (elapsed < 400) {
-        ctx.fillStyle = '#000';
-        ctx.fillRect(cx, cy, cw, ch);
-        const scanY = cy + (ch * elapsed / 400);
-        ctx.fillStyle = 'rgba(255,255,255,0.06)';
-        ctx.fillRect(cx, scanY - 2, cw, 4);
-      }
-      // Phase 2: Logo diamond sparkle (400-1600ms)
-      else if (elapsed < 1600) {
-        ctx.fillStyle = '#000';
-        ctx.fillRect(cx, cy, cw, ch);
-        const t = (elapsed - 400) / 1200;
-        const size = t * 30;
-        const colors = ['#ff4444', '#ffaa00', '#44dd44', '#4488ff', '#aa44ff'];
-        for (let c = colors.length - 1; c >= 0; c--) {
-          const s = size * (1 - c * 0.15);
-          if (s <= 0) continue;
-          ctx.fillStyle = colors[c];
-          ctx.beginPath();
-          ctx.moveTo(midX, midY - s);
-          ctx.lineTo(midX + s * 0.4, midY);
-          ctx.lineTo(midX, midY + s);
-          ctx.lineTo(midX - s * 0.4, midY);
-          ctx.closePath();
-          ctx.fill();
+        const img = aboutPhotos.photo;
+
+        // Helper — draw image with object-fit:cover into a rect
+        const drawPhotoCover = (targetCtx, targetCanvasOrImg, dx, dy, dw, dh) => {
+          const src = targetCanvasOrImg;
+          const iw = src.naturalWidth || src.width;
+          const ih = src.naturalHeight || src.height;
+          if (!iw || !ih) return;
+          const ir = iw / ih, dr = dw / dh;
+          let sx = 0, sy = 0, sw = iw, sh = ih;
+          if (ir > dr) { sw = ih * dr; sx = (iw - sw) / 2; }
+          else { sh = iw / dr; sy = (ih - sh) / 2; }
+          targetCtx.drawImage(src, sx, sy, sw, sh, dx, dy, dw, dh);
+        };
+
+        // Cache a chunky low-res version of the photo (built once) so the
+        // pre-scan preview zone can be pixelated without re-downsampling.
+        if (img && img.complete && !gb.userData._portBootCache) {
+          const chunky = document.createElement('canvas');
+          chunky.width = Math.max(12, Math.floor(cw / 6));
+          chunky.height = Math.max(12, Math.floor(ch / 6));
+          const chCtx = chunky.getContext('2d');
+          drawPhotoCover(chCtx, img, 0, 0, chunky.width, chunky.height);
+          const mid = document.createElement('canvas');
+          mid.width = Math.max(18, Math.floor(cw / 3));
+          mid.height = Math.max(18, Math.floor(ch / 3));
+          const mCtx = mid.getContext('2d');
+          drawPhotoCover(mCtx, img, 0, 0, mid.width, mid.height);
+          gb.userData._portBootCache = { chunky, mid };
         }
-        ctx.fillStyle = '#fff';
-        const core = size * 0.2;
-        ctx.fillRect(midX - core / 2, midY - core / 2, core, core);
-        if (t > 0.3) {
-          ctx.lineWidth = 2;
-          const rayLen = size * 1.5 * Math.min(1, (t - 0.3) / 0.4);
-          for (let a = 0; a < 8; a++) {
-            ctx.strokeStyle = colors[a % colors.length];
-            const angle = a * Math.PI / 4;
+        const cache = gb.userData._portBootCache;
+
+        // Phase 1 — CRT power-on (0-450ms): horizontal beam expands vertically
+        if (elapsed < 450) {
+          const t = elapsed / 450;
+          const bandH = Math.max(2, t * bootH);
+          ctx.fillStyle = 'rgba(230,240,255,0.85)';
+          ctx.fillRect(cx, cy + bootH / 2 - bandH / 2, cw, bandH);
+          // Bright horizontal core
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(cx, cy + bootH / 2 - 1, cw, 2);
+        }
+        // Phase 2 — scan reveal (450-3000ms): row-by-row build with glowing scanline
+        else if (elapsed < 3000) {
+          const t = (elapsed - 450) / 2550;
+          const scanY = cy + t * bootH;
+
+          ctx.imageSmoothingEnabled = false;
+
+          // Crisp zone (already scanned) — full quality above scanline - 6
+          const crispBottom = scanY - 4;
+          if (crispBottom > cy && img && img.complete) {
+            ctx.save();
             ctx.beginPath();
-            ctx.moveTo(midX + Math.cos(angle) * core, midY + Math.sin(angle) * core);
-            ctx.lineTo(midX + Math.cos(angle) * rayLen, midY + Math.sin(angle) * rayLen);
-            ctx.stroke();
+            ctx.rect(cx, cy, cw, crispBottom - cy);
+            ctx.clip();
+            drawPhotoCover(ctx, img, cx, cy, cw, bootH);
+            ctx.restore();
+          }
+
+          // Mid-quality zone — just beneath crisp, a bit blocky
+          if (cache) {
+            const midTop = Math.max(cy, scanY - 4);
+            const midBottom = Math.min(cy + bootH, scanY + 8);
+            if (midBottom > midTop) {
+              ctx.save();
+              ctx.beginPath();
+              ctx.rect(cx, midTop, cw, midBottom - midTop);
+              ctx.clip();
+              drawPhotoCover(ctx, cache.mid, cx, cy, cw, bootH);
+              ctx.restore();
+            }
+          }
+
+          // Chunky preview zone — below the scanline, strongly pixelated + noise
+          if (cache) {
+            const chunkyTop = Math.min(cy + bootH, scanY + 8);
+            const chunkyBottom = Math.min(cy + bootH, scanY + 40);
+            if (chunkyBottom > chunkyTop) {
+              ctx.save();
+              ctx.beginPath();
+              ctx.rect(cx, chunkyTop, cw, chunkyBottom - chunkyTop);
+              ctx.clip();
+              ctx.globalAlpha = 0.8;
+              drawPhotoCover(ctx, cache.chunky, cx, cy, cw, bootH);
+              // Digital static / dither
+              for (let n = 0; n < 60; n++) {
+                ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.25})`;
+                const nx = cx + Math.floor(Math.random() * (cw / 4)) * 4;
+                const ny = chunkyTop + Math.floor(Math.random() * ((chunkyBottom - chunkyTop) / 3)) * 3;
+                ctx.fillRect(nx, ny, 3, 3);
+              }
+              ctx.globalAlpha = 1;
+              ctx.restore();
+            }
+          }
+
+          // TFT subpixel overlay on the whole painted region (above + chunky
+          // zone ahead of the scan) — so the effect appears as the image
+          // builds, not only after it's fully drawn.
+          const tftBottom = Math.min(cy + bootH, scanY + 40);
+          if (tftBottom > cy) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(cx, cy, cw, tftBottom - cy);
+            ctx.clip();
+            drawTftRgbOverlay(ctx, cx, cy, cw, bootH);
+            ctx.restore();
+          }
+
+          // Horizontal scanline glow (thick + fading edges)
+          ctx.fillStyle = 'rgba(255,255,255,1)';
+          ctx.fillRect(cx, scanY - 1, cw, 2);
+          ctx.fillStyle = 'rgba(180,220,255,0.55)';
+          ctx.fillRect(cx, scanY - 4, cw, 3);
+          ctx.fillRect(cx, scanY + 2, cw, 3);
+          ctx.fillStyle = 'rgba(120,180,255,0.25)';
+          ctx.fillRect(cx, scanY - 9, cw, 5);
+          ctx.fillRect(cx, scanY + 5, cw, 7);
+
+          // Progress indicator
+          ctx.fillStyle = 'rgba(200,220,255,0.9)';
+          ctx.font = '7px "Press Start 2P", monospace';
+          ctx.fillText(Math.floor(t * 100) + '%', midX, cy + bootH - 6);
+        }
+        // Phase 3 — image fully resolved with CRT scanline overlay (3000-3400ms)
+        else if (elapsed < 3400) {
+          ctx.imageSmoothingEnabled = false;
+          if (img && img.complete) drawPhotoCover(ctx, img, cx, cy, cw, bootH);
+          drawTftRgbOverlay(ctx, cx, cy, cw, bootH);
+
+          // CRT scanline pattern
+          ctx.fillStyle = 'rgba(0,0,0,0.18)';
+          for (let ly = cy; ly < cy + bootH; ly += 3) ctx.fillRect(cx, ly, cw, 1);
+
+          // Occasional flicker
+          if (Math.random() < 0.08) {
+            ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.12})`;
+            ctx.fillRect(cx, cy, cw, bootH);
           }
         }
-      }
-      // Phase 3: Flash to white, then logo appears (1600-2200ms)
-      else if (elapsed < 2200) {
-        const t = (elapsed - 1600) / 600;
-        if (t < 0.25) {
-          ctx.fillStyle = '#fff';
-          ctx.fillRect(cx, cy, cw, ch);
-        } else {
-          const fade = (t - 0.25) / 0.75;
-          ctx.fillStyle = C.bg;
-          ctx.fillRect(cx, cy, cw, ch);
+        // Phase 4 — title + loading bar overlay (3400-4600ms)
+        else {
+          ctx.imageSmoothingEnabled = false;
+          if (img && img.complete) drawPhotoCover(ctx, img, cx, cy, cw, bootH);
+          drawTftRgbOverlay(ctx, cx, cy, cw, bootH);
+
+          // Scanline overlay
+          ctx.fillStyle = 'rgba(0,0,0,0.2)';
+          for (let ly = cy; ly < cy + bootH; ly += 3) ctx.fillRect(cx, ly, cw, 1);
+
+          const fade = Math.min(1, (elapsed - 3400) / 500);
+          // Dark gradient fade at bottom for legibility
+          ctx.fillStyle = `rgba(0,0,0,${0.65 * fade})`;
+          ctx.fillRect(cx, cy + ch * 0.45, cw, ch * 0.55);
+
+          // Title
           ctx.globalAlpha = fade;
-          drawRainbow(activeCart ? cartridges[activeCart].label : 'PORTFOLIO', midX, midY - 4, 'bold 14px "Press Start 2P", monospace');
+          drawRainbow(activeCart ? cartridges[activeCart].label : 'PORTFOLIO', midX, cy + ch * 0.62, 'bold 14px "Press Start 2P", monospace');
           ctx.globalAlpha = 1;
+
+          // Loading bar — keep inside content area so it isn't clipped by the
+          // bezel at the very bottom of the boot canvas.
+          const barW = cw * 0.55;
+          const barH = 5;
+          const barX = midX - barW / 2;
+          const barY = cy + ch - 22;
+          ctx.strokeStyle = 'rgba(255,255,255,0.65)';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(barX, barY, barW, barH);
+          const loadT = Math.min(1, (elapsed - 3400) / 1200);
+          const blocks = Math.floor(loadT * 14);
+          const blockW = barW / 14;
+          ctx.fillStyle = 'rgba(255,255,255,0.95)';
+          for (let b = 0; b < blocks; b++) {
+            ctx.fillRect(barX + b * blockW + 1, barY + 1, blockW - 2, barH - 2);
+          }
+          ctx.fillStyle = 'rgba(255,255,255,0.75)';
+          ctx.font = '7px "Press Start 2P", monospace';
+          ctx.fillText('LOADING...', midX, barY + 20);
         }
-      }
-      // Phase 4: Logo + typing + loading bar together (2200-4600ms)
-      else {
-        drawRainbow(activeCart ? cartridges[activeCart].label : 'PORTFOLIO', midX, midY - 4, 'bold 14px "Press Start 2P", monospace');
-
-        const phaseElapsed = elapsed - 2200;
-        const phaseDur = 2400;
-
-        // Typing
-        const typeT = Math.min(1, phaseElapsed / 1600);
-        const fullText = currentHeader;
-        const chars = Math.floor(typeT * fullText.length);
-        ctx.font = '8px "Press Start 2P", monospace';
-        ctx.fillStyle = C.dark;
-        ctx.fillText('by', midX, midY + 14);
-        ctx.fillStyle = C.ink;
-        ctx.fillText(fullText.substring(0, chars), midX, midY + 26);
-
-        // Cursor blink
-        if (chars < fullText.length && Math.floor(Date.now() / 120) % 2 === 0) {
-          const tw = ctx.measureText(fullText.substring(0, chars)).width;
-          ctx.fillRect(midX + tw / 2 + 1, midY + 18, 4, 8);
-        }
-
-        // Loading bar
-        const barW = cw * 0.5;
-        const barH = 5;
-        const barX = midX - barW / 2;
-        const barY = midY + 40;
-        ctx.strokeStyle = C.dark;
-        ctx.lineWidth = 1;
-        ctx.strokeRect(barX, barY, barW, barH);
-        const loadT = Math.min(1, phaseElapsed / phaseDur);
-        const blocks = Math.floor(loadT * 12);
-        const blockW = barW / 12;
-        ctx.fillStyle = C.ink;
-        for (let b = 0; b < blocks; b++) {
-          ctx.fillRect(barX + b * blockW + 1, barY + 1, blockW - 2, barH - 2);
-        }
-
-        ctx.font = '9px "Press Start 2P", monospace';
-        ctx.fillStyle = C.dark;
-        ctx.fillText('LOADING...', midX, barY + 16);
-      }
       } // end portfolio boot
       ctx.textAlign = 'left';
     } else if (screen === 'menu') {
@@ -1585,9 +1846,306 @@
         }
         ctx.fillStyle = C.dark;
         ctx.font = '8px "Press Start 2P", monospace';
-        const hint = (item === 'QUESTS' || item === 'TROPHIES') ? 'A=VIEW  B=BACK  \u25B2\u25BC' : 'B=BACK  \u25C0\u25B6=PREV/NEXT';
+        const hint = (item === 'QUESTS' || item === 'TROPHIES') ? 'A=VIEW  B=BACK  \u25B2\u25BC' : (item === 'OPTIONS' ? 'A=OPEN  B=BACK  \u25B2\u25BC' : 'B=BACK  \u25C0\u25B6=PREV/NEXT');
         ctx.fillText(hint, cx + 8, cy + ch + 8);
       }
+    } else if (screen === 'optView') {
+      // === OPTIONS: individual option screen ===
+      const midX = cx + cw / 2;
+      const midY = cy + ch / 2;
+      ctx.textAlign = 'left';
+      // Header bar
+      ctx.fillStyle = C.ink;
+      ctx.fillRect(cx + 6, cy + 2, cw - 12, headerH - 2);
+      ctx.fillStyle = C.bg;
+      ctx.font = '7px "Press Start 2P", monospace';
+      ctx.fillText('\u25C0 ' + (currentOption || ''), cx + 8, cy + 14);
+      ctx.fillStyle = C.dark;
+      ctx.fillRect(cx + 6, cy + headerH, cw - 12, 1);
+
+      const bodyX = cx + 10;
+      const bodyY = cy + headerH + 14;
+      ctx.fillStyle = C.ink;
+      ctx.font = '8px "Press Start 2P", monospace';
+      ctx.textAlign = 'left';
+
+      let hint = 'B=BACK';
+
+      if (currentOption === 'PALETTE') {
+        const p = palettes[paletteIdx];
+        ctx.fillText('THEME:', bodyX, bodyY);
+        ctx.fillText(p.id, bodyX + 68, bodyY);
+        // Color swatches
+        const swY = bodyY + 18;
+        const keys = ['bg','light','ink','dark'];
+        for (let i = 0; i < 4; i++) {
+          ctx.fillStyle = p[keys[i]];
+          ctx.fillRect(bodyX + i * 20, swY, 16, 16);
+          ctx.strokeStyle = C.dark;
+          ctx.lineWidth = 1;
+          ctx.strokeRect(bodyX + i * 20, swY, 16, 16);
+        }
+        ctx.fillStyle = C.dark;
+        ctx.font = '6px "Press Start 2P", monospace';
+        ctx.fillText((paletteIdx + 1) + '/' + palettes.length, bodyX, swY + 28);
+        hint = '\u25C0\u25B6=SWAP  B=BACK';
+      }
+      else if (currentOption === 'CONTRAST') {
+        ctx.fillText('LEVEL:', bodyX, bodyY);
+        ctx.fillText(String(contrastLevel), bodyX + 68, bodyY);
+        // Slider
+        const sX = bodyX, sY = bodyY + 18, sW = cw - 28, sH = 8;
+        ctx.strokeStyle = C.ink;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(sX, sY, sW, sH);
+        ctx.fillStyle = C.ink;
+        ctx.fillRect(sX + 1, sY + 1, (sW - 2) * (contrastLevel / 9), sH - 2);
+        // Ticks
+        ctx.fillStyle = C.dark;
+        for (let i = 0; i <= 9; i++) {
+          ctx.fillRect(sX + (sW * i / 9) - 0.5, sY + sH + 2, 1, 3);
+        }
+        hint = '\u25C0\u25B6=ADJUST  B=BACK';
+      }
+      else if (currentOption === 'SOUND') {
+        ctx.fillText('STATUS:', bodyX, bodyY);
+        ctx.fillStyle = soundMuted ? '#c03030' : C.ink;
+        ctx.fillText(soundMuted ? 'MUTED' : 'ON', bodyX + 78, bodyY);
+        // Toggle switch
+        const tX = bodyX, tY = bodyY + 20, tW = 40, tH = 14;
+        ctx.strokeStyle = C.ink;
+        ctx.strokeRect(tX, tY, tW, tH);
+        ctx.fillStyle = soundMuted ? C.dark : C.ink;
+        ctx.fillRect(tX + (soundMuted ? 2 : tW / 2), tY + 2, tW / 2 - 2, tH - 4);
+        hint = 'A=TOGGLE  B=BACK';
+      }
+      else if (currentOption === 'BATTERY') {
+        const mins = (performance.now() - batteryStart) / 60000;
+        const pct = Math.max(0, Math.min(100, 100 - mins * 2.5)); // drops ~2.5%/min
+        const contentH = 72;
+        const contentTop = cy + headerH + (ch - headerH - contentH) / 2;
+        // Battery icon — centered horizontally
+        const bW = 80, bH = 28;
+        const bX = midX - bW / 2 - 2; // shift left a hair for the nub
+        const bY = contentTop + 22;
+        ctx.strokeStyle = C.ink;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(bX, bY, bW, bH);
+        // Nub
+        ctx.fillStyle = C.ink;
+        ctx.fillRect(bX + bW, bY + 8, 4, bH - 16);
+        // Fill — color by level
+        const fillW = (bW - 6) * pct / 100;
+        ctx.fillStyle = pct < 15 ? '#c02020' : pct < 40 ? '#c0a020' : '#20a040';
+        ctx.fillRect(bX + 3, bY + 3, fillW, bH - 6);
+
+        // Label above — centered
+        ctx.textAlign = 'center';
+        ctx.fillStyle = C.ink;
+        ctx.font = '9px "Press Start 2P", monospace';
+        ctx.fillText('CHARGE  ' + Math.round(pct) + '%', midX, contentTop + 12);
+        // Warning below when low — centered + blinking
+        if (pct < 15 && Math.floor(performance.now() / 500) % 2) {
+          ctx.fillStyle = '#c02020';
+          ctx.font = '8px "Press Start 2P", monospace';
+          ctx.fillText('LOW BATTERY!', midX, contentTop + contentH - 2);
+        }
+        ctx.textAlign = 'left';
+        hint = 'B=BACK';
+      }
+      else if (currentOption === 'HIGH SCORES') {
+        const s = {
+          SNAKE:    parseInt(localStorage.getItem('gb_high_snake')    || '0'),
+          BREAKOUT: parseInt(localStorage.getItem('gb_high_breakout') || '0'),
+          FROGGER:  parseInt(localStorage.getItem('gb_high_frogger')  || '0'),
+        };
+        const entries = Object.entries(s);
+        ctx.font = '9px "Press Start 2P", monospace';
+        for (let i = 0; i < entries.length; i++) {
+          const [name, val] = entries[i];
+          ctx.fillStyle = C.ink;
+          ctx.fillText(name, bodyX, bodyY + i * 14);
+          ctx.textAlign = 'right';
+          ctx.fillText(val ? String(val).padStart(6, '0') : '------', cx + cw - 10, bodyY + i * 14);
+          ctx.textAlign = 'left';
+        }
+        if (entries.every(([,v]) => !v)) {
+          ctx.fillStyle = C.dark;
+          ctx.font = '7px "Press Start 2P", monospace';
+          ctx.fillText('NO DATA YET', bodyX, bodyY + 56);
+        }
+        hint = 'B=BACK';
+      }
+      else if (currentOption === 'ERASE SAVE') {
+        if (optCursor === 1) {
+          ctx.fillStyle = '#20a040';
+          ctx.font = '9px "Press Start 2P", monospace';
+          ctx.fillText('DATA ERASED', bodyX, bodyY);
+          ctx.fillStyle = C.dark;
+          ctx.font = '7px "Press Start 2P", monospace';
+          ctx.fillText('high scores cleared', bodyX, bodyY + 16);
+        } else {
+          ctx.fillStyle = '#c02020';
+          ctx.font = 'bold 10px "Press Start 2P", monospace';
+          ctx.fillText('ARE YOU SURE?', bodyX, bodyY);
+          ctx.fillStyle = C.ink;
+          ctx.font = '7px "Press Start 2P", monospace';
+          ctx.fillText('this will wipe', bodyX, bodyY + 18);
+          ctx.fillText('all high scores.', bodyX, bodyY + 30);
+          ctx.fillStyle = C.dark;
+          ctx.fillText('no going back.', bodyX, bodyY + 44);
+        }
+        hint = 'A=ERASE  B=CANCEL';
+      }
+      else if (currentOption === 'LINK CABLE') {
+        ctx.fillText('SEARCHING...', bodyX, bodyY);
+        // Scan animation
+        const dots = Math.floor(performance.now() / 300) % 4;
+        ctx.fillText('.'.repeat(dots), bodyX + 110, bodyY);
+        // Two GB icons with cable between — animated
+        const y = bodyY + 18;
+        ctx.strokeStyle = C.ink;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(bodyX, y, 22, 30);          // self
+        ctx.strokeRect(bodyX + cw - 50, y, 22, 30); // other (dim)
+        ctx.fillStyle = C.ink;
+        ctx.fillRect(bodyX + 4, y + 4, 14, 10);    // self screen
+        ctx.fillStyle = C.dark;
+        ctx.fillRect(bodyX + cw - 46, y + 4, 14, 10);
+        // Cable (dashed, animated)
+        ctx.strokeStyle = C.dark;
+        ctx.setLineDash([4, 4]);
+        ctx.lineDashOffset = -performance.now() * 0.02;
+        ctx.beginPath();
+        ctx.moveTo(bodyX + 22, y + 15);
+        ctx.lineTo(bodyX + cw - 50, y + 15);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        // Result
+        ctx.fillStyle = '#c02020';
+        ctx.font = '7px "Press Start 2P", monospace';
+        ctx.fillText('NO PARTNER FOUND', bodyX, bodyY + 60);
+        hint = 'B=BACK';
+      }
+      else if (currentOption === 'SOUND TEST') {
+        const visible = 5;
+        ctx.font = '8px "Press Start 2P", monospace';
+        for (let i = 0; i < Math.min(visible, soundTestTracks.length); i++) {
+          const idx = (soundTestCursor + i - 2 + soundTestTracks.length) % soundTestTracks.length;
+          const y = bodyY + i * 12;
+          if (idx === soundTestCursor) {
+            ctx.fillStyle = C.ink;
+            ctx.fillRect(bodyX - 2, y - 8, cw - 16, 11);
+            ctx.fillStyle = C.bg;
+            ctx.fillText('\u25B6 ' + soundTestTracks[idx].label, bodyX, y);
+          } else {
+            ctx.fillStyle = C.dark;
+            ctx.fillText('  ' + soundTestTracks[idx].label, bodyX, y);
+          }
+        }
+        hint = '\u25B2\u25BC=PICK  A=PLAY  B=BACK';
+      }
+      else if (currentOption === 'CHEATS') {
+        ctx.fillText('ENTER CODE:', bodyX, bodyY);
+        ctx.fillStyle = C.dark;
+        ctx.font = '6px "Press Start 2P", monospace';
+        ctx.fillText('UP UP DOWN DOWN', bodyX, bodyY + 14);
+        ctx.fillText('L R L R', bodyX, bodyY + 24);
+        // Draw last 8 button presses
+        ctx.fillStyle = C.ink;
+        ctx.font = '10px "Press Start 2P", monospace';
+        const symMap = { up: '\u25B2', down: '\u25BC', left: '\u25C0', right: '\u25B6', a: 'A', b: 'B' };
+        const seq = cheatSeq.map(s => symMap[s] || '?').join(' ');
+        ctx.fillText(seq, bodyX, bodyY + 46);
+        if (cheatUnlocked) {
+          ctx.fillStyle = '#20a040';
+          ctx.font = 'bold 9px "Press Start 2P", monospace';
+          ctx.fillText('UNLOCKED!', bodyX, bodyY + 62);
+        }
+        hint = 'B=BACK';
+      }
+      else if (currentOption === 'CREDITS') {
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(cx + 4, cy + headerH + 4, cw - 8, ch - headerH - 18);
+        ctx.clip();
+        // Auto-scroll + manual
+        const autoOff = (performance.now() / 40) + creditScroll;
+        ctx.font = '8px "Press Start 2P", monospace';
+        ctx.textAlign = 'center';
+        for (let i = 0; i < creditsText.length; i++) {
+          const y = cy + ch - autoOff + i * 14;
+          if (y < cy + headerH || y > cy + ch) continue;
+          ctx.fillStyle = (i % 4 === 0) ? C.ink : C.dark;
+          ctx.fillText(creditsText[i], midX, y);
+        }
+        ctx.restore();
+        ctx.textAlign = 'left';
+        hint = '\u25B2\u25BC=SCRUB  B=BACK';
+      }
+      else if (currentOption === 'DIP SWITCHES') {
+        ctx.font = '8px "Press Start 2P", monospace';
+        for (let i = 0; i < dipSwitches.length; i++) {
+          const y = bodyY + i * 16;
+          const sel = i === dipCursor;
+          if (sel) {
+            ctx.fillStyle = C.ink;
+            ctx.fillRect(bodyX - 2, y - 9, cw - 16, 14);
+            ctx.fillStyle = C.bg;
+          } else {
+            ctx.fillStyle = C.ink;
+          }
+          ctx.fillText((sel ? '\u25B6 ' : '  ') + dipSwitches[i].label, bodyX, y);
+          // Switch indicator
+          const toggleX = cx + cw - 32;
+          ctx.strokeStyle = sel ? C.bg : C.ink;
+          ctx.lineWidth = 1;
+          ctx.strokeRect(toggleX, y - 7, 20, 10);
+          ctx.fillStyle = dipSwitches[i].on ? (sel ? C.bg : C.ink) : C.dark;
+          ctx.fillRect(toggleX + (dipSwitches[i].on ? 11 : 1), y - 6, 8, 8);
+        }
+        hint = '\u25B2\u25BC=PICK  A=FLIP  B=BACK';
+      }
+      else if (currentOption === 'SERIAL NO.') {
+        ctx.font = '7px "Press Start 2P", monospace';
+        ctx.fillStyle = C.ink;
+        ctx.fillText('MODEL:  DMG-LGR-SI', bodyX, bodyY);
+        ctx.fillText('S/N:    00-2025-0001', bodyX, bodyY + 14);
+        ctx.fillText('FW:     v1.0.4', bodyX, bodyY + 28);
+        ctx.fillText('CPU:    SHARP LR35902', bodyX, bodyY + 42);
+        ctx.fillText('MEMORY: 8KB RAM', bodyX, bodyY + 56);
+        ctx.fillStyle = C.dark;
+        ctx.fillText('MADE IN LJUBLJANA', bodyX, bodyY + 74);
+        hint = 'B=BACK';
+      }
+      else if (currentOption === 'DEV MODE') {
+        const uptime = Math.floor((performance.now() - batteryStart) / 1000);
+        const mm = String(Math.floor(uptime / 60)).padStart(2, '0');
+        const ss = String(uptime % 60).padStart(2, '0');
+        ctx.font = '7px "Press Start 2P", monospace';
+        ctx.fillStyle = '#20c020';
+        ctx.fillText('FPS:    ' + (gb.userData.fps || 60), bodyX, bodyY);
+        ctx.fillText('UPTIME: ' + mm + ':' + ss, bodyX, bodyY + 14);
+        ctx.fillText('SCREEN: ' + SCR_W + 'x' + SCR_H, bodyX, bodyY + 28);
+        ctx.fillText('INPUTS: ' + cheatSeq.length, bodyX, bodyY + 42);
+        ctx.fillText('PALETTE: ' + palettes[paletteIdx].id, bodyX, bodyY + 56);
+        // Fake hex dump
+        ctx.fillStyle = '#108810';
+        const addr = Math.floor(performance.now() / 100);
+        for (let row = 0; row < 3; row++) {
+          let line = (0xA000 + row * 16 + addr * 16).toString(16).toUpperCase().slice(-4) + ': ';
+          for (let b = 0; b < 8; b++) {
+            line += ((addr * 7 + row * 13 + b * 3) % 256).toString(16).padStart(2, '0') + ' ';
+          }
+          ctx.fillText(line, bodyX, bodyY + 74 + row * 10);
+        }
+        hint = 'B=BACK';
+      }
+
+      ctx.fillStyle = C.dark;
+      ctx.font = '8px "Press Start 2P", monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(hint, cx + 8, cy + ch + 8);
     } else if (screen === 'snake') {
       ctx.textAlign = 'left';
       const cellW = Math.floor(cw / SNAKE_COLS);
@@ -1912,10 +2470,10 @@
       }
     }
     lastInteraction = performance.now();
-    pressButton('a');
+    pressButton('a', false);
   }
 
-  function pressButton(action) {
+  function pressButton(action, fromPhysical = true) {
     initAudio();
     lastInteraction = performance.now();
     if (screenOff) {
@@ -1929,10 +2487,13 @@
       drawScreen();
       return; // consume this press just to wake up
     }
-    // Play appropriate sound
-    if (action === 'up' || action === 'down' || action === 'left' || action === 'right') sfx.navigate();
-    else if (action === 'a') sfx.select();
-    else if (action === 'b') sfx.back();
+    // Play click sound only for physical presses on the 3D gameboy — not for
+    // keyboard/scroll/HTML-panel navigation.
+    if (fromPhysical) {
+      if (action === 'up' || action === 'down' || action === 'left' || action === 'right') sfx.navigate();
+      else if (action === 'a') sfx.select();
+      else if (action === 'b') sfx.back();
+    }
 
     if (screen === 'insert') {
       if (action === 'a') {
@@ -2035,10 +2596,27 @@
       if (action === 'up') cursor = (cursor - 1 + currentMenuItems.length) % currentMenuItems.length;
       else if (action === 'down') cursor = (cursor + 1) % currentMenuItems.length;
       else if (action === 'a') {
-        if (currentMenuItems[cursor] === 'SNAKE') {
+        const mi = currentMenuItems[cursor];
+        // PLAY — launch the active cart's game
+        if (mi === 'PLAY') {
+          if (activeCart === 'snake')      lcdFlash(() => { screen = 'snake';    snakeStarted = false; snakeAlive = false; });
+          else if (activeCart === 'breakout') lcdFlash(() => { screen = 'breakout'; brk.started = false; brk.alive = false; });
+          else if (activeCart === 'frogger')  lcdFlash(() => { screen = 'frogger';  frog.started = false; frog.alive = false; });
+        }
+        // Game-cart settings: jump straight into optView
+        else if (mi === 'HIGH SCORES' || mi === 'SOUND TEST' || mi === 'CHEATS' || mi === 'ERASE SAVE') {
+          currentOption = mi;
+          optCursor = 0;
+          soundTestCursor = 0;
+          lcdFlash(() => { screen = 'optView'; });
+        }
+        // Legacy single-button carts (pre-refactor)
+        else if (mi === 'SNAKE') {
           lcdFlash(() => { screen = 'snake'; snakeStarted = false; snakeAlive = false; });
-        } else if (currentMenuItems[cursor] === 'BREAKOUT') {
+        } else if (mi === 'BREAKOUT') {
           lcdFlash(() => { screen = 'breakout'; brk.started = false; brk.alive = false; });
+        } else if (mi === 'FROGGER') {
+          lcdFlash(() => { screen = 'frogger'; frog.started = false; frog.alive = false; });
         } else {
           lcdFlash(() => { screen = 'detail'; scroll = 0; detailCursor = 0; });
         }
@@ -2104,11 +2682,71 @@
         } else if (action === 'a' && isProjects) {
           projScreen = true;
           projImgIdx = 0;
+        } else if (action === 'a' && currentMenuItems[cursor] === 'OPTIONS') {
+          // Enter a specific option view
+          currentOption = lines[detailCursor];
+          optCursor = 0;
+          creditScroll = 0;
+          dipCursor = 0;
+          soundTestCursor = 0;
+          lcdFlash(() => { screen = 'optView'; });
         } else if (action === 'b') {
           lcdFlash(() => { screen = 'menu'; projScreen = false; trophyScreen = false; });
         }
         else if (action === 'left') { lcdFlash(() => { cursor = (cursor - 1 + currentMenuItems.length) % currentMenuItems.length; scroll = 0; detailCursor = 0; projScreen = false; trophyScreen = false; }); }
         else if (action === 'right') { lcdFlash(() => { cursor = (cursor + 1) % currentMenuItems.length; scroll = 0; detailCursor = 0; projScreen = false; trophyScreen = false; }); }
+      }
+    } else if (screen === 'optView') {
+      // Individual option screen routing. Most track in cheatSeq for cheat code.
+      cheatSeq.push(action);
+      if (cheatSeq.length > 8) cheatSeq.shift();
+      if (cheatSeq.join(',') === 'up,up,down,down,left,right,left,right') {
+        cheatUnlocked = true;
+      }
+      if (action === 'b') {
+        // Game-cart options came straight from the cart menu; portfolio
+        // options went through a 'detail' listing first.
+        const backTo = (activeCart === 'snake' || activeCart === 'breakout' || activeCart === 'frogger') ? 'menu' : 'detail';
+        lcdFlash(() => { screen = backTo; currentOption = null; });
+        return;
+      }
+      switch (currentOption) {
+        case 'PALETTE':
+          if (action === 'left')  { paletteIdx = (paletteIdx - 1 + palettes.length) % palettes.length; applyPalette(); }
+          else if (action === 'right') { paletteIdx = (paletteIdx + 1) % palettes.length; applyPalette(); }
+          break;
+        case 'CONTRAST':
+          if (action === 'left')  contrastLevel = Math.max(0, contrastLevel - 1);
+          else if (action === 'right') contrastLevel = Math.min(9, contrastLevel + 1);
+          if (parts.screen) parts.screen.material.emissiveIntensity = contrastFactor();
+          break;
+        case 'SOUND':
+          if (action === 'a' || action === 'left' || action === 'right') soundMuted = !soundMuted;
+          break;
+        case 'ERASE SAVE':
+          if (action === 'a') {
+            try {
+              localStorage.removeItem('gb_high_snake');
+              localStorage.removeItem('gb_high_breakout');
+              localStorage.removeItem('gb_high_frogger');
+            } catch (e) {}
+            optCursor = 1; // show "DATA ERASED" flag
+          }
+          break;
+        case 'SOUND TEST':
+          if (action === 'up') soundTestCursor = (soundTestCursor - 1 + soundTestTracks.length) % soundTestTracks.length;
+          else if (action === 'down') soundTestCursor = (soundTestCursor + 1) % soundTestTracks.length;
+          else if (action === 'a') soundTestTracks[soundTestCursor].play();
+          break;
+        case 'DIP SWITCHES':
+          if (action === 'up') dipCursor = (dipCursor - 1 + dipSwitches.length) % dipSwitches.length;
+          else if (action === 'down') dipCursor = (dipCursor + 1) % dipSwitches.length;
+          else if (action === 'a' || action === 'left' || action === 'right') dipSwitches[dipCursor].on = !dipSwitches[dipCursor].on;
+          break;
+        case 'CREDITS':
+          if (action === 'up') creditScroll = Math.max(0, creditScroll - 10);
+          else if (action === 'down') creditScroll += 10;
+          break;
       }
     } else if (screen === 'snake') {
       if (!snakeStarted) {
@@ -2185,12 +2823,12 @@
         const ejectStart = performance.now();
         const ejectDur = 1000;
 
-        // Turn off LED
+        // Turn off LED — keep a faint red tint so it doesn't look dead black
         const lm = parts['body-light'];
         if (lm) {
-          lm.material.color.set(0x330000);
-          lm.material.emissive.set(0x000000);
-          lm.material.emissiveIntensity = 0;
+          lm.material.color.set(0x992020);
+          lm.material.emissive.set(0x330000);
+          lm.material.emissiveIntensity = 0.25;
           lm.material.needsUpdate = true;
           if (lm.userData.ledGlow) lm.userData.ledGlow.intensity = 0;
         }
@@ -2510,20 +3148,20 @@
   // Keyboard
   window.addEventListener('keydown', (e) => {
     if (!isVisible || screen === 'insert') return;
-    if (e.key === 'ArrowUp') { e.preventDefault(); pressButton('up'); }
-    else if (e.key === 'ArrowDown') { e.preventDefault(); pressButton('down'); }
-    else if (e.key === 'ArrowLeft') { e.preventDefault(); pressButton('left'); }
-    else if (e.key === 'ArrowRight') { e.preventDefault(); pressButton('right'); }
-    else if (e.key === 'Enter' || e.key === 'z') { e.preventDefault(); pressButton('a'); }
-    else if (e.key === 'Escape' || e.key === 'x') { e.preventDefault(); pressButton('b'); }
+    if (e.key === 'ArrowUp') { e.preventDefault(); pressButton('up', false); }
+    else if (e.key === 'ArrowDown') { e.preventDefault(); pressButton('down', false); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); pressButton('left', false); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); pressButton('right', false); }
+    else if (e.key === 'Enter' || e.key === 'z') { e.preventDefault(); pressButton('a', false); }
+    else if (e.key === 'Escape' || e.key === 'x') { e.preventDefault(); pressButton('b', false); }
   });
 
   // Mouse wheel navigation
   renderer.domElement.addEventListener('wheel', (e) => {
     if (screen === 'insert' || screen === 'snake' || screen === 'breakout' || screen === 'frogger') return;
     e.preventDefault();
-    if (e.deltaY > 0) pressButton('down');
-    else if (e.deltaY < 0) pressButton('up');
+    if (e.deltaY > 0) pressButton('down', false);
+    else if (e.deltaY < 0) pressButton('up', false);
   }, { passive: false });
 
   // ========== ANIMATION ==========
@@ -2541,6 +3179,10 @@
     const dt = Math.min((now - (lastTime || now)) / 1000, 0.05); // cap at 50ms
     lastTime = now;
     t += dt;
+    // Cheap rolling FPS for the DEV MODE option
+    gb.userData.fps = Math.round(1 / Math.max(0.001, dt));
+    // Keep optView redrawing while on it (animated options like Credits/Link/Battery)
+    if (screen === 'optView') { drawScreen(); }
     if (screen === 'insert') {
       // Only redraw on blink change (2x/sec)
       const blink = Math.floor(now / 500);
@@ -2572,8 +3214,28 @@
           screen = 'menu';
         }
         drawScreen();
+        // Settle LED to its steady "powered on" intensity after boot pulse ends
+        const lmDone = parts['body-light'];
+        if (lmDone) {
+          lmDone.material.emissiveIntensity = 1.0;
+          if (lmDone.userData.ledGlow) lmDone.userData.ledGlow.intensity = 0.1;
+        }
       }
     }
+    // Power LED — authentic to real Nintendo hardware: solid red when the
+    // cart is in, gradually dims over a long idle period to fake battery
+    // drain. Any interaction resets to full brightness.
+    if (cartInserted) {
+      const lm = parts['body-light'];
+      if (lm && lastInteraction > 0) {
+        const idleSec = (now - lastInteraction) / 1000;
+        // Full brightness for first 30s, then slow fade to 0.45 over ~3 min
+        const fade = Math.max(0, Math.min(1, (idleSec - 30) / 180));
+        lm.material.emissiveIntensity = 1.0 - fade * 0.55;
+        if (lm.userData.ledGlow) lm.userData.ledGlow.intensity = 0.1 * (1 - fade * 0.6);
+      }
+    }
+
     // Smooth push offset with lerp
     const targetPush = gb.userData.pushOffset || 0;
     gb.userData.currentPush = (gb.userData.currentPush || 0) + (targetPush - (gb.userData.currentPush || 0)) * 0.25;
@@ -2587,8 +3249,11 @@
     gb.rotation.x += (targetRot.x + (gb.userData.nudgeX || 0) - gb.rotation.x) * 0.06;
     camera.position.z += (targetCamZ - camera.position.z) * 0.03;
 
-    // Screen sleep after 6s of no interaction
-    if (screen !== 'boot' && lastInteraction > 0) {
+    // Screen sleep after 6s of no interaction. The DVD screensaver stage is
+    // skipped on the insert screen so the "insert cartridge" prompt remains
+    // readable; the dim-off state still applies. Options views are always
+    // live-updating (battery, credits, link cable) — don't dim them.
+    if (screen !== 'boot' && screen !== 'optView' && lastInteraction > 0) {
       const idle = now - lastInteraction;
       if (!screenOff && idle > 8000) {
         screenOff = true;
@@ -2597,7 +3262,7 @@
           parts.screen.material.color.set(0x222222);
         }
       }
-      if (!screenSaver && idle > 13000) {
+      if (!screenSaver && screen !== 'insert' && idle > 13000) {
         screenSaver = true;
         if (parts.screen) {
           parts.screen.material.emissiveIntensity = 0.4;
@@ -2694,7 +3359,7 @@
     const ejectStart = performance.now();
     const ejectDur = 1000;
     const lm = parts['body-light'];
-    if (lm) { lm.material.color.set(0x330000); lm.material.emissive.set(0x000000); lm.material.emissiveIntensity = 0; lm.material.needsUpdate = true; if (lm.userData.ledGlow) lm.userData.ledGlow.intensity = 0; }
+    if (lm) { lm.material.color.set(0x992020); lm.material.emissive.set(0x330000); lm.material.emissiveIntensity = 0.25; lm.material.needsUpdate = true; if (lm.userData.ledGlow) lm.userData.ledGlow.intensity = 0; }
     screen = 'insert'; cartInserted = false; activeCart = null;
     scroll = 0; detailCursor = 0; cursor = 0; projScreen = false; trophyScreen = false;
     drawScreen();
