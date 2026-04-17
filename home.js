@@ -336,7 +336,7 @@ function dragStart(x, y) {
 }
 
 function dragMove(x, y) {
-  if (!dragActive) return;
+  if (!dragActive) return null;
   const dx = x - dragStartX;
   const dy = y - dragStartY;
 
@@ -346,8 +346,8 @@ function dragMove(x, y) {
       dragAxisLocked = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
     }
   }
-  if (dragAxisLocked === 'v') { cancelDrag(); return; }
-  if (dragAxisLocked !== 'h') return;
+  if (dragAxisLocked === 'v') { cancelDrag(); return 'v'; }
+  if (dragAxisLocked !== 'h') return null;
 
   dragOffset = dx;
   // Rubber-band at edges
@@ -362,6 +362,7 @@ function dragMove(x, y) {
   if (dt > 0) dragVelocity = (x - dragLastX) / dt; // px per ms
   dragLastX = x;
   dragLastT = now;
+  return 'h';
 }
 
 function cancelDrag() {
@@ -390,7 +391,12 @@ function dragEnd() {
 
 // Touch
 heroEl.addEventListener('touchstart', (e) => dragStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
-heroEl.addEventListener('touchmove', (e) => dragMove(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+heroEl.addEventListener('touchmove', (e) => {
+  const moved = dragMove(e.touches[0].clientX, e.touches[0].clientY);
+  // Only block the gesture once we've confirmed horizontal intent — otherwise
+  // vertical scroll to the content below the carousel must still work.
+  if (moved === 'h' && e.cancelable) e.preventDefault();
+}, { passive: false });
 heroEl.addEventListener('touchend', dragEnd, { passive: true });
 heroEl.addEventListener('touchcancel', cancelDrag, { passive: true });
 

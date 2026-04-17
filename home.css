@@ -62,8 +62,10 @@ img, video {
   -webkit-touch-callout: none;
 }
 
+html, body {
+  background: #fff;
+}
 body {
-  background: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
 }
@@ -75,6 +77,9 @@ body {
   height: 100dvh; /* iOS Safari: track visible area as chrome collapses */
   overflow: hidden;
   background: #000;
+  /* Browser handles vertical pan; JS owns horizontal — stops Safari from
+     scrolling the page while the user is swiping the carousel sideways. */
+  touch-action: pan-y;
 }
 
 .hero-slides {
@@ -186,7 +191,9 @@ body {
   position: sticky;
   top: 0;
   height: 100vh;
-  height: 100dvh;
+  /* 100svh (not 100dvh) — stable across Safari chrome collapse so the sticky
+     layer doesn't jump mid-scroll when the address bar hides. */
+  height: 100svh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -390,7 +397,7 @@ body {
 /* ========== END CTA ========== */
 .home-cta {
   height: 100vh;
-  height: 100dvh;
+  height: 100svh;
   display: flex;
   flex-direction: column;
   align-items: center;
