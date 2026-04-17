@@ -2078,7 +2078,31 @@ if (wmEl) {
 
 
 // ========== AUTO-OPEN FROM HASH ==========
-const hashMatch = location.hash.match(/project=(\w+)/);
+// Skip this path in embed mode — the embed block below opens the project
+// immediately and we don't want a duplicate call.
+const hashMatch = !location.hash.includes('embed=1') && location.hash.match(/project=(\w+)/);
 if (hashMatch) {
   setTimeout(() => openProject(hashMatch[1]), 100);
+}
+
+// ========== EMBED MODE (iframe opened from home) ==========
+// When home.html opens a project via <iframe src="grid.html#embed=1&project=X">,
+// we hide the grid/bar/footer so only the project overlay is visible, and we
+// postMessage('close-project') to the parent when the overlay is closed.
+// Hash is used (not ?query) so Safari's Advanced Privacy Protection doesn't
+// strip the params from the iframe URL.
+const embedParams = new URLSearchParams(location.hash.slice(1));
+const isEmbed = embedParams.get('embed') === '1';
+const embedProjId = embedParams.get('project');
+if (isEmbed) {
+  document.body.classList.add('embed-mode');
+  if (embedProjId && projects[embedProjId]) {
+    // Open immediately — no render of the grid behind it
+    openProject(embedProjId);
+  }
+  // Notify parent whenever the overlay closes
+  const postClose = () => { try { window.parent.postMessage('close-project', '*'); } catch (e) {} };
+  overlayClose.addEventListener('click', postClose);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') postClose(); });
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) postClose(); });
 }

@@ -293,6 +293,22 @@ html:has(body.scroll-locked) {
   display: none !important;
 }
 
+/* Embed mode — hide grid chrome so only the project overlay is visible.
+   Class is applied to <html> by an inline <head> script BEFORE <body> renders,
+   so the grid never flashes inside the home iframe. */
+.embed-mode .grid,
+.embed-mode .bottom-bar,
+.embed-mode .site-footer,
+.embed-mode .watermark,
+.embed-mode .layout-toggle,
+.embed-mode .mobile-slider-pill,
+.embed-mode .no-results { display: none !important; }
+html.embed-mode,
+.embed-mode body { background: #000; }
+/* In embed mode the home frame handles the entry animation — pre-position the
+   overlay at top:0 with no slide transition so we don't double-animate. */
+.embed-mode .overlay { top: 0 !important; transition: none !important; }
+
 @keyframes gridItemOut {
   0% { transform: scale(1); opacity: 1; }
   100% { transform: scale(0.85); opacity: 0; }

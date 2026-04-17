@@ -24,6 +24,15 @@
   <link rel="stylesheet" href="bar.css" />
   <link rel="stylesheet" href="footer.css" />
   <link rel="preload" as="script" href="script.js" />
+  <script>
+  /* Embed-mode flag applied before <body> renders so the grid chrome never
+     flashes when this page is loaded inside the home iframe overlay. Uses a
+     hash (not ?query) because Safari's Advanced Privacy Protection strips
+     query params from iframes. */
+  if (new URLSearchParams(location.hash.slice(1)).get('embed') === '1') {
+    document.documentElement.classList.add('embed-mode');
+  }
+  </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 <script type="application/ld+json">

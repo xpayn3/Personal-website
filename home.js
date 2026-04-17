@@ -32,19 +32,19 @@ const projects = [
     id: 'accbox',
     name: 'AccountingBox',
     year: 2024,
-    hero: `${IMG}/AccountingBox/4_loop.webm`,
+    hero: `${IMG}/AccountingBox/Podjetja_cover.webp`,
     floats: [
+      `${IMG}/AccountingBox/4_loop.webm`,
       `${IMG}/AccountingBox/intro.webm`,
       `${IMG}/AccountingBox/kjerkoli.webm`,
-      `${IMG}/AccountingBox/podpora.webm`,
-      `${IMG}/AccountingBox/hiter.webm`,
+      `${IMG}/AccountingBox/racunovodje_cover_final.webp`,
     ]
   },
   {
     id: 'cestel',
     name: 'CESTEL',
     year: 2023,
-    hero: `${IMG}/Cestel_project/cestel_anim_01.webp`,
+    hero: `${IMG}/Cestel_project/cover_still.webp`,
     floats: [
       `${IMG}/Cestel_project/Cestel_image_01.webp`,
       `${IMG}/Cestel_project/Cestel_image_05.webp`,
@@ -56,8 +56,9 @@ const projects = [
     id: 'grounded2025',
     name: 'Grounded 2025',
     year: 2025,
-    hero: `${IMG}/Grounded 2025/Grounded_2025_web.webm`,
+    hero: `${IMG}/Grounded 2025/gr2025cover.webp`,
     floats: [
+      `${IMG}/Grounded 2025/Grounded_2025_web.webm`,
       `${IMG}/Grounded 2025/Grounded_2025_02.webm`,
       `${IMG}/Grounded 2025/Grounded_2025_03.webm`,
     ]
@@ -66,20 +67,20 @@ const projects = [
     id: 'grounded2023',
     name: 'Grounded 2023',
     year: 2023,
-    hero: `${IMG}/Grounded_2023/Grounded_2023_01.webm`,
+    hero: `${IMG}/Grounded_2023/Grounded_2023_01_thumb.webp`,
     floats: [
+      `${IMG}/Grounded_2023/Grounded_2023_01.webm`,
       `${IMG}/Grounded_2023/Grounded_2023_04.webm`,
       `${IMG}/Grounded_2023/Grounded_2023_05.webm`,
-      `${IMG}/Grounded_2023/Grounded_2023_06.webm`,
     ]
   },
   {
     id: 'grounded2022',
     name: 'Grounded 2022',
     year: 2022,
-    hero: `${IMG}/Grounded_2022/card_holo.webm`,
+    hero: `${IMG}/Grounded_2022/Grounded_2022_01.webp`,
     floats: [
-      `${IMG}/Grounded_2022/Grounded_2022_01.webp`,
+      `${IMG}/Grounded_2022/card_holo.webm`,
       `${IMG}/Grounded_2022/GR_main_1.webm`,
       `${IMG}/Grounded_2022/Grounded_2022_05.webp`,
     ]
@@ -462,11 +463,10 @@ projects.forEach((proj, idx) => {
     imageLayer.appendChild(el);
   }
 
-  // Click to go to project
+  // Click to open project — overlay the grid's project view on top of home
+  // via an iframe so user never sees the intermediate grid page.
   imageLayer.style.cursor = 'pointer';
-  imageLayer.addEventListener('click', () => {
-    window.location.href = `grid.html#project=${proj.id}`;
-  });
+  imageLayer.addEventListener('click', () => openHomeProject(proj.id));
 
   block.appendChild(imageLayer);
   container.appendChild(block);
@@ -485,6 +485,50 @@ cta.innerHTML = `
   <a href="grid.html" class="cta-link">View all projects &rarr;</a>
 `;
 container.appendChild(cta);
+
+// ========== PROJECT OVERLAY (iframe embed of grid.html) ==========
+function openHomeProject(projId) {
+  const existing = document.getElementById('homeProjFrame');
+  if (existing) existing.remove();
+
+  const frame = document.createElement('div');
+  frame.id = 'homeProjFrame';
+  const iframe = document.createElement('iframe');
+  // Use hash (not ?query) — Safari's Advanced Privacy Protection strips
+  // unrecognized query params from iframes, which breaks embed mode.
+  iframe.src = `grid.html#embed=1&project=${encodeURIComponent(projId)}`;
+  iframe.title = 'Project';
+  iframe.setAttribute('allow', 'autoplay; fullscreen');
+  frame.appendChild(iframe);
+  document.body.appendChild(frame);
+
+  // Lock body scroll
+  const savedY = window.scrollY;
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${savedY}px`;
+  document.body.style.width = '100%';
+  document.body.style.overflow = 'hidden';
+
+  let closing = false;
+  function teardown() {
+    if (closing) return;
+    closing = true;
+    frame.classList.add('closing');
+    // Let the exit animation play, then tear down
+    setTimeout(() => {
+      frame.remove();
+      document.body.style.cssText = '';
+      window.scrollTo({ top: savedY, behavior: 'instant' });
+    }, 350);
+    window.removeEventListener('message', onMsg);
+  }
+  function onMsg(e) {
+    if (e && e.data === 'close-project') teardown();
+  }
+  window.addEventListener('message', onMsg);
+  // Expose for potential keyboard/back-button closure hooks
+  frame._teardown = teardown;
+}
 
 // ========== CTA SCROLL ANIMATION ==========
 const ctaEl = document.querySelector('.home-cta');
