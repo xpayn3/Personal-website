@@ -684,19 +684,17 @@ if (!isMobileHome) {
 
     applyParallax(window.scrollY);
   } else {
-    let scrollLoopId = null;
-    let scrollStopTimer = null;
-    function scrollTick() {
-      applyParallax(window.scrollY);
-      scrollLoopId = requestAnimationFrame(scrollTick);
-    }
+    // Mobile (iOS Safari): native momentum scrolling is already smooth on
+    // touch release — no JS physics, no continuous rAF. Just an event-driven
+    // rAF throttle: schedule one frame per scroll event, batch transform
+    // writes to that frame, no long-running timer for APP to flag.
+    let pendingRAF = null;
     window.addEventListener('scroll', () => {
-      if (!scrollLoopId) scrollLoopId = requestAnimationFrame(scrollTick);
-      clearTimeout(scrollStopTimer);
-      scrollStopTimer = setTimeout(() => {
-        if (scrollLoopId) cancelAnimationFrame(scrollLoopId);
-        scrollLoopId = null;
-      }, 200);
+      if (pendingRAF) return;
+      pendingRAF = requestAnimationFrame(() => {
+        pendingRAF = null;
+        applyParallax(window.scrollY);
+      });
     }, { passive: true });
     applyParallax(window.scrollY);
   }
