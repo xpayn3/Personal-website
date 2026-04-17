@@ -151,6 +151,22 @@ body {
   animation: cartSpin 0.6s linear infinite;
 }
 
+/* On hover of an inserted cart, swap folder+name → eject glyph + "Eject".
+   Keep original children in layout (visibility: hidden) so the button width
+   stays constant; overlay the swap absolutely. */
+.cart-item { position: relative; }
+.cart-eject-swap {
+  display: none;
+  position: absolute;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.cart-item.inserted:hover .cart-icon,
+.cart-item.inserted:hover .cart-label { visibility: hidden; }
+.cart-item.inserted:hover .cart-eject-swap { display: inline-flex; }
+
 @keyframes cartSpin {
   to { transform: rotate(360deg); }
 }

@@ -598,6 +598,40 @@ const projects = {
       { cols: 2, imgs: [1, 2] },
     ]
   },
+  accbox: {
+    color: 'blue',
+    category: ['Motion', '3D'],
+    name: 'AccountingBox',
+    year: 2024,
+    client: 'AccountingBox',
+    desc: ['Motion graphics system for AccountingBox — a suite of short product animations built to explain features across social, web, and in-app surfaces. Each loop is crafted to feel part of the same world: consistent timing, color, and motion language so the product tells one story wherever it shows up.'],
+    brief: 'Explain accounting software features through a consistent motion system.',
+    tools: ['Cinema 4D', 'Redshift', 'AfterEffects'],
+    images: [
+      `${IMG}/AccountingBox/4_loop.webm`,
+      `${IMG}/AccountingBox/intro.webm`,
+      `${IMG}/AccountingBox/freetrial.webm`,
+      `${IMG}/AccountingBox/hiter.webm`,
+      `${IMG}/AccountingBox/kjerkoli.webm`,
+      `${IMG}/AccountingBox/kjerkoli_prvomesto.webm`,
+      `${IMG}/AccountingBox/kjerkoli_drugomesto.webm`,
+      `${IMG}/AccountingBox/podpora.webm`,
+      `${IMG}/AccountingBox/1_loop.webm`,
+      `${IMG}/AccountingBox/2_intro.webm`,
+      `${IMG}/AccountingBox/6_intro.webm`,
+      `${IMG}/AccountingBox/racunovodje_cover_final.webp`,
+      `${IMG}/AccountingBox/Podjetja_cover.webp`,
+    ],
+    layout: [
+      { cols: 1, imgs: [0] },
+      { cols: 2, imgs: [11, 12] },
+      { cols: 1, imgs: [1] },
+      { cols: 3, imgs: [2, 3, 4] },
+      { cols: 2, imgs: [5, 6] },
+      { cols: 1, imgs: [7] },
+      { cols: 3, imgs: [8, 9, 10] },
+    ]
+  },
 };
 
 const COLOR_HEX = {
@@ -1108,6 +1142,21 @@ function unlockScroll() {
     window.scrollTo({ top: y, behavior: 'instant' });
   }
 }
+
+// iOS bfcache / navigation cleanup: if the page is restored from back-forward
+// cache while scroll was locked (overlay open), body stays position:fixed with
+// a negative top offset — touch hit-testing then registers above the visual
+// position, making the top items of bar dropdowns unclickable. Reset here.
+function resetStaleScrollLock() {
+  if (document.body.classList.contains('scroll-locked') || document.body.style.position === 'fixed') {
+    scrollLockCount = 0;
+    document.documentElement.style.overflow = '';
+    document.body.style.cssText = '';
+    document.body.classList.remove('scroll-locked');
+  }
+}
+window.addEventListener('pageshow', resetStaleScrollLock);
+document.addEventListener('DOMContentLoaded', resetStaleScrollLock);
 
 // iOS scroll leak prevention — block touchmove on non-scrollable areas,
 // prevent bounce at scroll boundaries

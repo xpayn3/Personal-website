@@ -1238,11 +1238,11 @@
     } else if (screen === 'menu') {
       ctx.textAlign = 'left';
       ctx.fillStyle = C.ink;
-      ctx.font = 'bold 9px "Press Start 2P", monospace';
+      ctx.font = '9px "Press Start 2P", monospace';
       ctx.fillText(currentHeader, cx + 30, cy + 14);
       ctx.fillStyle = C.dark;
       ctx.fillRect(cx + 6, cy + headerH, cw - 12, 1);
-      ctx.font = 'bold 9px "Press Start 2P", monospace';
+      ctx.font = '9px "Press Start 2P", monospace';
       const rowH = 18;
       const menuTop = cy + headerH + 6;
       const menuVisible = Math.floor((ch - headerH - 10) / rowH);
@@ -1291,7 +1291,7 @@
         ctx.fillStyle = C.ink;
         ctx.fillRect(cx + 6, cy + 2, cw - 12, headerH - 2);
         ctx.fillStyle = C.bg;
-        ctx.font = 'bold 7px "Press Start 2P", monospace';
+        ctx.font = '7px "Press Start 2P", monospace';
         ctx.fillText('\u25C0 UNLOCKED!', cx + 8, cy + 14);
         ctx.fillStyle = C.dark;
         ctx.fillRect(cx + 6, cy + headerH, cw - 12, 1);
@@ -1330,7 +1330,7 @@
         // Award name
         ctx.fillStyle = C.ink;
         ctx.textAlign = 'center';
-        ctx.font = 'bold 9px "Press Start 2P", monospace';
+        ctx.font = '9px "Press Start 2P", monospace';
         ctx.fillText(awardName, tX, tY + 50);
         // Year
         ctx.fillStyle = C.dark;
@@ -1357,7 +1357,7 @@
         ctx.fillStyle = C.ink;
         ctx.fillRect(cx + 6, cy + 2, cw - 12, headerH - 2);
         ctx.fillStyle = C.bg;
-        ctx.font = 'bold 7px "Press Start 2P", monospace';
+        ctx.font = '7px "Press Start 2P", monospace';
         ctx.fillText('\u25C0 ' + projName, cx + 8, cy + 14);
         ctx.fillStyle = C.dark;
         ctx.fillRect(cx + 6, cy + headerH, cw - 12, 1);
@@ -1405,7 +1405,7 @@
         ctx.fillStyle = C.ink;
         ctx.fillRect(cx + 6, cy + 2, cw - 12, headerH - 2);
         ctx.fillStyle = C.bg;
-        ctx.font = 'bold 7px "Press Start 2P", monospace';
+        ctx.font = '7px "Press Start 2P", monospace';
         ctx.fillText('\u25C0 ' + item, cx + 8, cy + 14);
         ctx.fillStyle = C.dark;
         ctx.fillRect(cx + 6, cy + headerH, cw - 12, 1);
@@ -1422,8 +1422,8 @@
             const lineIdx = scroll + i;
             const [name, val] = lines[lineIdx].split('|');
             const stat = parseInt(val) || 0;
-            const ly = cy + headerH + 6 + i * statH;
-            const barY = ly + 14;
+            const ly = cy + headerH + 8 + i * statH;
+            const barY = ly + 17;
             const barH = 4;
             const barMaxW = cw - 16;
 
@@ -1436,12 +1436,12 @@
 
             // Stat name
             ctx.fillStyle = isSel ? C.bg : C.ink;
-            ctx.fillText(name, cx + 12, ly + 8);
-            if (isSel) ctx.fillText('\u25B6', cx + 2, ly + 7);
+            ctx.fillText(name, cx + 12, ly + 11);
+            if (isSel) ctx.fillText('\u25B6', cx + 2, ly + 10);
 
             // Stat number
             ctx.textAlign = 'right';
-            ctx.fillText(val, cx + cw - 8, ly + 8);
+            ctx.fillText(val, cx + cw - 8, ly + 11);
             ctx.textAlign = 'left';
 
             // Bar background
@@ -1538,7 +1538,7 @@
           }
         } else {
           // Normal list — same layout as menu
-          ctx.font = 'bold 9px "Press Start 2P", monospace';
+          ctx.font = '9px "Press Start 2P", monospace';
           const rowH = 18;
           const listTop = cy + headerH + 6;
           ctx.textBaseline = 'middle';
@@ -2262,8 +2262,10 @@
         return true;
       }
 
-      // Cartridge insert (slot click)
+      // Cartridge insert (slot click) — only when viewing the back, same as eject
       if (obj.userData.action === 'insertCart') {
+        const normYi = ((gb.rotation.y % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+        if (normYi < Math.PI * 0.6 || normYi > Math.PI * 1.4) return true;
         if (cartInserted) return true;
         initAudio();
         cartInserted = true;
@@ -2526,9 +2528,16 @@
 
   // ========== ANIMATION ==========
   let t = 0, isVisible = true, lastTime = 0, lastBlink = 0;
+  let rafId = null;
+  function scheduleFrame() {
+    if (rafId === null) rafId = requestAnimationFrame(animate);
+  }
   function animate(now) {
-    requestAnimationFrame(animate);
-    if (!isVisible) { lastTime = now; return; }
+    rafId = null;
+    // Skip work entirely when tab is backgrounded or gameboy is off-screen.
+    // Re-scheduling stops, so RAF overhead drops to zero until wakeUp().
+    if (document.hidden || !isVisible) { lastTime = now; return; }
+    scheduleFrame();
     const dt = Math.min((now - (lastTime || now)) / 1000, 0.05); // cap at 50ms
     lastTime = now;
     t += dt;
@@ -2558,7 +2567,7 @@
       const bootEnd = (activeCart && cartridges[activeCart].autoStart) ? 4.0 : 4.6;
       if (bootTimer > bootEnd) {
         if (activeCart && cartridges[activeCart].autoStart) {
-          screen = activeCart === 'snake' ? 'snake' : activeCart === 'frogger' ? 'drive' : 'breakout';
+          screen = activeCart === 'snake' ? 'snake' : activeCart === 'frogger' ? 'frogger' : 'breakout';
         } else {
           screen = 'menu';
         }
@@ -2650,8 +2659,15 @@
   }
 
   // ========== VISIBILITY & RESIZE ==========
-  const visObs = new IntersectionObserver((e) => { isVisible = e[0].isIntersecting; }, { threshold: 0.05 });
+  function wakeUp() { lastTime = performance.now(); scheduleFrame(); }
+  const visObs = new IntersectionObserver((e) => {
+    isVisible = e[0].isIntersecting;
+    if (isVisible) wakeUp();
+  }, { threshold: 0.05 });
   visObs.observe(container);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) wakeUp();
+  });
   function resize() {
     const w = container.clientWidth, h = container.clientHeight;
     camera.aspect = w / h;
@@ -2662,7 +2678,7 @@
   window.addEventListener('resize', resize);
   lastInteraction = performance.now();
   drawScreen();
-  requestAnimationFrame(animate);
+  scheduleFrame();
 
   // Expose cart swap for HTML UI
   window.gbSelectCartridge = selectCartridge;

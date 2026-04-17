@@ -290,7 +290,7 @@ html:has(body.scroll-locked) {
 }
 
 .grid-item.hidden {
-  display: none;
+  display: none !important;
 }
 
 @keyframes gridItemOut {

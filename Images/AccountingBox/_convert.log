@@ -1,0 +1,25 @@
+[convert] kjerkoli_prvomesto[0000-0120].mp4 -> kjerkoli_prvomesto.webm
+[thumb]   kjerkoli_prvomesto_thumb.webp
+[convert] 1_loop.mp4 -> 1_loop.webm
+[thumb]   1_loop_thumb.webp
+[convert] 6_intro.mp4 -> 6_intro.webm
+[thumb]   6_intro_thumb.webp
+[convert] 4_loop.mp4 -> 4_loop.webm
+[thumb]   4_loop_thumb.webp
+[convert] kjerkoli_drugomesto[0000-0120].mp4 -> kjerkoli_drugomesto.webm
+[thumb]   kjerkoli_drugomesto_thumb.webp
+[convert] freetrial[0000-0115].mp4 -> freetrial.webm
+[thumb]   freetrial_thumb.webp
+[convert] hiter[0000-0120].mp4 -> hiter.webm
+[thumb]   hiter_thumb.webp
+[convert] kjerkoli[0000-0113].mp4 -> kjerkoli.webm
+[thumb]   kjerkoli_thumb.webp
+[convert] podpora[0000-0144].mp4 -> podpora.webm
+[thumb]   podpora_thumb.webp
+[convert] 2_intro.mp4 -> 2_intro.webm
+[thumb]   2_intro_thumb.webp
+[convert] intro[0010-0160].mp4 -> intro.webm
+[thumb]   intro_thumb.webp
+[image]   Podjetja_cover.webp
+[image]   racunovodje_cover_final.webp
+DONE.

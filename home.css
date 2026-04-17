@@ -79,7 +79,7 @@ body {
 .hero-slides {
   display: flex;
   height: 100%;
-  transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+  transition: transform 0.45s cubic-bezier(0.22,1,0.36,1);
   will-change: transform;
 }
 
@@ -96,6 +96,18 @@ body {
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+/* Per-slide crop adjustment — shift visible content down */
+.hero-slide.hero-shift-down video,
+.hero-slide.hero-shift-down img { object-position: center 30%; }
+
+/* Hide the bottom nav bar while the hero carousel is showing — slide back in
+   as soon as the user starts scrolling. */
+.bottom-bar.hidden {
+  transform: translateX(-50%) translateY(180%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .hero-slide-title {

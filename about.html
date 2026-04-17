@@ -315,53 +315,82 @@
     const btns = document.querySelectorAll('.cart-item');
 
     const cartIcons = { portfolio: '📁', snake: '🐍', breakout: '🧱', frogger: '🐸' };
+    const ejectSVG = '<svg width="12" height="12" viewBox="0 0 14 14" fill="currentColor" stroke="none"><polygon points="7,2 12.5,9 1.5,9"/><rect x="1.5" y="10.5" width="11" height="2" rx="0.3"/></svg>';
     function updateCartUI() {
       btns.forEach(btn => {
         if (btn.classList.contains('loading')) return;
         const id = btn.dataset.cart;
         const icon = btn.querySelector('.cart-icon');
+        const label = btn.querySelector('.cart-label');
+        let swap = btn.querySelector('.cart-eject-swap');
         if (id === insertedCart) {
           btn.classList.add('inserted');
           btn.classList.remove('disabled');
-          icon.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="7" y1="11" x2="7" y2="3"/><polyline points="3,6 7,2 11,6"/></svg>';
+          icon.textContent = cartIcons[id];
+          if (label) label.textContent = { portfolio: 'Portfolio', snake: 'Snake', breakout: 'Breakout', frogger: 'Frogger' }[id];
+          if (!swap) {
+            swap = document.createElement('span');
+            swap.className = 'cart-eject-swap';
+            swap.innerHTML = ejectSVG + '<span>Eject</span>';
+            btn.appendChild(swap);
+          }
         } else {
           btn.classList.remove('inserted');
           btn.classList.toggle('disabled', insertedCart !== null);
           icon.textContent = cartIcons[id];
+          if (swap) swap.remove();
         }
       });
     }
 
     let cartBusy = false;
+    // True while an HTML-button flow owns the lockout. gb-ejected/gb-inserted
+    // events fire immediately when gameboy.js starts the animation, so without
+    // this flag the event listeners would clear cartBusy mid-animation and let
+    // rapid clicks slip through.
+    let htmlFlowOwned = false;
     btns.forEach(btn => {
       btn.addEventListener('click', () => {
         if (cartBusy) return;
         cartBusy = true;
+        htmlFlowOwned = true;
         btns.forEach(b => b.style.pointerEvents = 'none');
         const id = btn.dataset.cart;
         const icon = btn.querySelector('.cart-icon');
         icon.innerHTML = '<span class="cart-spinner"></span>';
         btn.classList.add('loading');
+        const release = (ms) => setTimeout(() => {
+          btn.classList.remove('loading');
+          updateCartUI();
+          cartBusy = false;
+          htmlFlowOwned = false;
+          btns.forEach(b => b.style.pointerEvents = '');
+        }, ms);
         if (id === insertedCart) {
           insertedCart = null;
           if (window.gbEjectCartridge) window.gbEjectCartridge();
-          setTimeout(() => { btn.classList.remove('loading'); updateCartUI(); cartBusy = false; btns.forEach(b => b.style.pointerEvents = ''); }, 1200);
+          release(1000); // matches eject animation duration
         } else if (insertedCart === null) {
           insertedCart = id;
           if (window.gbSelectCartridge) window.gbSelectCartridge(id);
-          setTimeout(() => { btn.classList.remove('loading'); updateCartUI(); cartBusy = false; btns.forEach(b => b.style.pointerEvents = ''); }, 3500);
+          release(3500);
         } else {
           cartBusy = false;
+          htmlFlowOwned = false;
           btns.forEach(b => b.style.pointerEvents = '');
         }
       });
     });
 
-    // Listen for eject from GameBoy side
+    // Listen for eject from GameBoy side. If the HTML flow started this eject,
+    // leave cartBusy/UI alone — the setTimeout owns it. Only sync when the 3D
+    // path triggered eject directly.
     window.addEventListener('gb-ejected', () => {
       insertedCart = null;
-      cartBusy = false;
-      btns.forEach(b => { b.style.pointerEvents = ''; b.classList.remove('loading'); });
+      if (!htmlFlowOwned) {
+        cartBusy = false;
+        btns.forEach(b => { b.style.pointerEvents = ''; b.classList.remove('loading'); });
+      }
       updateCartUI();
     });
 
@@ -377,6 +406,6 @@
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/build/three.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/GLTFLoader.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/DRACOLoader.js"></script>
-  <script defer src="gameboy.js?v=10"></script>
+  <script defer src="gameboy.js?v=20"></script>
 </body>
 </html>

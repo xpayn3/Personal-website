@@ -29,6 +29,18 @@ const IMG = 'Images';
 
 const projects = [
   {
+    id: 'accbox',
+    name: 'AccountingBox',
+    year: 2024,
+    hero: `${IMG}/AccountingBox/4_loop.webm`,
+    floats: [
+      `${IMG}/AccountingBox/intro.webm`,
+      `${IMG}/AccountingBox/kjerkoli.webm`,
+      `${IMG}/AccountingBox/podpora.webm`,
+      `${IMG}/AccountingBox/hiter.webm`,
+    ]
+  },
+  {
     id: 'cestel',
     name: 'CESTEL',
     year: 2023,
@@ -193,28 +205,40 @@ function createMedia(src) {
 // ========== HERO CAROUSEL ==========
 const heroSlides = document.getElementById('heroSlides');
 const heroDots = document.getElementById('heroDots');
-const heroSrcs = projects.slice(0, 5).map(p => ({ src: p.hero, name: p.name }));
+const heroEl = document.getElementById('heroCarousel');
+// Hero carousel is a standalone reel — three Grounded festival animations,
+// independent of the scroll-showcase project list below.
+const heroSrcs = [
+  { src: `${IMG}/Grounded 2025/IG_story_02.webm`,        name: 'Grounded 2025', shiftDown: true },
+  { src: `${IMG}/Grounded_2023/Grounded_2023_01.webm`,   name: 'Grounded 2023' },
+  { src: `${IMG}/Grounded_2022/card_holo.webm`,          name: 'Grounded 2022' },
+];
+const HERO_AUTO_MS = 7000;
+const heroVideos = new Array(heroSrcs.length);
 let heroIdx = 0;
 let heroAutoTimer = null;
 
+// Build slides. All videos get src + preload="auto" so any swipe is instant —
+// browser keeps them buffered in parallel. Mobile uses image thumbnails.
 heroSrcs.forEach((item, i) => {
   const slide = document.createElement('div');
-  slide.className = 'hero-slide';
+  slide.className = 'hero-slide' + (item.shiftDown ? ' hero-shift-down' : '');
 
-  if (isVideo(item.src)) {
+  if (isVideo(item.src) && !isMobileHome) {
     const v = document.createElement('video');
+    v.src = item.src;
     v.muted = true;
-    v.loop = false;
+    v.loop = true;
     v.playsInline = true;
-    if (i === 0) {
-      v.src = item.src;
-      v.autoplay = true;
-      v.preload = 'auto';
-    } else {
-      v.dataset.src = item.src;
-      v.preload = 'none';
-    }
+    v.preload = 'auto';
+    v.setAttribute('playsinline', '');
     slide.appendChild(v);
+    heroVideos[i] = v;
+  } else if (isVideo(item.src)) {
+    const img = document.createElement('img');
+    img.src = item.src.replace(/\.(webm|mp4)$/, '_thumb.webp');
+    img.alt = item.name;
+    slide.appendChild(img);
   } else {
     const img = document.createElement('img');
     img.src = item.src;
@@ -226,7 +250,6 @@ heroSrcs.forEach((item, i) => {
   title.className = 'hero-slide-title';
   title.textContent = item.name;
   slide.appendChild(title);
-
   heroSlides.appendChild(slide);
 
   const dot = document.createElement('div');
@@ -235,105 +258,163 @@ heroSrcs.forEach((item, i) => {
   heroDots.appendChild(dot);
 });
 
-function goToHeroSlide(i) {
-  // Pause and unload old video to free memory
-  const oldSlide = heroSlides.children[heroIdx];
-  const oldVid = oldSlide && oldSlide.querySelector('video');
-  if (oldVid && heroIdx !== i) {
-    oldVid.pause();
-    oldVid.onended = null;
-  }
+function slideWidth() { return heroEl.clientWidth; }
 
-  // Load and play new video
-  const nextSlide = heroSlides.children[i];
-  const nextVid = nextSlide && nextSlide.querySelector('video');
-  if (nextVid) {
-    if (!nextVid.src && nextVid.dataset.src) {
-      nextVid.src = nextVid.dataset.src;
-    }
-    nextVid.currentTime = 0;
-    nextVid.play().catch(() => {});
-  }
-
-  heroIdx = i;
-  heroSlides.style.transform = `translateX(-${i * 100}vw)`;
-  heroDots.querySelectorAll('.hero-dot').forEach((d, di) => d.classList.toggle('active', di === i));
-  watchHeroVideoEnd();
+function setHeroTransform(offsetPx) {
+  heroSlides.style.transform = `translate3d(${-heroIdx * slideWidth() + offsetPx}px, 0, 0)`;
 }
 
-function nextHeroSlide() {
-  goToHeroSlide((heroIdx + 1) % heroSrcs.length);
-}
-
-function preloadNextHeroVideo() {
-  const nextIdx = (heroIdx + 1) % heroSrcs.length;
-  const nextSlide = heroSlides.children[nextIdx];
-  const nextVid = nextSlide && nextSlide.querySelector('video');
-  if (nextVid && !nextVid.src && nextVid.dataset.src) {
-    nextVid.src = nextVid.dataset.src;
-    nextVid.preload = 'auto';
-  }
-}
-
-function watchHeroVideoEnd() {
+function scheduleAutoAdvance() {
   clearTimeout(heroAutoTimer);
-  const currentSlide = heroSlides.children[heroIdx];
-  const vid = currentSlide && currentSlide.querySelector('video');
-  if (vid) {
-    vid.onended = () => nextHeroSlide();
-    vid.loop = false;
-    // Preload next video while current plays
-    preloadNextHeroVideo();
-  } else {
-    preloadNextHeroVideo();
-    heroAutoTimer = setTimeout(nextHeroSlide, 5000);
-  }
+  heroAutoTimer = setTimeout(() => {
+    goToHeroSlide((heroIdx + 1) % heroSrcs.length);
+  }, HERO_AUTO_MS);
 }
-// Force play first video
-const firstVid = heroSlides.children[0] && heroSlides.children[0].querySelector('video');
-if (firstVid) {
-  firstVid.play().catch(() => {});
-  // iOS sometimes needs a slight delay
-  setTimeout(() => firstVid.play().catch(() => {}), 100);
-}
-watchHeroVideoEnd();
 
-// Swipe + drag on carousel
-let heroStartX = 0;
-let heroDragging = false;
-const heroEl = document.getElementById('heroCarousel');
+function goToHeroSlide(i) {
+  i = Math.max(0, Math.min(heroSrcs.length - 1, i));
+  const prev = heroVideos[heroIdx];
+  const next = heroVideos[i];
+  if (prev && prev !== next) prev.pause();
+  heroIdx = i;
+  if (next) {
+    // Videos stay buffered (preload=auto); play resumes instantly from current position
+    const p = next.play();
+    if (p && p.catch) p.catch(() => {});
+  }
+  setHeroTransform(0);
+  heroDots.querySelectorAll('.hero-dot').forEach((d, di) => d.classList.toggle('active', di === i));
+  scheduleAutoAdvance();
+}
+
+// Kick off the first video (muted autoplay allowed by browsers)
+if (heroVideos[0]) {
+  const tryPlay = () => heroVideos[0].play().catch(() => {});
+  tryPlay();
+  setTimeout(tryPlay, 100);
+  // Also resume on first user interaction in case browser blocked autoplay
+  const resumeOnInteract = () => { tryPlay(); document.removeEventListener('pointerdown', resumeOnInteract); };
+  document.addEventListener('pointerdown', resumeOnInteract, { once: true });
+}
+scheduleAutoAdvance();
+
+// Pause the carousel entirely when the tab is backgrounded — no point playing
+// a video + running an auto-advance timer no one can see.
+document.addEventListener('visibilitychange', () => {
+  const cur = heroVideos[heroIdx];
+  if (document.hidden) {
+    clearTimeout(heroAutoTimer);
+    heroAutoTimer = null;
+    if (cur) cur.pause();
+  } else {
+    if (cur) cur.play().catch(() => {});
+    scheduleAutoAdvance();
+  }
+});
+
+// ===== DRAG / SWIPE =====
+// Live finger-following: transform updates every move event (no CSS transition
+// during drag). On release, decide snap target from distance + velocity.
+let dragActive = false;
+let dragStartX = 0;
+let dragStartY = 0;
+let dragOffset = 0;
+let dragLastX = 0;
+let dragLastT = 0;
+let dragVelocity = 0;
+let dragAxisLocked = null; // 'h' = horizontal, 'v' = vertical, null = undecided
+
+function dragStart(x, y) {
+  dragActive = true;
+  dragStartX = dragLastX = x;
+  dragStartY = y;
+  dragOffset = 0;
+  dragLastT = performance.now();
+  dragVelocity = 0;
+  dragAxisLocked = null;
+  heroSlides.style.transition = 'none';
+  clearTimeout(heroAutoTimer);
+}
+
+function dragMove(x, y) {
+  if (!dragActive) return;
+  const dx = x - dragStartX;
+  const dy = y - dragStartY;
+
+  // Axis lock: if vertical intent, release the drag so page scrolls freely
+  if (!dragAxisLocked) {
+    if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+      dragAxisLocked = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
+    }
+  }
+  if (dragAxisLocked === 'v') { cancelDrag(); return; }
+  if (dragAxisLocked !== 'h') return;
+
+  dragOffset = dx;
+  // Rubber-band at edges
+  let eff = dragOffset;
+  const last = heroSrcs.length - 1;
+  if (heroIdx === 0 && dragOffset > 0) eff = dragOffset * 0.35;
+  if (heroIdx === last && dragOffset < 0) eff = dragOffset * 0.35;
+  setHeroTransform(eff);
+
+  const now = performance.now();
+  const dt = now - dragLastT;
+  if (dt > 0) dragVelocity = (x - dragLastX) / dt; // px per ms
+  dragLastX = x;
+  dragLastT = now;
+}
+
+function cancelDrag() {
+  if (!dragActive) return;
+  dragActive = false;
+  heroSlides.style.transition = '';
+  setHeroTransform(0);
+  scheduleAutoAdvance();
+}
+
+function dragEnd() {
+  if (!dragActive) return;
+  dragActive = false;
+  heroSlides.style.transition = '';
+  if (dragAxisLocked !== 'h') { scheduleAutoAdvance(); return; }
+
+  const w = slideWidth();
+  const fast = Math.abs(dragVelocity) > 0.4;
+  const threshold = w * 0.15;
+  let target = heroIdx;
+  if (dragOffset < -threshold || (fast && dragVelocity < -0.4)) target = heroIdx + 1;
+  else if (dragOffset > threshold || (fast && dragVelocity > 0.4)) target = heroIdx - 1;
+  dragOffset = 0;
+  goToHeroSlide(target);
+}
 
 // Touch
-heroEl.addEventListener('touchstart', (e) => { heroStartX = e.touches[0].clientX; }, { passive: true });
-heroEl.addEventListener('touchend', (e) => {
-  const diff = heroStartX - e.changedTouches[0].clientX;
-  if (Math.abs(diff) > 50) {
-    if (diff > 0) goToHeroSlide(Math.min(heroIdx + 1, heroSrcs.length - 1));
-    else goToHeroSlide(Math.max(heroIdx - 1, 0));
-  }
-}, { passive: true });
+heroEl.addEventListener('touchstart', (e) => dragStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+heroEl.addEventListener('touchmove', (e) => dragMove(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+heroEl.addEventListener('touchend', dragEnd, { passive: true });
+heroEl.addEventListener('touchcancel', cancelDrag, { passive: true });
 
-// Mouse drag
+// Mouse
 heroEl.addEventListener('mousedown', (e) => {
+  if (e.button !== 0) return;
   e.preventDefault();
-  heroDragging = true;
-  heroStartX = e.clientX;
   heroEl.style.cursor = 'grabbing';
+  dragStart(e.clientX, e.clientY);
 });
 window.addEventListener('mousemove', (e) => {
-  if (heroDragging) e.preventDefault();
+  if (!dragActive) return;
+  dragMove(e.clientX, e.clientY);
 });
-window.addEventListener('mouseup', (e) => {
-  if (!heroDragging) return;
-  const diff = heroStartX - e.clientX;
-  heroDragging = false;
+window.addEventListener('mouseup', () => {
+  if (!dragActive) return;
   heroEl.style.cursor = 'grab';
-  if (Math.abs(diff) > 50) {
-    if (diff > 0) goToHeroSlide(Math.min(heroIdx + 1, heroSrcs.length - 1));
-    else goToHeroSlide(Math.max(heroIdx - 1, 0));
-  }
+  dragEnd();
 });
 heroEl.style.cursor = 'grab';
+
+// Keep transform correct across viewport resizes
+window.addEventListener('resize', () => { if (!dragActive) setHeroTransform(0); }, { passive: true });
 
 // ========== BUILD SECTIONS ==========
 const container = document.getElementById('scrollContainer');
@@ -504,8 +585,11 @@ function updateParallax() {
 
   // Show/hide bar labels + dividers based on carousel position
   const pastCarousel = scrollY > window.innerHeight * 0.8;
+  const onCarousel = scrollY < 30; // hide the bar entirely while the hero is showing
   document.querySelectorAll('.bar-collapsible').forEach(el => el.classList.toggle('collapsed', !pastCarousel));
-  document.querySelector('.bottom-bar').classList.toggle('compact', !pastCarousel);
+  const bar = document.querySelector('.bottom-bar');
+  bar.classList.toggle('compact', !pastCarousel);
+  bar.classList.toggle('hidden', onCarousel);
 }
 
 // ========== WATERMARK LETTERS ==========
@@ -552,8 +636,11 @@ function onMobileScroll() {
   }
 
   const pastCarousel = scrollY > vh * 0.8;
+  const onCarousel = scrollY < 30;
   document.querySelectorAll('.bar-collapsible').forEach(el => el.classList.toggle('collapsed', !pastCarousel));
-  document.querySelector('.bottom-bar').classList.toggle('compact', !pastCarousel);
+  const bar = document.querySelector('.bottom-bar');
+  bar.classList.toggle('compact', !pastCarousel);
+  bar.classList.toggle('hidden', onCarousel);
 
   // Letter rotation
   if (wmLetters.length) {
@@ -575,6 +662,10 @@ function onMobileScroll() {
   wmLastScroll = scrollY;
   navLastScroll = scrollY;
 }
+
+// Initial bar-visibility sync — handlers above only run on scroll, but we
+// want the correct state from the first paint (e.g. after a reload mid-page).
+if (isMobileHome) onMobileScroll(); else updateParallax();
 
 // ========== DESKTOP: separate listeners ==========
 if (!isMobileHome) {
