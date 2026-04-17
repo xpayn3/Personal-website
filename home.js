@@ -222,23 +222,22 @@ let heroAutoTimer = null;
 // browser keeps them buffered in parallel. Mobile uses image thumbnails.
 heroSrcs.forEach((item, i) => {
   const slide = document.createElement('div');
-  slide.className = 'hero-slide' + (item.shiftDown ? ' hero-shift-down' : '');
+  // Shift-down crop is calibrated for the desktop 16:9 viewport. On mobile
+  // (portrait), a 9:16 video already fills nicely — no shift needed.
+  slide.className = 'hero-slide' + (item.shiftDown && !isMobileHome ? ' hero-shift-down' : '');
 
-  if (isVideo(item.src) && !isMobileHome) {
+  if (isVideo(item.src)) {
     const v = document.createElement('video');
     v.src = item.src;
     v.muted = true;
     v.loop = true;
     v.playsInline = true;
     v.preload = 'auto';
+    v.autoplay = true;
     v.setAttribute('playsinline', '');
+    v.setAttribute('muted', '');
     slide.appendChild(v);
     heroVideos[i] = v;
-  } else if (isVideo(item.src)) {
-    const img = document.createElement('img');
-    img.src = item.src.replace(/\.(webm|mp4)$/, '_thumb.webp');
-    img.alt = item.name;
-    slide.appendChild(img);
   } else {
     const img = document.createElement('img');
     img.src = item.src;
