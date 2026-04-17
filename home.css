@@ -186,7 +186,10 @@ body {
   display: block;
   will-change: transform;
   transform-origin: 50% 50%;
-  transition: transform 0.15s linear;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* Per-slide crop adjustment — shift visible content down */
@@ -216,6 +219,9 @@ body {
   z-index: 5;
   max-width: 80vw;
   mix-blend-mode: difference;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .hero-dots { display: none; }
