@@ -150,9 +150,7 @@ body {
   position: sticky;
   top: 0;
   height: 100vh; /* fallback */
-  height: 100lvh; /* iOS Safari: extend behind the translucent bottom chrome
-                     so the frosted-glass bar blurs the dark hero video
-                     instead of the white intro section that starts after it. */
+  height: 100dvh; /* iOS Safari: track visible area as chrome collapses */
   overflow: hidden;
   background: #000;
   z-index: 1;
@@ -209,7 +207,7 @@ body {
 .hero-slide-title {
   position: absolute;
   left: clamp(20px, 3vw, 32px);
-  bottom: calc(100lvh - 100dvh + clamp(56px, 10vh, 120px));
+  bottom: clamp(56px, 10vh, 120px);
   font-family: var(--font-display);
   font-size: clamp(2.5rem, 8vw, 7.5rem);
   font-weight: 200;
@@ -231,7 +229,7 @@ body {
 
 .hero-scroll-hint {
   position: absolute;
-  bottom: calc(100lvh - 100dvh + clamp(20px, 3vh, 28px));
+  bottom: clamp(20px, 3vh, 28px);
   left: 50%;
   transform: translateX(-50%);
   padding: 4px 0;
