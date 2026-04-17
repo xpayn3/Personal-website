@@ -211,12 +211,10 @@ function createMedia(src) {
 const heroSlides = document.getElementById('heroSlides');
 const heroDots = document.getElementById('heroDots');
 const heroEl = document.getElementById('heroCarousel');
-// Hero carousel is a standalone reel — three Grounded festival animations,
+// Hero carousel — single Grounded 2025 reel,
 // independent of the scroll-showcase project list below.
 const heroSrcs = [
-  { src: `${IMG}/Grounded 2025/IG_story_02.webm`,        name: 'Grounded 2025', shiftDown: true },
-  { src: `${IMG}/Grounded_2023/Grounded_2023_01.webm`,   name: 'Grounded 2023' },
-  { src: `${IMG}/Grounded_2022/card_holo.webm`,          name: 'Grounded 2022' },
+  { src: `${IMG}/Grounded 2025/IG_story_02.webm`, name: 'Grounded 2025', shiftDown: true },
 ];
 const HERO_AUTO_MS = 7000;
 const heroVideos = new Array(heroSrcs.length);
@@ -256,10 +254,12 @@ heroSrcs.forEach((item, i) => {
   slide.appendChild(title);
   heroSlides.appendChild(slide);
 
-  const dot = document.createElement('div');
-  dot.className = 'hero-dot' + (i === 0 ? ' active' : '');
-  dot.addEventListener('click', () => goToHeroSlide(i));
-  heroDots.appendChild(dot);
+  if (heroSrcs.length > 1) {
+    const dot = document.createElement('div');
+    dot.className = 'hero-dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', () => goToHeroSlide(i));
+    heroDots.appendChild(dot);
+  }
 });
 
 function slideWidth() { return heroEl.clientWidth; }
@@ -316,115 +316,8 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
-// ===== DRAG / SWIPE =====
-// Live finger-following: transform updates every move event (no CSS transition
-// during drag). On release, decide snap target from distance + velocity.
-let dragActive = false;
-let dragStartX = 0;
-let dragStartY = 0;
-let dragOffset = 0;
-let dragLastX = 0;
-let dragLastT = 0;
-let dragVelocity = 0;
-let dragAxisLocked = null; // 'h' = horizontal, 'v' = vertical, null = undecided
-
-function dragStart(x, y) {
-  dragActive = true;
-  dragStartX = dragLastX = x;
-  dragStartY = y;
-  dragOffset = 0;
-  dragLastT = performance.now();
-  dragVelocity = 0;
-  dragAxisLocked = null;
-  heroSlides.style.transition = 'none';
-  clearTimeout(heroAutoTimer);
-}
-
-function dragMove(x, y) {
-  if (!dragActive) return null;
-  const dx = x - dragStartX;
-  const dy = y - dragStartY;
-
-  // Axis lock: if vertical intent, release the drag so page scrolls freely
-  if (!dragAxisLocked) {
-    if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
-      dragAxisLocked = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
-    }
-  }
-  if (dragAxisLocked === 'v') { cancelDrag(); return 'v'; }
-  if (dragAxisLocked !== 'h') return null;
-
-  dragOffset = dx;
-  // Rubber-band at edges
-  let eff = dragOffset;
-  const last = heroSrcs.length - 1;
-  if (heroIdx === 0 && dragOffset > 0) eff = dragOffset * 0.35;
-  if (heroIdx === last && dragOffset < 0) eff = dragOffset * 0.35;
-  setHeroTransform(eff);
-
-  const now = performance.now();
-  const dt = now - dragLastT;
-  if (dt > 0) dragVelocity = (x - dragLastX) / dt; // px per ms
-  dragLastX = x;
-  dragLastT = now;
-  return 'h';
-}
-
-function cancelDrag() {
-  if (!dragActive) return;
-  dragActive = false;
-  heroSlides.style.transition = '';
-  setHeroTransform(0);
-  scheduleAutoAdvance();
-}
-
-function dragEnd() {
-  if (!dragActive) return;
-  dragActive = false;
-  heroSlides.style.transition = '';
-  if (dragAxisLocked !== 'h') { scheduleAutoAdvance(); return; }
-
-  const w = slideWidth();
-  const fast = Math.abs(dragVelocity) > 0.4;
-  const threshold = w * 0.15;
-  let target = heroIdx;
-  if (dragOffset < -threshold || (fast && dragVelocity < -0.4)) target = heroIdx + 1;
-  else if (dragOffset > threshold || (fast && dragVelocity > 0.4)) target = heroIdx - 1;
-  dragOffset = 0;
-  goToHeroSlide(target);
-}
-
-// Touch
-heroEl.addEventListener('touchstart', (e) => dragStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
-heroEl.addEventListener('touchmove', (e) => {
-  const moved = dragMove(e.touches[0].clientX, e.touches[0].clientY);
-  // Only block the gesture once we've confirmed horizontal intent — otherwise
-  // vertical scroll to the content below the carousel must still work.
-  if (moved === 'h' && e.cancelable) e.preventDefault();
-}, { passive: false });
-heroEl.addEventListener('touchend', dragEnd, { passive: true });
-heroEl.addEventListener('touchcancel', cancelDrag, { passive: true });
-
-// Mouse
-heroEl.addEventListener('mousedown', (e) => {
-  if (e.button !== 0) return;
-  e.preventDefault();
-  heroEl.style.cursor = 'grabbing';
-  dragStart(e.clientX, e.clientY);
-});
-window.addEventListener('mousemove', (e) => {
-  if (!dragActive) return;
-  dragMove(e.clientX, e.clientY);
-});
-window.addEventListener('mouseup', () => {
-  if (!dragActive) return;
-  heroEl.style.cursor = 'grab';
-  dragEnd();
-});
-heroEl.style.cursor = 'grab';
-
 // Keep transform correct across viewport resizes
-window.addEventListener('resize', () => { if (!dragActive) setHeroTransform(0); }, { passive: true });
+window.addEventListener('resize', () => setHeroTransform(0), { passive: true });
 
 // ========== BUILD SECTIONS ==========
 const container = document.getElementById('scrollContainer');
@@ -581,6 +474,7 @@ if (!isMobileHome) {
       smoothScroll = window.scrollY;
       targetScroll = window.scrollY;
     }
+    updateHeroParallax(window.scrollY, window.innerHeight);
   }, { passive: true });
 
   scrollRAF = requestAnimationFrame(smoothScrollLoop);
@@ -603,9 +497,28 @@ const blockData = Array.from(blocks).map(block => ({
   })),
 }));
 
+const heroMediaEl = () => document.querySelector('.hero-slide video, .hero-slide img');
+const heroTitleEl = () => document.querySelector('.hero-slide-title');
+
+function updateHeroParallax(scrollY, vh) {
+  const progress = Math.max(0, Math.min(1, scrollY / vh));
+  const media = heroMediaEl();
+  if (media) {
+    const scale = 1 + progress * 0.14;
+    const shiftY = progress * -40;
+    media.style.transform = `translate3d(0, ${shiftY}px, 0) scale(${scale})`;
+  }
+  const title = heroTitleEl();
+  if (title) {
+    title.style.transform = `translate3d(0, ${-scrollY * 0.5}px, 0)`;
+    title.style.opacity = '1';
+  }
+}
+
 function updateParallax() {
   const scrollY = window.scrollY;
   const vh = window.innerHeight;
+  updateHeroParallax(scrollY, vh);
 
   for (let idx = 0; idx < blockData.length; idx++) {
     const bd = blockData[idx];
@@ -685,6 +598,8 @@ if (wmEl) {
 function onMobileScroll() {
   const scrollY = window.scrollY;
   const vh = window.innerHeight;
+
+  updateHeroParallax(scrollY, vh);
 
   // Update title opacity only (no parallax on images — saves battery)
   for (let idx = 0; idx < blockData.length; idx++) {

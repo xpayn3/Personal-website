@@ -1,5 +1,74 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* ===== HOME INTRO (below carousel) ===== */
+.home-intro {
+  position: relative;
+  padding: clamp(80px, 18vh, 220px) 24px clamp(80px, 14vh, 180px);
+  background: var(--color-bg);
+  z-index: 3;
+}
+.intro-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  position: relative;
+}
+.intro-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+  margin-bottom: clamp(24px, 5vh, 56px);
+}
+.intro-headline {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 8.5vw, 8rem);
+  font-weight: 200;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  color: var(--color-text);
+  margin: 0 0 clamp(48px, 9vh, 120px);
+}
+.intro-line {
+  display: block;
+}
+.intro-line-1 {
+  padding-left: 0;
+}
+.intro-line-2 {
+  font-style: italic;
+  padding-left: clamp(16px, 6vw, 120px);
+}
+.intro-body-wrap {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(20px, 3vh, 36px);
+  max-width: 620px;
+  margin-left: auto;
+  padding-right: clamp(0px, 4vw, 80px);
+}
+.intro-body {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--color-text);
+  letter-spacing: -0.005em;
+}
+.intro-body-pull {
+  color: var(--color-text-dim);
+  padding-left: clamp(16px, 3vw, 40px);
+  border-left: 1px solid var(--color-border-strong);
+}
+
+@media (max-width: 768px) {
+  .home-intro { padding: 80px 20px 60px; }
+  .intro-line-2 { padding-left: 24px; }
+  .intro-body-wrap { margin-left: 0; padding-right: 0; }
+  .intro-body-pull { padding-left: 16px; }
+}
+
+
 :root {
   --bg: var(--color-bg);
   --text: var(--color-text);
@@ -75,13 +144,13 @@ body {
 
 /* ========== HERO CAROUSEL ========== */
 .hero-carousel {
-  position: relative;
+  position: sticky;
+  top: 0;
   height: 100vh; /* fallback */
   height: 100dvh; /* iOS Safari: track visible area as chrome collapses */
   overflow: hidden;
   background: #000;
-  /* Browser handles vertical pan; JS owns horizontal — stops Safari from
-     scrolling the page while the user is swiping the carousel sideways. */
+  z-index: 1;
   touch-action: pan-y;
 }
 
@@ -105,6 +174,9 @@ body {
   height: 100%;
   object-fit: cover;
   display: block;
+  will-change: transform;
+  transform-origin: 50% 50%;
+  transition: transform 0.15s linear;
 }
 
 /* Per-slide crop adjustment — shift visible content down */
@@ -121,66 +193,56 @@ body {
 
 .hero-slide-title {
   position: absolute;
-  bottom: 32px;
-  right: 32px;
-  font-size: 0.7rem;
-  color: rgba(255,255,255,0.4);
-  letter-spacing: 0.1em;
+  left: clamp(20px, 3vw, 32px);
+  bottom: clamp(56px, 10vh, 120px);
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 8vw, 7.5rem);
+  font-weight: 200;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+  color: #fff;
+  text-transform: uppercase;
   pointer-events: none;
-}
-
-.hero-dots {
-  position: absolute;
-  bottom: 20px;
-  right: 32px;
-  display: flex;
-  gap: 6px;
   z-index: 5;
+  max-width: 80vw;
+  mix-blend-mode: difference;
 }
 
-.hero-dot {
-  width: 16px;
-  height: 2px;
-  border-radius: 1px;
-  background: rgba(255,255,255,0.25);
-  cursor: pointer;
-  transition: background 0.3s, width 0.3s;
-}
+.hero-dots { display: none; }
 
-.hero-dot.active {
-  background: #fff;
-  width: 28px;
-}
 
 .hero-scroll-hint {
   position: absolute;
-  bottom: 32px;
-  left: 32px;
-  font-size: 0.7rem;
-  color: rgba(255,255,255,0.4);
-  letter-spacing: 0.1em;
+  bottom: clamp(20px, 3vh, 28px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 0;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  color: #fff;
+  mix-blend-mode: difference;
   z-index: 5;
-  animation: hintBounce 2s ease infinite;
-}
-
-@keyframes hintBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
 }
 
 @media (max-width: 768px) {
   .hero-slide-title {
     bottom: 100px;
     left: 20px;
-    font-size: clamp(1.2rem, 6vw, 2rem);
+    font-size: clamp(2.8rem, 15vw, 5rem);
   }
-  .hero-dots { bottom: 16px; right: 20px; }
-  .hero-scroll-hint { display: none; }
+  .hero-scroll-hint { font-size: 0.68rem; }
 }
 
 /* ========== SCROLL CONTAINER ========== */
 .scroll-container {
   display: block;
+  position: relative;
+  z-index: 3;
+  background: var(--color-bg);
 }
 
 /* ========== PROJECT BLOCK ========== */
@@ -208,8 +270,8 @@ body {
 .title-name {
   font-family: var(--font-display);
   font-size: clamp(2rem, 5vw, 4rem);
-  font-weight: 800;
-  letter-spacing: -0.04em;
+  font-weight: 200;
+  letter-spacing: -0.02em;
   line-height: 1;
   text-align: center;
   padding: 0 24px;
@@ -450,13 +512,17 @@ body {
 
 .watermark {
   position: fixed;
-  top: 20px;
-  left: 24px;
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: #111;
+  top: clamp(20px, 3vh, 28px);
+  left: clamp(20px, 3vw, 32px);
+  padding: 4px 0;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  color: #fff;
+  mix-blend-mode: difference;
   z-index: 90;
   text-decoration: none;
   cursor: pointer;
@@ -492,9 +558,9 @@ body {
 .cta-line {
   display: block;
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 200;
   line-height: 1;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
   opacity: 0;
   transform: translateY(40px) rotate(3deg);
   transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1),

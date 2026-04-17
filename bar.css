@@ -78,30 +78,35 @@
   margin: 0;
 }
 
-/* Floating contact button — top right */
+/* Floating contact link — top right */
 .contact-btn {
   position: fixed;
-  top: 20px;
-  right: 24px;
+  top: clamp(20px, 3vh, 28px);
+  right: clamp(20px, 3vw, 32px);
   z-index: 90;
-  padding: 10px 20px;
+  padding: 4px 0;
   font-family: var(--font-body);
-  font-size: var(--text-base);
+  font-size: 0.72rem;
   font-weight: 500;
-  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  color: #fff;
+  mix-blend-mode: difference;
   text-decoration: none;
-  background: var(--color-surface);
-  backdrop-filter: var(--blur);
-  -webkit-backdrop-filter: var(--blur);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
-  box-shadow: var(--shadow-sm);
-  transition: background var(--duration-fast), transform var(--duration-fast);
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  transition: opacity var(--duration-fast), color var(--duration-fast);
 }
 
 .contact-btn:hover {
-  background: #0a2fff;
-  color: #fff;
-  border-color: #0a2fff;
-  transform: scale(1.03);
+  background: none;
+  color: var(--color-accent);
+  border: none;
+  transform: none;
+  opacity: 1;
 }
