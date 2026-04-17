@@ -461,9 +461,17 @@
     if (pill) pill.remove();
     overlay.classList.remove('open');
     overlayClose.classList.remove('visible');
-    // Force unlock in case count got out of sync
-    scrollLockCount = 1;
-    unlockScroll();
+    // Always fully clear the body-fixed state. If `scrollLockCount` drifted
+    // (e.g. lightbox/mobile-list flows nested on top) a counter decrement is
+    // not enough — the body would stay `position: fixed; top: -Ypx` and
+    // touch-event coordinates would register offset, making the bar
+    // dropdowns' lower items unreachable.
+    const y = savedScrollY;
+    scrollLockCount = 0;
+    document.documentElement.style.overflow = '';
+    document.body.classList.remove('scroll-locked');
+    document.body.style.cssText = '';
+    window.scrollTo({ top: y, behavior: 'instant' });
     document.title = 'Luka Grčar — Portfolio';
     let ogTitle = document.querySelector('meta[property="og:title"]');
     let ogDesc = document.querySelector('meta[property="og:description"]');

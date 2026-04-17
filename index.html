@@ -28,19 +28,39 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Person",
-  "name": "Luka Grčar",
-  "url": "https://lukagrcar.com",
-  "jobTitle": "3D Generalist & Motion Designer",
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Ljubljana",
-    "addressCountry": "SI"
-  },
-  "sameAs": [
-    "https://www.instagram.com/lukakluka/",
-    "https://www.behance.net/lukagrcar",
-    "https://www.linkedin.com/in/luka-grcar-9534b695/"
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://lukagrcar.com/#website",
+      "name": "Luka Grčar",
+      "alternateName": "Luka Grčar — 3D & Motion Design",
+      "url": "https://lukagrcar.com/",
+      "description": "Portfolio of Luka Grčar — 3D generalist & motion designer based in Ljubljana, Slovenia.",
+      "inLanguage": "en",
+      "publisher": { "@id": "https://lukagrcar.com/#person" },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://lukagrcar.com/grid.html#project={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://lukagrcar.com/#person",
+      "name": "Luka Grčar",
+      "url": "https://lukagrcar.com/",
+      "jobTitle": "3D Generalist & Motion Designer",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Ljubljana",
+        "addressCountry": "SI"
+      },
+      "sameAs": [
+        "https://www.instagram.com/lukakluka/",
+        "https://www.behance.net/lukagrcar",
+        "https://www.linkedin.com/in/luka-grcar-9534b695/"
+      ]
+    }
   ]
 }
 </script>
@@ -95,7 +115,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
   <script src="projects.js" defer></script>
-  <script src="overlay.js" defer></script>
+  <script src="overlay.js?v=2" defer></script>
   <script src="home.js" defer></script>
   <script>
   document.addEventListener('contextmenu', e => e.preventDefault());
