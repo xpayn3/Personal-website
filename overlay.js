@@ -746,7 +746,7 @@
     if (isVid) {
       lightboxContent.innerHTML = `<video src="${src}" autoplay muted loop playsinline></video>`;
     } else {
-      lightboxContent.innerHTML = `<img src="${src}" />`;
+      lightboxContent.innerHTML = `<img src="${src}" alt="" />`;
     }
     lightboxCounter.textContent = `${lightboxIndex + 1} / ${lightboxItems.length}`;
 

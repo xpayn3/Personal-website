@@ -179,10 +179,13 @@ function mobileSrc(src) {
 }
 
 function createMedia(src) {
-  // On mobile use video thumbnails but keep full-res images
+  // On mobile use video thumbnails but keep full-res images.
+  // Alt is empty — these are decorative backgrounds for the scroll showcase;
+  // the project name is conveyed by the sticky title + hero info pill.
   if (isVideo(src) && isMobileHome) {
     const img = document.createElement('img');
     img.src = src.replace(/\.(webm|mp4)$/, '_thumb.webp');
+    img.alt = '';
     img.loading = 'lazy';
     img.decoding = 'async';
     return img;
@@ -198,6 +201,7 @@ function createMedia(src) {
   }
   const img = document.createElement('img');
   img.src = src;
+  img.alt = '';
   img.loading = 'lazy';
   img.decoding = 'async';
   return img;
