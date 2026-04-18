@@ -161,9 +161,23 @@ const projects = [
   },
 ];
 
-// Sort by year, newest first — show only 5
-projects.sort((a, b) => b.year - a.year);
-projects.splice(5);
+// Show only these three projects, in the order we want them. Map the
+// shared project data shape (images[]) onto the home block shape
+// (hero + floats) the rest of this file expects.
+const HOME_PROJECT_IDS = ['cestel', 'grounded2023', 'radenci'];
+projects.length = 0;
+for (const id of HOME_PROJECT_IDS) {
+  const src = window.projects && window.projects[id];
+  if (!src) continue;
+  const imgs = src.images || [];
+  projects.push({
+    id,
+    name: src.name,
+    year: src.year,
+    hero: imgs[0],
+    floats: imgs.slice(1, 4),
+  });
+}
 
 
 function isVideo(src) {
@@ -374,113 +388,148 @@ projects.forEach((proj, idx) => {
   block.className = 'project-block';
   block.dataset.index = idx;
 
-  // Title layer (sticky)
-  const titleLayer = document.createElement('div');
-  titleLayer.className = 'title-layer';
+  const row = document.createElement('div');
+  row.className = 'project-row';
+  // Which of the three cells should expand when the row reaches viewport
+  // center — deterministic per project index so the layout is stable
+  // across reloads within a session.
+  const wideIdx = (idx * 37 + 11) % 3;
+  row.dataset.wide = String(wideIdx);
+  row.style.setProperty('--row-cols', '1fr 1fr 1fr');
 
-  const name = document.createElement('div');
-  name.className = 'title-name';
-  name.textContent = proj.name;
-  titleLayer.appendChild(name);
-
-  block.appendChild(titleLayer);
-
-  // Image layer — scattered freeform
-  const imageLayer = document.createElement('div');
-  imageLayer.className = 'image-layer';
-
-  // Hero — sticky
-  const heroEl = document.createElement('div');
-  heroEl.className = 'scatter-img hero-scatter';
-  heroEl.appendChild(createMedia(proj.hero));
-  // Project info tag — fades in once the hero covers the big title behind it.
-  const tag = document.createElement('div');
-  tag.className = 'hero-info-tag';
-  const thumbSrc = isVideo(proj.hero) ? proj.hero.replace(/\.(webm|mp4)$/, '_thumb.webp') : proj.hero;
-  tag.innerHTML =
-    `<img class="hero-info-thumb" src="${thumbSrc}" alt="" loading="lazy" />` +
-    `<div class="hero-info-text">` +
-      `<span class="hero-info-year">${proj.year}</span>` +
-      `<span class="hero-info-name">${proj.name}</span>` +
-      `<span class="hero-info-cta">View project \u2192</span>` +
-    `</div>`;
-  heroEl.appendChild(tag);
-  imageLayer.appendChild(heroEl);
-
-  // Secondary — cap at 3, detect tall (portrait) media so CSS can square-crop it.
-  const floatsToShow = proj.floats.slice(0, 3);
-  for (let i = 0; i < floatsToShow.length; i++) {
-    const el = document.createElement('div');
-    el.className = 'scatter-img side-scatter';
-    const speeds = [0.08, -0.12, 0.18, -0.06, 0.14];
-    el.dataset.speed = speeds[i % speeds.length];
-    const media = createMedia(floatsToShow[i]);
-    el.appendChild(media);
-    const checkTall = (w, h) => { if (w && h && h > w * 1.05) el.classList.add('side-scatter-tall'); };
-    if (media.tagName === 'IMG') {
-      if (media.complete) checkTall(media.naturalWidth, media.naturalHeight);
-      else media.addEventListener('load', () => checkTall(media.naturalWidth, media.naturalHeight), { once: true });
-    } else if (media.tagName === 'VIDEO') {
-      if (media.readyState >= 1) checkTall(media.videoWidth, media.videoHeight);
-      else media.addEventListener('loadedmetadata', () => checkTall(media.videoWidth, media.videoHeight), { once: true });
-    }
-    imageLayer.appendChild(el);
+  // Row 1: three media cells
+  const floats = proj.floats || [];
+  const mediaSrcs = [proj.hero, floats[0] || proj.hero, floats[1] || floats[0] || proj.hero];
+  for (let i = 0; i < 3; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'project-cell ' + (i === 0 ? 'project-title-cell' : 'project-media-cell');
+    cell.appendChild(createMedia(mediaSrcs[i]));
+    row.appendChild(cell);
   }
 
-  // Click to open the shared slide-up project overlay (owned by overlay.js).
-  imageLayer.style.cursor = 'pointer';
-  imageLayer.addEventListener('click', () => {
+  // Row 2: labels, one column per cell
+  const labels0 = document.createElement('div');
+  labels0.className = 'project-labels';
+  labels0.innerHTML = `<span class="project-name">${proj.name}</span>`;
+  row.appendChild(labels0);
+
+  const labels1 = document.createElement('div');
+  labels1.className = 'project-labels project-labels-right';
+  labels1.innerHTML = `<span class="project-year">${proj.year}</span>`;
+  row.appendChild(labels1);
+
+  const labels2 = document.createElement('div');
+  labels2.className = 'project-labels';
+  row.appendChild(labels2);
+
+  block.appendChild(row);
+
+  block.style.cursor = 'pointer';
+  block.addEventListener('click', () => {
     if (typeof window.openProject === 'function') window.openProject(proj.id);
   });
 
-  block.appendChild(imageLayer);
   container.appendChild(block);
 });
 
-barCounter.textContent = `1 / ${projects.length}`;
+// Slide each row in when it enters the viewport.
+const blockObserver = new IntersectionObserver((entries) => {
+  for (const e of entries) {
+    if (e.isIntersecting) e.target.classList.add('in-view');
+  }
+}, { threshold: 0.2, rootMargin: '0px 0px -10% 0px' });
+document.querySelectorAll('.project-block').forEach(b => blockObserver.observe(b));
 
-// Size each info-pill thumb to exactly match its text column's measured
-// height. Aspect-ratio + flex stretch + auto width otherwise creates a
-// circular dependency; this is the simplest reliable fix.
-function syncInfoTagThumbs() {
-  document.querySelectorAll('.hero-info-tag').forEach(tag => {
-    const txt = tag.querySelector('.hero-info-text');
-    const thumb = tag.querySelector('.hero-info-thumb');
-    if (!txt || !thumb) return;
-    const h = Math.round(txt.getBoundingClientRect().height);
-    if (h < 20) return;
-    thumb.style.width = h + 'px';
-    thumb.style.height = h + 'px';
-  });
-}
-requestAnimationFrame(() => requestAnimationFrame(syncInfoTagThumbs));
-if (document.fonts && document.fonts.ready) {
-  document.fonts.ready.then(syncInfoTagThumbs);
-}
-window.addEventListener('resize', syncInfoTagThumbs);
+// Skills section — preview the project image mapped to the currently
+// hovered / focused skill, with a crossfade between images (two stacked
+// <img> elements, toggle which is active). Clicking jumps to that project
+// via the grid's #project= hash. Keyboard + touch parity with hover.
+(function initSkills() {
+  const skillItems = document.querySelectorAll('.skill-item');
+  const imgA = document.querySelector('.skill-img-a');
+  const imgB = document.querySelector('.skill-img-b');
+  const skillsList = document.querySelector('.skills-list');
+  if (!skillItems.length) return;
 
-// ========== END CTA ==========
-const cta = document.createElement('div');
-cta.className = 'home-cta';
-cta.innerHTML = `
-  <div class="cta-text">
-    <span class="cta-line cta-line-2">full</span>
-    <span class="cta-line cta-line-3">collection</span>
-  </div>
-  <a href="grid.html" class="cta-link">View all projects &rarr;</a>
-`;
-container.appendChild(cta);
-
-// ========== CTA SCROLL ANIMATION ==========
-const ctaEl = document.querySelector('.home-cta');
-if (ctaEl) {
-  const ctaObs = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      ctaEl.classList.toggle('in-view', entry.isIntersecting);
+  // Preload all skill images when the browser is idle — first hover/focus
+  // then never hits the network.
+  const preload = () => {
+    skillItems.forEach(el => {
+      const src = el.dataset.img;
+      if (!src) return;
+      const img = new Image();
+      img.src = src;
     });
-  }, { threshold: 0.3 });
-  ctaObs.observe(ctaEl);
+  };
+  if ('requestIdleCallback' in window) requestIdleCallback(preload, { timeout: 2000 });
+  else setTimeout(preload, 1500);
+
+  // Crossfade: keep two <img> layers, alternate which one is "active".
+  let activeLayer = imgA;
+  let inactiveLayer = imgB;
+  function showPreview(src) {
+    if (!imgA || !imgB || !src) return;
+    if (activeLayer.getAttribute('src') === src) {
+      activeLayer.classList.add('active');
+      return;
+    }
+    inactiveLayer.src = src;
+    const reveal = () => {
+      inactiveLayer.classList.add('active');
+      activeLayer.classList.remove('active');
+      const tmp = activeLayer; activeLayer = inactiveLayer; inactiveLayer = tmp;
+    };
+    if (inactiveLayer.complete) reveal();
+    else inactiveLayer.addEventListener('load', reveal, { once: true });
+  }
+  function hidePreview() {
+    if (imgA) imgA.classList.remove('active');
+    if (imgB) imgB.classList.remove('active');
+  }
+
+  // Hover + focus both trigger preview — keyboard parity.
+  skillItems.forEach(item => {
+    const trigger = () => {
+      showPreview(item.dataset.img);
+      skillItems.forEach(el => el.classList.toggle('is-active', el === item));
+    };
+    item.addEventListener('mouseenter', trigger);
+    item.addEventListener('focus', trigger);
+    item.addEventListener('click', (e) => {
+      const pid = item.dataset.project;
+      if (!pid) return;
+      e.preventDefault();
+      // On home, link to grid with the project hash → grid auto-opens it.
+      window.location.href = 'grid.html#project=' + pid;
+    });
+  });
+  if (skillsList) {
+    skillsList.addEventListener('mouseleave', () => {
+      hidePreview();
+      skillItems.forEach(el => el.classList.remove('is-active'));
+    });
+    skillsList.addEventListener('focusout', (e) => {
+      if (!skillsList.contains(e.relatedTarget)) {
+        hidePreview();
+        skillItems.forEach(el => el.classList.remove('is-active'));
+      }
+    });
+  }
+})();
+
+// Hide the floating Luka Grčar wordmark + Contact link once the footer is
+// visible — the footer already has its own big wordmark and "Get in touch"
+// column, so the fixed chrome is redundant and overlaps awkwardly.
+const footerEl = document.querySelector('.site-footer');
+if (footerEl) {
+  const footerObs = new IntersectionObserver((entries) => {
+    const visible = entries.some(e => e.isIntersecting);
+    document.body.classList.toggle('footer-visible', visible);
+  }, { threshold: 0.05 });
+  footerObs.observe(footerEl);
 }
+
+barCounter.textContent = `1 / ${projects.length}`;
 
 // ========== PARALLAX ==========
 const blocks = document.querySelectorAll('.project-block');
@@ -498,13 +547,11 @@ function absoluteTop(el) {
 const blockData = Array.from(blocks).map(block => ({
   el: block,
   top: absoluteTop(block),
-  titleName: block.querySelector('.title-name'),
-  heroImg: block.querySelector('.hero-scatter'),
-  infoTag: block.querySelector('.hero-info-tag'),
-  sideImgs: Array.from(block.querySelectorAll('.side-scatter')).map(img => ({
-    el: img,
-    speed: parseFloat(img.dataset.speed || 0.1),
-  })),
+  row: block.querySelector('.project-row'),
+  wideIdx: parseInt(block.querySelector('.project-row')?.dataset.wide || '0', 10),
+  cellMedia: Array.from(block.querySelectorAll('.project-cell')).map(c =>
+    c.querySelector('img, video')
+  ),
 }));
 function recomputeBlockTops() {
   for (const bd of blockData) bd.top = absoluteTop(bd.el);
@@ -552,38 +599,25 @@ function updateParallax() {
 
     if (blockTop > vh * 2 || blockTop < -bd.el.offsetHeight - vh) continue;
 
-    // Title fades only after scrolling past the title section (100vh)
-    const titleProgress = Math.max(0, Math.min(1, (-blockTop - vh * 0.5) / (vh * 0.5)));
-
-    const titleScale = 1 + titleProgress * 0.15;
-    const titleOpacity = Math.max(0, 1 - titleProgress * 1.5);
-    const letterSpacing = titleProgress * 0.5;
-    bd.titleName.style.transform = `scale(${titleScale})`;
-    bd.titleName.style.opacity = titleOpacity;
-    bd.titleName.style.letterSpacing = `${letterSpacing}em`;
-
-    // Hero scale — starts smaller when block first enters, grows to full size
-    // as side images scroll past (desktop-only; mobile skips updateParallax).
-    if (bd.heroImg) {
-      const blockH = bd.el.offsetHeight;
-      const travel = Math.max(1, blockH - vh);
-      const scrolled = Math.max(0, -blockTop);
-      const scaleProgress = Math.max(0, Math.min(1, scrolled / travel));
-      const heroScale = 0.82 + scaleProgress * 0.18;
-      bd.heroImg.style.transform = `translateY(-50%) scale(${heroScale})`;
+    // Per-cell parallax: image shifts within its cell based on how far the
+    // block is from viewport center. Cells offset from each other so the
+    // three pictures don't move in lockstep.
+    const rawOffset = (blockTop + bd.el.offsetHeight / 2 - vh / 2) / vh;
+    const centerOffset = Math.max(-1, Math.min(1, rawOffset));
+    for (let ci = 0; ci < bd.cellMedia.length; ci++) {
+      const m = bd.cellMedia[ci];
+      if (!m) continue;
+      const speed = (isMobileHome ? [30, 50, 40] : [90, 160, 130])[ci] || (isMobileHome ? 40 : 120);
+      m.style.transform = `translate3d(0, ${centerOffset * speed}px, 0)`;
     }
 
-    // Info tag — fades in once the big title is mostly faded.
-    if (bd.infoTag) {
-      bd.infoTag.style.opacity = Math.max(0, Math.min(1, (titleProgress - 0.6) / 0.3));
-    }
-
-    // Side images parallax
-    for (const img of bd.sideImgs) {
-      const rect = img.el.getBoundingClientRect();
-      const center = (rect.top + rect.height / 2 - vh / 2) / vh;
-      const y = center * img.speed * vh;
-      img.el.style.transform = `translateY(${y}px)`;
+    // Columns: equal (1fr 1fr 1fr) when the row is near the edges, wide cell
+    // expands (up to 2fr 1fr 1fr) as the row approaches viewport center.
+    if (bd.row) {
+      const expand = Math.max(0, 1 - Math.abs(centerOffset) * 1.2);
+      const cols = [1, 1, 1];
+      cols[bd.wideIdx] = 1 + expand;
+      bd.row.style.setProperty('--row-cols', `${cols[0]}fr ${cols[1]}fr ${cols[2]}fr`);
     }
 
     if (blockTop > -vh && blockTop < vh * 0.5) {
@@ -627,16 +661,25 @@ function onMobileScroll() {
 
   updateHeroParallax(scrollY, vh);
 
-  // Update title opacity only (no parallax on images — saves battery)
+  // Track which block is in view + per-cell parallax + wide-cell expand
   for (let idx = 0; idx < blockData.length; idx++) {
     const bd = blockData[idx];
     const blockTop = bd.top - scrollY;
     if (blockTop > vh * 2 || blockTop < -bd.el.offsetHeight - vh) continue;
-    const titleProgress = Math.max(0, Math.min(1, (-blockTop - vh * 0.5) / (vh * 0.5)));
-    bd.titleName.style.opacity = Math.max(0, 1 - titleProgress * 1.5);
-    bd.titleName.style.transform = `scale(${1 + titleProgress * 0.15})`;
-    bd.titleName.style.letterSpacing = `${titleProgress * 0.5}em`;
-
+    const rawOffset = (blockTop + bd.el.offsetHeight / 2 - vh / 2) / vh;
+    const centerOffset = Math.max(-1, Math.min(1, rawOffset));
+    for (let ci = 0; ci < bd.cellMedia.length; ci++) {
+      const m = bd.cellMedia[ci];
+      if (!m) continue;
+      const speed = (isMobileHome ? [30, 50, 40] : [90, 160, 130])[ci] || (isMobileHome ? 40 : 120);
+      m.style.transform = `translate3d(0, ${centerOffset * speed}px, 0)`;
+    }
+    if (bd.row) {
+      const expand = Math.max(0, 1 - Math.abs(centerOffset) * 1.2);
+      const cols = [1, 1, 1];
+      cols[bd.wideIdx] = 1 + expand;
+      bd.row.style.setProperty('--row-cols', `${cols[0]}fr ${cols[1]}fr ${cols[2]}fr`);
+    }
     if (blockTop > -vh && blockTop < vh * 0.5) {
       barName.textContent = projects[idx].name;
       barCounter.textContent = `${idx + 1} / ${projects.length}`;
@@ -719,8 +762,8 @@ if (!isMobileHome) {
     let smoothScroll = window.scrollY;
     let velocity = 0;
     let rafId = null;
-    const FRICTION = 0.88;
-    const LERP = 0.12;
+    const FRICTION = 0.91;
+    const LERP = 0.13;
 
     function maxY() { return document.documentElement.scrollHeight - window.innerHeight; }
 
@@ -740,7 +783,7 @@ if (!isMobileHome) {
 
     window.addEventListener('wheel', (e) => {
       e.preventDefault();
-      velocity += e.deltaY * 0.12;
+      velocity += e.deltaY * 0.15;
       if (!rafId) rafId = requestAnimationFrame(loop);
     }, { passive: false });
 

@@ -1,12 +1,14 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg: #0a0a0a;
-  --text: #f0f0f0;
-  --dim: rgba(255,255,255,0.45);
-  --border: rgba(255,255,255,0.08);
-  --accent: #0a2fff;
+  --bg: #faf7f2;
+  --text: #111111;
+  --dim: #111111;
+  --border: rgba(0,0,0,0.08);
+  --accent: #0066ff;
 }
+
+body { background: var(--bg); }
 
 html { scroll-behavior: smooth; touch-action: manipulation; -ms-touch-action: manipulation; }
 
@@ -46,7 +48,7 @@ body {
 
 .about-location {
   font-size: 0.85rem;
-  color: rgba(255,255,255,0.3);
+  color: #111111;
 }
 
 /* ========== SECTIONS ========== */
@@ -116,19 +118,19 @@ body {
 }
 
 .cart-item:hover {
-  border-color: rgba(255,255,255,0.3);
+  border-color: rgba(0,0,0,0.3);
   color: var(--text);
 }
 
 .cart-item.inserted {
-  background: rgba(255,255,255,0.08);
-  border-color: rgba(255,255,255,0.3);
+  background: rgba(0,0,0,0.05);
+  border-color: rgba(0,0,0,0.3);
   color: var(--text);
 }
 
 .cart-item.loading {
-  background: rgba(255,255,255,0.12);
-  border-color: rgba(255,255,255,0.4);
+  background: rgba(0,0,0,0.08);
+  border-color: rgba(0,0,0,0.4);
   color: var(--text);
 }
 
@@ -141,11 +143,11 @@ body {
    any cart is clicked or another becomes inserted. */
 .cart-item.pulse-hint {
   animation: cartPulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  border-color: rgba(255,255,255,0.35);
+  border-color: rgba(0,0,0,0.35);
 }
 @keyframes cartPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.35), 0 0 0 0 rgba(255,255,255,0.12); }
-  50%      { box-shadow: 0 0 0 6px rgba(255,255,255,0),   0 0 24px 4px rgba(255,255,255,0.18); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,0,0,0.25), 0 0 0 0 rgba(0,0,0,0.08); }
+  50%      { box-shadow: 0 0 0 6px rgba(0,0,0,0),    0 0 24px 4px rgba(0,0,0,0.12); }
 }
 
 .cart-icon {
@@ -160,8 +162,8 @@ body {
   display: inline-block;
   width: 18px;
   height: 18px;
-  border: 3px solid rgba(255,255,255,0.15);
-  border-top-color: rgba(255,255,255,0.6);
+  border: 3px solid rgba(0,0,0,0.15);
+  border-top-color: rgba(0,0,0,0.6);
   border-radius: 50%;
   animation: cartSpin 0.6s linear infinite;
 }
@@ -191,7 +193,7 @@ body {
 
 .cart-hint {
   font-size: 0.7rem;
-  color: rgba(255,255,255,0.2);
+  color: #111111;
   margin-top: 10px;
 }
 
@@ -208,7 +210,7 @@ body {
   position: absolute;
   bottom: 24px;
   font-size: 0.7rem;
-  color: rgba(255,255,255,0.2);
+  color: #111111;
   letter-spacing: 0.05em;
 }
 
@@ -232,7 +234,7 @@ body {
 .gb-block {
   width: 8px;
   height: 8px;
-  background: rgba(255,255,255,0.3);
+  background: rgba(0,0,0,0.3);
   animation: gb-blink 1s ease infinite;
 }
 .gb-block:nth-child(2) { animation-delay: 0.15s; }
@@ -247,7 +249,7 @@ body {
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: rgba(255,255,255,0.3);
+  color: #111111;
   margin-bottom: 24px;
 }
 
@@ -267,12 +269,12 @@ body {
 .about-text a {
   color: var(--text);
   text-decoration: none;
-  border-bottom: 1px solid rgba(255,255,255,0.25);
+  border-bottom: 1px solid rgba(0,0,0,0.25);
   transition: border-color 0.2s;
 }
 
 .about-text a:hover {
-  border-color: #fff;
+  border-color: #111;
 }
 
 .about-links {
@@ -297,8 +299,8 @@ body {
 }
 
 .about-icon-link:hover {
-  background: rgba(255,255,255,0.05);
-  border-color: rgba(255,255,255,0.2);
+  background: rgba(0,0,0,0.04);
+  border-color: rgba(0,0,0,0.2);
 }
 
 .about-icon-link svg {
@@ -355,7 +357,7 @@ body {
 }
 
 .skill-tag:hover {
-  border-color: rgba(255,255,255,0.3);
+  border-color: rgba(0,0,0,0.3);
   color: var(--text);
 }
 
@@ -374,7 +376,7 @@ body {
   font-family: var(--font-display);
   font-size: clamp(1.2rem, 2.5vw, 1.8rem);
   font-weight: 600;
-  color: rgba(255,255,255,0.2);
+  color: #111111;
   transition: color 0.3s;
   cursor: default;
 }
@@ -385,7 +387,7 @@ body {
 
 .clients-list span::after {
   content: ' / ';
-  color: rgba(255,255,255,0.1);
+  color: #111111;
 }
 
 .clients-list span:last-child::after {
@@ -411,7 +413,7 @@ body {
 
 .award-name {
   font-size: 0.85rem;
-  color: rgba(255,255,255,0.7);
+  color: #111111;
   flex-shrink: 0;
 }
 
@@ -425,7 +427,7 @@ body {
 
 .award-year {
   font-size: 0.75rem;
-  color: rgba(255,255,255,0.25);
+  color: #111111;
   flex-shrink: 0;
 }
 
@@ -433,7 +435,7 @@ body {
 .about-footer {
   padding: 40px 0;
   font-size: 0.7rem;
-  color: rgba(255,255,255,0.2);
+  color: #111111;
 }
 
 /* ========== BOTTOM BAR ========== */
@@ -494,7 +496,7 @@ body {
   font-size: 1.2rem;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: #f0f0f0;
+  color: #111;
   z-index: 90;
   text-decoration: none;
   cursor: pointer;

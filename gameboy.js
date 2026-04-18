@@ -25,34 +25,44 @@
     osc.stop(audioCtx.currentTime + dur);
   }
 
-  // N64 controller click samples — 16 distinct press/release snippets packed
-  // into one ogg; we decode once and play random slices for button sfx.
-  let clickBuffer = null;
-  const CLICK_STARTS = [0.02, 0.24, 0.95, 1.14, 1.85, 2.03, 2.72, 2.90, 3.60, 3.78, 4.50, 4.70, 5.37, 5.57, 6.25, 6.42];
-  const CLICK_DUR = 0.16;
+  // Button click samples — 7 distinct recordings in gameboy/sound/. Decoded
+  // once into an array and picked at random per press.
+  const CLICK_FILES = [
+    'gameboy/sound/Button_sound_01.mp4',
+    'gameboy/sound/Button_sound_02.mp3',
+    'gameboy/sound/Button_sound_03.mp4',
+    'gameboy/sound/Button_sound_04.mp4',
+    'gameboy/sound/Button_sound_05.mp4',
+    'gameboy/sound/Button_sound_06.mp4',
+    'gameboy/sound/Button_sound_07.mp4',
+  ];
+  let clickBuffers = [];
   let clickLoading = false;
   function loadClicks() {
-    if (clickBuffer || clickLoading || !audioCtx) return;
+    if (clickBuffers.length || clickLoading || !audioCtx) return;
     clickLoading = true;
-    fetch('gameboy/clicks.ogg')
-      .then(r => r.arrayBuffer())
-      .then(buf => new Promise((res, rej) => audioCtx.decodeAudioData(buf, res, rej)))
-      .then(decoded => { clickBuffer = decoded; })
-      .catch(() => { clickLoading = false; });
+    Promise.all(CLICK_FILES.map(url =>
+      fetch(url)
+        .then(r => r.arrayBuffer())
+        .then(buf => new Promise((res, rej) => audioCtx.decodeAudioData(buf, res, rej)))
+        .catch(() => null)
+    )).then(bufs => {
+      clickBuffers = bufs.filter(Boolean);
+      clickLoading = false;
+    });
   }
   function playClick(vol) {
     if (!audioCtx || soundMuted) return;
-    if (!clickBuffer) { loadClicks(); return; }
-    const start = CLICK_STARTS[Math.floor(Math.random() * CLICK_STARTS.length)];
+    if (!clickBuffers.length) { loadClicks(); return; }
+    const buf = clickBuffers[Math.floor(Math.random() * clickBuffers.length)];
     const src = audioCtx.createBufferSource();
     const gain = audioCtx.createGain();
     gain.gain.value = vol || 0.28;
-    // Tiny pitch variation so repeats don't feel identical
-    src.playbackRate.value = 0.92 + Math.random() * 0.18;
-    src.buffer = clickBuffer;
+    src.playbackRate.value = 0.94 + Math.random() * 0.12;
+    src.buffer = buf;
     src.connect(gain);
     gain.connect(audioCtx.destination);
-    src.start(0, start, CLICK_DUR);
+    src.start();
   }
 
   const sfx = {
@@ -190,7 +200,7 @@
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.0;
+  renderer.toneMappingExposure = 0.9;
   renderer.outputEncoding = THREE.sRGBEncoding;
   container.appendChild(renderer.domElement);
 
@@ -202,9 +212,9 @@
   const envMat = new THREE.ShaderMaterial({
     side: THREE.BackSide,
     uniforms: {
-      topColor: { value: new THREE.Color(0x334466) },
-      midColor: { value: new THREE.Color(0x1a1a2e) },
-      bottomColor: { value: new THREE.Color(0x0a0a12) },
+      topColor: { value: new THREE.Color(0xd8d0c2) },
+      midColor: { value: new THREE.Color(0xb8ad9c) },
+      bottomColor: { value: new THREE.Color(0x88806f) },
       hotspot1: { value: new THREE.Vector3(0.5, 0.7, 0.5) },
       hotspot2: { value: new THREE.Vector3(-0.6, 0.3, 0.4) },
     },
@@ -236,31 +246,32 @@
   envCam.update(renderer, envScene);
   scene.environment = envCam.renderTarget.texture;
 
-  // Cinematic teal & orange — movie color grading
-  scene.add(new THREE.AmbientLight(0x0a0a14, 0.1));
+  // Soft-studio — tuned for the cream background (restrained, not blown out)
+  scene.add(new THREE.HemisphereLight(0xfaf2e4, 0xbfb5a5, 0.25));
+  scene.add(new THREE.AmbientLight(0xfaf2e4, 0.08));
 
-  // Key — warm orange/amber from top-right (the "sun" side)
-  const key = new THREE.DirectionalLight(0xffcc88, 1.2);
+  // Key — soft warm daylight from top-right
+  const key = new THREE.DirectionalLight(0xfff0d8, 0.75);
   key.position.set(20, 40, 40);
   scene.add(key);
 
-  // Fill — cool teal from the shadow side
-  const fill = new THREE.DirectionalLight(0x446688, 0.3);
-  fill.position.set(-40, 0, 30);
+  // Fill — gentle cool neutral from the shadow side
+  const fill = new THREE.DirectionalLight(0xd6e4f0, 0.32);
+  fill.position.set(-40, 5, 30);
   scene.add(fill);
 
-  // Rim — strong teal edge from behind-left
-  const rim = new THREE.DirectionalLight(0x335566, 1.1);
+  // Rim — subtle cool edge from behind-left
+  const rim = new THREE.DirectionalLight(0xaac2d8, 0.35);
   rim.position.set(-30, 10, -40);
   scene.add(rim);
 
-  // Second rim — warm amber edge from behind-right
-  const rim2 = new THREE.DirectionalLight(0xcc7733, 0.4);
+  // Second rim — soft warm edge from behind-right
+  const rim2 = new THREE.DirectionalLight(0xffd8a8, 0.22);
   rim2.position.set(25, 8, -35);
   scene.add(rim2);
 
-  // Top kicker — cool overhead for subtle highlights
-  const topL = new THREE.DirectionalLight(0x8899aa, 0.15);
+  // Top kicker — gentle overhead highlight
+  const topL = new THREE.DirectionalLight(0xffffff, 0.12);
   topL.position.set(0, 60, 10);
   scene.add(topL);
 
@@ -520,6 +531,340 @@
       const jIdx = interactiveObjs.indexOf(parts.joystick);
       if (jIdx !== -1) interactiveObjs.splice(jIdx, 1);
     }
+
+    // === A / B buttons — realistic matte plastic + letter decal ===
+    function styleButton(mesh, letter) {
+      if (!mesh) return;
+      // Match the D-pad plastic — share the joystick's material
+      if (parts.joystick && parts.joystick.material) {
+        mesh.material = parts.joystick.material;
+      }
+
+      gb.updateMatrixWorld(true);
+      const wBox = new THREE.Box3().setFromObject(mesh);
+      const wSize = wBox.getSize(new THREE.Vector3());
+      const wCenter = wBox.getCenter(new THREE.Vector3());
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 256;
+      const ctx = canvas.getContext('2d');
+      const bumpCanvas = document.createElement('canvas');
+      bumpCanvas.width = bumpCanvas.height = 256;
+      const bCtx = bumpCanvas.getContext('2d');
+      function drawLetter() {
+        ctx.clearRect(0, 0, 256, 256);
+        ctx.font = '700 170px "Jost", "Futura", "Helvetica Neue", Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#242424';
+        ctx.fillText(letter, 128, 137);
+        tex.needsUpdate = true;
+
+        // Bump map — black letter on white (engraved = low), softly blurred
+        bCtx.fillStyle = '#ffffff';
+        bCtx.fillRect(0, 0, 256, 256);
+        bCtx.filter = 'blur(2.5px)';
+        bCtx.fillStyle = '#000000';
+        bCtx.font = '700 170px "Jost", "Futura", "Helvetica Neue", Arial, sans-serif';
+        bCtx.textAlign = 'center';
+        bCtx.textBaseline = 'middle';
+        bCtx.fillText(letter, 128, 137);
+        bCtx.filter = 'none';
+        bumpTex.needsUpdate = true;
+      }
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.anisotropy = 8;
+      tex.encoding = THREE.sRGBEncoding;
+      const bumpTex = new THREE.CanvasTexture(bumpCanvas);
+      bumpTex.anisotropy = 8;
+      drawLetter();
+      if (document.fonts && document.fonts.load) {
+        document.fonts.load('700 170px Jost').then(drawLetter).catch(() => {});
+      }
+      const size = Math.max(wSize.x, wSize.y) * 0.7;
+      const plane = new THREE.Mesh(
+        new THREE.PlaneGeometry(size, size),
+        new THREE.MeshStandardMaterial({
+          map: tex, bumpMap: bumpTex, bumpScale: 0.08,
+          roughness: 0.65, metalness: 0,
+          envMap: envCam.renderTarget.texture, envMapIntensity: 0.15,
+          transparent: true, alphaTest: 0.02, depthWrite: false,
+          polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
+        })
+      );
+      // Raycast down onto the dome top and sink the flat plane slightly into
+      // the dome so its edges don't float above the curved surface.
+      const bRay = new THREE.Raycaster();
+      bRay.set(new THREE.Vector3(wCenter.x, wCenter.y, wBox.max.z + 1), new THREE.Vector3(0, 0, -1));
+      const hits = bRay.intersectObject(mesh, true);
+      const peakZ = hits.length ? hits[0].point.z : wBox.max.z;
+      // Sink by a fraction of the button radius so edges merge flush into dome
+      const sink = Math.max(wSize.x, wSize.y) * -0.005;
+      plane.position.set(wCenter.x, wCenter.y, peakZ - sink);
+      plane.raycast = () => {};
+      scene.add(plane);
+      mesh.attach(plane);
+
+      // Glow overlay — a second plane with a white letter + halo, fades in
+      // on press (flashLetterGlow).
+      const gCanvas = document.createElement('canvas');
+      gCanvas.width = gCanvas.height = 256;
+      const gCtx = gCanvas.getContext('2d');
+      function drawGlow() {
+        gCtx.clearRect(0, 0, 256, 256);
+        gCtx.font = '700 170px "Jost", "Futura", "Helvetica Neue", Arial, sans-serif';
+        gCtx.textAlign = 'center';
+        gCtx.textBaseline = 'middle';
+        gCtx.shadowColor = 'rgba(255,255,255,0.95)';
+        gCtx.shadowBlur = 34;
+        gCtx.fillStyle = '#ffffff';
+        gCtx.fillText(letter, 128, 137);
+        gCtx.shadowBlur = 10;
+        gCtx.fillText(letter, 128, 137);
+        gTex.needsUpdate = true;
+      }
+      const gTex = new THREE.CanvasTexture(gCanvas);
+      gTex.anisotropy = 8;
+      gTex.encoding = THREE.sRGBEncoding;
+      drawGlow();
+      if (document.fonts && document.fonts.load) {
+        document.fonts.load('700 170px Jost').then(drawGlow).catch(() => {});
+      }
+      const glowPlane = new THREE.Mesh(
+        new THREE.PlaneGeometry(size * 1.15, size * 1.15),
+        new THREE.MeshBasicMaterial({
+          map: gTex, transparent: true, opacity: 0, depthWrite: false,
+          blending: THREE.AdditiveBlending,
+          polygonOffset: true, polygonOffsetFactor: -3, polygonOffsetUnits: -3,
+        })
+      );
+      glowPlane.position.set(wCenter.x, wCenter.y, peakZ - sink + 0.01);
+      glowPlane.raycast = () => {};
+      scene.add(glowPlane);
+      mesh.attach(glowPlane);
+      mesh.userData.glowPlane = glowPlane;
+    }
+
+    function flashLetterGlow(action) {
+      let plane = null;
+      if (action === 'a' && parts.A && parts.A.userData.glowPlane) plane = parts.A.userData.glowPlane;
+      else if (action === 'b' && parts.B && parts.B.userData.glowPlane) plane = parts.B.userData.glowPlane;
+      else if (parts.joystick && parts.joystick.userData.arrowGlows) {
+        plane = parts.joystick.userData.arrowGlows[action];
+      }
+      if (!plane) return;
+      const mat = plane.material;
+      const start = performance.now();
+      const dur = 280;
+      mat.opacity = 1;
+      (function tick(now) {
+        const t = Math.min(1, (now - start) / dur);
+        mat.opacity = 1 - t;
+        if (t < 1) requestAnimationFrame(tick);
+        else mat.opacity = 0;
+      })(performance.now());
+    }
+    // Expose for pressButton
+    window._gbFlashLetter = flashLetterGlow;
+    // Darken the shared button plastic a touch (A, B + D-pad)
+    if (parts.joystick && parts.joystick.material) {
+      parts.joystick.material = parts.joystick.material.clone();
+      if (parts.joystick.material.color) parts.joystick.material.color.multiplyScalar(0.55);
+    }
+    styleButton(parts.A, 'A');
+    styleButton(parts.B, 'B');
+
+    // === D-pad direction arrows (subtle triangle decals) ===
+    if (parts.joystick) {
+      gb.updateMatrixWorld(true);
+      const jBox = new THREE.Box3().setFromObject(parts.joystick);
+      const jSize = jBox.getSize(new THREE.Vector3());
+      const jCenter = jBox.getCenter(new THREE.Vector3());
+
+      function makeArrowMaps(rotationRad) {
+        function triPath(ctx2) {
+          ctx2.beginPath();
+          ctx2.moveTo(0, -30);
+          ctx2.lineTo(26, 18);
+          ctx2.lineTo(-26, 18);
+          ctx2.closePath();
+        }
+        // Color map — dark triangle with dust-rim highlight inside
+        const cCanvas = document.createElement('canvas');
+        cCanvas.width = cCanvas.height = 128;
+        const cCtx = cCanvas.getContext('2d');
+        cCtx.translate(64, 64);
+        cCtx.rotate(rotationRad);
+        cCtx.fillStyle = '#242424';
+        triPath(cCtx);
+        cCtx.fill();
+        cCtx.save();
+        cCtx.globalCompositeOperation = 'source-atop';
+        cCtx.lineWidth = 1.6;
+        cCtx.strokeStyle = 'rgba(230, 215, 185, 0.3)';
+        triPath(cCtx);
+        cCtx.stroke();
+        cCtx.restore();
+
+        // Bump map — black triangle on white (engraved = low), softly blurred
+        const bCanvas = document.createElement('canvas');
+        bCanvas.width = bCanvas.height = 128;
+        const bCtx2 = bCanvas.getContext('2d');
+        bCtx2.fillStyle = '#ffffff';
+        bCtx2.fillRect(0, 0, 128, 128);
+        bCtx2.translate(64, 64);
+        bCtx2.rotate(rotationRad);
+        bCtx2.filter = 'blur(2px)';
+        bCtx2.fillStyle = '#000000';
+        triPath(bCtx2);
+        bCtx2.fill();
+        bCtx2.filter = 'none';
+
+        const tex = new THREE.CanvasTexture(cCanvas);
+        tex.anisotropy = 8;
+        tex.encoding = THREE.sRGBEncoding;
+        const bumpTex = new THREE.CanvasTexture(bCanvas);
+        bumpTex.anisotropy = 8;
+        return { tex, bumpTex };
+      }
+
+      const armLen = Math.max(jSize.x, jSize.y) * 0.29;
+      const triSize = Math.max(jSize.x, jSize.y) * 0.28;
+      // Raycast down onto the joystick at each arm position so the triangle
+      // sits on the actual plastic surface instead of the overall bbox top.
+      const dRay = new THREE.Raycaster();
+      const downDir = new THREE.Vector3(0, 0, -1);
+      function surfaceZ(x, y) {
+        dRay.set(new THREE.Vector3(x, y, jBox.max.z + 1), downDir);
+        const hits = dRay.intersectObject(parts.joystick, true);
+        return hits.length ? hits[0].point.z + 0.002 : jBox.max.z;
+      }
+      function makeArrowGlowTex(rotationRad) {
+        const canvas = document.createElement('canvas');
+        canvas.width = canvas.height = 128;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, 128, 128);
+        ctx.save();
+        ctx.translate(64, 64);
+        ctx.rotate(rotationRad);
+        ctx.shadowColor = 'rgba(255,255,255,0.95)';
+        ctx.shadowBlur = 28;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(0, -30);
+        ctx.lineTo(26, 18);
+        ctx.lineTo(-26, 18);
+        ctx.closePath();
+        ctx.fill();
+        ctx.shadowBlur = 8;
+        ctx.fill();
+        ctx.restore();
+        const tex = new THREE.CanvasTexture(canvas);
+        tex.anisotropy = 8;
+        tex.encoding = THREE.sRGBEncoding;
+        tex.needsUpdate = true;
+        return tex;
+      }
+
+      const dirs = [
+        ['up',    0,  armLen, 0],
+        ['down',  0, -armLen, Math.PI],
+        ['left', -armLen, 0, -Math.PI / 2],
+        ['right', armLen, 0,  Math.PI / 2],
+      ];
+      const arrowGlows = {};
+      for (const [name, dx, dy, rot] of dirs) {
+        const wx = jCenter.x + dx, wy = jCenter.y + dy;
+        const sz = surfaceZ(wx, wy);
+        const { tex: aTex, bumpTex: aBumpTex } = makeArrowMaps(rot);
+        const plane = new THREE.Mesh(
+          new THREE.PlaneGeometry(triSize, triSize),
+          new THREE.MeshStandardMaterial({
+            map: aTex, bumpMap: aBumpTex, bumpScale: 0.07,
+            roughness: 0.65, metalness: 0,
+            envMap: envCam.renderTarget.texture, envMapIntensity: 0.15,
+            transparent: true, alphaTest: 0.02, depthWrite: false,
+            polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
+          })
+        );
+        plane.position.set(wx, wy, sz);
+        plane.raycast = () => {};
+        scene.add(plane);
+        parts.joystick.attach(plane);
+
+        // Glow overlay — additive blend, opacity 0 until flashLetterGlow fires
+        const glowPlane = new THREE.Mesh(
+          new THREE.PlaneGeometry(triSize * 1.25, triSize * 1.25),
+          new THREE.MeshBasicMaterial({
+            map: makeArrowGlowTex(rot), transparent: true, opacity: 0, depthWrite: false,
+            blending: THREE.AdditiveBlending,
+            polygonOffset: true, polygonOffsetFactor: -3, polygonOffsetUnits: -3,
+          })
+        );
+        glowPlane.position.set(wx, wy, sz + 0.01);
+        glowPlane.raycast = () => {};
+        scene.add(glowPlane);
+        parts.joystick.attach(glowPlane);
+        arrowGlows[name] = glowPlane;
+      }
+      parts.joystick.userData.arrowGlows = arrowGlows;
+    }
+
+    // === START / RESET labels on the body plastic under the small buttons ===
+    function addBodyLabel(btnMesh, labelText) {
+      if (!btnMesh) return;
+      const bodyMesh = parts['body-body'];
+      if (!bodyMesh) return;
+      gb.updateMatrixWorld(true);
+      const bBox = new THREE.Box3().setFromObject(btnMesh);
+      const bCenter = bBox.getCenter(new THREE.Vector3());
+      const bSize = bBox.getSize(new THREE.Vector3());
+
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 128;
+      const ctx = canvas.getContext('2d');
+      function draw() {
+        ctx.clearRect(0, 0, 512, 128);
+        ctx.font = '700 62px "Jost", "Futura", "Helvetica Neue", Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        // Embossed yellow plastic — same hue as the body, shadow for raised look
+        ctx.fillStyle = 'rgba(120, 80, 10, 0.55)';
+        ctx.fillText(labelText, 256, 68);
+        ctx.fillStyle = '#c9a12a';
+        ctx.fillText(labelText, 256, 62);
+        tex.needsUpdate = true;
+      }
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.anisotropy = 8;
+      tex.encoding = THREE.sRGBEncoding;
+      draw();
+      if (document.fonts && document.fonts.load) {
+        document.fonts.load('700 62px Jost').then(draw).catch(() => {});
+      }
+
+      const labelW = bSize.x * 2.6;
+      const labelH = labelW * 0.25;
+      const plane = new THREE.Mesh(
+        new THREE.PlaneGeometry(labelW, labelH),
+        new THREE.MeshBasicMaterial({
+          map: tex, transparent: true, depthWrite: false,
+          polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
+        })
+      );
+      // Place below the button, raycast down to land on body plastic surface
+      const labelY = bCenter.y - bSize.y * 1.4;
+      const bRay = new THREE.Raycaster();
+      bRay.set(new THREE.Vector3(bCenter.x, labelY, bBox.max.z + 1), new THREE.Vector3(0, 0, -1));
+      const hits = bRay.intersectObject(bodyMesh, true);
+      const surfZ = hits.length ? hits[0].point.z + 0.003 : bBox.max.z - bSize.z * 0.3;
+      plane.position.set(bCenter.x, labelY, surfZ);
+      plane.raycast = () => {};
+      scene.add(plane);
+      bodyMesh.attach(plane);
+    }
+    addBodyLabel(parts.reset, 'START');
+    addBodyLabel(parts.power, 'SELECT');
 
     drawScreen();
   }, undefined, (err) => {
@@ -3006,6 +3351,14 @@
 
       pressButton(obj.userData.action);
 
+      // Glow flash only for the real A/B buttons and D-pad (not START/SELECT
+      // which happen to share the same action codes internally).
+      if (window._gbFlashLetter) {
+        if (obj.name === 'A' || obj.name === 'B' || obj.userData.isJoystick) {
+          window._gbFlashLetter(obj.userData.action);
+        }
+      }
+
       // Body reaction — nudge then spring back
       // Body reaction — uses separate nudge offset that auto-decays
       const nudge = 0.08;
@@ -3165,6 +3518,7 @@
     if (!action) return;
     e.preventDefault();
     pressButton(action, false);
+    if (window._gbFlashLetter) window._gbFlashLetter(action);
   });
 
   // Mouse wheel navigation — disabled during gameplay and on the insert screen

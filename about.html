@@ -16,7 +16,7 @@
   <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Jost:wght@500;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="tokens.css" />
   <link rel="stylesheet" href="about.css" />
   <link rel="stylesheet" href="bar.css" />
@@ -24,7 +24,7 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
-<body class="theme-dark">
+<body>
 
   <main class="about-page">
 
@@ -149,12 +149,12 @@
       <div class="section-label">Our approach</div>
       <div class="about-grid">
         <div class="about-col">
-          <p class="about-text"><strong style="color:#fff">Your vision first.</strong> We take time to understand your brand, your audience, and your goals before we touch a single pixel.</p>
-          <p class="about-text"><strong style="color:#fff">Craft over shortcuts.</strong> From concept to final delivery, every detail is considered. We don't cut corners.</p>
+          <p class="about-text"><strong style="color:#111">Your vision first.</strong> We take time to understand your brand, your audience, and your goals before we touch a single pixel.</p>
+          <p class="about-text"><strong style="color:#111">Craft over shortcuts.</strong> From concept to final delivery, every detail is considered. We don't cut corners.</p>
         </div>
         <div class="about-col">
-          <p class="about-text"><strong style="color:#fff">Reliable partnership.</strong> Clear communication, transparent timelines, and work delivered when promised. No surprises.</p>
-          <p class="about-text"><strong style="color:#fff">Long-term relationships.</strong> Many of our clients return year after year. That trust is earned through consistent quality and care.</p>
+          <p class="about-text"><strong style="color:#111">Reliable partnership.</strong> Clear communication, transparent timelines, and work delivered when promised. No surprises.</p>
+          <p class="about-text"><strong style="color:#111">Long-term relationships.</strong> Many of our clients return year after year. That trust is earned through consistent quality and care.</p>
         </div>
       </div>
     </section>
@@ -269,6 +269,8 @@
 
   // Contact form
   const overlay = document.getElementById('contactOverlay');
+  // Auto-open when arrived via #contact hash (e.g. from footer "Contact me").
+  if (window.location.hash === '#contact') overlay.classList.add('open');
   document.getElementById('openContactForm').addEventListener('click', (e) => {
     e.preventDefault();
     overlay.classList.add('open');
@@ -408,6 +410,6 @@
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/build/three.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/GLTFLoader.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/DRACOLoader.js"></script>
-  <script defer src="gameboy.js?v=48"></script>
+  <script defer src="gameboy.js?v=98"></script>
 </body>
 </html>
