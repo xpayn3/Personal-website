@@ -14,6 +14,63 @@
   font-family: var(--font-body);
 }
 
+/* CRT noise grain overlay — canvas injected by JS as first child */
+.footer-noise {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.1;
+  mix-blend-mode: multiply;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  z-index: 0;
+}
+.site-footer > :not(.footer-noise) { position: relative; z-index: 1; }
+
+/* Slide-in animation — text starts translated down + hidden, fades up when
+   body gets .footer-visible (set by an IntersectionObserver on the footer). */
+.footer-mark,
+.footer-wordmark,
+.footer-tagline,
+.footer-col,
+.footer-baseline > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1),
+              transform 0.7s cubic-bezier(0.16,1,0.3,1);
+}
+body.footer-visible .footer-mark,
+body.footer-visible .footer-wordmark,
+body.footer-visible .footer-tagline,
+body.footer-visible .footer-col,
+body.footer-visible .footer-baseline > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+body.footer-visible .footer-mark      { transition-delay: 0ms; }
+body.footer-visible .footer-wordmark  { transition-delay: 60ms; }
+body.footer-visible .footer-tagline   { transition-delay: 120ms; }
+body.footer-visible .footer-col:nth-child(1) { transition-delay: 240ms; }
+body.footer-visible .footer-col:nth-child(2) { transition-delay: 300ms; }
+body.footer-visible .footer-col:nth-child(3) { transition-delay: 360ms; }
+body.footer-visible .footer-col:nth-child(4) { transition-delay: 420ms; }
+body.footer-visible .footer-baseline > *:nth-child(1) { transition-delay: 520ms; }
+body.footer-visible .footer-baseline > *:nth-child(2) { transition-delay: 580ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .footer-mark,
+  .footer-wordmark,
+  .footer-tagline,
+  .footer-col,
+  .footer-baseline > * {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 /* Top row — icon left, wordmark centered, tagline right. All top-aligned. */
 .footer-top {
   display: grid;

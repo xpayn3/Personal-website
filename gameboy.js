@@ -104,13 +104,9 @@
         playTone(60, 0.12, 'sine', 0.1);
       }, 250);
 
-      // Latch click
-      setTimeout(() => playTone(2000, 0.015, 'square', 0.08), 300);
     },
     cartOut: () => {
       if (!audioCtx) return;
-      // Latch release click
-      playTone(1800, 0.02, 'square', 0.08);
       // Short friction slide
       setTimeout(() => {
         const pop = audioCtx.createBufferSource();
@@ -127,19 +123,29 @@
       }, 50);
     },
     boot: () => {
-      // Victory-style startup fanfare
-      const melody = [
-        [392, 0.12], [392, 0.12], [392, 0.12], [523, 0.3],  // G G G C
-        [466, 0.12], [523, 0.12], [587, 0.12], [784, 0.4],   // Bb C D G
+      if (!audioCtx || soundMuted) return;
+      // DMG-style "ding" — bell chime, layered sine partials with
+      // exponential ring-out. Approximates the iconic Game Boy power-on tone.
+      const t0 = audioCtx.currentTime + 0.22; // small delay so logo begins first
+      const partials = [
+        { f: 523.25, amp: 0.22, decay: 1.4 },  // C5 fundamental
+        { f: 1046.5, amp: 0.13, decay: 1.0 },  // +octave
+        { f: 1568.0, amp: 0.07, decay: 0.7 },  // +octave + fifth
+        { f: 2093.0, amp: 0.04, decay: 0.45 }, // 2 octaves up
       ];
-      let t = 0;
-      melody.forEach(([f, d]) => {
-        setTimeout(() => playTone(f, d + 0.05, 'square', 0.06), t * 1000);
-        t += d + 0.02;
+      partials.forEach(p => {
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = p.f;
+        g.gain.setValueAtTime(0, t0);
+        g.gain.linearRampToValueAtTime(p.amp, t0 + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + p.decay);
+        osc.connect(g);
+        g.connect(audioCtx.destination);
+        osc.start(t0);
+        osc.stop(t0 + p.decay + 0.05);
       });
-      // Bass chord underneath
-      setTimeout(() => playTone(131, 0.8, 'triangle', 0.08), 200);
-      setTimeout(() => playTone(196, 0.6, 'triangle', 0.06), 600);
     },
     bootSnake: () => {
       // Rattlesnake rattle — rapid ascending clicks
@@ -246,34 +252,64 @@
   envCam.update(renderer, envScene);
   scene.environment = envCam.renderTarget.texture;
 
-  // Soft-studio — tuned for the cream background (restrained, not blown out)
-  scene.add(new THREE.HemisphereLight(0xfaf2e4, 0xbfb5a5, 0.25));
-  scene.add(new THREE.AmbientLight(0xfaf2e4, 0.08));
+  // Upgrade to a real HDRI when RGBELoader is available — gives proper IBL
+  // reflections on the plastic + glass. Falls back to the procedural env if
+  // the HDRI fails to load.
+  let hdrEnvMap = null;
+  function applyHdrEnv() {
+    if (!hdrEnvMap) return;
+    const bm = parts['body-body'] && parts['body-body'].material;
+    if (bm) { bm.envMap = hdrEnvMap; bm.needsUpdate = true; }
+  }
+  if (THREE.RGBELoader) {
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    pmrem.compileEquirectangularShader();
+    new THREE.RGBELoader()
+      .setDataType(THREE.HalfFloatType)
+      .load(
+        'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_08_1k.hdr',
+        (hdrTex) => {
+          hdrEnvMap = pmrem.fromEquirectangular(hdrTex).texture;
+          scene.environment = hdrEnvMap;
+          hdrTex.dispose();
+          pmrem.dispose();
+          applyHdrEnv();
+        },
+        undefined,
+        () => { /* keep procedural env as fallback */ }
+      );
+  }
+
+  // IBL from HDRI now does most of the work — direct lights are accents only.
+  scene.add(new THREE.HemisphereLight(0xfaf2e4, 0xbfb5a5, 0.1));
+  scene.add(new THREE.AmbientLight(0xfaf2e4, 0.03));
 
   // Key — soft warm daylight from top-right
-  const key = new THREE.DirectionalLight(0xfff0d8, 0.75);
+  const key = new THREE.DirectionalLight(0xfff0d8, 0.45);
   key.position.set(20, 40, 40);
   scene.add(key);
 
-  // Fill — gentle cool neutral from the shadow side
-  const fill = new THREE.DirectionalLight(0xd6e4f0, 0.32);
+  // Fill — very gentle cool neutral from the shadow side
+  const fill = new THREE.DirectionalLight(0xd6e4f0, 0.15);
   fill.position.set(-40, 5, 30);
   scene.add(fill);
 
   // Rim — subtle cool edge from behind-left
-  const rim = new THREE.DirectionalLight(0xaac2d8, 0.35);
+  const rim = new THREE.DirectionalLight(0xaac2d8, 0.22);
   rim.position.set(-30, 10, -40);
   scene.add(rim);
 
   // Second rim — soft warm edge from behind-right
-  const rim2 = new THREE.DirectionalLight(0xffd8a8, 0.22);
+  const rim2 = new THREE.DirectionalLight(0xffd8a8, 0.15);
   rim2.position.set(25, 8, -35);
   scene.add(rim2);
 
-  // Top kicker — gentle overhead highlight
-  const topL = new THREE.DirectionalLight(0xffffff, 0.12);
-  topL.position.set(0, 60, 10);
-  scene.add(topL);
+  // Front spotlight — subtle warm pool hits the face when viewed from +Z
+  const frontSpot = new THREE.SpotLight(0xfff2d8, 0.6, 260, Math.PI / 7, 0.55, 1.5);
+  frontSpot.position.set(55, 30, 100);
+  frontSpot.target.position.set(25, 0, 0);
+  scene.add(frontSpot);
+  scene.add(frontSpot.target);
 
   // === GAMEBOY GROUP ===
   const gb = new THREE.Group();
@@ -359,7 +395,38 @@
     Promise.all(texPromises).then(([baseT, normT, roughT, metalT, aoT, bumpT, glassRoughT]) => {
       const allBody = [baseT, normT, roughT, metalT, aoT, bumpT].filter(Boolean);
       allBody.forEach(t => { t.flipY = false; });
-      if (baseT) baseT.encoding = THREE.sRGBEncoding;
+
+      // Gamma-lift the base color a touch (<1 brightens)
+      if (baseT && baseT.image) {
+        const img = baseT.image;
+        const c = document.createElement('canvas');
+        c.width = img.width; c.height = img.height;
+        const cx = c.getContext('2d');
+        cx.drawImage(img, 0, 0);
+        const data = cx.getImageData(0, 0, c.width, c.height);
+        const g = 0.82;
+        const contrast = 1.12; // pivot around 0.5
+        for (let i = 0; i < data.data.length; i += 4) {
+          let r = Math.pow(data.data[i]   / 255, g);
+          let gC = Math.pow(data.data[i+1] / 255, g);
+          let b = Math.pow(data.data[i+2] / 255, g);
+          r = Math.min(1, Math.max(0, 0.5 + (r - 0.5) * contrast));
+          gC = Math.min(1, Math.max(0, 0.5 + (gC - 0.5) * contrast));
+          b = Math.min(1, Math.max(0, 0.5 + (b - 0.5) * contrast));
+          data.data[i]   = 255 * r;
+          data.data[i+1] = 255 * gC;
+          data.data[i+2] = 255 * b;
+        }
+        cx.putImageData(data, 0, 0);
+        const lifted = new THREE.CanvasTexture(c);
+        lifted.flipY = false;
+        lifted.encoding = THREE.sRGBEncoding;
+        lifted.anisotropy = baseT.anisotropy || 1;
+        lifted.needsUpdate = true;
+        baseT = lifted;
+      } else if (baseT) {
+        baseT.encoding = THREE.sRGBEncoding;
+      }
 
       const bodyMesh = parts['body-body'];
       if (bodyMesh && baseT) {
@@ -439,6 +506,26 @@
     if (parts.casette) {
       parts.casette.userData.baseY = parts.casette.position.y;
       parts.casette.visible = false; // hidden on load
+      // Match the body brightness — saturated yellow was being pumped by the
+      // HDRI. Darken the color and cut env reflections.
+      if (parts.casette.material) {
+        parts.casette.material = parts.casette.material.clone();
+        const cm = parts.casette.material;
+        if (cm.color) cm.color.multiplyScalar(0.8);
+        if ('envMapIntensity' in cm) cm.envMapIntensity = 0.45;
+        cm.needsUpdate = true;
+        // Remember the baseline tint so per-cart color swaps are composable.
+        if (cm.color) parts.casette.userData.baseColor = cm.color.clone();
+        // Cache the plastic material + build a dedicated gold material for
+        // the portfolio cart (swapped in by applyCartTint).
+        parts.casette.userData.plasticMat = cm;
+        parts.casette.userData.goldMat = new THREE.MeshStandardMaterial({
+          color: 0xc9a24a,
+          metalness: 1.0,
+          roughness: 0.26,
+          envMapIntensity: 1.0,
+        });
+      }
 
       // Create invisible hit zone where cartridge slot is (on the back)
       const cBox = new THREE.Box3().setFromObject(parts.casette);
@@ -609,14 +696,20 @@
       const gCanvas = document.createElement('canvas');
       gCanvas.width = gCanvas.height = 256;
       const gCtx = gCanvas.getContext('2d');
+      // A glows green, B glows red. Halo + core colors per letter.
+      const glowColors = {
+        A: { halo: 'rgba(60, 255, 120, 0.95)', core: '#b6ffca' },
+        B: { halo: 'rgba(255, 60, 70, 0.95)',  core: '#ffc8c8' },
+      };
+      const gcol = glowColors[letter] || { halo: 'rgba(255,255,255,0.95)', core: '#ffffff' };
       function drawGlow() {
         gCtx.clearRect(0, 0, 256, 256);
         gCtx.font = '700 170px "Jost", "Futura", "Helvetica Neue", Arial, sans-serif';
         gCtx.textAlign = 'center';
         gCtx.textBaseline = 'middle';
-        gCtx.shadowColor = 'rgba(255,255,255,0.95)';
+        gCtx.shadowColor = gcol.halo;
         gCtx.shadowBlur = 34;
-        gCtx.fillStyle = '#ffffff';
+        gCtx.fillStyle = gcol.core;
         gCtx.fillText(letter, 128, 137);
         gCtx.shadowBlur = 10;
         gCtx.fillText(letter, 128, 137);
@@ -665,10 +758,50 @@
     }
     // Expose for pressButton
     window._gbFlashLetter = flashLetterGlow;
-    // Darken the shared button plastic a touch (A, B + D-pad)
+    // Darken the shared button plastic a touch (A, B + D-pad), keep it shiny
+    // but add a procedural fingerprint/smudge roughness map so light moving
+    // across the surface reveals soft oily patches where a thumb would sit.
     if (parts.joystick && parts.joystick.material) {
       parts.joystick.material = parts.joystick.material.clone();
-      if (parts.joystick.material.color) parts.joystick.material.color.multiplyScalar(0.55);
+      const m = parts.joystick.material;
+      if (m.color) m.color.multiplyScalar(0.55);
+      if ('roughness' in m) m.roughness = 0.5;
+      if ('metalness' in m) m.metalness = 0.45;
+      if ('envMapIntensity' in m) m.envMapIntensity = 0.8;
+
+      // Build a fingerprint/smudge roughness texture
+      const rSize = 256;
+      const rC = document.createElement('canvas');
+      rC.width = rC.height = rSize;
+      const rx = rC.getContext('2d');
+      rx.fillStyle = '#d9d9d9'; // baseline high roughness (~0.85)
+      rx.fillRect(0, 0, rSize, rSize);
+      // A handful of soft oily blobs — darker = smoother touched spots
+      for (let i = 0; i < 7; i++) {
+        const x = Math.random() * rSize;
+        const y = Math.random() * rSize;
+        const r = 34 + Math.random() * 70;
+        const grad = rx.createRadialGradient(x, y, 0, x, y, r);
+        grad.addColorStop(0, 'rgba(70, 70, 70, 0.55)');
+        grad.addColorStop(1, 'rgba(70, 70, 70, 0)');
+        rx.fillStyle = grad;
+        rx.fillRect(0, 0, rSize, rSize);
+      }
+      // Fine grain for skin texture
+      const imgData = rx.getImageData(0, 0, rSize, rSize);
+      for (let i = 0; i < imgData.data.length; i += 4) {
+        const n = (Math.random() - 0.5) * 18;
+        imgData.data[i]     = Math.min(255, Math.max(0, imgData.data[i]     + n));
+        imgData.data[i + 1] = Math.min(255, Math.max(0, imgData.data[i + 1] + n));
+        imgData.data[i + 2] = Math.min(255, Math.max(0, imgData.data[i + 2] + n));
+      }
+      rx.putImageData(imgData, 0, 0);
+      const rMap = new THREE.CanvasTexture(rC);
+      rMap.wrapS = rMap.wrapT = THREE.RepeatWrapping;
+      rMap.anisotropy = 4;
+      rMap.needsUpdate = true;
+      m.roughnessMap = rMap;
+      m.needsUpdate = true;
     }
     styleButton(parts.A, 'A');
     styleButton(parts.B, 'B');
@@ -1020,7 +1153,7 @@
   let currentOption = null;
   let optCursor = 0;
   // Helper: dim factor 0.2–1.0 from contrastLevel
-  const contrastFactor = () => 0.2 + (contrastLevel / 9) * 0.8;
+  const contrastFactor = () => 0.08 + (contrastLevel / 9) * 1.82;
 
   const projDescs = [
     'Bridge weigh-in-motion animation for Cestel',
@@ -2860,12 +2993,35 @@
     }
   }
 
+  // Per-cart tint multipliers on top of the baked yellow base texture.
+  const CART_TINTS = {
+    portfolio: [1.00, 1.00, 1.00],  // original yellow
+    snake:     [0.45, 1.00, 0.55],  // green
+    breakout:  [0.55, 0.85, 1.25],  // blue
+    frogger:   [1.20, 0.70, 1.10],  // magenta / pink
+  };
+  function applyCartTint(cartId) {
+    const mesh = parts.casette;
+    if (!mesh || !mesh.userData.plasticMat) return;
+    if (cartId === 'portfolio' && mesh.userData.goldMat) {
+      mesh.material = mesh.userData.goldMat;
+      return;
+    }
+    mesh.material = mesh.userData.plasticMat;
+    if (!mesh.material || !mesh.userData.baseColor) return;
+    const tint = CART_TINTS[cartId] || CART_TINTS.portfolio;
+    const base = mesh.userData.baseColor;
+    mesh.material.color.setRGB(base.r * tint[0], base.g * tint[1], base.b * tint[2]);
+    mesh.material.needsUpdate = true;
+  }
+
   // Reusable: select and insert a cartridge by ID
   function selectCartridge(cartId) {
     if (screen !== 'insert') return;
     activeCart = cartId;
     currentMenuItems = cartridges[cartId].menuItems;
     currentHeader = cartridges[cartId].header;
+    applyCartTint(cartId);
     // Wake screen if sleeping, then insert
     if (screenOff) wakeScreen();
     lastInteraction = performance.now();
@@ -3714,48 +3870,82 @@
 
   // Expose cart swap for HTML UI
   window.gbSelectCartridge = selectCartridge;
+  window.gbSetMuted = (m) => { soundMuted = !!m; };
+  window.gbIsMuted = () => soundMuted;
   window.gbEjectCartridge = function() {
     if (!cartInserted) return;
     const cart = parts.casette;
     if (!cart) return;
     initAudio();
-    sfx.cartOut();
-    targetCamZ = 180;
-    const baseY = cart.userData.baseY;
-    const ejectY = baseY + 160;
-    const ejectStart = performance.now();
-    const ejectDur = 1000;
-    setLedInactive();
-    screen = 'insert'; cartInserted = false; activeCart = null;
-    scroll = 0; detailCursor = 0; cursor = 0; projScreen = false; trophyScreen = false;
-    drawScreen();
-    window.dispatchEvent(new Event('gb-ejected'));
-    // Remove eject hit zone
-    const ejectIdx = interactiveObjs.findIndex(o => o.userData.action === 'ejectCart');
-    if (ejectIdx !== -1) { const e = interactiveObjs[ejectIdx]; if (e.parent) e.parent.remove(e); interactiveObjs.splice(ejectIdx, 1); }
-    function ejectAnim(now) {
-      const elapsed = now - ejectStart;
-      if (elapsed < ejectDur) {
-        cart.position.y = baseY + (ejectY - baseY) * (elapsed / ejectDur) * (elapsed / ejectDur);
-        requestAnimationFrame(ejectAnim);
-      } else {
-        cart.visible = false; cart.position.y = baseY; autoRotate = true;
-        // Recreate insert slot hit zone
-        if (!interactiveObjs.find(o => o.userData.action === 'insertCart')) {
-          const cBox = new THREE.Box3().setFromObject(cart);
-          const cSize = cBox.getSize(new THREE.Vector3());
-          const cCenter = cBox.getCenter(new THREE.Vector3());
-          const newSlot = new THREE.Mesh(
-            new THREE.BoxGeometry(cSize.x * 2, cSize.y * 1.5, 0.5),
-            new THREE.MeshBasicMaterial({ visible: false })
-          );
-          newSlot.position.set(cCenter.x, cCenter.y, cCenter.z - cSize.z * 0.5);
-          newSlot.userData.action = 'insertCart';
-          gb.children[0].add(newSlot);
-          interactiveObjs.push(newSlot);
+    autoRotate = false;
+    // Spin to the back-facing orientation first so the cart slide-out is
+    // visible, THEN run the eject animation. Inject small randomness so
+    // the flip reads hand-held rather than servo-perfect.
+    const curY = targetRot.y;
+    const twoPi = Math.PI * 2;
+    const backBase = Math.round((curY - Math.PI) / twoPi) * twoPi + Math.PI;
+    const yJitter = (Math.random() - 0.5) * 0.28;
+    const xJitter = (Math.random() - 0.5) * 0.14;
+    const overshoot = (Math.random() < 0.5 ? -1 : 1) * (0.18 + Math.random() * 0.12);
+    const backY = backBase + yJitter;
+    const baseTargetX = targetRot.x || 0;
+    targetRot.y = backY + overshoot;
+    targetRot.x = baseTargetX + xJitter;
+    setTimeout(() => {
+      targetRot.y = backY;
+      targetRot.x = baseTargetX + xJitter * 0.3;
+    }, 260);
+
+    function doEject() {
+      sfx.cartOut();
+      targetCamZ = 180;
+      const baseY = cart.userData.baseY;
+      const ejectY = baseY + 160;
+      const ejectStart = performance.now();
+      const ejectDur = 1000;
+      setLedInactive();
+      screen = 'insert'; cartInserted = false; activeCart = null;
+      scroll = 0; detailCursor = 0; cursor = 0; projScreen = false; trophyScreen = false;
+      drawScreen();
+      window.dispatchEvent(new Event('gb-ejected'));
+      const ejectIdx = interactiveObjs.findIndex(o => o.userData.action === 'ejectCart');
+      if (ejectIdx !== -1) { const e = interactiveObjs[ejectIdx]; if (e.parent) e.parent.remove(e); interactiveObjs.splice(ejectIdx, 1); }
+      function ejectAnim(now) {
+        const elapsed = now - ejectStart;
+        if (elapsed < ejectDur) {
+          cart.position.y = baseY + (ejectY - baseY) * (elapsed / ejectDur) * (elapsed / ejectDur);
+          requestAnimationFrame(ejectAnim);
+        } else {
+          cart.visible = false; cart.position.y = baseY; autoRotate = true;
+          if (!interactiveObjs.find(o => o.userData.action === 'insertCart')) {
+            const cBox = new THREE.Box3().setFromObject(cart);
+            const cSize = cBox.getSize(new THREE.Vector3());
+            const cCenter = cBox.getCenter(new THREE.Vector3());
+            const newSlot = new THREE.Mesh(
+              new THREE.BoxGeometry(cSize.x * 2, cSize.y * 1.5, 0.5),
+              new THREE.MeshBasicMaterial({ visible: false })
+            );
+            newSlot.position.set(cCenter.x, cCenter.y, cCenter.z - cSize.z * 0.5);
+            newSlot.userData.action = 'insertCart';
+            gb.children[0].add(newSlot);
+            interactiveObjs.push(newSlot);
+          }
         }
       }
+      requestAnimationFrame(ejectAnim);
     }
-    requestAnimationFrame(ejectAnim);
+
+    // Wait until gb.rotation.y lands near the back target, then eject.
+    const spinStart = performance.now();
+    const maxSpinWait = 1600;
+    function waitForBack(now) {
+      const delta = Math.abs(((gb.rotation.y - backY) % twoPi + twoPi + Math.PI) % twoPi - Math.PI);
+      if (delta < 0.12 || (now - spinStart) > maxSpinWait) {
+        doEject();
+      } else {
+        requestAnimationFrame(waitForBack);
+      }
+    }
+    requestAnimationFrame(waitForBack);
   };
 })();

@@ -315,7 +315,7 @@ body {
   min-height: 100dvh;
   display: flex;
   align-items: center;
-  padding: clamp(48px, 8vh, 120px) clamp(20px, 4vw, 64px);
+  padding: clamp(48px, 8vh, 120px) clamp(20px, 4vw, 64px) clamp(160px, 24vh, 320px);
 }
 
 .skills-inner {

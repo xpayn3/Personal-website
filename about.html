@@ -51,19 +51,69 @@
           <div class="section-label">Cartridges</div>
           <div class="cart-list" id="cartList">
             <button class="cart-item pulse-hint" data-cart="portfolio">
-              <span class="cart-icon">📁</span>
+              <span class="cart-icon" aria-hidden="true">
+                <svg class="pixel-icon" viewBox="0 0 10 10" shape-rendering="crispEdges" fill="currentColor">
+                  <rect x="0" y="1" width="5" height="1"/>
+                  <rect x="5" y="2" width="5" height="1"/>
+                  <rect x="0" y="2" width="1" height="8"/>
+                  <rect x="9" y="2" width="1" height="8"/>
+                  <rect x="0" y="9" width="10" height="1"/>
+                  <rect x="2" y="4" width="2" height="1"/>
+                  <rect x="5" y="4" width="2" height="1"/>
+                  <rect x="2" y="6" width="2" height="1"/>
+                  <rect x="5" y="6" width="2" height="1"/>
+                </svg>
+              </span>
               <span class="cart-label">Portfolio</span>
             </button>
             <button class="cart-item" data-cart="snake">
-              <span class="cart-icon">🐍</span>
+              <span class="cart-icon" aria-hidden="true">
+                <svg class="pixel-icon" viewBox="0 0 10 10" shape-rendering="crispEdges" fill="currentColor">
+                  <rect x="2" y="1" width="6" height="1"/>
+                  <rect x="1" y="2" width="1" height="2"/>
+                  <rect x="8" y="2" width="1" height="1"/>
+                  <rect x="3" y="2" width="1" height="1"/>
+                  <rect x="6" y="2" width="1" height="1"/>
+                  <rect x="2" y="4" width="7" height="1"/>
+                  <rect x="1" y="5" width="1" height="2"/>
+                  <rect x="8" y="5" width="1" height="3"/>
+                  <rect x="2" y="7" width="7" height="1"/>
+                </svg>
+              </span>
               <span class="cart-label">Snake</span>
             </button>
             <button class="cart-item" data-cart="breakout">
-              <span class="cart-icon">🧱</span>
+              <span class="cart-icon" aria-hidden="true">
+                <svg class="pixel-icon" viewBox="0 0 10 10" shape-rendering="crispEdges" fill="currentColor">
+                  <rect x="0" y="1" width="3" height="1"/>
+                  <rect x="4" y="1" width="3" height="1"/>
+                  <rect x="8" y="1" width="2" height="1"/>
+                  <rect x="0" y="3" width="2" height="1"/>
+                  <rect x="3" y="3" width="3" height="1"/>
+                  <rect x="7" y="3" width="3" height="1"/>
+                  <rect x="0" y="5" width="3" height="1"/>
+                  <rect x="4" y="5" width="3" height="1"/>
+                  <rect x="8" y="5" width="2" height="1"/>
+                  <rect x="4" y="8" width="2" height="1"/>
+                </svg>
+              </span>
               <span class="cart-label">Breakout</span>
             </button>
             <button class="cart-item" data-cart="frogger">
-              <span class="cart-icon">🐸</span>
+              <span class="cart-icon" aria-hidden="true">
+                <svg class="pixel-icon" viewBox="0 0 10 10" shape-rendering="crispEdges" fill="currentColor">
+                  <rect x="2" y="1" width="1" height="1"/>
+                  <rect x="7" y="1" width="1" height="1"/>
+                  <rect x="1" y="2" width="3" height="1"/>
+                  <rect x="6" y="2" width="3" height="1"/>
+                  <rect x="1" y="3" width="8" height="1"/>
+                  <rect x="0" y="4" width="10" height="1"/>
+                  <rect x="1" y="5" width="8" height="1"/>
+                  <rect x="3" y="6" width="4" height="1"/>
+                  <rect x="2" y="7" width="2" height="1"/>
+                  <rect x="6" y="7" width="2" height="1"/>
+                </svg>
+              </span>
               <span class="cart-label">Frogger</span>
             </button>
           </div>
@@ -77,10 +127,10 @@
         </div>
         <div class="split-contact">
           <div class="about-links">
-            <a href="#" class="about-icon-link" id="openContactForm"><i class="ri-mail-line"></i><span>Contact me</span></a>
-            <a href="https://www.instagram.com/lukakluka/" target="_blank" rel="noopener noreferrer" class="about-icon-link"><i class="ri-instagram-line"></i><span>Instagram</span></a>
-            <a href="https://www.behance.net/lukagrcar" target="_blank" rel="noopener noreferrer" class="about-icon-link"><i class="ri-behance-fill"></i><span>Behance</span></a>
-            <a href="https://www.linkedin.com/in/luka-grcar-9534b695/" target="_blank" rel="noopener noreferrer" class="about-icon-link"><i class="ri-linkedin-box-fill"></i><span>LinkedIn</span></a>
+            <a href="#" class="about-icon-link" id="openContactForm"><span>Contact me</span></a>
+            <a href="https://www.instagram.com/lukakluka/" target="_blank" rel="noopener noreferrer" class="about-icon-link"><span>Instagram</span></a>
+            <a href="https://www.behance.net/lukagrcar" target="_blank" rel="noopener noreferrer" class="about-icon-link"><span>Behance</span></a>
+            <a href="https://www.linkedin.com/in/luka-grcar-9534b695/" target="_blank" rel="noopener noreferrer" class="about-icon-link"><span>LinkedIn</span></a>
           </div>
         </div>
 
@@ -190,6 +240,10 @@
     <a href="index.html" class="bar-link">Home</a>
     <a href="grid.html" class="bar-link">Index</a>
     <a href="about.html" class="bar-link active">About</a>
+    <button type="button" class="bar-mute" id="barMute" aria-pressed="false" aria-label="Mute sound">
+      <svg class="bar-mute-on" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3 6v4h2l3 3V3L5 6H3zm7.5 2a3.5 3.5 0 0 0-1.8-3l-.7 1.1a2.2 2.2 0 0 1 0 3.8l.7 1.1a3.5 3.5 0 0 0 1.8-3zm.8-5.4l-.9 1.1a5.5 5.5 0 0 1 0 8.6l.9 1.1a6.9 6.9 0 0 0 0-10.8z"/></svg>
+      <svg class="bar-mute-off" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3 6v4h2l3 3V3L5 6H3zm11 .4L12.6 5 11.2 6.4 9.8 5 8.4 6.4 9.8 7.8 8.4 9.2 9.8 10.6 11.2 9.2 12.6 10.6 14 9.2 12.6 7.8z"/></svg>
+    </button>
   </nav>
 
   <a href="index.html" class="watermark">Luka Grčar</a>
@@ -267,6 +321,30 @@
     }
   });
 
+  // Mute toggle — persists across page loads, syncs with gameboy.js
+  // (window.gbSetMuted / window.gbIsMuted).
+  const barMute = document.getElementById('barMute');
+  if (barMute) {
+    const saved = localStorage.getItem('lg_muted') === '1';
+    const applyMute = (muted) => {
+      barMute.classList.toggle('muted', muted);
+      barMute.setAttribute('aria-pressed', String(muted));
+      barMute.setAttribute('aria-label', muted ? 'Unmute sound' : 'Mute sound');
+      if (typeof window.gbSetMuted === 'function') window.gbSetMuted(muted);
+      localStorage.setItem('lg_muted', muted ? '1' : '0');
+    };
+    applyMute(saved);
+    // gameboy.js may load after this script — reapply once it's ready.
+    const retry = setInterval(() => {
+      if (typeof window.gbSetMuted === 'function') {
+        window.gbSetMuted(barMute.classList.contains('muted'));
+        clearInterval(retry);
+      }
+    }, 200);
+    setTimeout(() => clearInterval(retry), 5000);
+    barMute.addEventListener('click', () => applyMute(!barMute.classList.contains('muted')));
+  }
+
   // Contact form
   const overlay = document.getElementById('contactOverlay');
   // Auto-open when arrived via #contact hash (e.g. from footer "Contact me").
@@ -315,7 +393,14 @@
     let insertedCart = null;
     const btns = document.querySelectorAll('.cart-item');
 
-    const cartIcons = { portfolio: '📁', snake: '🐍', breakout: '🧱', frogger: '🐸' };
+    // Cache each cart's pixel-art SVG from the DOM so updateCartUI can
+    // restore it after a "loading" spinner swap.
+    const cartIcons = {};
+    btns.forEach(btn => {
+      const id = btn.dataset.cart;
+      const icon = btn.querySelector('.cart-icon');
+      if (id && icon) cartIcons[id] = icon.innerHTML;
+    });
     const ejectSVG = '<svg width="12" height="12" viewBox="0 0 14 14" fill="currentColor" stroke="none"><polygon points="7,2 12.5,9 1.5,9"/><rect x="1.5" y="10.5" width="11" height="2" rx="0.3"/></svg>';
     function updateCartUI() {
       btns.forEach(btn => {
@@ -327,7 +412,7 @@
         if (id === insertedCart) {
           btn.classList.add('inserted');
           btn.classList.remove('disabled');
-          icon.textContent = cartIcons[id];
+          icon.innerHTML = cartIcons[id] || '';
           if (label) label.textContent = { portfolio: 'Portfolio', snake: 'Snake', breakout: 'Breakout', frogger: 'Frogger' }[id];
           if (!swap) {
             swap = document.createElement('span');
@@ -338,7 +423,7 @@
         } else {
           btn.classList.remove('inserted');
           btn.classList.toggle('disabled', insertedCart !== null);
-          icon.textContent = cartIcons[id];
+          icon.innerHTML = cartIcons[id] || '';
           if (swap) swap.remove();
         }
       });
@@ -410,6 +495,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/build/three.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/GLTFLoader.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/DRACOLoader.js"></script>
-  <script defer src="gameboy.js?v=98"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/RGBELoader.js"></script>
+  <script defer src="gameboy.js?v=120"></script>
 </body>
 </html>

@@ -157,6 +157,49 @@
     </div>
   </footer>
 
+  <script>
+  (function footerNoise() {
+    const footer = document.querySelector('.site-footer');
+    if (!footer) return;
+    const canvas = document.createElement('canvas');
+    canvas.className = 'footer-noise';
+    const ctx = canvas.getContext('2d');
+    const W = 1440, H = 900;
+    canvas.width = W; canvas.height = H;
+    footer.insertBefore(canvas, footer.firstChild);
+
+    const FRAMES = 5;
+    const frames = [];
+    for (let f = 0; f < FRAMES; f++) {
+      const img = ctx.createImageData(W, H);
+      for (let i = 0; i < img.data.length; i += 4) {
+        const v = Math.random() * 255;
+        img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
+        img.data[i + 3] = 255;
+      }
+      frames.push(img);
+    }
+
+    let inView = true;
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(entries => {
+        inView = entries.some(e => e.isIntersecting);
+      }, { threshold: 0 }).observe(footer);
+    }
+
+    let idx = 0, last = 0;
+    function tick(now) {
+      if (inView && now - last > 66) {
+        ctx.putImageData(frames[idx], 0, 0);
+        idx = (idx + 1) % FRAMES;
+        last = now;
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  })();
+  </script>
+
   <!-- ===== FLOATING BOTTOM BAR ===== -->
   <nav class="bottom-bar">
     <a href="index.html" class="bar-link active">Home</a>
