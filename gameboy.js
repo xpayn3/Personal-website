@@ -643,7 +643,7 @@
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillStyle = '#242424';
-        ctx.fillText(letter, 128, 137);
+        ctx.fillText(letter, 128, 131);
         tex.needsUpdate = true;
 
         // Bump map — black letter on white (engraved = low), softly blurred
@@ -654,7 +654,7 @@
         bCtx.font = '700 170px "Jost", "Futura", "Helvetica Neue", Arial, sans-serif';
         bCtx.textAlign = 'center';
         bCtx.textBaseline = 'middle';
-        bCtx.fillText(letter, 128, 137);
+        bCtx.fillText(letter, 128, 131);
         bCtx.filter = 'none';
         bumpTex.needsUpdate = true;
       }
@@ -710,9 +710,9 @@
         gCtx.shadowColor = gcol.halo;
         gCtx.shadowBlur = 34;
         gCtx.fillStyle = gcol.core;
-        gCtx.fillText(letter, 128, 137);
+        gCtx.fillText(letter, 128, 131);
         gCtx.shadowBlur = 10;
-        gCtx.fillText(letter, 128, 137);
+        gCtx.fillText(letter, 128, 131);
         gTex.needsUpdate = true;
       }
       const gTex = new THREE.CanvasTexture(gCanvas);
@@ -953,19 +953,30 @@
       const bSize = bBox.getSize(new THREE.Vector3());
 
       const canvas = document.createElement('canvas');
-      canvas.width = 512;
-      canvas.height = 128;
+      canvas.width = 640;
+      canvas.height = 160;
       const ctx = canvas.getContext('2d');
       function draw() {
-        ctx.clearRect(0, 0, 512, 128);
-        ctx.font = '700 62px "Jost", "Futura", "Helvetica Neue", Arial, sans-serif';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Pick a font size that keeps ~30px side padding for the longest label.
+        let fontPx = 62;
+        ctx.font = `700 ${fontPx}px "Jost", "Futura", "Helvetica Neue", Arial, sans-serif`;
+        const maxTextW = canvas.width - 60;
+        let measured = ctx.measureText(labelText).width;
+        while (measured > maxTextW && fontPx > 24) {
+          fontPx -= 2;
+          ctx.font = `700 ${fontPx}px "Jost", "Futura", "Helvetica Neue", Arial, sans-serif`;
+          measured = ctx.measureText(labelText).width;
+        }
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
         // Embossed yellow plastic — same hue as the body, shadow for raised look
         ctx.fillStyle = 'rgba(120, 80, 10, 0.55)';
-        ctx.fillText(labelText, 256, 68);
+        ctx.fillText(labelText, cx, cy + 4);
         ctx.fillStyle = '#c9a12a';
-        ctx.fillText(labelText, 256, 62);
+        ctx.fillText(labelText, cx, cy - 2);
         tex.needsUpdate = true;
       }
       const tex = new THREE.CanvasTexture(canvas);
