@@ -91,6 +91,7 @@
       <ul class="services-list">
         <li class="services-item"
             data-cover-shape="torus"
+            data-tags="C4D|Houdini|Redshift|FUI|Loops"
             data-desc="Cinema 4D · Houdini · Redshift — narrative loops, product films, simulations, FUI / HUD, abstract motion."
             data-proj="cestel"
             data-proj-name="CESTEL"
@@ -98,6 +99,7 @@
             data-proj-video="Images/Cestel_project/cestel_anim_02.webp">3D Animation</li>
         <li class="services-item"
             data-flow="kinetic"
+            data-tags="AE|Expressions|Stings|Type|Broadcast"
             data-desc="After Effects · expressions — brand stings, kinetic type, broadcast packages, motion identity systems."
             data-proj="grounded2023"
             data-proj-name="Grounded 2023"
@@ -105,6 +107,7 @@
             data-proj-video="Images/Grounded_2023/Grounded_2023_01.webm">Motion Design</li>
         <li class="services-item"
             data-flow="structural"
+            data-tags="Logos|Color|Type|Brand books|Guidelines"
             data-desc="Logo systems, color, type, brand books — built motion-first. Guideline doc + asset kit included."
             data-proj="grounded2025"
             data-proj-name="Grounded 2025"
@@ -112,6 +115,7 @@
             data-proj-video="Images/Grounded 2025/Grounded_2025_web.webm">Visual Identity</li>
         <li class="services-item"
             data-flow="pixelated"
+            data-tags="Figma|Flows|Prototypes|Systems|Handoff"
             data-desc="Figma flows, prototypes, design systems, dev handoff — user-tested and engineering-ready."
             data-proj="accbox"
             data-proj-name="AccountingBox"
@@ -119,6 +123,7 @@
             data-proj-video="Images/AccountingBox/intro.webm">UI / UX Design</li>
         <li class="services-item"
             data-flow="implode"
+            data-tags="Renders|4K|Alpha|Configurators|Exploded"
             data-desc="Photoreal renders, exploded views, configurator scenes — 4K + alpha + masks delivered."
             data-proj="natureta_renders"
             data-proj-name="Natureta product renders"
@@ -127,6 +132,7 @@
         <li class="services-item"
             data-cover-shape="room"
             data-cover-labels="true"
+            data-tags="Shaders|MadMapper|TouchDesigner|Mapping|Live"
             data-desc="Custom shaders, multi-projector blends, MadMapper / TouchDesigner — live event control."
             data-proj="radenci"
             data-proj-name="Radenci spatial projection"
@@ -134,6 +140,7 @@
             data-proj-video="">Projection Mapping</li>
         <li class="services-item"
             data-flow="swirl"
+            data-tags="Three.js|WebGPU|TSL|Next.js|Webflow"
             data-desc="Three.js · WebGPU · TSL · Next.js · Webflow — marketing sites, real-time 3D web, configurators."
             data-proj-name="Webtree — webgpu foliage studio"
             data-proj-thumb="Images/tree_thumb.svg"
@@ -141,6 +148,7 @@
             data-proj-href="tree.html">Web Development</li>
         <li class="services-item"
             data-flow="drift"
+            data-tags="Concept|Mood|Art direction|Brief|Delivery"
             data-desc="Concept, mood, art direction across teams — from brief to delivery, single point of contact."
             data-proj="halloween"
             data-proj-name="TAF Halloween"
@@ -884,12 +892,28 @@
         }
       }
 
+      // Render the tags on the particle canvas itself — small mono labels
+      // attached to a handful of drifting particles.
+      function showServiceTags(rawTags) {
+        if (!rawTags) { hideServiceTags(); return; }
+        const parts = rawTags.split('|').map(s => s.trim()).filter(Boolean);
+        if (typeof window.__coverServiceTags === 'function') {
+          window.__coverServiceTags(parts);
+        }
+      }
+      function hideServiceTags() {
+        if (typeof window.__coverServiceTags === 'function') {
+          window.__coverServiceTags(null);
+        }
+      }
+
       items.forEach((el) => {
         el.dataset.label = el.textContent;
         el.addEventListener('mouseenter', () => {
           setPreview(el);
           startScramble(el);
           applyPreset(el.getAttribute('data-cover-shape'), el.getAttribute('data-flow'));
+          showServiceTags(el.getAttribute('data-tags'));
         });
         el.addEventListener('mouseleave', () => stopScramble(el));
 
@@ -921,6 +945,7 @@
       if (panel) {
         panel.addEventListener('mouseleave', () => {
           clearPreview();
+          hideServiceTags();
           // Restore the locked-in preset (or release if nothing committed).
           applyPreset(lockedShape, lockedFlow);
         });

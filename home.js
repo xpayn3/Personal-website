@@ -12,16 +12,18 @@
 
   const COUNT = 7000;
   const FIELD_R = 1;       // bounding sphere radius (in normalized field units)
-  // Defaults — also serve as the "base" preset that plays without hover.
-  const BASE_NOISE_SCALE = 1.6;
-  const BASE_FLOW_SPEED = 0.16;
-  const BASE_TIME_DRIFT = 0.08;
+  // Defaults — match the "base" preset below so the live values + their
+  // lerp targets agree at startup.
+  const BASE_NOISE_SCALE = 1.4;
+  const BASE_FLOW_SPEED = 0.26;
+  const BASE_TIME_DRIFT = 0.14;
+  const BASE_SWIRL = 0.10;
   // Live, eased values — flow presets retarget these and they lerp toward
   // their targets each frame so the swarm reshapes smoothly between modes.
   let NOISE_SCALE = BASE_NOISE_SCALE;
   let FLOW_SPEED = BASE_FLOW_SPEED;
   let TIME_DRIFT = BASE_TIME_DRIFT;
-  let SWIRL = 0;       // tangential rotation around z-axis
+  let SWIRL = BASE_SWIRL;
   let RADIAL = 0;      // radial outward push (negative = pulled inward)
   let JITTER = 0;      // per-frame random kick (chaos)
   let WIND_X = 0;      // uniform horizontal sweep velocity
@@ -31,7 +33,7 @@
     noiseScale: BASE_NOISE_SCALE,
     flowSpeed: BASE_FLOW_SPEED,
     timeDrift: BASE_TIME_DRIFT,
-    swirl: 0,
+    swirl: BASE_SWIRL,
     radial: 0,
     jitter: 0,
     windX: 0,
@@ -40,7 +42,10 @@
   // Named presets — each gives a distinct swarm character. All non-chaotic
   // (no jitter), so transitions read as elegant flow shifts, not noise.
   const FLOW_PRESETS = {
-    base:      { noiseScale: 1.6,  flowSpeed: 0.16, timeDrift: 0.08, swirl: 0,     radial: 0,     jitter: 0, windX: 0,    windY: 0 },
+    // Default state — designed to be a showcase: bigger noise sweeps, a
+    // touch of continuous swirl so the cloud rotates slowly, and a faster
+    // time drift so the flow field constantly reshapes itself.
+    base:      { noiseScale: 1.4,  flowSpeed: 0.26, timeDrift: 0.14, swirl: 0.10,  radial: 0,     jitter: 0, windX: 0,    windY: 0 },
     // Energetic wide flow — bigger sweeps, faster but still smooth.
     energetic: { noiseScale: 1.2,  flowSpeed: 0.30, timeDrift: 0.10, swirl: 0,     radial: 0,     jitter: 0, windX: 0,    windY: 0 },
     // Motion design — particles streak across the screen in a strong
@@ -408,7 +413,7 @@
   function generateCubePoints() {
     const N = particles.length;
     const out = new Float32Array(N * 3);
-    const S = 0.55; // half-edge
+    const S = 0.36; // half-edge (smaller than before)
     for (let i = 0; i < N; i++) {
       const face = i % 6;
       // Two uniform coords on the face plane.
@@ -474,14 +479,17 @@
     for (const e of edges) { totalLen += edgeLen(e); cumLen.push(totalLen); }
 
     // Particle budget breakdown:
-    //   45% on the 12 edges (the room's structure)
-    //   25% on a floor grid (parallel x and z lines on the floor)
-    //   15% on the framed back wall (vertical + horizontal grid lines)
-    //   15% sparse fill across all 5 walls (no front wall)
-    const N_EDGE  = Math.floor(N * 0.45);
-    const N_FLOOR = Math.floor(N * 0.25);
-    const N_BACK  = Math.floor(N * 0.15);
-    const N_FILL  = N - N_EDGE - N_FLOOR - N_BACK;
+    //   38% — the 12 wall edges (room structure)
+    //   18% — floor grid lines
+    //   10% — framed back wall grid
+    //   24% — interior props: pedestal cube, sphere on top, picture frame
+    //         on back wall, ceiling spotlight cone
+    //   10% — sparse wall fill (no front wall)
+    const N_EDGE   = Math.floor(N * 0.38);
+    const N_FLOOR  = Math.floor(N * 0.18);
+    const N_BACK   = Math.floor(N * 0.10);
+    const N_PROPS  = Math.floor(N * 0.24);
+    const N_FILL   = N - N_EDGE - N_FLOOR - N_BACK - N_PROPS;
 
     let idx = 0;
     function push(x, y, z) {
@@ -550,6 +558,104 @@
       push(x, y, HZ - 0.001);
     }
 
+    // ---- 3b. Interior props ------------------------------------------------
+    // (a) pedestal cube on the floor mid-room
+    // (b) sphere sitting on top of the pedestal
+    // (c) picture frame mounted on the back wall
+    // (d) ceiling spotlight cone shining down on the prop
+    {
+      const PED_HX = 0.16, PED_HZ = 0.16; // pedestal footprint half-extents
+      const PED_BOTTOM = -HY;
+      const PED_TOP = -HY + 0.32;        // pedestal height
+      const PED_CZ = 0.10;                // pedestal pushed slightly into the room
+      const SPHERE_R = 0.13;
+      const SPHERE_CY = PED_TOP + SPHERE_R;
+      const SPHERE_CZ = PED_CZ;
+      const FRAME_HX = 0.30, FRAME_HY = 0.22;
+      const FRAME_CY = 0.05;              // frame center on back wall
+      const SPOT_FROM_Y = HY;             // ceiling
+      const SPOT_TO_R = 0.30;             // bottom radius of cone at floor level
+
+      // Allocations within the props budget.
+      const N_PED    = Math.floor(N_PROPS * 0.34); // pedestal box
+      const N_SPHERE = Math.floor(N_PROPS * 0.26); // sphere on top
+      const N_FRAME  = Math.floor(N_PROPS * 0.20); // picture frame
+      const N_SPOT   = N_PROPS - N_PED - N_SPHERE - N_FRAME;
+
+      // (a) pedestal — box wireframe (edges + sparse face dots)
+      for (let i = 0; i < N_PED; i++) {
+        const r = Math.random();
+        let x, y, z;
+        if (r < 0.55) {
+          // 4 vertical edges
+          const corner = i % 4;
+          x = PED_CZ + 0; // placeholder, override per corner
+          const sx = (corner === 0 || corner === 3) ? -PED_HX : PED_HX;
+          const sz = (corner === 0 || corner === 1) ? -PED_HZ : PED_HZ;
+          x = sx;
+          z = PED_CZ + sz;
+          y = PED_BOTTOM + Math.random() * (PED_TOP - PED_BOTTOM);
+        } else if (r < 0.78) {
+          // top rim
+          const t = Math.random();
+          if (Math.random() < 0.5) {
+            x = -PED_HX + t * (2 * PED_HX);
+            z = PED_CZ + (Math.random() < 0.5 ? -PED_HZ : PED_HZ);
+          } else {
+            x = (Math.random() < 0.5 ? -PED_HX : PED_HX);
+            z = PED_CZ + (-PED_HZ + t * (2 * PED_HZ));
+          }
+          y = PED_TOP;
+        } else {
+          // sparse top-face fill
+          x = -PED_HX + Math.random() * (2 * PED_HX);
+          z = PED_CZ + (-PED_HZ + Math.random() * (2 * PED_HZ));
+          y = PED_TOP + 0.001;
+        }
+        push(x, y, z);
+      }
+
+      // (b) sphere on the pedestal — surface points
+      for (let i = 0; i < N_SPHERE; i++) {
+        const u = Math.random(), v = Math.random();
+        const theta = 2 * Math.PI * u;
+        const phi = Math.acos(2 * v - 1);
+        const r = SPHERE_R + (Math.random() - 0.5) * 0.005;
+        push(
+          0 + r * Math.sin(phi) * Math.cos(theta),
+          SPHERE_CY + r * Math.cos(phi),
+          SPHERE_CZ + r * Math.sin(phi) * Math.sin(theta)
+        );
+      }
+
+      // (c) picture frame on back wall — outline rectangle
+      for (let i = 0; i < N_FRAME; i++) {
+        const side = i % 4;
+        const t = Math.random();
+        let fx, fy;
+        if (side === 0) { fx = -FRAME_HX + t * (2 * FRAME_HX); fy = FRAME_CY + FRAME_HY; }
+        else if (side === 1) { fx = -FRAME_HX + t * (2 * FRAME_HX); fy = FRAME_CY - FRAME_HY; }
+        else if (side === 2) { fx = -FRAME_HX; fy = (FRAME_CY - FRAME_HY) + t * (2 * FRAME_HY); }
+        else { fx = FRAME_HX; fy = (FRAME_CY - FRAME_HY) + t * (2 * FRAME_HY); }
+        push(fx, fy, HZ - 0.002);
+      }
+
+      // (d) ceiling spotlight — narrow cone of points from a point on the
+      // ceiling down to a circular pool on the floor in front of the prop.
+      const SPOT_FROM_Z = SPHERE_CZ;
+      for (let i = 0; i < N_SPOT; i++) {
+        const tParam = Math.random();
+        const radius = tParam * SPOT_TO_R;
+        const angle = Math.random() * Math.PI * 2;
+        const yPos = SPOT_FROM_Y - tParam * (SPOT_FROM_Y - PED_BOTTOM);
+        push(
+          radius * Math.cos(angle),
+          yPos,
+          SPOT_FROM_Z + radius * Math.sin(angle)
+        );
+      }
+    }
+
     // ---- 4. Sparse wall fill ----------------------------------------------
     // Distribute across left, right, ceiling, back, floor (no front).
     for (let i = 0; i < N_FILL; i++) {
@@ -563,6 +669,16 @@
         default: x = (Math.random() - 0.5) * 2 * HX; y = (Math.random() - 0.5) * 2 * HY; z = HZ;
       }
       push(x, y, z);
+    }
+
+    // Single-pass post-process:
+    //  - flip Y (render maps +Y to bottom of screen; generator uses up=+Y)
+    //  - scale entire room down so it sits comfortably in the canvas
+    const ROOM_SCALE = 0.7;
+    for (let i = 0; i < N; i++) {
+      out[i * 3 + 0] *= ROOM_SCALE;
+      out[i * 3 + 1] *= -ROOM_SCALE;
+      out[i * 3 + 2] *= ROOM_SCALE;
     }
 
     return out;
@@ -698,6 +814,28 @@
   }
   window.__coverLabels = setCoverLabels;
 
+  // Service tags — small mono labels attached to a handful of particles
+  // (numbered 01..N · LABEL), shown while a service item is hovered.
+  let serviceTagIndices = [];
+  let serviceTagLabels = [];
+  function setCoverServiceTags(arr) {
+    if (!arr || !arr.length) {
+      serviceTagIndices = [];
+      serviceTagLabels = [];
+      return;
+    }
+    serviceTagLabels = arr.slice();
+    serviceTagIndices = [];
+    const seen = new Set();
+    while (serviceTagIndices.length < serviceTagLabels.length && seen.size < particles.length) {
+      const i = (Math.random() * particles.length) | 0;
+      if (seen.has(i)) continue;
+      seen.add(i);
+      serviceTagIndices.push(i);
+    }
+  }
+  window.__coverServiceTags = setCoverServiceTags;
+
   function frame(now) {
     if (!running) return;
     const dt = Math.min(now - last, 50) / 1000; // seconds
@@ -732,14 +870,25 @@
     // Ease live flow params toward their targets so preset switches feel
     // organic, not abrupt.
     const flowLerp = 0.06;
+    // Subtle ambient breathing — when no preset wind is active, gently
+    // modulate wind/swirl on long sine cycles so the default state still
+    // feels alive instead of static.
+    const ambientWind = (flowTarget.windX === 0 && flowTarget.windY === 0)
+      ? { x: Math.sin(elapsed * 0.11) * 0.05,
+          y: Math.cos(elapsed * 0.083) * 0.025 }
+      : { x: 0, y: 0 };
+    const ambientSwirlBoost = (flowTarget.swirl !== 0)
+      ? Math.sin(elapsed * 0.07) * 0.04
+      : 0;
+
     NOISE_SCALE += (flowTarget.noiseScale - NOISE_SCALE) * flowLerp;
     FLOW_SPEED  += (flowTarget.flowSpeed  - FLOW_SPEED)  * flowLerp;
     TIME_DRIFT  += (flowTarget.timeDrift  - TIME_DRIFT)  * flowLerp;
-    SWIRL       += (flowTarget.swirl      - SWIRL)       * flowLerp;
+    SWIRL       += (flowTarget.swirl + ambientSwirlBoost - SWIRL) * flowLerp;
     RADIAL      += (flowTarget.radial     - RADIAL)      * flowLerp;
     JITTER      += (flowTarget.jitter     - JITTER)      * flowLerp;
-    WIND_X      += ((flowTarget.windX || 0) - WIND_X)    * flowLerp;
-    WIND_Y      += ((flowTarget.windY || 0) - WIND_Y)    * flowLerp;
+    WIND_X      += ((flowTarget.windX || 0) + ambientWind.x - WIND_X) * flowLerp;
+    WIND_Y      += ((flowTarget.windY || 0) + ambientWind.y - WIND_Y) * flowLerp;
 
     const tNoise = elapsed * TIME_DRIFT;
 
@@ -1023,6 +1172,32 @@
         // Bright, fully opaque label — number only, no leader/dash.
         ctx.fillStyle = `hsl(${hue}, 100%, 60%)`;
         ctx.fillText(txt, tx, ty);
+      }
+    }
+
+    // Service tags — green index + white keyword next to a handful of
+    // particles. Drift along with their flow until the service is unhovered.
+    if (serviceTagIndices.length) {
+      const fontPx = Math.max(11, Math.round(12 * DPR));
+      ctx.font = `500 ${fontPx}px ui-monospace, Menlo, Consolas, monospace`;
+      ctx.textBaseline = 'middle';
+      const offX = 10 * DPR;
+      for (let li = 0; li < serviceTagIndices.length; li++) {
+        const idx = serviceTagIndices[li];
+        const p = particles[idx];
+        if (!p) continue;
+        if (p.sx < 0 || p.sy < 0 || p.sx > W || p.sy > H) continue;
+        const am = p.alphaMul != null ? p.alphaMul : 1;
+        if (am < 0.25) continue;
+        const num = String(li + 1).padStart(2, '0');
+        const lab = serviceTagLabels[li] || '';
+        const tx = p.sx + offX;
+        const ty = p.sy;
+        ctx.fillStyle = '#4ade80';
+        ctx.fillText(num, tx, ty);
+        const numW = ctx.measureText(num).width;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(' ' + lab, tx + numW, ty);
       }
     }
 
