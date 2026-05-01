@@ -20,9 +20,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="tokens.css" />
   <link rel="stylesheet" href="home.css" />
-  <link rel="stylesheet" href="overlay.css" />
-  <link rel="stylesheet" href="bar.css" />
+  <link rel="stylesheet" href="floating-nav.css" />
   <link rel="stylesheet" href="footer.css" />
+  <link rel="stylesheet" href="contact.css" />
+  <link rel="stylesheet" href="overlay.css" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 <script type="application/ld+json">
@@ -33,16 +34,10 @@
       "@type": "WebSite",
       "@id": "https://lukagrcar.com/#website",
       "name": "Luka Grčar",
-      "alternateName": "Luka Grčar — 3D & Motion Design",
       "url": "https://lukagrcar.com/",
       "description": "Portfolio of Luka Grčar — 3D generalist & motion designer based in Ljubljana, Slovenia.",
       "inLanguage": "en",
-      "publisher": { "@id": "https://lukagrcar.com/#person" },
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://lukagrcar.com/grid.html#project={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
+      "publisher": { "@id": "https://lukagrcar.com/#person" }
     },
     {
       "@type": "Person",
@@ -65,61 +60,247 @@
 }
 </script>
 </head>
-<body>
-  <div class="loader" id="loader"><span class="loader-text" id="loaderText">Loading</span></div>
+<body class="page-home">
+  <!-- ===== COVER ===== -->
+  <section class="cover" id="cover">
+    <canvas class="cover-media" id="coverCanvas"></canvas>
+    <a class="recent-card" id="recentCard" href="grid.html#project=grounded2025">
+      <div class="recent-card-track" id="recentCardTrack"></div>
+      <span class="recent-card-cta">View ↗</span>
+    </a>
+  </section>
 
-  <!-- ===== HERO CAROUSEL ===== -->
-  <div class="hero-carousel" id="heroCarousel">
-    <div class="hero-slides" id="heroSlides"></div>
-    <div class="hero-dots" id="heroDots"></div>
-    <div class="hero-scroll-hint">Scroll to explore</div>
+  <!-- Floating top-left nav (shared component) -->
+  <a href="index.html" class="floating-name">Luka Grčar</a>
+  <nav class="floating-nav" aria-label="Sections">
+    <a href="grid.html"   class="floating-nav-link" data-cover-text="All projects" data-cover-desc="// project archive · 21 projects · 225 frames · filter by year / color / type">Index</a>
+    <a href="lab.html"    class="floating-nav-link" data-cover-text="Experiments"  data-cover-desc="// workshop · sketches, half-baked renders, weird stuff in progress">Lab</a>
+    <a href="tree.html"   class="floating-nav-link" data-cover-shape="tree" data-cover-desc="// webgpu foliage studio · 35 species · gravity sag · gpu-instanced">Tree</a>
+    <a href="about.html"  class="floating-nav-link" data-cover-text="About me"     data-cover-desc="// bio · skills · clients · awards · a working 3d gameboy">About</a>
+    <a href="#contact"    class="floating-nav-link" id="homeContactLink" data-cover-text="Get in touch" data-cover-desc="// fullscreen brief form · autosave · live estimate · &lt; 24h response">Contact</a>
+  </nav>
+
+  <!-- Hover description, bottom-left of cover -->
+  <div class="cover-desc" id="coverDesc" aria-hidden="true"></div>
+
+  <!-- Services pin, top-right of cover -->
+  <div class="services" id="servicesPin">
+    <span class="services-label">Services</span>
+    <div class="services-panel" role="menu" aria-label="Services">
+      <div class="services-head">// Available · accepting briefs</div>
+      <ul class="services-list">
+        <li class="services-item"
+            data-cover-shape="torus"
+            data-desc="Cinema 4D · Houdini · Redshift — narrative loops, product films, simulations, FUI / HUD, abstract motion."
+            data-proj="cestel"
+            data-proj-name="CESTEL"
+            data-proj-thumb="Images/Cestel_project/cover_still.webp"
+            data-proj-video="Images/Cestel_project/cestel_anim_02.webp">3D Animation</li>
+        <li class="services-item"
+            data-flow="kinetic"
+            data-desc="After Effects · expressions — brand stings, kinetic type, broadcast packages, motion identity systems."
+            data-proj="grounded2023"
+            data-proj-name="Grounded 2023"
+            data-proj-thumb="Images/Grounded_2023/Grounded_2023_01_thumb.webp"
+            data-proj-video="Images/Grounded_2023/Grounded_2023_01.webm">Motion Design</li>
+        <li class="services-item"
+            data-flow="structural"
+            data-desc="Logo systems, color, type, brand books — built motion-first. Guideline doc + asset kit included."
+            data-proj="grounded2025"
+            data-proj-name="Grounded 2025"
+            data-proj-thumb="Images/Grounded 2025/gr2025cover.webp"
+            data-proj-video="Images/Grounded 2025/Grounded_2025_web.webm">Visual Identity</li>
+        <li class="services-item"
+            data-flow="pixelated"
+            data-desc="Figma flows, prototypes, design systems, dev handoff — user-tested and engineering-ready."
+            data-proj="accbox"
+            data-proj-name="AccountingBox"
+            data-proj-thumb="Images/AccountingBox/Podjetja_cover.webp"
+            data-proj-video="Images/AccountingBox/intro.webm">UI / UX Design</li>
+        <li class="services-item"
+            data-flow="implode"
+            data-desc="Photoreal renders, exploded views, configurator scenes — 4K + alpha + masks delivered."
+            data-proj="natureta_renders"
+            data-proj-name="Natureta product renders"
+            data-proj-thumb="Images/Natureta product renders/Kozarec_eta0001.webp"
+            data-proj-video="">Product Visualization</li>
+        <li class="services-item"
+            data-cover-shape="room"
+            data-cover-labels="true"
+            data-desc="Custom shaders, multi-projector blends, MadMapper / TouchDesigner — live event control."
+            data-proj="radenci"
+            data-proj-name="Radenci spatial projection"
+            data-proj-thumb="Images/Radenci_prostorska_projekcija/IMG_4065.webp"
+            data-proj-video="">Projection Mapping</li>
+        <li class="services-item"
+            data-flow="swirl"
+            data-desc="Three.js · WebGPU · TSL · Next.js · Webflow — marketing sites, real-time 3D web, configurators."
+            data-proj-name="Webtree — webgpu foliage studio"
+            data-proj-thumb="Images/tree_thumb.svg"
+            data-proj-video=""
+            data-proj-href="tree.html">Web Development</li>
+        <li class="services-item"
+            data-flow="drift"
+            data-desc="Concept, mood, art direction across teams — from brief to delivery, single point of contact."
+            data-proj="halloween"
+            data-proj-name="TAF Halloween"
+            data-proj-thumb="Images/Athletesfoot_halloween/Athletesfoot_halloween_01.webp"
+            data-proj-video="">Creative Direction</li>
+      </ul>
+
+      <div class="services-detail">
+        <a class="services-detail-thumb" id="servicesProjLink" href="#" tabindex="-1" aria-hidden="true">
+          <img class="services-detail-img" id="servicesProjImg" alt="" />
+          <video class="services-detail-vid" id="servicesProjVid" muted loop playsinline preload="metadata"></video>
+        </a>
+        <div class="services-detail-text">
+          <div class="services-desc" id="servicesDesc">Hover a service for what I deliver →</div>
+          <div class="services-proj-name" id="servicesProjName"></div>
+        </div>
+      </div>
+      <div class="services-foot">
+        <span class="services-pulse" aria-hidden="true"></span>
+        <span>1 slot open · Q1 2026</span>
+      </div>
+    </div>
   </div>
 
-  <!-- ===== INTRO ===== -->
-  <section class="home-intro">
-    <div class="intro-inner">
-      <h2 class="intro-headline">
-        <span class="intro-line intro-line-1">Thinks in systems.</span>
-        <span class="intro-line intro-line-2">Builds in pixels.</span>
-      </h2>
-      <div class="intro-body-wrap">
-        <p class="intro-body">
-          Started in UX. Got sidetracked by Houdini. Kept both.
-        </p>
-        <p class="intro-body intro-body-pull">
-          Interfaces and rendered worlds are basically the same problem — systems you navigate. I try to make them clear before I make them pretty.
-        </p>
+  <!-- Contact: fullscreen terminal-style form (home only) -->
+  <div class="contact-overlay" id="contactOverlay" role="dialog" aria-modal="true" aria-labelledby="contactPaneTitle">
+    <div class="contact-pane">
+
+      <header class="contact-head">
+        <span class="contact-head-mark" id="contactPaneTitle">// CONTACT_LUKA</span>
+        <span class="contact-head-status"><i class="contact-pulse" aria-hidden="true"></i> ONLINE</span>
+        <span class="contact-head-time" id="contactClock">--:--:--</span>
+        <button class="contact-close" id="contactClose" aria-label="Close">[ESC] CLOSE</button>
+      </header>
+
+      <div class="contact-grid">
+
+        <form class="contact-form" id="contactFormEl" action="https://api.web3forms.com/submit" method="POST">
+          <input type="hidden" name="access_key" value="d40b8189-988b-4e6f-83db-6c8b8b386e8e" />
+
+          <div class="contact-section">
+            <div class="contact-section-label"><span>[01] CLIENT</span></div>
+            <div class="contact-row">
+              <input type="text" name="name" placeholder="Name *" required autocomplete="name" />
+              <input type="email" name="email" placeholder="Email *" required autocomplete="email" />
+            </div>
+            <div class="contact-row">
+              <input type="text" name="company" placeholder="Company / Brand" autocomplete="organization" />
+              <input type="text" name="website" placeholder="Website / Portfolio URL" autocomplete="url" />
+            </div>
+          </div>
+
+          <div class="contact-section">
+            <div class="contact-section-label"><span>[02] SCOPE</span></div>
+            <div class="contact-chips">
+              <label class="contact-chip"><input type="checkbox" name="type" value="3D Animation" /><span>3D Animation</span></label>
+              <label class="contact-chip"><input type="checkbox" name="type" value="Motion Graphics" /><span>Motion Graphics</span></label>
+              <label class="contact-chip"><input type="checkbox" name="type" value="Product Viz" /><span>Product Viz</span></label>
+              <label class="contact-chip"><input type="checkbox" name="type" value="Visual Identity" /><span>Visual Identity</span></label>
+              <label class="contact-chip"><input type="checkbox" name="type" value="UX/UI Design" /><span>UX/UI Design</span></label>
+              <label class="contact-chip"><input type="checkbox" name="type" value="Web Development" /><span>Web Development</span></label>
+              <label class="contact-chip"><input type="checkbox" name="type" value="Projection Mapping" /><span>Projection Mapping</span></label>
+              <label class="contact-chip"><input type="checkbox" name="type" value="Other" /><span>Other</span></label>
+            </div>
+          </div>
+
+          <div class="contact-section">
+            <div class="contact-section-label"><span>[03] BUDGET</span></div>
+            <div class="contact-chips">
+              <label class="contact-chip"><input type="radio" name="budget" value="< €1k" /><span>&lt; €1k</span></label>
+              <label class="contact-chip"><input type="radio" name="budget" value="€1k - €5k" /><span>€1k – €5k</span></label>
+              <label class="contact-chip"><input type="radio" name="budget" value="€5k - €15k" /><span>€5k – €15k</span></label>
+              <label class="contact-chip"><input type="radio" name="budget" value="€15k+" /><span>€15k+</span></label>
+              <label class="contact-chip"><input type="radio" name="budget" value="Not sure" /><span>Not sure</span></label>
+            </div>
+          </div>
+
+          <div class="contact-section">
+            <div class="contact-section-label"><span>[04] TIMELINE</span></div>
+            <div class="contact-chips">
+              <label class="contact-chip"><input type="radio" name="timeline" value="ASAP" /><span>ASAP</span></label>
+              <label class="contact-chip"><input type="radio" name="timeline" value="1-2 weeks" /><span>1–2 weeks</span></label>
+              <label class="contact-chip"><input type="radio" name="timeline" value="1 month" /><span>1 month</span></label>
+              <label class="contact-chip"><input type="radio" name="timeline" value="2-3 months" /><span>2–3 months</span></label>
+              <label class="contact-chip"><input type="radio" name="timeline" value="Flexible" /><span>Flexible</span></label>
+            </div>
+          </div>
+
+          <div class="contact-section">
+            <div class="contact-section-label">
+              <span>[05] BRIEF</span>
+              <span class="contact-counter" id="contactCounter">0 / 1200</span>
+            </div>
+            <textarea name="message" maxlength="1200" rows="5" placeholder="Project goals, deliverables, references, anything that helps me understand the scope..." required></textarea>
+          </div>
+
+          <div class="contact-actions">
+            <button type="submit" class="contact-submit">Transmit ↗</button>
+            <span class="contact-hint">Press <kbd>⌘</kbd> + <kbd>↵</kbd> to send · draft saved locally</span>
+          </div>
+          <p class="contact-note" id="contactNote"></p>
+        </form>
+
+        <aside class="contact-info">
+          <div class="info-block">
+            <div class="info-label">// STATUS</div>
+            <ul class="info-list">
+              <li><span>Availability</span><span class="info-val is-good" id="infoAvailability">OPEN</span></li>
+              <li><span>Response</span><span class="info-val">&lt; 24H</span></li>
+              <li><span>Timezone</span><span class="info-val" id="infoTz">CET</span></li>
+              <li><span>Local time</span><span class="info-val" id="infoLocalTime">--:--</span></li>
+              <li><span>Based in</span><span class="info-val">LJUBLJANA, SI</span></li>
+            </ul>
+          </div>
+
+          <div class="info-block">
+            <div class="info-label">// LIVE ESTIMATE</div>
+            <ul class="info-list">
+              <li><span>Scope</span><span class="info-val" id="infoScope">—</span></li>
+              <li><span>Budget</span><span class="info-val" id="infoBudget">—</span></li>
+              <li><span>Timeline</span><span class="info-val" id="infoTimeline">—</span></li>
+              <li><span>Complexity</span><span class="info-val" id="infoComplexity">—</span></li>
+              <li><span>Fit</span><span class="info-val" id="infoFit">PENDING</span></li>
+            </ul>
+          </div>
+
+          <div class="info-block">
+            <div class="info-label">// QUICK ACTIONS</div>
+            <button type="button" class="info-action" id="copyEmailBtn">
+              <span>Copy email</span><span>luka.grcar@me.com</span>
+            </button>
+            <a class="info-action" href="https://cal.com/lukagrcar" target="_blank" rel="noopener noreferrer">
+              <span>Schedule call</span><span>cal.com ↗</span>
+            </a>
+            <button type="button" class="info-action" id="clearDraftBtn">
+              <span>Clear draft</span><span>reset form</span>
+            </button>
+          </div>
+
+          <div class="info-block">
+            <div class="info-label">// TRANSMISSION</div>
+            <div class="info-secure">
+              <span class="info-dot" aria-hidden="true"></span>
+              <span>Encrypted via Web3Forms</span>
+            </div>
+          </div>
+        </aside>
+
       </div>
     </div>
-  </section>
+  </div>
 
-  <div class="scroll-container" id="scrollContainer"></div>
+  <!-- Scroll runway: distance the footer slides over -->
+  <div class="scroll-runway" aria-hidden="true"></div>
 
-  <!-- ===== SKILLS SECTION ===== -->
-  <section class="home-skills" aria-labelledby="skillsHeading">
-    <h2 id="skillsHeading" class="sr-only">What I do</h2>
-    <div class="skills-inner">
-      <ul class="skills-list" role="list">
-        <li><button type="button" class="skill-item" data-img="Images/Cestel_project/Cestel_image_01.webp" data-project="cestel"><span>3D Animation</span><img class="skill-thumb" src="Images/Cestel_project/Cestel_image_01.webp" alt="" loading="lazy" /></button></li>
-        <li><button type="button" class="skill-item" data-img="Images/Grounded_2023/Grounded_2023_02_thumb.webp" data-project="grounded2023"><span>Motion Graphics</span><img class="skill-thumb" src="Images/Grounded_2023/Grounded_2023_02_thumb.webp" alt="" loading="lazy" /></button></li>
-        <li><button type="button" class="skill-item" data-img="Images/Radenci_prostorska_projekcija/IMG_4065.webp" data-project="radenci"><span>Projection Mapping</span><img class="skill-thumb" src="Images/Radenci_prostorska_projekcija/IMG_4065.webp" alt="" loading="lazy" /></button></li>
-        <li><button type="button" class="skill-item" data-img="Images/Grounded 2025/gr2025cover.webp" data-project="grounded2025"><span>Visual Identity</span><img class="skill-thumb" src="Images/Grounded 2025/gr2025cover.webp" alt="" loading="lazy" /></button></li>
-        <li><button type="button" class="skill-item" data-img="Images/AccountingBox/1_loop_thumb.webp" data-project="accbox"><span>UX / UI Design</span><img class="skill-thumb" src="Images/AccountingBox/1_loop_thumb.webp" alt="" loading="lazy" /></button></li>
-        <li><button type="button" class="skill-item" data-img="Images/Athletesfoot_halloween/Athletesfoot_halloween_01.webp" data-project="halloween"><span>Creative Direction</span><img class="skill-thumb" src="Images/Athletesfoot_halloween/Athletesfoot_halloween_01.webp" alt="" loading="lazy" /></button></li>
-        <li><button type="button" class="skill-item" data-img="Images/Natureta product renders/Kozarec_eta0001.webp" data-project="natureta_renders"><span>Product Visualization</span><img class="skill-thumb" src="Images/Natureta product renders/Kozarec_eta0001.webp" alt="" loading="lazy" /></button></li>
-      </ul>
-      <div class="skills-preview" aria-hidden="true">
-        <img class="skill-img skill-img-a" alt="" />
-        <img class="skill-img skill-img-b" alt="" />
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== FOOTER ===== -->
+  <!-- ===== FOOTER (slides up over the cover on scroll) ===== -->
   <footer class="site-footer">
     <div class="footer-top">
-      <img class="footer-mark" src="Images/footer-mark.svg" alt="" width="96" height="96" />
-      <span class="footer-wordmark">Luka Grčar</span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
       <div class="footer-tagline">
         <p>3D Generalist &amp; UX Designer</p>
         <p>Based in Ljubljana, Slovenia</p>
@@ -157,75 +338,613 @@
     </div>
   </footer>
 
-  <script>
-  (function footerNoise() {
-    const footer = document.querySelector('.site-footer');
-    if (!footer) return;
-    const canvas = document.createElement('canvas');
-    canvas.className = 'footer-noise';
-    const ctx = canvas.getContext('2d');
-    const W = 1440, H = 900;
-    canvas.width = W; canvas.height = H;
-    footer.insertBefore(canvas, footer.firstChild);
-
-    const FRAMES = 5;
-    const frames = [];
-    for (let f = 0; f < FRAMES; f++) {
-      const img = ctx.createImageData(W, H);
-      for (let i = 0; i < img.data.length; i += 4) {
-        const v = Math.random() * 255;
-        img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
-        img.data[i + 3] = 255;
-      }
-      frames.push(img);
-    }
-
-    let inView = true;
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(entries => {
-        inView = entries.some(e => e.isIntersecting);
-      }, { threshold: 0 }).observe(footer);
-    }
-
-    let idx = 0, last = 0;
-    function tick(now) {
-      if (inView && now - last > 66) {
-        ctx.putImageData(frames[idx], 0, 0);
-        idx = (idx + 1) % FRAMES;
-        last = now;
-      }
-      requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-  })();
-  </script>
-
-  <!-- ===== FLOATING BOTTOM BAR ===== -->
-  <nav class="bottom-bar">
-    <a href="index.html" class="bar-link active">Home</a>
-    <a href="grid.html" class="bar-link">Index</a>
-    <a href="about.html" class="bar-link">About</a>
-    <div class="bar-divider bar-collapsible collapsed"></div>
-    <span class="bar-label bar-collapsible collapsed" id="barProjectName">Scroll to explore</span>
-    <div class="bar-divider bar-collapsible collapsed"></div>
-    <span class="bar-counter bar-collapsible collapsed" id="barCounter">1 / —</span>
-  </nav>
-
-  <a href="index.html" class="watermark" id="watermarkText">Luka Grčar</a>
-  <a href="about.html" class="contact-btn">Contact</a>
-
-  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
   <script src="projects.js" defer></script>
   <script src="overlay.js?v=2" defer></script>
   <script src="home.js" defer></script>
+  <script src="floating-nav.js" defer></script>
   <script>
-  document.addEventListener('contextmenu', e => e.preventDefault());
-  document.addEventListener('dragstart', e => e.preventDefault());
-  document.addEventListener('keydown', e => {
-    if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S' || e.key === 'u' || e.key === 'U')) e.preventDefault();
-  });
+    // Contact: fullscreen techy form wiring
+    (function () {
+      const overlay = document.getElementById('contactOverlay');
+      if (!overlay) return;
+      const link = document.getElementById('homeContactLink');
+      const close = document.getElementById('contactClose');
+      const form = document.getElementById('contactFormEl');
+      const note = document.getElementById('contactNote');
+      const counter = document.getElementById('contactCounter');
+      const clockEl = document.getElementById('contactClock');
+      const localTimeEl = document.getElementById('infoLocalTime');
+      const tzEl = document.getElementById('infoTz');
+      const infoScope = document.getElementById('infoScope');
+      const infoBudget = document.getElementById('infoBudget');
+      const infoTimeline = document.getElementById('infoTimeline');
+      const infoComplexity = document.getElementById('infoComplexity');
+      const infoFit = document.getElementById('infoFit');
+      const copyBtn = document.getElementById('copyEmailBtn');
+      const clearBtn = document.getElementById('clearDraftBtn');
+
+      const STORAGE_KEY = 'lg_contact_draft_v2';
+
+      function openOverlay(e) {
+        if (e) e.preventDefault();
+        overlay.classList.add('open');
+        restoreDraft();
+        updateCounter();
+        updateEstimate();
+        setTimeout(() => { const f = form.elements['name']; if (f && !f.value) f.focus(); }, 200);
+      }
+      function dismiss() { overlay.classList.remove('open'); }
+
+      // ----- Live clock + timezone --------------------------------------
+      function tick() {
+        const now = new Date();
+        const hms = now.toLocaleTimeString('en-GB', { hour12: false });
+        if (clockEl) clockEl.textContent = hms;
+        if (localTimeEl) localTimeEl.textContent = hms.slice(0, 5);
+        if (tzEl) {
+          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'CET';
+          const short = tz.split('/').pop().replace(/_/g, ' ').toUpperCase();
+          tzEl.textContent = short;
+        }
+      }
+      tick();
+      setInterval(tick, 1000);
+
+      // ----- Char counter -----------------------------------------------
+      function updateCounter() {
+        if (!counter) return;
+        const v = (form.elements['message'] && form.elements['message'].value) || '';
+        counter.textContent = `${v.length} / 1200`;
+        counter.classList.toggle('is-near', v.length > 1000);
+      }
+
+      // ----- Live estimate panel ----------------------------------------
+      function updateEstimate() {
+        if (!infoScope) return;
+        const types = Array.from(form.querySelectorAll('input[name="type"]:checked')).map(i => i.value);
+        const budget = (form.querySelector('input[name="budget"]:checked') || {}).value || '';
+        const timeline = (form.querySelector('input[name="timeline"]:checked') || {}).value || '';
+
+        infoScope.textContent = types.length ? `${types.length} ITEM${types.length > 1 ? 'S' : ''}` : '—';
+        infoBudget.textContent = budget ? budget.toUpperCase() : '—';
+        infoTimeline.textContent = timeline ? timeline.toUpperCase() : '—';
+
+        // Complexity = count of selected types + budget tier
+        const tierMap = { '< €1k': 1, '€1k - €5k': 2, '€5k - €15k': 3, '€15k+': 4, 'Not sure': 2 };
+        const complexityScore = types.length + (tierMap[budget] || 0);
+        let complexity = '—';
+        if (complexityScore > 0) {
+          if (complexityScore <= 2) complexity = 'LIGHT';
+          else if (complexityScore <= 5) complexity = 'MEDIUM';
+          else if (complexityScore <= 8) complexity = 'HEAVY';
+          else complexity = 'FLAGSHIP';
+        }
+        infoComplexity.textContent = complexity;
+
+        // Fit calculation
+        let fit = 'PENDING';
+        let fitClass = '';
+        if (timeline && budget) {
+          const tightTimeline = (timeline === 'ASAP' || timeline === '1-2 weeks');
+          const tightBudget = (budget === '< €1k');
+          if (tightTimeline && tightBudget) { fit = 'TIGHT'; fitClass = 'is-bad'; }
+          else if (timeline === 'Flexible' || timeline === '2-3 months') { fit = 'IDEAL'; fitClass = 'is-good'; }
+          else if (tightTimeline) { fit = 'NEEDS REVIEW'; fitClass = 'is-warn'; }
+          else { fit = 'GOOD'; fitClass = 'is-good'; }
+        }
+        infoFit.textContent = fit;
+        infoFit.classList.remove('is-good', 'is-warn', 'is-bad');
+        if (fitClass) infoFit.classList.add(fitClass);
+      }
+
+      // ----- Autosave / restore -----------------------------------------
+      function saveDraft() {
+        const data = {};
+        new FormData(form).forEach((v, k) => {
+          if (k === 'access_key') return;
+          if (data[k] === undefined) data[k] = v;
+          else if (Array.isArray(data[k])) data[k].push(v);
+          else data[k] = [data[k], v];
+        });
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {}
+      }
+      function restoreDraft() {
+        let data;
+        try { data = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch {}
+        if (!data) return;
+        Object.entries(data).forEach(([k, v]) => {
+          const values = Array.isArray(v) ? v : [v];
+          values.forEach(val => {
+            const input = form.querySelector(`[name="${k}"][value="${CSS.escape(val)}"]`);
+            if (input && (input.type === 'checkbox' || input.type === 'radio')) {
+              input.checked = true;
+            } else {
+              const single = form.querySelector(`[name="${k}"]:not([type="checkbox"]):not([type="radio"])`);
+              if (single) single.value = val;
+            }
+          });
+        });
+      }
+      function clearDraft() {
+        try { localStorage.removeItem(STORAGE_KEY); } catch {}
+        form.reset();
+        updateCounter();
+        updateEstimate();
+        if (note) note.textContent = '';
+      }
+
+      form.addEventListener('input', () => { saveDraft(); updateCounter(); updateEstimate(); });
+      form.addEventListener('change', () => { saveDraft(); updateEstimate(); });
+
+      // ----- Copy email / clear draft -----------------------------------
+      if (copyBtn) {
+        copyBtn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText('luka.grcar@me.com');
+            const labels = copyBtn.querySelectorAll('span');
+            const orig = labels[0].textContent;
+            labels[0].textContent = 'Copied ✓';
+            copyBtn.style.borderColor = '#4ade80';
+            setTimeout(() => {
+              labels[0].textContent = orig;
+              copyBtn.style.borderColor = '';
+            }, 1400);
+          } catch {}
+        });
+      }
+      if (clearBtn) clearBtn.addEventListener('click', clearDraft);
+
+      // ----- Open / close -----------------------------------------------
+      if (link) link.addEventListener('click', openOverlay);
+      if (close) close.addEventListener('click', dismiss);
+      document.addEventListener('keydown', (e) => {
+        if (!overlay.classList.contains('open')) return;
+        if (e.key === 'Escape') { dismiss(); return; }
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+          e.preventDefault();
+          if (typeof form.requestSubmit === 'function') form.requestSubmit();
+          else form.dispatchEvent(new Event('submit', { cancelable: true }));
+        }
+      });
+
+      // ----- Submit -----------------------------------------------------
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = form.querySelector('.contact-submit');
+        const origLabel = btn.textContent;
+        btn.textContent = 'Transmitting…';
+        btn.disabled = true;
+        try {
+          const res = await fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'Accept': 'application/json' },
+          });
+          if (res.ok) {
+            note.textContent = '✓ Message transmitted. I\'ll reply within 24 hours.';
+            note.style.color = '#4ade80';
+            clearDraft();
+          } else {
+            note.textContent = '✗ Transmission failed. Try again.';
+            note.style.color = '#fb7185';
+          }
+        } catch {
+          note.textContent = '✗ Network error. Try again.';
+          note.style.color = '#fb7185';
+        }
+        btn.textContent = origLabel;
+        btn.disabled = false;
+      });
+    })();
+
+    // Recent-project card: auto-cycles 3 projects, plays preview on hover.
+    // Each project renders into a `.recent-card-frame`; swaps slide a new
+    // frame in while the old one slides out the opposite direction.
+    (function () {
+      const card = document.getElementById('recentCard');
+      const track = document.getElementById('recentCardTrack');
+      if (!card || !track) return;
+
+      const PROJECTS = [
+        {
+          id: 'grounded2025',
+          name: 'Festival Grounded 2025',
+          meta: '2025 · Pritličje · Visual identity & motion',
+          desc: 'Cinema 4D / Redshift / AE — full festival identity, motion, and stage visuals.',
+          thumb: 'Images/Grounded 2025/gr2025cover.webp',
+          video: 'Images/Grounded 2025/Grounded_2025_web.webm',
+        },
+        {
+          id: 'cestel',
+          name: 'CESTEL',
+          meta: '2023 · Cinema 4D · Product visualization',
+          desc: 'Industrial product film for CESTEL — material work, animation, and post.',
+          // Animated WebP — loops naturally inside <img>; no <video> needed.
+          thumb: 'Images/Cestel_project/cestel_anim_02.webp',
+          video: '',
+        },
+        {
+          id: 'accbox',
+          name: 'AccountingBox',
+          meta: '2024 · Brand · UI motion',
+          desc: 'Identity, motion, and product UI for an accounting platform — concept to delivery.',
+          thumb: 'Images/AccountingBox/Podjetja_cover.webp',
+          video: 'Images/AccountingBox/intro.webm',
+        },
+      ];
+
+      const CYCLE_MS = 5500;
+      const SLIDE_MS = 500;
+      let idx = 0;
+      let cycleTimer = null;
+      let hovered = false;
+      let activeFrame = null;
+      let activeVideo = null;
+      let isSwapping = false;
+
+      function isVideoSrc(s) { return /\.(webm|mp4|mov)$/i.test(s || ''); }
+
+      function buildFrame(p) {
+        const frame = document.createElement('div');
+        frame.className = 'recent-card-frame';
+        frame.dataset.projId = p.id;
+
+        const hasVideo = isVideoSrc(p.video);
+        if (hasVideo) {
+          const v = document.createElement('video');
+          v.className = 'recent-card-video';
+          v.muted = true; v.loop = true; v.playsInline = true;
+          v.preload = 'metadata';
+          v.src = p.video;
+          v.setAttribute('aria-hidden', 'true');
+          frame.appendChild(v);
+        }
+
+        const img = document.createElement('img');
+        img.className = 'recent-card-thumb';
+        img.src = p.thumb;
+        img.alt = p.name;
+        frame.appendChild(img);
+
+        const body = document.createElement('div');
+        body.className = 'recent-card-body';
+        body.innerHTML = `
+          <span class="recent-card-label">// Recent work</span>
+          <span class="recent-card-name"></span>
+          <span class="recent-card-meta"></span>
+          <span class="recent-card-desc"></span>
+        `;
+        body.querySelector('.recent-card-name').textContent = p.name;
+        body.querySelector('.recent-card-meta').textContent = p.meta;
+        body.querySelector('.recent-card-desc').textContent = p.desc;
+        frame.appendChild(body);
+
+        // Card hover state on this frame's video / thumb is governed by
+        // the .recent-card:hover selector — nothing to wire per-frame.
+        return frame;
+      }
+
+      function applyProject(p) {
+        card.href = `grid.html#project=${p.id}`;
+        card.classList.toggle('no-video', !isVideoSrc(p.video));
+      }
+
+      function tryPlay(v) {
+        if (!v) return;
+        try { v.currentTime = 0; const r = v.play(); if (r && r.catch) r.catch(() => {}); } catch {}
+      }
+
+      function mountFirst() {
+        const p = PROJECTS[idx];
+        const frame = buildFrame(p);
+        track.appendChild(frame);
+        activeFrame = frame;
+        activeVideo = frame.querySelector('.recent-card-video');
+        applyProject(p);
+      }
+
+      // Slide direction: +1 = next (slides UP — new from below, old to top)
+      //                  -1 = prev (slides DOWN — new from above, old to bottom)
+      function slideTo(newIdx, dir) {
+        if (isSwapping) return;
+        if (newIdx === idx) return;
+        isSwapping = true;
+        idx = newIdx;
+        const p = PROJECTS[idx];
+
+        const incoming = buildFrame(p);
+        // CSS @keyframes auto-fire when the class is applied — no rAF needed.
+        const enterClass = dir > 0 ? 'is-enter-up' : 'is-enter-down';
+        const leaveClass = dir > 0 ? 'is-leave-up' : 'is-leave-down';
+        incoming.classList.add(enterClass);
+        track.appendChild(incoming);
+        if (activeFrame) activeFrame.classList.add(leaveClass);
+
+        const oldFrame = activeFrame;
+        const oldVideo = activeVideo;
+        activeFrame = incoming;
+        activeVideo = incoming.querySelector('.recent-card-video');
+        applyProject(p);
+
+        // Start playing the new video if hovered
+        if (hovered) tryPlay(activeVideo);
+        try { if (oldVideo) oldVideo.pause(); } catch {}
+
+        setTimeout(() => {
+          if (oldFrame && oldFrame.parentNode) oldFrame.parentNode.removeChild(oldFrame);
+          isSwapping = false;
+        }, SLIDE_MS + 30);
+      }
+
+      function tick() {
+        if (hovered || document.hidden) return;
+        const next = (idx + 1) % PROJECTS.length;
+        slideTo(next, +1);
+      }
+
+      function startCycle() {
+        if (cycleTimer) clearInterval(cycleTimer);
+        cycleTimer = setInterval(tick, CYCLE_MS);
+      }
+      function stopCycle() {
+        if (cycleTimer) { clearInterval(cycleTimer); cycleTimer = null; }
+      }
+
+      mountFirst();
+      startCycle();
+
+      card.addEventListener('mouseenter', () => {
+        hovered = true;
+        tryPlay(activeVideo);
+      });
+      card.addEventListener('mouseleave', () => {
+        hovered = false;
+        try { if (activeVideo) activeVideo.pause(); } catch {}
+      });
+
+      // Wheel cycling: scroll down → next (slide left), up → prev (slide right).
+      let wheelLock = 0;
+      let wheelAccum = 0;
+      const WHEEL_THRESHOLD = 24;
+      card.addEventListener('wheel', (e) => {
+        if (!hovered) return;
+        e.preventDefault();
+        wheelAccum += e.deltaY;
+        const now = performance.now();
+        if (Math.abs(wheelAccum) < WHEEL_THRESHOLD) return;
+        if (now - wheelLock < 200) return;
+        wheelLock = now;
+        const dir = wheelAccum > 0 ? +1 : -1;
+        wheelAccum = 0;
+        const next = (idx + dir + PROJECTS.length) % PROJECTS.length;
+        slideTo(next, dir);
+        startCycle(); // restart auto-cycle so user gets a fresh dwell
+      }, { passive: false });
+
+      card.addEventListener('click', (e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+        if (typeof window.openProject === 'function') {
+          e.preventDefault();
+          window.openProject(PROJECTS[idx].id);
+        }
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) stopCycle();
+        else startCycle();
+      });
+    })();
+
+    // Services panel: hovering a service swaps description + small
+    // recent-project preview (cover + animation + name + project link).
+    (function () {
+      const desc = document.getElementById('servicesDesc');
+      if (!desc) return;
+      const items = document.querySelectorAll('.services-item');
+      const link = document.getElementById('servicesProjLink');
+      const img = document.getElementById('servicesProjImg');
+      const vid = document.getElementById('servicesProjVid');
+      const nameEl = document.getElementById('servicesProjName');
+      const defaultDesc = desc.textContent;
+      const defaultName = nameEl ? nameEl.textContent : '';
+      const defaultThumb = (link && link.style.display !== 'none') ? '' : '';
+
+      function clearPreview() {
+        items.forEach(i => i.classList.remove('is-active'));
+        desc.textContent = defaultDesc;
+        if (img) img.removeAttribute('src');
+        if (vid) { try { vid.pause(); } catch {}; vid.removeAttribute('src'); vid.style.display = 'none'; }
+        if (link) {
+          link.style.visibility = 'hidden';
+          link.removeAttribute('href');
+          link.setAttribute('tabindex', '-1');
+          link.setAttribute('aria-hidden', 'true');
+        }
+        if (nameEl) nameEl.textContent = defaultName;
+      }
+
+      function isVideoSrc(s) { return /\.(webm|mp4|mov)$/i.test(s || ''); }
+
+      function setPreview(el) {
+        items.forEach(i => i.classList.remove('is-active'));
+        el.classList.add('is-active');
+        desc.textContent = el.getAttribute('data-desc') || '';
+
+        const projId = el.getAttribute('data-proj') || '';
+        const projHref = el.getAttribute('data-proj-href') || (projId ? `grid.html#project=${projId}` : '');
+        const projName = el.getAttribute('data-proj-name') || '';
+        const projThumb = el.getAttribute('data-proj-thumb') || '';
+        const projVideo = el.getAttribute('data-proj-video') || '';
+
+        if (img) {
+          if (projThumb) img.src = projThumb;
+          else img.removeAttribute('src');
+        }
+        if (vid) {
+          try { vid.pause(); } catch {}
+          if (isVideoSrc(projVideo)) {
+            vid.src = projVideo;
+            vid.style.display = '';
+            try { vid.currentTime = 0; vid.play().catch(() => {}); } catch {}
+          } else {
+            vid.removeAttribute('src');
+            vid.style.display = 'none';
+          }
+        }
+        if (link) {
+          if (projHref) {
+            link.href = projHref;
+            link.style.visibility = 'visible';
+            link.removeAttribute('tabindex');
+            link.removeAttribute('aria-hidden');
+          } else {
+            link.style.visibility = 'hidden';
+          }
+        }
+        if (nameEl) {
+          nameEl.textContent = projName ? `↳ ${projName}` : '';
+        }
+      }
+
+      // Subtle letter scramble on item hover: each char briefly cycles
+      // through random letters (case-matched) before settling on the real one.
+      const LOWER = 'abcdefghijklmnopqrstuvwxyz';
+      const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      function pickGlyphFor(ch) {
+        if (/[A-Z]/.test(ch)) return UPPER[(Math.random() * 26) | 0];
+        if (/[a-z]/.test(ch)) return LOWER[(Math.random() * 26) | 0];
+        return ch;
+      }
+      const scrambleState = new WeakMap();
+      function startScramble(el) {
+        const original = el.dataset.label || el.textContent;
+        if (!el.dataset.label) el.dataset.label = original;
+        const prev = scrambleState.get(el);
+        if (prev) cancelAnimationFrame(prev.raf);
+        const len = original.length;
+        const startTimes = new Array(len);
+        const total = 260;
+        for (let i = 0; i < len; i++) {
+          startTimes[i] = (i / Math.max(len - 1, 1)) * 140;
+        }
+        const t0 = performance.now();
+        const state = { raf: 0, alive: true };
+        function tick(now) {
+          if (!state.alive) return;
+          const elapsed = now - t0;
+          let out = '';
+          let allDone = true;
+          for (let i = 0; i < len; i++) {
+            const local = elapsed - startTimes[i];
+            if (local < 0) {
+              out += pickGlyphFor(original[i]);
+              allDone = false;
+            } else if (local < 100) {
+              out += pickGlyphFor(original[i]);
+              allDone = false;
+            } else {
+              out += original[i];
+            }
+          }
+          el.textContent = out;
+          if (!allDone && elapsed < total + 100) {
+            state.raf = requestAnimationFrame(tick);
+          } else {
+            el.textContent = original;
+          }
+        }
+        state.raf = requestAnimationFrame(tick);
+        scrambleState.set(el, state);
+      }
+      function stopScramble(el) {
+        const s = scrambleState.get(el);
+        if (s) { s.alive = false; cancelAnimationFrame(s.raf); }
+        if (el.dataset.label) el.textContent = el.dataset.label;
+      }
+
+      // Locked-in preset applied by clicking a service. Panel mouseleave
+      // restores this state instead of releasing back to base.
+      // (Coordinate labels are always-on now and aren't touched by presets.)
+      let lockedFlow = null;
+      let lockedShape = null;
+
+      function applyPreset(shape, flow) {
+        if (shape && typeof window.__coverShape === 'function') {
+          window.__coverShape(shape);
+          if (typeof window.__coverFlow === 'function') window.__coverFlow(null);
+        } else if (flow && typeof window.__coverFlow === 'function') {
+          window.__coverFlow(flow);
+          if (typeof window.__coverShape === 'function') window.__coverShape(null);
+        } else {
+          if (typeof window.__coverFlow === 'function') window.__coverFlow(null);
+          if (typeof window.__coverShape === 'function') window.__coverShape(null);
+        }
+      }
+
+      items.forEach((el) => {
+        el.dataset.label = el.textContent;
+        el.addEventListener('mouseenter', () => {
+          setPreview(el);
+          startScramble(el);
+          applyPreset(el.getAttribute('data-cover-shape'), el.getAttribute('data-flow'));
+        });
+        el.addEventListener('mouseleave', () => stopScramble(el));
+
+        // Click → commit this service's preset and close the dropdown.
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const shape = el.getAttribute('data-cover-shape');
+          const flow = el.getAttribute('data-flow');
+          lockedShape = shape || null;
+          lockedFlow = shape ? null : (flow || null);
+          applyPreset(lockedShape, lockedFlow);
+
+          const services = document.getElementById('servicesPin');
+          if (services) {
+            services.classList.add('is-locked');
+            // Re-arm: once the cursor leaves, drop the lock so re-hover
+            // opens the panel again.
+            const release = () => {
+              services.classList.remove('is-locked');
+              services.removeEventListener('pointerleave', release);
+            };
+            services.addEventListener('pointerleave', release);
+          }
+        });
+      });
+
+      const panel = document.querySelector('.services-panel');
+      if (panel) {
+        panel.addEventListener('mouseleave', () => {
+          clearPreview();
+          // Restore the locked-in preset (or release if nothing committed).
+          applyPreset(lockedShape, lockedFlow);
+        });
+      }
+
+      // Click on the preview thumb opens the project overlay on home (no nav).
+      if (link) {
+        link.addEventListener('click', (e) => {
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+          const projId = (document.querySelector('.services-item.is-active') || {}).getAttribute
+            ? document.querySelector('.services-item.is-active').getAttribute('data-proj')
+            : '';
+          if (projId && typeof window.openProject === 'function') {
+            e.preventDefault();
+            window.openProject(projId);
+          }
+        });
+      }
+
+      clearPreview(); // initial state
+    })();
+
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('dragstart', e => e.preventDefault());
   </script>
 </body>
 </html>

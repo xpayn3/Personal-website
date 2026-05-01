@@ -124,28 +124,28 @@
     },
     boot: () => {
       if (!audioCtx || soundMuted) return;
-      // DMG-style "ding" — bell chime, layered sine partials with
-      // exponential ring-out. Approximates the iconic Game Boy power-on tone.
-      const t0 = audioCtx.currentTime + 0.22; // small delay so logo begins first
-      const partials = [
-        { f: 523.25, amp: 0.22, decay: 1.4 },  // C5 fundamental
-        { f: 1046.5, amp: 0.13, decay: 1.0 },  // +octave
-        { f: 1568.0, amp: 0.07, decay: 0.7 },  // +octave + fifth
-        { f: 2093.0, amp: 0.04, decay: 0.45 }, // 2 octaves up
+      // Portfolio cart power-on — playful 8-bit jingle. Square-wave lead
+      // with a triangle bass underneath.
+      const start = 220;
+      const melody = [
+        [784,  0.09, 0],
+        [1047, 0.09, 90],
+        [1319, 0.09, 180],
+        [1568, 0.22, 270],
+        [1397, 0.10, 500],
+        [1568, 0.10, 610],
+        [1319, 0.10, 720],
+        [1047, 0.32, 830],
       ];
-      partials.forEach(p => {
-        const osc = audioCtx.createOscillator();
-        const g = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.value = p.f;
-        g.gain.setValueAtTime(0, t0);
-        g.gain.linearRampToValueAtTime(p.amp, t0 + 0.01);
-        g.gain.exponentialRampToValueAtTime(0.0001, t0 + p.decay);
-        osc.connect(g);
-        g.connect(audioCtx.destination);
-        osc.start(t0);
-        osc.stop(t0 + p.decay + 0.05);
+      melody.forEach(([f, d, delay]) => {
+        setTimeout(() => playTone(f, d + 0.03, 'square', 0.06), start + delay);
       });
+      setTimeout(() => playTone(131, 0.5, 'triangle', 0.09), start);
+      setTimeout(() => playTone(196, 0.4, 'triangle', 0.08), start + 500);
+      setTimeout(() => playTone(131, 0.5, 'triangle', 0.10), start + 830);
+      setTimeout(() => playTone(2093, 0.06, 'square', 0.05), start + 1160);
+      setTimeout(() => playTone(2637, 0.06, 'square', 0.05), start + 1220);
+      setTimeout(() => playTone(3136, 0.12, 'square', 0.05), start + 1280);
     },
     bootSnake: () => {
       // Rattlesnake rattle — rapid ascending clicks
@@ -203,8 +203,16 @@
   camera.position.set(0, 5, 160);
   camera.lookAt(0, 0, 0);
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    alpha: true,
+    powerPreference: 'high-performance',
+    stencil: false,
+    depth: true,
+  });
+  // Cap at 1.5 — 2× costs ~78% more shader work for negligible visible gain on
+  // a small canvas with already-AA'd edges.
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.9;
   renderer.outputEncoding = THREE.sRGBEncoding;
@@ -1001,7 +1009,7 @@
       const bRay = new THREE.Raycaster();
       bRay.set(new THREE.Vector3(bCenter.x, labelY, bBox.max.z + 1), new THREE.Vector3(0, 0, -1));
       const hits = bRay.intersectObject(bodyMesh, true);
-      const surfZ = hits.length ? hits[0].point.z + 0.003 : bBox.max.z - bSize.z * 0.3;
+      const surfZ = hits.length ? hits[0].point.z + 0.06 : bBox.max.z - bSize.z * 0.3;
       plane.position.set(bCenter.x, labelY, surfZ);
       plane.raycast = () => {};
       scene.add(plane);
@@ -1847,7 +1855,31 @@
           mid.height = Math.max(18, Math.floor(ch / 3));
           const mCtx = mid.getContext('2d');
           drawPhotoCover(mCtx, img, 0, 0, mid.width, mid.height);
-          gb.userData._portBootCache = { chunky, mid };
+          // Pixel-art cache — low-res photo quantized to the GameBoy 4-tone
+          // palette. Used for the final boot image so it reads as 8-bit art.
+          const pixel = document.createElement('canvas');
+          pixel.width = Math.max(40, Math.floor(cw * 0.28));
+          pixel.height = Math.max(40, Math.floor(ch * 0.28));
+          const pCtx = pixel.getContext('2d');
+          drawPhotoCover(pCtx, img, 0, 0, pixel.width, pixel.height);
+          const hexToRgb = (hex) => {
+            const h = hex.replace('#', '');
+            return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+          };
+          const pal = [hexToRgb(C.ink), hexToRgb(C.dark), hexToRgb(C.light), hexToRgb(C.bg)];
+          const pd = pCtx.getImageData(0, 0, pixel.width, pixel.height);
+          for (let i = 0; i < pd.data.length; i += 4) {
+            const lum = (pd.data[i] * 0.299 + pd.data[i + 1] * 0.587 + pd.data[i + 2] * 0.114) / 255;
+            // Bayer-ish threshold for dithering to avoid flat posterization
+            const x = (i / 4) % pixel.width, y = Math.floor((i / 4) / pixel.width);
+            const jitter = ((x ^ y) & 1) * 0.06 - 0.03;
+            const idx = Math.max(0, Math.min(3, Math.floor((lum + jitter) * 4)));
+            pd.data[i] = pal[idx][0];
+            pd.data[i + 1] = pal[idx][1];
+            pd.data[i + 2] = pal[idx][2];
+          }
+          pCtx.putImageData(pd, 0, 0);
+          gb.userData._portBootCache = { chunky, mid, pixel };
         }
         const cache = gb.userData._portBootCache;
 
@@ -1868,15 +1900,19 @@
 
           ctx.imageSmoothingEnabled = false;
 
-          // Crisp zone (already scanned) — full quality above scanline - 6
+          // Crisp zone (already scanned) — pixel-art version so the reveal
+          // and final resting frame match instead of jumping resolution.
           const crispBottom = scanY - 4;
-          if (crispBottom > cy && img && img.complete) {
-            ctx.save();
-            ctx.beginPath();
-            ctx.rect(cx, cy, cw, crispBottom - cy);
-            ctx.clip();
-            drawPhotoCover(ctx, img, cx, cy, cw, bootH);
-            ctx.restore();
+          if (crispBottom > cy) {
+            const crispSrc = (cache && cache.pixel) ? cache.pixel : img;
+            if (crispSrc && (crispSrc.complete !== false)) {
+              ctx.save();
+              ctx.beginPath();
+              ctx.rect(cx, cy, cw, crispBottom - cy);
+              ctx.clip();
+              drawPhotoCover(ctx, crispSrc, cx, cy, cw, bootH);
+              ctx.restore();
+            }
           }
 
           // Mid-quality zone — just beneath crisp, a bit blocky
@@ -1888,7 +1924,7 @@
               ctx.beginPath();
               ctx.rect(cx, midTop, cw, midBottom - midTop);
               ctx.clip();
-              drawPhotoCover(ctx, cache.mid, cx, cy, cw, bootH);
+              drawPhotoCover(ctx, cache.pixel || cache.mid, cx, cy, cw, bootH);
               ctx.restore();
             }
           }
@@ -1903,7 +1939,7 @@
               ctx.rect(cx, chunkyTop, cw, chunkyBottom - chunkyTop);
               ctx.clip();
               ctx.globalAlpha = 0.8;
-              drawPhotoCover(ctx, cache.chunky, cx, cy, cw, bootH);
+              drawPhotoCover(ctx, cache.pixel || cache.chunky, cx, cy, cw, bootH);
               // Digital static / dither
               for (let n = 0; n < 60; n++) {
                 ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.25})`;
@@ -1947,7 +1983,8 @@
         // Phase 3 — image fully resolved with CRT scanline overlay (3000-3400ms)
         else if (elapsed < 3400) {
           ctx.imageSmoothingEnabled = false;
-          if (img && img.complete) drawPhotoCover(ctx, img, cx, cy, cw, bootH);
+          if (cache && cache.pixel) drawPhotoCover(ctx, cache.pixel, cx, cy, cw, bootH);
+          else if (img && img.complete) drawPhotoCover(ctx, img, cx, cy, cw, bootH);
           drawTftRgbOverlay(ctx, cx, cy, cw, bootH);
 
           // CRT scanline pattern
@@ -1963,7 +2000,8 @@
         // Phase 4 — title + loading bar overlay (3400-4600ms)
         else {
           ctx.imageSmoothingEnabled = false;
-          if (img && img.complete) drawPhotoCover(ctx, img, cx, cy, cw, bootH);
+          if (cache && cache.pixel) drawPhotoCover(ctx, cache.pixel, cx, cy, cw, bootH);
+          else if (img && img.complete) drawPhotoCover(ctx, img, cx, cy, cw, bootH);
           drawTftRgbOverlay(ctx, cx, cy, cw, bootH);
 
           // Scanline overlay
@@ -1971,9 +2009,9 @@
           for (let ly = cy; ly < cy + bootH; ly += 3) ctx.fillRect(cx, ly, cw, 1);
 
           const fade = Math.min(1, (elapsed - 3400) / 500);
-          // Dark gradient fade at bottom for legibility
-          ctx.fillStyle = `rgba(0,0,0,${0.65 * fade})`;
-          ctx.fillRect(cx, cy + ch * 0.45, cw, ch * 0.55);
+          // Full-screen fade to black so the loading screen reads as its own UI
+          ctx.fillStyle = `rgba(0,0,0,${0.88 * fade})`;
+          ctx.fillRect(cx, cy, cw, bootH);
 
           // Title
           ctx.globalAlpha = fade;
@@ -3043,7 +3081,6 @@
     initAudio();
     lastInteraction = performance.now();
     if (screenOff) {
-      // Wake up screen — consume this press just to wake up
       wakeScreen();
       drawScreen();
       return;
@@ -3339,7 +3376,6 @@
     const hits = raycaster.intersectObjects(interactiveObjs, true);
     if (hits.length && hits[0].object.userData.action) {
       const obj = hits[0].object;
-      // Wake from screensaver/dim on any interaction
       wakeScreen();
       lastInteraction = performance.now();
 
@@ -3614,34 +3650,97 @@
     renderer.domElement.style.cursor = hit ? 'pointer' : '';
   }
 
+  // LEFT click + drag = rotate. Click without drag = raycast (button press).
+  // Touch handles its own drag flow below.
+  let leftDown = false;
+  let leftDragging = false;
+  let leftStart = { x: 0, y: 0 };
+
+  // Sensitivity — 2:1 yaw:pitch ratio matches the convention that users
+  // rotate horizontally more than vertically.
+  const DRAG_SENS_Y = 0.0075;
+  const DRAG_SENS_X = 0.0038;
+  // ~70° pitch clamp — wider than the prior 34° but still avoids the model
+  // flipping upside-down.
+  const PITCH_CLAMP = 1.2;
+
+  // Rolling velocity samples for flick-release inertia. Last 3 frames keeps
+  // the inertia close to the user's actual final motion without amplifying
+  // a stale earlier peak.
+  const VEL_SAMPLES = 3;
+  const FLICK_SCALE = 0.7;
+  const velY = [], velX = [];
+
+  renderer.domElement.addEventListener('contextmenu', (e) => e.preventDefault());
+
   renderer.domElement.addEventListener('pointerdown', (e) => {
-    isDragging = true; dragMoved = false;
+    if (e.button !== 0) return;
+    leftDown = true;
+    leftDragging = false;
+    dragMoved = false;
+    leftStart = { x: e.clientX, y: e.clientY };
     prev = { x: e.clientX, y: e.clientY };
+    velY.length = 0; velX.length = 0;
+    // Cancel any in-flight flick-inertia from a prior release.
+    gb.userData._flickActive = false;
   });
   renderer.domElement.addEventListener('pointermove', (e) => {
-    if (!isDragging) {
-      updateHover(e.clientX, e.clientY);
-      // Subtle tilt toward mouse position (only when not auto-rotating)
-      if (!autoRotate) {
-        const r = renderer.domElement.getBoundingClientRect();
-        const mx = (e.clientX - r.left) / r.width - 0.5;
-        const my = (e.clientY - r.top) / r.height - 0.5;
-        gb.userData.nudgeY = mx * 0.08;
-        gb.userData.nudgeX = my * 0.06;
+    if (leftDown) {
+      const distX = e.clientX - leftStart.x;
+      const distY = e.clientY - leftStart.y;
+      if (!leftDragging && Math.hypot(distX, distY) > 4) {
+        leftDragging = true;
+        dragMoved = true;
+        autoRotate = false;
       }
+      if (leftDragging) {
+        const dx = e.clientX - prev.x, dy = e.clientY - prev.y;
+        const dragDY = dx * DRAG_SENS_Y;
+        const dragDX = dy * DRAG_SENS_X;
+        targetRot.y += dragDY;
+        targetRot.x += dragDX;
+        targetRot.x = Math.max(-PITCH_CLAMP, Math.min(PITCH_CLAMP, targetRot.x));
+        // Record this frame's delta into the rolling buffer.
+        velY.push(dragDY); if (velY.length > VEL_SAMPLES) velY.shift();
+        velX.push(dragDX); if (velX.length > VEL_SAMPLES) velX.shift();
+        prev = { x: e.clientX, y: e.clientY };
+        return;
+      }
+    }
+    updateHover(e.clientX, e.clientY);
+    if (!autoRotate) {
+      const r = renderer.domElement.getBoundingClientRect();
+      const mx = (e.clientX - r.left) / r.width - 0.5;
+      const my = (e.clientY - r.top) / r.height - 0.5;
+      gb.userData.nudgeY = mx * 0.08;
+      gb.userData.nudgeX = my * 0.06;
+    }
+  });
+  // Flick-inertia state — advanced inside animate() so it stays in lockstep
+  // with the rotation lerp (no two-rAF interleaving jitter).
+  gb.userData._flickY = 0;
+  gb.userData._flickX = 0;
+
+  window.addEventListener('pointerup', (e) => {
+    if (e.button !== 0 || !leftDown) return;
+    leftDown = false;
+    if (!leftDragging) {
+      if (e.pointerType === 'mouse') raycast(e.clientX, e.clientY);
       return;
     }
-    const dx = e.clientX - prev.x, dy = e.clientY - prev.y;
-    if (Math.abs(dx) + Math.abs(dy) > 3) dragMoved = true;
-    targetRot.y += dx * 0.008;
-    targetRot.x += dy * 0.004;
-    targetRot.x = Math.max(-0.6, Math.min(0.6, targetRot.x));
-    prev = { x: e.clientX, y: e.clientY };
-    autoRotate = false;
-  });
-  window.addEventListener('pointerup', (e) => {
-    if (isDragging && !dragMoved && e.pointerType === 'mouse') raycast(e.clientX, e.clientY);
-    isDragging = false;
+    leftDragging = false;
+    const avg = (arr) => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
+    const flickY = avg(velY) * FLICK_SCALE;
+    const flickX = avg(velX) * FLICK_SCALE;
+    velY.length = 0; velX.length = 0;
+    // Skip inertia for slow / stationary releases — it lands cleanly.
+    if (Math.abs(flickY) < 0.0008 && Math.abs(flickX) < 0.0008) {
+      gb.userData._flickY = 0;
+      gb.userData._flickX = 0;
+      return;
+    }
+    gb.userData._flickY = flickY;
+    gb.userData._flickX = flickX;
   });
 
   // Touch
@@ -3779,8 +3878,22 @@
     // Decay nudge offset
     gb.userData.nudgeX = (gb.userData.nudgeX || 0) * 0.85;
     gb.userData.nudgeY = (gb.userData.nudgeY || 0) * 0.85;
-    gb.rotation.y += (targetRot.y + (gb.userData.nudgeY || 0) - gb.rotation.y) * 0.06;
-    gb.rotation.x += (targetRot.x + (gb.userData.nudgeX || 0) - gb.rotation.x) * 0.06;
+    // Flick-inertia advanced in-loop so it stays in phase with rotation.
+    if (!leftDragging && (gb.userData._flickY || gb.userData._flickX)) {
+      gb.userData._flickY *= 0.92;
+      gb.userData._flickX *= 0.92;
+      targetRot.y += gb.userData._flickY;
+      targetRot.x += gb.userData._flickX;
+      targetRot.x = Math.max(-PITCH_CLAMP, Math.min(PITCH_CLAMP, targetRot.x));
+      if (Math.abs(gb.userData._flickY) < 0.0003) gb.userData._flickY = 0;
+      if (Math.abs(gb.userData._flickX) < 0.0003) gb.userData._flickX = 0;
+    }
+
+    // Single follow lerp regardless of state — no abrupt rate change at
+    // release, no "catch-up" jolt. During drag the buffer is small (one
+    // frame's pointer delta) so it still feels responsive.
+    gb.rotation.y += (targetRot.y + (gb.userData.nudgeY || 0) - gb.rotation.y) * 0.22;
+    gb.rotation.x += (targetRot.x + (gb.userData.nudgeX || 0) - gb.rotation.x) * 0.24;
     camera.position.z += (targetCamZ - camera.position.z) * 0.03;
 
     // Screen sleep after 8s of no interaction. The DVD screensaver stage is
@@ -3884,9 +3997,16 @@
   window.gbSetMuted = (m) => { soundMuted = !!m; };
   window.gbIsMuted = () => soundMuted;
   window.gbEjectCartridge = function() {
-    if (!cartInserted) return;
+    if (!cartInserted) {
+      // Already ejected — still signal so any HTML lockout can release.
+      window.dispatchEvent(new Event('gb-ejected'));
+      return;
+    }
     const cart = parts.casette;
-    if (!cart) return;
+    if (!cart) {
+      window.dispatchEvent(new Event('gb-ejected'));
+      return;
+    }
     initAudio();
     autoRotate = false;
     // Spin to the back-facing orientation first so the cart slide-out is
@@ -3918,7 +4038,6 @@
       screen = 'insert'; cartInserted = false; activeCart = null;
       scroll = 0; detailCursor = 0; cursor = 0; projScreen = false; trophyScreen = false;
       drawScreen();
-      window.dispatchEvent(new Event('gb-ejected'));
       const ejectIdx = interactiveObjs.findIndex(o => o.userData.action === 'ejectCart');
       if (ejectIdx !== -1) { const e = interactiveObjs[ejectIdx]; if (e.parent) e.parent.remove(e); interactiveObjs.splice(ejectIdx, 1); }
       function ejectAnim(now) {
@@ -3941,6 +4060,9 @@
             gb.children[0].add(newSlot);
             interactiveObjs.push(newSlot);
           }
+          // Dispatch only when the slide-out animation has fully completed
+          // so HTML-side lockouts release exactly when the cart is gone.
+          window.dispatchEvent(new Event('gb-ejected'));
         }
       }
       requestAnimationFrame(ejectAnim);

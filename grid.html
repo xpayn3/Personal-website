@@ -18,6 +18,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="floating-nav.css" />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="overlay.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" media="print" onload="this.media='all'" />
@@ -40,7 +41,7 @@
 }
 </script>
 </head>
-<body>
+<body class="page-grid">
 
   <!-- ===== GRID ===== -->
   <main class="grid" id="grid"></main>
@@ -48,21 +49,43 @@
 
   <!-- ===== FOOTER ===== -->
   <footer class="site-footer">
-    <div class="footer-hero">
-      <p class="footer-cta-label">Let's work together</p>
-      <h2 class="footer-cta-heading">Got a project<br>in mind?</h2>
-      <a href="mailto:luka.grcar@me.com" class="footer-cta-btn">Get in touch &nearr;</a>
+    <div class="footer-top">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <div class="footer-tagline">
+        <p>3D Generalist &amp; UX Designer</p>
+        <p>Based in Ljubljana, Slovenia</p>
+      </div>
     </div>
-    <div class="footer-links-row">
-      <a href="mailto:luka.grcar@me.com">Email</a>
-      <a href="https://www.instagram.com/lukakluka/" target="_blank" rel="noopener noreferrer">Instagram</a>
-      <a href="https://www.behance.net/lukagrcar" target="_blank" rel="noopener noreferrer">Behance</a>
-      <a href="https://www.linkedin.com/in/luka-grcar-9534b695/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4 class="footer-col-title">Site Index</h4>
+        <a href="index.html" class="footer-col-link">Home</a>
+        <a href="grid.html" class="footer-col-link">Index</a>
+        <a href="about.html" class="footer-col-link">About</a>
+        <a href="about.html#contact" class="footer-col-link">Contact me</a>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-col-title">Social</h4>
+        <a href="https://www.instagram.com/lukakluka/" target="_blank" rel="noopener noreferrer" class="footer-col-link">Instagram</a>
+        <a href="https://www.behance.net/lukagrcar" target="_blank" rel="noopener noreferrer" class="footer-col-link">Behance</a>
+        <a href="https://www.linkedin.com/in/luka-grcar-9534b695/" target="_blank" rel="noopener noreferrer" class="footer-col-link">LinkedIn</a>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-col-title">Get in touch</h4>
+        <a href="mailto:luka.grcar@me.com" class="footer-col-link">luka.grcar@me.com</a>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-col-title">Legal</h4>
+        <a href="#" class="footer-col-link">Imprint</a>
+        <a href="#" class="footer-col-link">Privacy Policy</a>
+      </div>
     </div>
-    <div class="footer-bottom">
-      <span class="footer-name-sm">Luka Grčar</span>
-      <span class="footer-loc">Ljubljana, Slovenia</span>
-      <span class="footer-copy">&copy; 2025 &mdash; All rights reserved</span>
+
+    <div class="footer-baseline">
+      <span class="footer-copy">All rights reserved _ Luka Grčar&copy;2026</span>
+      <span class="footer-built">Design &amp; code by Luka Grčar</span>
     </div>
   </footer>
 
@@ -98,15 +121,6 @@
   <!-- ===== FLOATING BOTTOM BAR ===== -->
   <nav class="bottom-bar bar-animate-in" id="bottomBar">
     <div class="bar-section">
-      <button class="bar-toggle active" data-menu="nav"><i class="ri-menu-line" style="margin-right:6px;font-size:1rem"></i>Index</button>
-      <div class="bar-dropdown" id="menu-nav">
-        <a href="grid.html" class="bar-nav-link active">Index</a>
-        <a href="about.html" class="bar-nav-link">About</a>
-        <a href="index.html" class="bar-nav-link">Home</a>
-      </div>
-    </div>
-    <div class="bar-divider"></div>
-    <div class="bar-section">
       <button class="bar-toggle" data-menu="project" id="projectToggle"><img class="proj-toggle-thumb" id="projToggleThumb" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" /><span id="projToggleText">Projects</span></button>
       <div class="bar-dropdown" id="menu-project"></div>
     </div>
@@ -141,8 +155,16 @@
     </button>
   </div>
 
-  <!-- ===== NAME WATERMARK ===== -->
-  <a href="index.html" class="watermark" id="watermarkText">Luka Grčar</a>
+  <!-- Floating top-left nav (shared component) -->
+  <a href="index.html" class="floating-name">Luka Grčar</a>
+  <nav class="floating-nav" aria-label="Sections">
+    <a href="index.html" class="floating-nav-link">Home</a>
+    <a href="grid.html" class="floating-nav-link is-active">Index</a>
+    <a href="lab.html" class="floating-nav-link">Lab</a>
+    <a href="tree.html" class="floating-nav-link">Tree</a>
+    <a href="about.html" class="floating-nav-link">About</a>
+    <a href="about.html#contact" class="floating-nav-link">Contact</a>
+  </nav>
 
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
@@ -150,6 +172,7 @@
   <script src="projects.js" defer></script>
   <script src="overlay.js?v=2" defer></script>
   <script src="script.js" defer></script>
+  <script src="floating-nav.js" defer></script>
   <script>
   // Disable right-click
   document.addEventListener('contextmenu', e => e.preventDefault());

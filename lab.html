@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Luka Grčar — Lab</title>
+  <meta name="robots" content="noai, noimageai" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="color-scheme" content="light" />
+  <meta name="description" content="Workshop of experiments by Luka Grčar — 3D sketches, renders, and works in progress." />
+  <link rel="canonical" href="https://lukagrcar.com/lab.html" />
+  <meta property="og:title" content="Luka Grčar — Lab" />
+  <meta property="og:description" content="Workshop of experiments — 3D sketches, renders, and works in progress." />
+  <meta property="og:image" content="https://lukagrcar.com/og-image.png" />
+  <meta property="og:url" content="https://lukagrcar.com/lab.html" />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="lab.css" />
+  <link rel="stylesheet" href="overlay.css" />
+  <link rel="stylesheet" href="floating-nav.css" />
+  <link rel="stylesheet" href="footer.css" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
+</head>
+<body class="page-lab">
+
+  <!-- ===== HERO ===== -->
+  <header class="lab-hero">
+    <div class="lab-hero-inner">
+      <div class="lab-meta">
+        <span class="lab-tag">// WORK IN PROGRESS</span>
+        <span class="lab-sep">·</span>
+        <span class="lab-tag">STATUS: ONGOING</span>
+      </div>
+      <h1 class="lab-title">The Lab</h1>
+      <p class="lab-subtitle">
+        A workshop where ideas go before they become projects. 3D sketches,
+        half-baked renders, loops, weird stuff. Updated whenever I make a mess.
+      </p>
+      <div class="lab-stats" id="labStats">
+        <div class="lab-stat"><span class="lab-stat-num" id="labCount">—</span><span>Experiments</span></div>
+        <div class="lab-stat"><span class="lab-stat-num" id="labYears">—</span><span>Years active</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== WORKSHOP GRID ===== -->
+  <main class="lab-grid" id="labGrid" aria-label="Experiments"></main>
+
+  <!-- Floating top-left nav (shared component) -->
+  <a href="index.html" class="floating-name">Luka Grčar</a>
+  <nav class="floating-nav" aria-label="Sections">
+    <a href="index.html" class="floating-nav-link">Home</a>
+    <a href="grid.html" class="floating-nav-link">Index</a>
+    <a href="lab.html" class="floating-nav-link is-active">Lab</a>
+    <a href="tree.html" class="floating-nav-link">Tree</a>
+    <a href="about.html" class="floating-nav-link">About</a>
+    <a href="about.html#contact" class="floating-nav-link">Contact</a>
+  </nav>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="footer-top">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <div class="footer-tagline">
+        <p>3D Generalist &amp; UX Designer</p>
+        <p>Based in Ljubljana, Slovenia</p>
+      </div>
+    </div>
+
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4 class="footer-col-title">Site Index</h4>
+        <a href="index.html" class="footer-col-link">Home</a>
+        <a href="grid.html" class="footer-col-link">Index</a>
+        <a href="about.html" class="footer-col-link">About</a>
+        <a href="about.html#contact" class="footer-col-link">Contact me</a>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-col-title">Social</h4>
+        <a href="https://www.instagram.com/lukakluka/" target="_blank" rel="noopener noreferrer" class="footer-col-link">Instagram</a>
+        <a href="https://www.behance.net/lukagrcar" target="_blank" rel="noopener noreferrer" class="footer-col-link">Behance</a>
+        <a href="https://www.linkedin.com/in/luka-grcar-9534b695/" target="_blank" rel="noopener noreferrer" class="footer-col-link">LinkedIn</a>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-col-title">Get in touch</h4>
+        <a href="mailto:luka.grcar@me.com" class="footer-col-link">luka.grcar@me.com</a>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-col-title">Legal</h4>
+        <a href="#" class="footer-col-link">Imprint</a>
+        <a href="#" class="footer-col-link">Privacy Policy</a>
+      </div>
+    </div>
+
+    <div class="footer-baseline">
+      <span class="footer-copy">All rights reserved _ Luka Grčar&copy;2026</span>
+      <span class="footer-built">Design &amp; code by Luka Grčar</span>
+    </div>
+  </footer>
+
+  <script defer src="projects.js"></script>
+  <script defer src="overlay.js"></script>
+  <script defer src="lab.js"></script>
+  <script src="floating-nav.js" defer></script>
+</body>
+</html>

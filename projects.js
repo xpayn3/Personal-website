@@ -515,8 +515,10 @@ const projects = {
       `${IMG}/Lab/BF.webp`,
       `${IMG}/Lab/Bossplast.webp`,
       `${IMG}/Lab/2880x1560.webp`,
+      `${IMG}/Lab/car.webm`,
     ],
     layout: [
+      { cols: 1, imgs: [47] },
       { cols: 2, imgs: [0, 1] },
       { cols: 2, imgs: [2, 4] },
       { cols: 1, imgs: [5] },

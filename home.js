@@ -1,816 +1,1077 @@
-// Loading screen — only on first visit
-const loader = document.getElementById('loader');
-if (loader) {
-  if (sessionStorage.getItem('visited')) {
-    loader.remove();
-  } else {
-    sessionStorage.setItem('visited', '1');
-    const loaderText = document.getElementById('loaderText');
-    if (loaderText) {
-      const text = loaderText.textContent;
-      loaderText.innerHTML = '';
-      for (const char of text) {
-        const span = document.createElement('span');
-        span.className = 'loader-letter';
-        span.textContent = char;
-        loaderText.appendChild(span);
+// ========== COVER: HIGH-DENSITY FLOW FIELD ==========
+// Thousands of fine 1px particles drifting through a 3D curl-noise vector
+// field. Sharp dots, no glow, no additive blending. Particles that exit
+// the bounding sphere are recycled back near the center on a new flow
+// trajectory — endless emission.
+
+(function () {
+  const canvas = document.getElementById('coverCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d', { alpha: false });
+  if (!ctx) return;
+
+  const COUNT = 7000;
+  const FIELD_R = 1;       // bounding sphere radius (in normalized field units)
+  // Defaults — also serve as the "base" preset that plays without hover.
+  const BASE_NOISE_SCALE = 1.6;
+  const BASE_FLOW_SPEED = 0.16;
+  const BASE_TIME_DRIFT = 0.08;
+  // Live, eased values — flow presets retarget these and they lerp toward
+  // their targets each frame so the swarm reshapes smoothly between modes.
+  let NOISE_SCALE = BASE_NOISE_SCALE;
+  let FLOW_SPEED = BASE_FLOW_SPEED;
+  let TIME_DRIFT = BASE_TIME_DRIFT;
+  let SWIRL = 0;       // tangential rotation around z-axis
+  let RADIAL = 0;      // radial outward push (negative = pulled inward)
+  let JITTER = 0;      // per-frame random kick (chaos)
+  let WIND_X = 0;      // uniform horizontal sweep velocity
+  let WIND_Y = 0;      // uniform vertical sweep velocity
+  // Targets driven by __coverFlow() — current values lerp toward these.
+  const flowTarget = {
+    noiseScale: BASE_NOISE_SCALE,
+    flowSpeed: BASE_FLOW_SPEED,
+    timeDrift: BASE_TIME_DRIFT,
+    swirl: 0,
+    radial: 0,
+    jitter: 0,
+    windX: 0,
+    windY: 0,
+  };
+  // Named presets — each gives a distinct swarm character. All non-chaotic
+  // (no jitter), so transitions read as elegant flow shifts, not noise.
+  const FLOW_PRESETS = {
+    base:      { noiseScale: 1.6,  flowSpeed: 0.16, timeDrift: 0.08, swirl: 0,     radial: 0,     jitter: 0, windX: 0,    windY: 0 },
+    // Energetic wide flow — bigger sweeps, faster but still smooth.
+    energetic: { noiseScale: 1.2,  flowSpeed: 0.30, timeDrift: 0.10, swirl: 0,     radial: 0,     jitter: 0, windX: 0,    windY: 0 },
+    // Motion design — particles streak across the screen in a strong
+    // directional sweep with bendy noise paths. Reads as fast kinetic motion.
+    kinetic:   { noiseScale: 1.5,  flowSpeed: 0.55, timeDrift: 0.18, swirl: 0,     radial: 0,     jitter: 0, windX: 0.55, windY: 0 },
+    // Calm wide flow — broad slow sweeps.
+    smooth:    { noiseScale: 0.9,  flowSpeed: 0.22, timeDrift: 0.04, swirl: 0,     radial: 0,     jitter: 0, windX: 0,    windY: 0 },
+    // Tight identity field — slow and structural.
+    structural:{ noiseScale: 0.55, flowSpeed: 0.08, timeDrift: 0.02, swirl: 0,     radial: 0,     jitter: 0, windX: 0,    windY: 0 },
+    // Fine-grain detail — high freq noise but still gentle.
+    pixelated: { noiseScale: 4.5,  flowSpeed: 0.10, timeDrift: 0.05, swirl: 0,     radial: 0,     jitter: 0, windX: 0,    windY: 0 },
+    // Spiral / web — strong tangential rotation.
+    swirl:     { noiseScale: 1.3,  flowSpeed: 0.18, timeDrift: 0.06, swirl: 0.55,  radial: 0,     jitter: 0, windX: 0,    windY: 0 },
+    // Pulsing outward radial breath.
+    pulse:     { noiseScale: 1.1,  flowSpeed: 0.14, timeDrift: 0.10, swirl: 0,     radial: 0.18, jitter: 0, windX: 0,    windY: 0 },
+    // Inward gravity — particles drift toward center with a soft curl.
+    implode:   { noiseScale: 1.8,  flowSpeed: 0.18, timeDrift: 0.10, swirl: 0.18,  radial: -0.22,jitter: 0, windX: 0,    windY: 0 },
+    // Slow drifting current — meditative, soft direction change.
+    drift:     { noiseScale: 0.7,  flowSpeed: 0.12, timeDrift: 0.03, swirl: 0.08,  radial: 0,     jitter: 0, windX: 0,    windY: 0 },
+  };
+  function setCoverFlow(name) {
+    const preset = FLOW_PRESETS[name] || FLOW_PRESETS.base;
+    flowTarget.noiseScale = preset.noiseScale;
+    flowTarget.flowSpeed  = preset.flowSpeed;
+    flowTarget.timeDrift  = preset.timeDrift;
+    flowTarget.swirl      = preset.swirl;
+    flowTarget.radial     = preset.radial;
+    flowTarget.jitter     = preset.jitter;
+  }
+  window.__coverFlow = (name) => setCoverFlow(name || 'base');
+
+  let W = 0, H = 0, DPR = 1, cx = 0, cy = 0;
+  const particles = [];
+
+  // Camera state — slow auto-orbit only (no cursor tilt).
+  const cam = { yaw: 0, pitch: 0.18 };
+
+  // Repulsion params — spring-physics push for weight + bounce.
+  // Lower stiffness + higher damping means particles drift back to home
+  // slowly instead of springing the moment force is removed.
+  const REPEL_RADIUS = 240;        // CSS pixels (hover)
+  const REPEL_STRENGTH = 32;       // peak radial push (pixels)
+  // Tuned closer to critical damping — slow, smooth return with no
+  // visible overshoot/bounce.
+  const REPEL_STIFF = 0.07;        // very soft spring
+  const REPEL_DAMP = 0.78;         // dissipates velocity faster → no springy oscillation
+  const REPEL_WAKE = 0.22;         // cursor-velocity wake while hovering
+  const REPEL_SIZE_BOOST = 0.55;   // extra size factor at peak push
+
+  // Drag mode — fluid-push interaction. Held mouse with motion = sustained
+  // wider, stronger force in the cursor's direction.
+  const DRAG_RADIUS = 380;         // CSS pixels while drag is held
+  const DRAG_STRENGTH = 48;        // stronger radial push while dragging
+  const DRAG_WAKE = 0.65;          // much stronger directional carry
+
+  // ----- Cheap 3D value noise + curl ---------------------------------------
+  // Hash → pseudo-random unit vector at integer 3D lattice point.
+  function hash3(x, y, z) {
+    let h = x * 374761393 + y * 668265263 + z * 2147483647;
+    h = (h ^ (h >>> 13)) * 1274126177;
+    return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+  }
+  function fade(t) { return t * t * (3 - 2 * t); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function noise3(x, y, z) {
+    const xi = Math.floor(x), yi = Math.floor(y), zi = Math.floor(z);
+    const xf = x - xi, yf = y - yi, zf = z - zi;
+    const u = fade(xf), v = fade(yf), w = fade(zf);
+    const c000 = hash3(xi,     yi,     zi);
+    const c100 = hash3(xi + 1, yi,     zi);
+    const c010 = hash3(xi,     yi + 1, zi);
+    const c110 = hash3(xi + 1, yi + 1, zi);
+    const c001 = hash3(xi,     yi,     zi + 1);
+    const c101 = hash3(xi + 1, yi,     zi + 1);
+    const c011 = hash3(xi,     yi + 1, zi + 1);
+    const c111 = hash3(xi + 1, yi + 1, zi + 1);
+    return lerp(
+      lerp(lerp(c000, c100, u), lerp(c010, c110, u), v),
+      lerp(lerp(c001, c101, u), lerp(c011, c111, u), v),
+      w
+    );
+  }
+  // Curl of a 3D scalar-noise field — divergence-free flow.
+  const E = 0.08;
+  function curl(x, y, z, t) {
+    const n1 = noise3(x, y + E, z + t) - noise3(x, y - E, z + t);
+    const n2 = noise3(x + E, y, z - t) - noise3(x - E, y, z - t);
+    const n3 = noise3(x + t, y, z + E) - noise3(x + t, y, z - E);
+    return [
+      (n2 - n1) / (2 * E),
+      (n3 - n2) / (2 * E),
+      (n1 - n3) / (2 * E),
+    ];
+  }
+
+  // ----- Setup -------------------------------------------------------------
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 1.75);
+    const rect = canvas.getBoundingClientRect();
+    W = canvas.width  = Math.max(1, Math.round(rect.width  * DPR));
+    H = canvas.height = Math.max(1, Math.round(rect.height * DPR));
+    cx = W / 2;
+    cy = H / 2;
+  }
+
+  function spawnInside(p) {
+    // Random point inside a small core sphere — particles emerge from
+    // somewhere near the middle, then flow outward via the field.
+    const u = Math.random(), v = Math.random();
+    const theta = 2 * Math.PI * u;
+    const phi = Math.acos(2 * v - 1);
+    // Vary the spawn-zone radius per particle so they don't all bunch at
+    // exactly the same depth from center.
+    const r = Math.cbrt(Math.random()) * FIELD_R * (0.18 + Math.random() * 0.30);
+    p.x = r * Math.sin(phi) * Math.cos(theta);
+    p.y = r * Math.sin(phi) * Math.sin(theta);
+    p.z = r * Math.cos(phi);
+    p.lifeFade = 0;
+    // Long, varied per-particle lifetime — gives the flow field time to
+    // trace genuine shapes before the particle is recycled.
+    p.life = 0;
+    p.maxLife = 6.0 + Math.random() * 14.0;    // 6 – 20 s
+    p.fadeInRate = 1.0 + Math.random() * 2.0;  // 1.0 – 3.0 / s (gentler)
+    // Most particles can reach the edge of the bounding sphere; some
+    // travel past it before recycling.
+    p.travelRadius = FIELD_R * (0.85 + Math.random() * 0.5); // 0.85 – 1.35
+  }
+
+  function build() {
+    particles.length = 0;
+    for (let i = 0; i < COUNT; i++) {
+      const p = {
+        x: 0, y: 0, z: 0,
+        sx: 0, sy: 0, depth: 0,
+        lifeFade: 0,
+        // Spring-physics mouse repulsion: position + velocity.
+        pushSx: 0, pushSy: 0, pushVX: 0, pushVY: 0,
+        // Per-particle stiffness variance — keeps the field organic.
+        stiff: REPEL_STIFF * (0.78 + Math.random() * 0.44),
+      };
+      spawnInside(p);
+      p.lifeFade = Math.random();
+      // Per-particle commitment to morph targets. Most fully snap (1.0),
+      // but ~18% only partially commit (0.0 — 0.6), so the rendered word
+      // has a "fuzzy halo" of free particles drifting around the edges.
+      // ~10% partially commit (drift around the edges as a fuzzy halo);
+      // the rest snap fully to the letter shape.
+      p.commit = Math.random() < 0.10 ? 0.3 + Math.random() * 0.4 : 1;
+      // Per-particle window inside the global swap progress — wide stagger
+      // so the swarm reorganizes in pronounced waves, not in lockstep.
+      // Constrained so every particle's local window finishes by global
+      // swap = 1 (delay + dur ≤ 1). Without this, slow-tail particles
+      // freeze partway when prevPoints is cleared at swap=1 → looks like
+      // the animation "doesn't complete".
+      p.swapDelay = Math.random() * 0.25;
+      p.swapDur = 0.55 + Math.random() * 0.20; // 0.55 – 0.75
+      // Tangential detour seed — gives each particle a unique curl-around
+      // arc as it travels from old letter shape to new one. Larger range
+      // makes the transition feel like a swarm rather than a tween.
+      p.swapArc = (Math.random() - 0.5) * 1.8;
+      // Radial outward bulge mid-swap — particles puff out before locking
+      // onto the new shape, reading as an explosive swarm reformation.
+      p.swapBurst = 0.15 + Math.random() * 0.45;
+      // Release window — when the user unhovers, each particle peels off
+      // the letter on its own schedule, with a small jiggle along the way.
+      p.releaseDelay = Math.random() * 0.45;
+      p.releaseDur = 0.45 + Math.random() * 0.35;
+      p.jiggleSeed = Math.random() * Math.PI * 2;
+      p.jiggleAmp = 0.005 + Math.random() * 0.012;
+      particles.push(p);
+    }
+  }
+
+  let pointerX = -9999, pointerY = -9999; // off-canvas by default = no repulsion
+  let prevPointerX = -9999, prevPointerY = -9999;
+  let ptrVX = 0, ptrVY = 0; // cursor velocity in pixels/frame, decays each frame
+  window.addEventListener('pointermove', (e) => {
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const nx = (e.clientX - rect.left) * DPR;
+    const ny = (e.clientY - rect.top)  * DPR;
+    if (prevPointerX > -1000) {
+      ptrVX = nx - prevPointerX;
+      ptrVY = ny - prevPointerY;
+    }
+    prevPointerX = pointerX = nx;
+    prevPointerY = pointerY = ny;
+  }, { passive: true });
+  window.addEventListener('pointerout', () => {
+    pointerX = pointerY = -9999;
+    prevPointerX = prevPointerY = -9999;
+    ptrVX = ptrVY = 0;
+  }, { passive: true });
+
+  // Click shockwave — punches a radial impulse into the particle field.
+  // Reuses the spring system: just shoves nearby pushVX/VY outward, the
+  // springs ease it back over the next ~1s with their natural overshoot.
+  const SHOCK_RADIUS = 380;     // CSS pixels
+  const SHOCK_STRENGTH = 78;    // peak impulse
+  function shockwave(clientX, clientY) {
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const cxp = (clientX - rect.left) * DPR;
+    const cyp = (clientY - rect.top)  * DPR;
+    const R = SHOCK_RADIUS * DPR;
+    const R2 = R * R;
+    const strength = SHOCK_STRENGTH * DPR;
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      const dx = p.sx - cxp;
+      const dy = p.sy - cyp;
+      const d2 = dx * dx + dy * dy;
+      if (d2 >= R2 || d2 < 0.001) continue;
+      const d = Math.sqrt(d2);
+      const t = 1 - d / R;
+      // Sharper cubic falloff so the ring reads as a punch, not a fade.
+      const falloff = t * t * t;
+      const imp = falloff * strength;
+      p.pushVX += (dx / d) * imp;
+      p.pushVY += (dy / d) * imp;
+    }
+  }
+  // Track drag state for the fluid-push mode. Held mouse = continuous
+  // larger, stronger force biased toward the cursor's motion direction.
+  let isDragging = false;
+  canvas.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0 && e.button !== undefined) return;
+    isDragging = true;
+    shockwave(e.clientX, e.clientY);
+  }, { passive: true });
+  function endDrag() { isDragging = false; }
+  window.addEventListener('pointerup', endDrag, { passive: true });
+  window.addEventListener('pointercancel', endDrag, { passive: true });
+  window.addEventListener('blur', endDrag, { passive: true });
+
+  let last = performance.now();
+  let startTime = performance.now();
+  let running = true;
+
+  // ----- Morph state -------------------------------------------------------
+  // When the user hovers a floating-nav link, particles get pulled toward
+  // pixel positions of that word; on unhover, progress eases back to 0 and
+  // they're released into the flow again.
+  const morph = {
+    text: null,            // currently displayed word (null = no morph)
+    targetProgress: 0,     // 1 while hovering a link, 0 otherwise
+    progress: 0,           // smoothed
+    points: null,          // current target point cloud
+    prevPoints: null,      // previous word's points — kept during a swap
+    swap: 1,               // 0 → 1 progress through a word-to-word transition
+    leaveTimer: null,      // delays the unhover so brief jumps don't flicker
+    rotating: false,       // when true, points are regenerated each frame
+    basePoints3D: null,    // un-rotated source for rotating shapes
+    rotateMode: 'tumble',  // 'tumble' = X+Y; 'yaw' = Y only (rooms)
+  };
+
+  // Rasterize a word into a sample of {x,y} points in [-1, 1] range.
+  function rasterizeWord(word) {
+    const off = document.createElement('canvas');
+    // Wide canvas so longer phrases ("ALL PROJECTS", "GET IN TOUCH") can
+    // sit at a readable size instead of shrinking to a thin line.
+    const W2 = 1100, H2 = 280;
+    off.width = W2; off.height = H2;
+    const c = off.getContext('2d');
+    c.fillStyle = '#000';
+    c.fillRect(0, 0, W2, H2);
+    c.fillStyle = '#fff';
+    let fontSize = 240;
+    c.textBaseline = 'middle';
+    c.textAlign = 'center';
+    do {
+      c.font = `900 ${fontSize}px Geist, system-ui, sans-serif`;
+      if (c.measureText(word).width <= W2 * 0.92) break;
+      fontSize -= 8;
+    } while (fontSize > 40);
+    c.fillText(word, W2 / 2, H2 / 2);
+
+    const img = c.getImageData(0, 0, W2, H2).data;
+    const pts = [];
+    // Sample every Nth pixel for speed
+    const STEP = 3;
+    for (let y = 0; y < H2; y += STEP) {
+      for (let x = 0; x < W2; x += STEP) {
+        const i = (y * W2 + x) * 4;
+        if (img[i] > 128) {
+          // Canvas y grows down; in our world, positive Y also reads as
+          // down (after the pitch transform). Don't flip — straight map.
+          pts.push(
+            (x / W2 - 0.5) * 2 * 0.9 + (Math.random() - 0.5) * 0.01,
+            (y / H2 - 0.5) * 2 * 0.45 + (Math.random() - 0.5) * 0.01
+          );
+        }
       }
     }
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        loader.classList.add('fade-out');
-        setTimeout(() => loader.remove(), 600);
-      }, 800);
-    });
-  }
-}
-
-const IMG = 'Images';
-
-const projects = [
-  {
-    id: 'accbox',
-    name: 'AccountingBox',
-    year: 2024,
-    hero: `${IMG}/AccountingBox/Podjetja_cover.webp`,
-    floats: [
-      `${IMG}/AccountingBox/4_loop.webm`,
-      `${IMG}/AccountingBox/intro.webm`,
-      `${IMG}/AccountingBox/kjerkoli.webm`,
-      `${IMG}/AccountingBox/racunovodje_cover_final.webp`,
-    ]
-  },
-  {
-    id: 'cestel',
-    name: 'CESTEL',
-    year: 2023,
-    hero: `${IMG}/Cestel_project/cover_still.webp`,
-    floats: [
-      `${IMG}/Cestel_project/Cestel_image_01.webp`,
-      `${IMG}/Cestel_project/Cestel_image_05.webp`,
-      `${IMG}/Cestel_project/cestel_anim_02.webp`,
-      `${IMG}/Cestel_project/Cestel_image_09.webp`,
-    ]
-  },
-  {
-    id: 'grounded2025',
-    name: 'Grounded 2025',
-    year: 2025,
-    hero: `${IMG}/Grounded 2025/gr2025cover.webp`,
-    floats: [
-      `${IMG}/Grounded 2025/Grounded_2025_web.webm`,
-      `${IMG}/Grounded 2025/IG_story_01.webm`,
-      `${IMG}/Grounded 2025/IG_story_03.webm`,
-    ]
-  },
-  {
-    id: 'grounded2023',
-    name: 'Grounded 2023',
-    year: 2023,
-    hero: `${IMG}/Grounded_2023/Grounded_2023_01_thumb.webp`,
-    floats: [
-      `${IMG}/Grounded_2023/Grounded_2023_01.webm`,
-      `${IMG}/Grounded_2023/Grounded_2023_04.webm`,
-      `${IMG}/Grounded_2023/Grounded_2023_05.webm`,
-    ]
-  },
-  {
-    id: 'grounded2022',
-    name: 'Grounded 2022',
-    year: 2022,
-    hero: `${IMG}/Grounded_2022/Grounded_2022_01.webp`,
-    floats: [
-      `${IMG}/Grounded_2022/card_holo.webm`,
-      `${IMG}/Grounded_2022/GR_main_1.webm`,
-      `${IMG}/Grounded_2022/Grounded_2022_05.webp`,
-    ]
-  },
-  {
-    id: 'grounded2021',
-    name: 'Grounded 2021',
-    year: 2021,
-    hero: `${IMG}/Grounded_2021/Grounded_SerijaPlakatov.webp`,
-    floats: [
-      `${IMG}/Grounded_2021/GR_render0034.webp`,
-      `${IMG}/Grounded_2021/Grounded_nalepke.webp`,
-      `${IMG}/Grounded_2021/Grounded_spletnastran.webp`,
-    ]
-  },
-  {
-    id: 'taf',
-    name: "The Athlete's Foot",
-    year: 2021,
-    hero: `${IMG}/Athletesfoot/taf_anim.webp`,
-    floats: [
-      `${IMG}/Athletesfoot/taf_image_01.webp`,
-      `${IMG}/Athletesfoot/taf_image_02.webp`,
-      `${IMG}/Athletesfoot/screenshot_01.webp`,
-    ]
-  },
-  {
-    id: 'grounded2020',
-    name: 'Grounded: Truth',
-    year: 2020,
-    hero: `${IMG}/Grounded_2020/Grounded_poster_2.webp`,
-    floats: [
-      `${IMG}/Grounded_2020/Artboard-26.webp`,
-      `${IMG}/Grounded_2020/grounded_resnica.webp`,
-      `${IMG}/Grounded_2020/Grounded2020_anim.webp`,
-    ]
-  },
-  {
-    id: 'halloween',
-    name: 'Halloween TAF',
-    year: 2021,
-    hero: `${IMG}/Athletesfoot_halloween/Athletesfoot_halloween_01.webp`,
-    floats: [
-      `${IMG}/Athletesfoot_halloween/Athletesfoot_halloween_03.webp`,
-      `${IMG}/Athletesfoot_halloween/Athletesfoot_halloween_05.webp`,
-      `${IMG}/Athletesfoot_halloween/screenshot_zbrush.webp`,
-    ]
-  },
-  {
-    id: 'blackfriday',
-    name: 'Black Friday TAF',
-    year: 2021,
-    hero: `${IMG}/Athletesfoot_blackfriday/Athletesfoot_blackfriday_anim_01.webp`,
-    floats: [
-      `${IMG}/Athletesfoot_blackfriday/Athletesfoot_blackfriday_01.webp`,
-      `${IMG}/Athletesfoot_blackfriday/Athletesfoot_blackfriday_02.webp`,
-    ]
-  },
-  {
-    id: 'newedge',
-    name: 'NewEdge Magazine',
-    year: 2020,
-    hero: `${IMG}/NewEdge_magazine/NewEdge_magazine_01.webp`,
-    floats: [
-      `${IMG}/NewEdge_magazine/NewEdge_magazine_02.webp`,
-      `${IMG}/NewEdge_magazine/NewEdge_magazine_04.webp`,
-    ]
-  },
-  {
-    id: 'grounded2018',
-    name: 'Grounded 2018',
-    year: 2018,
-    hero: `${IMG}/Grounded_2018/plakat.webp`,
-    floats: [
-      `${IMG}/Grounded_2018/grounded_2018_anim.webp`,
-      `${IMG}/Grounded_2018/44396997_2300717590163245_3256152537651807309_n.webp`,
-    ]
-  },
-];
-
-// Show only these three projects, in the order we want them. Map the
-// shared project data shape (images[]) onto the home block shape
-// (hero + floats) the rest of this file expects.
-const HOME_PROJECT_IDS = ['cestel', 'grounded2023', 'radenci'];
-projects.length = 0;
-for (const id of HOME_PROJECT_IDS) {
-  const src = window.projects && window.projects[id];
-  if (!src) continue;
-  const imgs = src.images || [];
-  projects.push({
-    id,
-    name: src.name,
-    year: src.year,
-    hero: imgs[0],
-    floats: imgs.slice(1, 4),
-  });
-}
-
-
-function isVideo(src) {
-  return src.endsWith('.webm') || src.endsWith('.mp4');
-}
-
-const isMobileHome = window.innerWidth < 768;
-
-function mobileSrc(src) {
-  if (!isMobileHome) return src;
-  if (isVideo(src)) return src.replace(/\.(webm|mp4)$/, '_thumb.webp');
-  return src.replace('Images/', 'Images/mobile/');
-}
-
-function createMedia(src) {
-  // On mobile use video thumbnails but keep full-res images.
-  // Alt is empty — these are decorative backgrounds for the scroll showcase;
-  // the project name is conveyed by the sticky title + hero info pill.
-  if (isVideo(src) && isMobileHome) {
-    const img = document.createElement('img');
-    img.src = src.replace(/\.(webm|mp4)$/, '_thumb.webp');
-    img.alt = '';
-    img.loading = 'lazy';
-    img.decoding = 'async';
-    return img;
-  }
-  if (isVideo(src)) {
-    const v = document.createElement('video');
-    v.src = src;
-    v.muted = true;
-    v.loop = true;
-    v.autoplay = true;
-    v.playsInline = true;
-    return v;
-  }
-  const img = document.createElement('img');
-  img.src = src;
-  img.alt = '';
-  img.loading = 'lazy';
-  img.decoding = 'async';
-  return img;
-}
-
-// ========== HERO CAROUSEL ==========
-const heroSlides = document.getElementById('heroSlides');
-const heroDots = document.getElementById('heroDots');
-const heroEl = document.getElementById('heroCarousel');
-// Hero carousel — single Grounded 2025 reel,
-// independent of the scroll-showcase project list below.
-const heroSrcs = [
-  {
-    src: `${IMG}/Grounded 2025/IG_story_02.webm`,
-    name: 'Grounded 2025',
-    meta: '2025 · Pritličje · Cinema 4D / Redshift / AfterEffects\nVisual identity and motion design for the 2025 festival edition.',
-    shiftDown: true,
-  },
-];
-const HERO_AUTO_MS = 7000;
-const heroVideos = new Array(heroSrcs.length);
-let heroIdx = 0;
-let heroAutoTimer = null;
-
-// Build slides. All videos get src + preload="auto" so any swipe is instant —
-// browser keeps them buffered in parallel. Mobile uses image thumbnails.
-heroSrcs.forEach((item, i) => {
-  const slide = document.createElement('div');
-  // Shift-down crop is calibrated for the desktop 16:9 viewport. On mobile
-  // (portrait), a 9:16 video already fills nicely — no shift needed.
-  slide.className = 'hero-slide' + (item.shiftDown && !isMobileHome ? ' hero-shift-down' : '');
-
-  if (isVideo(item.src)) {
-    const v = document.createElement('video');
-    v.src = item.src;
-    v.muted = true;
-    v.loop = true;
-    v.playsInline = true;
-    v.preload = 'auto';
-    v.autoplay = true;
-    v.setAttribute('playsinline', '');
-    v.setAttribute('muted', '');
-    slide.appendChild(v);
-    heroVideos[i] = v;
-  } else {
-    const img = document.createElement('img');
-    img.src = item.src;
-    img.alt = item.name;
-    slide.appendChild(img);
+    return pts;
   }
 
-  const meta = document.createElement('div');
-  meta.className = 'hero-slide-meta';
-  meta.setAttribute('aria-hidden', 'true');
-  slide.appendChild(meta);
-
-  const title = document.createElement('div');
-  title.className = 'hero-slide-title';
-  title.textContent = item.name;
-  title.setAttribute('role', 'button');
-  title.setAttribute('tabindex', '0');
-  slide.appendChild(title);
-  heroSlides.appendChild(slide);
-
-  // Meta line typewriter — toggled by clicking the title
-  const metaText = item.meta || '';
-  let typeTimer = null;
-  let metaOpen = false;
-  function typeMeta() {
-    if (!metaText) return;
-    clearInterval(typeTimer);
-    meta.textContent = '';
-    meta.classList.add('visible');
-    let i = 0;
-    typeTimer = setInterval(() => {
-      meta.textContent = metaText.slice(0, ++i);
-      if (i >= metaText.length) clearInterval(typeTimer);
-    }, 28);
-  }
-  function hideMeta() {
-    clearInterval(typeTimer);
-    meta.classList.remove('visible');
-    setTimeout(() => { if (!metaOpen) meta.textContent = ''; }, 250);
-  }
-  title.addEventListener('click', () => {
-    metaOpen = !metaOpen;
-    if (metaOpen) typeMeta(); else hideMeta();
-  });
-  title.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); title.click(); }
-  });
-
-  // Auto-type on first load (slight delay so the hero has a moment to settle).
-  if (metaText && i === 0) {
-    setTimeout(() => { metaOpen = true; typeMeta(); }, 900);
-  }
-
-  if (heroSrcs.length > 1) {
-    const dot = document.createElement('div');
-    dot.className = 'hero-dot' + (i === 0 ? ' active' : '');
-    dot.addEventListener('click', () => goToHeroSlide(i));
-    heroDots.appendChild(dot);
-  }
-});
-
-function slideWidth() { return heroEl.clientWidth; }
-
-function setHeroTransform(offsetPx) {
-  heroSlides.style.transform = `translate3d(${-heroIdx * slideWidth() + offsetPx}px, 0, 0)`;
-}
-
-function scheduleAutoAdvance() {
-  clearTimeout(heroAutoTimer);
-  heroAutoTimer = setTimeout(() => {
-    goToHeroSlide((heroIdx + 1) % heroSrcs.length);
-  }, HERO_AUTO_MS);
-}
-
-function goToHeroSlide(i) {
-  i = Math.max(0, Math.min(heroSrcs.length - 1, i));
-  const prev = heroVideos[heroIdx];
-  const next = heroVideos[i];
-  if (prev && prev !== next) prev.pause();
-  heroIdx = i;
-  if (next) {
-    // Videos stay buffered (preload=auto); play resumes instantly from current position
-    const p = next.play();
-    if (p && p.catch) p.catch(() => {});
-  }
-  setHeroTransform(0);
-  heroDots.querySelectorAll('.hero-dot').forEach((d, di) => d.classList.toggle('active', di === i));
-  scheduleAutoAdvance();
-}
-
-// Kick off the first video (muted autoplay allowed by browsers)
-if (heroVideos[0]) {
-  const tryPlay = () => heroVideos[0].play().catch(() => {});
-  tryPlay();
-  setTimeout(tryPlay, 100);
-  // Also resume on first user interaction in case browser blocked autoplay
-  const resumeOnInteract = () => { tryPlay(); document.removeEventListener('pointerdown', resumeOnInteract); };
-  document.addEventListener('pointerdown', resumeOnInteract, { once: true });
-}
-scheduleAutoAdvance();
-
-// Pause the carousel entirely when the tab is backgrounded — no point playing
-// a video + running an auto-advance timer no one can see.
-document.addEventListener('visibilitychange', () => {
-  const cur = heroVideos[heroIdx];
-  if (document.hidden) {
-    clearTimeout(heroAutoTimer);
-    heroAutoTimer = null;
-    if (cur) cur.pause();
-  } else {
-    if (cur) cur.play().catch(() => {});
-    scheduleAutoAdvance();
-  }
-});
-
-// Keep transform correct across viewport resizes
-window.addEventListener('resize', () => setHeroTransform(0), { passive: true });
-
-// ========== BUILD SECTIONS ==========
-const container = document.getElementById('scrollContainer');
-const barName = document.getElementById('barProjectName');
-const barCounter = document.getElementById('barCounter');
-
-projects.forEach((proj, idx) => {
-  const block = document.createElement('div');
-  block.className = 'project-block';
-  block.dataset.index = idx;
-
-  const row = document.createElement('div');
-  row.className = 'project-row';
-  // Which of the three cells should expand when the row reaches viewport
-  // center — deterministic per project index so the layout is stable
-  // across reloads within a session.
-  const wideIdx = (idx * 37 + 11) % 3;
-  row.dataset.wide = String(wideIdx);
-  row.style.setProperty('--row-cols', '1fr 1fr 1fr');
-
-  // Row 1: three media cells
-  const floats = proj.floats || [];
-  const mediaSrcs = [proj.hero, floats[0] || proj.hero, floats[1] || floats[0] || proj.hero];
-  for (let i = 0; i < 3; i++) {
-    const cell = document.createElement('div');
-    cell.className = 'project-cell ' + (i === 0 ? 'project-title-cell' : 'project-media-cell');
-    cell.appendChild(createMedia(mediaSrcs[i]));
-    row.appendChild(cell);
+  // Procedural fractal tree — recursive branching, leaf clusters at tips.
+  // Returns flat [x,y, x,y, ...] in [-1, 1] world units. Trunk at bottom
+  // (positive Y), canopy at top (negative Y).
+  function generateTreePoints() {
+    const pts = [];
+    function branch(x, y, angle, length, depth) {
+      const ex = x + Math.cos(angle) * length;
+      const ey = y + Math.sin(angle) * length;
+      // Sample along the branch — extra thickness for trunk levels.
+      const steps = Math.max(6, Math.floor(length * 90));
+      const thick = 0.004 + depth * 0.0035;
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        const px = x + (ex - x) * t;
+        const py = y + (ey - y) * t;
+        const w = thick * (1 - t * 0.4); // slight taper
+        // Multiple cross-points per step so the branch reads as a thick line
+        const cross = Math.max(1, Math.round(depth * 1.2));
+        for (let j = -cross; j <= cross; j++) {
+          pts.push(px + (j / cross) * w, py + (Math.random() - 0.5) * 0.003);
+        }
+      }
+      if (depth > 0 && length > 0.04) {
+        const newLen = length * (0.65 + Math.random() * 0.1);
+        const spread = 0.42 + Math.random() * 0.18;
+        branch(ex, ey, angle - spread, newLen, depth - 1);
+        branch(ex, ey, angle + spread, newLen, depth - 1);
+        // Occasional middle branch for variety
+        if (Math.random() < 0.35 && depth > 1) {
+          branch(ex, ey, angle + (Math.random() - 0.5) * 0.3, newLen * 0.85, depth - 1);
+        }
+      } else {
+        // Leaf cluster at the tip — small disk
+        const leafR = 0.05 + Math.random() * 0.03;
+        const leafCount = 70;
+        for (let i = 0; i < leafCount; i++) {
+          const a = Math.random() * Math.PI * 2;
+          const r = Math.sqrt(Math.random()) * leafR;
+          pts.push(ex + Math.cos(a) * r, ey + Math.sin(a) * r);
+        }
+      }
+    }
+    // Trunk grows upward from y=0.45 (bottom) to negative Y
+    branch(0, 0.45, -Math.PI / 2, 0.26, 5);
+    return pts;
   }
 
-  // Row 2: labels, one column per cell
-  const labels0 = document.createElement('div');
-  labels0.className = 'project-labels';
-  labels0.innerHTML = `<span class="project-name">${proj.name}</span>`;
-  row.appendChild(labels0);
-
-  const labels1 = document.createElement('div');
-  labels1.className = 'project-labels project-labels-right';
-  labels1.innerHTML = `<span class="project-year">${proj.year}</span>`;
-  row.appendChild(labels1);
-
-  const labels2 = document.createElement('div');
-  labels2.className = 'project-labels';
-  row.appendChild(labels2);
-
-  block.appendChild(row);
-
-  block.style.cursor = 'pointer';
-  block.addEventListener('click', () => {
-    if (typeof window.openProject === 'function') window.openProject(proj.id);
-  });
-
-  container.appendChild(block);
-});
-
-// Slide each row in when it enters the viewport.
-const blockObserver = new IntersectionObserver((entries) => {
-  for (const e of entries) {
-    if (e.isIntersecting) e.target.classList.add('in-view');
+  // 3D torus — major radius R, minor radius r. One sample per particle so
+  // the torus reads as a dense surface that can be rotated each frame.
+  function generateTorusPoints() {
+    const N = particles.length;
+    const out = new Float32Array(N * 3);
+    const R = 0.55, r = 0.18;
+    for (let i = 0; i < N; i++) {
+      const u = Math.random() * Math.PI * 2;
+      const v = Math.random() * Math.PI * 2;
+      const cu = Math.cos(u), su = Math.sin(u);
+      const cv = Math.cos(v), sv = Math.sin(v);
+      out[i * 3 + 0] = (R + r * cv) * cu;
+      out[i * 3 + 1] = r * sv;
+      out[i * 3 + 2] = (R + r * cv) * su;
+    }
+    return out;
   }
-}, { threshold: 0.2, rootMargin: '0px 0px -10% 0px' });
-document.querySelectorAll('.project-block').forEach(b => blockObserver.observe(b));
 
-// Skills section — preview the project image mapped to the currently
-// hovered / focused skill, with a crossfade between images (two stacked
-// <img> elements, toggle which is active). Clicking jumps to that project
-// via the grid's #project= hash. Keyboard + touch parity with hover.
-(function initSkills() {
-  const skillItems = document.querySelectorAll('.skill-item');
-  const imgA = document.querySelector('.skill-img-a');
-  const imgB = document.querySelector('.skill-img-b');
-  const skillsList = document.querySelector('.skills-list');
-  if (!skillItems.length) return;
+  // 3D cube — particles spread evenly across the 6 faces. Reads as a
+  // projection-mapped surface as it rotates.
+  function generateCubePoints() {
+    const N = particles.length;
+    const out = new Float32Array(N * 3);
+    const S = 0.55; // half-edge
+    for (let i = 0; i < N; i++) {
+      const face = i % 6;
+      // Two uniform coords on the face plane.
+      const u = (Math.random() - 0.5) * 2 * S;
+      const v = (Math.random() - 0.5) * 2 * S;
+      let x, y, z;
+      switch (face) {
+        case 0: x =  S; y = u; z = v; break; // +X
+        case 1: x = -S; y = u; z = v; break; // -X
+        case 2: x = u; y =  S; z = v; break; // +Y
+        case 3: x = u; y = -S; z = v; break; // -Y
+        case 4: x = u; y = v; z =  S; break; // +Z
+        default: x = u; y = v; z = -S;       // -Z
+      }
+      out[i * 3 + 0] = x;
+      out[i * 3 + 1] = y;
+      out[i * 3 + 2] = z;
+    }
+    return out;
+  }
 
-  // Preload all skill images when the browser is idle — first hover/focus
-  // then never hits the network.
-  const preload = () => {
-    skillItems.forEach(el => {
-      const src = el.dataset.img;
-      if (!src) return;
-      const img = new Image();
-      img.src = src;
-    });
-  };
-  if ('requestIdleCallback' in window) requestIdleCallback(preload, { timeout: 2000 });
-  else setTimeout(preload, 1500);
+  // 3D room — wireframe one-point-perspective architectural room. The
+  // camera sits at the open front, looking into a deep interior. Particles
+  // trace the 12 edges of the room + a floor grid + a framed back wall,
+  // so it reads unmistakably as a 3D space, not a cube.
+  function generateRoomPoints() {
+    const N = particles.length;
+    const out = new Float32Array(N * 3);
+    // Half-extents. The room is long (deep z) and centered at origin
+    // along x/y; z ranges from -HZ (open front, near camera) to +HZ
+    // (back wall, far). The viewer's eye sits a bit in front of -HZ.
+    const HX = 0.85;
+    const HY = 0.55;
+    const HZ = 0.90;
 
-  // Crossfade: keep two <img> layers, alternate which one is "active".
-  let activeLayer = imgA;
-  let inactiveLayer = imgB;
-  function showPreview(src) {
-    if (!imgA || !imgB || !src) return;
-    if (activeLayer.getAttribute('src') === src) {
-      activeLayer.classList.add('active');
+    // 12 edges of the box, each parameterized so a sample t∈[0,1] picks
+    // a point along the edge. Each edge is a triple of axis-aligned
+    // start/end. We pick edges proportionally to their length so longer
+    // edges get more particles.
+    const edges = [
+      // Floor square (4 edges, on the floor at y = -HY)
+      ['x', -HX, -HY, -HZ, +HX, -HY, -HZ],   // floor front
+      ['x', -HX, -HY, +HZ, +HX, -HY, +HZ],   // floor back
+      ['z', -HX, -HY, -HZ, -HX, -HY, +HZ],   // floor left
+      ['z', +HX, -HY, -HZ, +HX, -HY, +HZ],   // floor right
+      // Ceiling square (4 edges)
+      ['x', -HX, +HY, -HZ, +HX, +HY, -HZ],
+      ['x', -HX, +HY, +HZ, +HX, +HY, +HZ],
+      ['z', -HX, +HY, -HZ, -HX, +HY, +HZ],
+      ['z', +HX, +HY, -HZ, +HX, +HY, +HZ],
+      // Vertical corner pillars (4 edges from floor to ceiling)
+      ['y', -HX, -HY, -HZ, -HX, +HY, -HZ],   // front-left
+      ['y', +HX, -HY, -HZ, +HX, +HY, -HZ],   // front-right
+      ['y', -HX, -HY, +HZ, -HX, +HY, +HZ],   // back-left
+      ['y', +HX, -HY, +HZ, +HX, +HY, +HZ],   // back-right
+    ];
+    function edgeLen(e) {
+      const dx = e[4] - e[1], dy = e[5] - e[2], dz = e[6] - e[3];
+      return Math.hypot(dx, dy, dz);
+    }
+    let totalLen = 0;
+    const cumLen = [];
+    for (const e of edges) { totalLen += edgeLen(e); cumLen.push(totalLen); }
+
+    // Particle budget breakdown:
+    //   45% on the 12 edges (the room's structure)
+    //   25% on a floor grid (parallel x and z lines on the floor)
+    //   15% on the framed back wall (vertical + horizontal grid lines)
+    //   15% sparse fill across all 5 walls (no front wall)
+    const N_EDGE  = Math.floor(N * 0.45);
+    const N_FLOOR = Math.floor(N * 0.25);
+    const N_BACK  = Math.floor(N * 0.15);
+    const N_FILL  = N - N_EDGE - N_FLOOR - N_BACK;
+
+    let idx = 0;
+    function push(x, y, z) {
+      out[idx * 3 + 0] = x;
+      out[idx * 3 + 1] = y;
+      out[idx * 3 + 2] = z;
+      idx++;
+    }
+
+    // ---- 1. Edges ----------------------------------------------------------
+    for (let i = 0; i < N_EDGE; i++) {
+      const r = Math.random() * totalLen;
+      let ei = 0;
+      for (; ei < cumLen.length; ei++) if (r <= cumLen[ei]) break;
+      const e = edges[ei];
+      const t = Math.random();
+      // tiny per-axis jitter so dots aren't a hairline.
+      const j = 0.005;
+      push(
+        e[1] + (e[4] - e[1]) * t + (Math.random() - 0.5) * j,
+        e[2] + (e[5] - e[2]) * t + (Math.random() - 0.5) * j,
+        e[3] + (e[6] - e[3]) * t + (Math.random() - 0.5) * j
+      );
+    }
+
+    // ---- 2. Floor grid -----------------------------------------------------
+    // 5 lines along z (cross-room) at fixed x, plus 7 lines along x at fixed z.
+    const xLinesAtZ = 7;
+    const zLinesAtX = 5;
+    const N_FLOOR_X = Math.floor(N_FLOOR * 0.55);
+    const N_FLOOR_Z = N_FLOOR - N_FLOOR_X;
+    for (let i = 0; i < N_FLOOR_X; i++) {
+      // x-direction line at some z.
+      const li = i % xLinesAtZ;
+      const z = -HZ + ((li + 0.5) / xLinesAtZ) * (2 * HZ);
+      const t = Math.random();
+      const x = -HX + t * (2 * HX);
+      push(x, -HY + 0.001, z);
+    }
+    for (let i = 0; i < N_FLOOR_Z; i++) {
+      const li = i % zLinesAtX;
+      const x = -HX + ((li + 0.5) / zLinesAtX) * (2 * HX);
+      const t = Math.random();
+      const z = -HZ + t * (2 * HZ);
+      push(x, -HY + 0.001, z);
+    }
+
+    // ---- 3. Back wall frame + grid -----------------------------------------
+    // Outline rectangle bias + horizontal/vertical lines.
+    for (let i = 0; i < N_BACK; i++) {
+      const k = Math.random();
+      let x, y;
+      if (k < 0.5) {
+        // Inset horizontal lines.
+        const ny = 4;
+        const li = i % ny;
+        y = -HY + ((li + 1) / (ny + 1)) * (2 * HY);
+        x = -HX + Math.random() * (2 * HX);
+      } else {
+        // Inset vertical lines.
+        const nx = 5;
+        const li = i % nx;
+        x = -HX + ((li + 1) / (nx + 1)) * (2 * HX);
+        y = -HY + Math.random() * (2 * HY);
+      }
+      push(x, y, HZ - 0.001);
+    }
+
+    // ---- 4. Sparse wall fill ----------------------------------------------
+    // Distribute across left, right, ceiling, back, floor (no front).
+    for (let i = 0; i < N_FILL; i++) {
+      const wall = Math.floor(Math.random() * 5);
+      let x, y, z;
+      switch (wall) {
+        case 0: x = -HX; y = (Math.random() - 0.5) * 2 * HY; z = (Math.random() - 0.5) * 2 * HZ; break;
+        case 1: x =  HX; y = (Math.random() - 0.5) * 2 * HY; z = (Math.random() - 0.5) * 2 * HZ; break;
+        case 2: x = (Math.random() - 0.5) * 2 * HX; y =  HY; z = (Math.random() - 0.5) * 2 * HZ; break;
+        case 3: x = (Math.random() - 0.5) * 2 * HX; y = -HY; z = (Math.random() - 0.5) * 2 * HZ; break;
+        default: x = (Math.random() - 0.5) * 2 * HX; y = (Math.random() - 0.5) * 2 * HY; z = HZ;
+      }
+      push(x, y, z);
+    }
+
+    return out;
+  }
+
+  function buildMorphTargets(spec) {
+    // Reset rotating state — only re-enabled by 3D shapes.
+    morph.rotating = false;
+    morph.basePoints3D = null;
+    morph.rotateMode = 'tumble';
+
+    // 3D rotating torus — store base points; render loop rotates them live.
+    if (spec && typeof spec === 'object' && spec.shape === 'torus') {
+      const base = generateTorusPoints();
+      morph.basePoints3D = base;
+      morph.rotating = true;
+      morph.points = new Float32Array(base);
       return;
     }
-    inactiveLayer.src = src;
-    const reveal = () => {
-      inactiveLayer.classList.add('active');
-      activeLayer.classList.remove('active');
-      const tmp = activeLayer; activeLayer = inactiveLayer; inactiveLayer = tmp;
-    };
-    if (inactiveLayer.complete) reveal();
-    else inactiveLayer.addEventListener('load', reveal, { once: true });
-  }
-  function hidePreview() {
-    if (imgA) imgA.classList.remove('active');
-    if (imgB) imgB.classList.remove('active');
+    // 3D rotating cube — particles tile the 6 faces; rotates each frame.
+    if (spec && typeof spec === 'object' && spec.shape === 'cube') {
+      const base = generateCubePoints();
+      morph.basePoints3D = base;
+      morph.rotating = true;
+      morph.points = new Float32Array(base);
+      return;
+    }
+    // 3D rotating room — interior surfaces with edge density. Yaw only
+    // so the floor stays down + ceiling stays up while the camera orbits.
+    if (spec && typeof spec === 'object' && spec.shape === 'room') {
+      const base = generateRoomPoints();
+      morph.basePoints3D = base;
+      morph.rotating = true;
+      morph.rotateMode = 'yaw';
+      morph.points = new Float32Array(base);
+      return;
+    }
+
+    let flat = null;
+    if (spec && typeof spec === 'object' && spec.shape === 'tree') {
+      flat = generateTreePoints();
+    } else if (typeof spec === 'string' && spec.length) {
+      flat = rasterizeWord(spec.toUpperCase());
+    }
+    if (!flat) { morph.points = null; return; }
+    const sampleCount = flat.length / 2;
+    if (sampleCount === 0) { morph.points = null; return; }
+    // Assign each particle a target (cycled through samples)
+    const out = new Float32Array(particles.length * 3);
+    for (let i = 0; i < particles.length; i++) {
+      const sIdx = (i % sampleCount) * 2;
+      out[i * 3 + 0] = flat[sIdx];
+      out[i * 3 + 1] = flat[sIdx + 1];
+      // Tiny z scatter so the form reads with a hint of depth
+      out[i * 3 + 2] = (Math.random() - 0.5) * 0.08;
+    }
+    morph.points = out;
   }
 
-  // Hover + focus both trigger preview — keyboard parity.
-  skillItems.forEach(item => {
-    const trigger = () => {
-      showPreview(item.dataset.img);
-      skillItems.forEach(el => el.classList.toggle('is-active', el === item));
-    };
-    item.addEventListener('mouseenter', trigger);
-    item.addEventListener('focus', trigger);
-    item.addEventListener('click', (e) => {
-      const pid = item.dataset.project;
-      if (!pid) return;
-      e.preventDefault();
-      // On home, link to grid with the project hash → grid auto-opens it.
-      window.location.href = 'grid.html#project=' + pid;
-    });
-  });
-  if (skillsList) {
-    skillsList.addEventListener('mouseleave', () => {
-      hidePreview();
-      skillItems.forEach(el => el.classList.remove('is-active'));
-    });
-    skillsList.addEventListener('focusout', (e) => {
-      if (!skillsList.contains(e.relatedTarget)) {
-        hidePreview();
-        skillItems.forEach(el => el.classList.remove('is-active'));
+  // Spec can be: a string (word), null (release), or { shape: 'tree' }.
+  function setMorphTarget(spec) {
+    const key = !spec ? null : (typeof spec === 'string' ? spec : `__shape:${spec.shape}`);
+    if (morph.text === key) return;
+
+    // Cancel any pending unhover — moving from one link directly to another
+    // should never dip through the "no morph" state.
+    if (morph.leaveTimer != null) {
+      clearTimeout(morph.leaveTimer);
+      morph.leaveTimer = null;
+    }
+
+    if (spec) {
+      // Word-to-word (or shape) swap: capture the visual state as the new
+      // prevPoints. If we're mid-swap, blend prev → current at the current
+      // swap progress so the next animation starts EXACTLY where the eyes
+      // see — no jump back to the un-blended previous form.
+      if (morph.points && morph.text) {
+        if (morph.prevPoints && morph.swap < 1) {
+          const len = morph.points.length;
+          const snap = new Float32Array(len);
+          const s = morph.swap;
+          for (let i = 0; i < len; i++) {
+            snap[i] = morph.prevPoints[i] + (morph.points[i] - morph.prevPoints[i]) * s;
+          }
+          morph.prevPoints = snap;
+        } else {
+          morph.prevPoints = morph.points;
+        }
+        morph.swap = 0;
+      } else {
+        morph.prevPoints = null;
+        morph.swap = 1;
       }
-    });
+      morph.text = key;
+      buildMorphTargets(spec);
+      morph.targetProgress = 1;
+    } else {
+      // Brief delay before releasing — gives the user a chance to land on
+      // an adjacent link without the particles flashing back to free flow.
+      morph.leaveTimer = setTimeout(() => {
+        morph.leaveTimer = null;
+        morph.text = null;
+        morph.targetProgress = 0;
+      }, 220);
+    }
   }
+  // Public API for the floating-nav hover listeners below.
+  // - __coverMorph(text|null): word morph (also accepts null to release)
+  // - __coverShape(name|null): special shape (e.g. 'tree')
+  window.__coverMorph = setMorphTarget;
+  window.__coverShape = (name) => setMorphTarget(name ? { shape: name } : null);
+
+  // ----- Particle coordinate labels --------------------------------------
+  // Always-on debug overlay: a handful of particles carry a small live
+  // coordinate readout in a random color, drifting along with the flow.
+  let labelsActive = true;
+  let labelIndices = [];
+  let labelHues = [];     // one hue per labeled particle, stable
+  function setCoverLabels(on) {
+    labelsActive = on !== false; // default to enabled
+    if (!labelsActive) { labelIndices = []; labelHues = []; return; }
+    labelIndices = [];
+    labelHues = [];
+    const want = 50;
+    const seen = new Set();
+    while (labelIndices.length < want && seen.size < particles.length) {
+      const i = (Math.random() * particles.length) | 0;
+      if (seen.has(i)) continue;
+      seen.add(i);
+      labelIndices.push(i);
+      labelHues.push((Math.random() * 360) | 0);
+    }
+  }
+  window.__coverLabels = setCoverLabels;
+
+  function frame(now) {
+    if (!running) return;
+    const dt = Math.min(now - last, 50) / 1000; // seconds
+    last = now;
+    const elapsed = (now - startTime) / 1000;
+
+    // Slow auto-yaw. No cursor-driven tilt — cursor only repels particles.
+    cam.yaw += dt * 0.05;
+
+    // Hard black wash so dots stay sharp (no trails)
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, W, H);
+
+    const baseR = Math.min(W, H) * 0.45;
+    const yawCos = Math.cos(cam.yaw);
+    const yawSin = Math.sin(cam.yaw);
+    const pitchCos = Math.cos(cam.pitch);
+    const pitchSin = Math.sin(cam.pitch);
+
+    // Drag mode boosts radius / strength / wake.
+    const activeR = (isDragging ? DRAG_RADIUS : REPEL_RADIUS) * DPR;
+    const activeStrength = (isDragging ? DRAG_STRENGTH : REPEL_STRENGTH) * DPR;
+    const activeWake = isDragging ? DRAG_WAKE : REPEL_WAKE;
+    const activeR2 = activeR * activeR;
+    const cursorActive = pointerX > -1000;
+    // Decay cursor velocity each frame so the wake fades naturally. While
+    // dragging we let it persist longer so a held drag keeps pushing.
+    const ptrDecay = isDragging ? 0.92 : 0.82;
+    ptrVX *= ptrDecay;
+    ptrVY *= ptrDecay;
+
+    // Ease live flow params toward their targets so preset switches feel
+    // organic, not abrupt.
+    const flowLerp = 0.06;
+    NOISE_SCALE += (flowTarget.noiseScale - NOISE_SCALE) * flowLerp;
+    FLOW_SPEED  += (flowTarget.flowSpeed  - FLOW_SPEED)  * flowLerp;
+    TIME_DRIFT  += (flowTarget.timeDrift  - TIME_DRIFT)  * flowLerp;
+    SWIRL       += (flowTarget.swirl      - SWIRL)       * flowLerp;
+    RADIAL      += (flowTarget.radial     - RADIAL)      * flowLerp;
+    JITTER      += (flowTarget.jitter     - JITTER)      * flowLerp;
+    WIND_X      += ((flowTarget.windX || 0) - WIND_X)    * flowLerp;
+    WIND_Y      += ((flowTarget.windY || 0) - WIND_Y)    * flowLerp;
+
+    const tNoise = elapsed * TIME_DRIFT;
+
+    // Smooth morph progress toward target — eased so transitions feel soft.
+    // Slower decay when releasing so the per-particle stagger reads.
+    const easeRate = morph.targetProgress > morph.progress ? 0.08 : 0.04;
+    morph.progress += (morph.targetProgress - morph.progress) * easeRate;
+    if (morph.swap < 1) {
+      // Slow global swap so per-particle stagger + arcs read clearly.
+      morph.swap = Math.min(1, morph.swap + dt * 0.85); // ~1.18s swap
+      if (morph.swap >= 1) morph.prevPoints = null;
+    }
+
+    // Live-rotate the 3D shape's base points into morph.points each frame.
+    if (morph.rotating && morph.basePoints3D && morph.points) {
+      const yawOnly = morph.rotateMode === 'yaw';
+      const rotY = elapsed * (yawOnly ? 0.35 : 0.6);
+      const rotX = yawOnly ? 0 : elapsed * 0.32;
+      const cyR = Math.cos(rotY), syR = Math.sin(rotY);
+      const cxR = Math.cos(rotX), sxR = Math.sin(rotX);
+      const src = morph.basePoints3D;
+      const dst = morph.points;
+      const n = src.length;
+      if (yawOnly) {
+        // Pure Y rotation — floor stays down, ceiling stays up.
+        for (let i = 0; i < n; i += 3) {
+          const x0 = src[i], z0 = src[i + 2];
+          dst[i] = x0 * cyR + z0 * syR;
+          dst[i + 1] = src[i + 1];
+          dst[i + 2] = -x0 * syR + z0 * cyR;
+        }
+      } else {
+        for (let i = 0; i < n; i += 3) {
+          const x0 = src[i], y0 = src[i + 1], z0 = src[i + 2];
+          const x1 = x0 * cyR + z0 * syR;
+          const z1 = -x0 * syR + z0 * cyR;
+          const y2 = y0 * cxR - z1 * sxR;
+          const z2 = y0 * sxR + z1 * cxR;
+          dst[i] = x1;
+          dst[i + 1] = y2;
+          dst[i + 2] = z2;
+        }
+      }
+    }
+    if (morph.progress < 0.001 && morph.targetProgress === 0) {
+      morph.progress = 0;
+      morph.points = null;
+      morph.prevPoints = null;
+    }
+    const mp = morph.progress;
+    const hasTargets = mp > 0.001 && morph.points;
+
+    // Render directly via fillRect on a 1×1 footprint — sharp pixel dots.
+    // Group fillStyle changes via simple alpha bucketing for perf.
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+
+      // Sample curl field at this particle's position
+      const [vx, vy, vz] = curl(
+        p.x * NOISE_SCALE,
+        p.y * NOISE_SCALE,
+        p.z * NOISE_SCALE,
+        tNoise
+      );
+
+      // Move along the flow
+      p.x += vx * FLOW_SPEED * dt;
+      p.y += vy * FLOW_SPEED * dt;
+      p.z += vz * FLOW_SPEED * dt;
+
+      // Preset-driven extra forces.
+      if (SWIRL !== 0) {
+        // Tangential rotation around z-axis — particles orbit the center.
+        p.x += -p.y * SWIRL * dt;
+        p.y +=  p.x * SWIRL * dt;
+      }
+      if (RADIAL !== 0) {
+        const rd = Math.hypot(p.x, p.y) + 1e-5;
+        p.x += (p.x / rd) * RADIAL * dt;
+        p.y += (p.y / rd) * RADIAL * dt;
+      }
+      if (JITTER !== 0) {
+        p.x += (Math.random() - 0.5) * JITTER;
+        p.y += (Math.random() - 0.5) * JITTER;
+      }
+      if (WIND_X !== 0 || WIND_Y !== 0) {
+        p.x += WIND_X * dt;
+        p.y += WIND_Y * dt;
+      }
+
+      // Recycle when either the per-particle travel radius is exceeded or
+      // its lifetime runs out — staggered deaths instead of one big purge
+      // at the bounding sphere.
+      p.life += dt;
+      const dist2 = p.x * p.x + p.y * p.y + p.z * p.z;
+      const tr = p.travelRadius || FIELD_R;
+      if (dist2 > tr * tr || p.life >= p.maxLife) {
+        spawnInside(p);
+      }
+
+      // Per-particle fade-in rate (varies, set in spawnInside).
+      p.lifeFade = Math.min(1, p.lifeFade + dt * (p.fadeInRate || 2.0));
+      // Fade out toward end of lifetime — last 30% of life dims out.
+      const ageK = p.maxLife > 0 ? p.life / p.maxLife : 0;
+      const ageFade = ageK > 0.7 ? Math.max(0, 1 - (ageK - 0.7) / 0.3) : 1;
+      p.alphaMul = p.lifeFade * ageFade;
+
+      // Flow path: apply full camera transform (yaw + pitch + perspective).
+      const focal = baseR * 1.8;
+      const flx = p.x * baseR;
+      const fly = p.y * baseR;
+      const flz = p.z * baseR;
+      const fcx = flx * yawCos - flz * yawSin;
+      const fcz = flx * yawSin + flz * yawCos;
+      const fcy = fly * pitchCos - fcz * pitchSin;
+      const fcz3 = fly * pitchSin + fcz * pitchCos;
+      const fpersp = focal / (focal + fcz3);
+      const flowSx = cx + fcx * fpersp;
+      const flowSy = cy + fcy * fpersp;
+      const flowDepth = fpersp;
+
+      let sx = flowSx, sy = flowSy, depth = flowDepth;
+
+      if (hasTargets) {
+        const ti = i * 3;
+        let tx, ty, tz;
+        if (morph.prevPoints && morph.swap < 1) {
+          // Per-particle stagger window
+          const local = (morph.swap - (p.swapDelay || 0)) / (p.swapDur || 1);
+          const localClamped = local <= 0 ? 0 : (local >= 1 ? 1 : local);
+          // Ease-out cubic for the actual blend
+          const eased = 1 - Math.pow(1 - localClamped, 3);
+          // A bell-curve offset that peaks mid-transition then collapses —
+          // each particle takes a tangential arc instead of a straight line.
+          const bell = Math.sin(localClamped * Math.PI);
+          const arc = bell * (p.swapArc || 0);
+          const px = morph.prevPoints[ti], py = morph.prevPoints[ti + 1], pz = morph.prevPoints[ti + 2];
+          const nx = morph.points[ti],     ny = morph.points[ti + 1],     nz = morph.points[ti + 2];
+          // Direction old→new and a perpendicular for the arc
+          const dx = nx - px, dy = ny - py;
+          // Radial outward bulge from the midpoint — swarm puffs out,
+          // then converges. Direction is the offset from origin so
+          // particles fly outward radially.
+          const mx = (px + nx) * 0.5, my = (py + ny) * 0.5;
+          const mLen = Math.hypot(mx, my) + 1e-6;
+          const burst = bell * (p.swapBurst || 0);
+          tx = px + dx * eased + (-dy) * arc + (mx / mLen) * burst;
+          ty = py + dy * eased + ( dx) * arc + (my / mLen) * burst;
+          tz = pz + (nz - pz) * eased + bell * 0.12 * (p.swapArc || 0);
+        } else {
+          tx = morph.points[ti];
+          ty = morph.points[ti + 1];
+          tz = morph.points[ti + 2];
+        }
+        // Target screen position — map directly with no yaw/pitch so the
+        // text always reads frontal regardless of camera orbit.
+        const tpersp = focal / (focal + tz * baseR);
+        const targetSx = cx + tx * baseR * tpersp;
+        const targetSy = cy + ty * baseR * tpersp;
+        const targetDepth = tpersp;
+
+        // Cap committed particles at <1 so the live flow always bleeds
+        // through. Particles never fully freeze — they breathe along the
+        // curl flow at their target position, while still reading as text.
+        const COMMIT_CAP = 0.97;
+        const personalCommit = p.commit != null ? p.commit : 1;
+
+        // While releasing (mp falling, intent is 0), each particle peels
+        // off on its own staggered window so they don't all let go at once.
+        let perParticleMp = mp;
+        if (morph.targetProgress === 0 && mp < 1) {
+          const releaseT = 1 - mp;
+          const localR = (releaseT - (p.releaseDelay || 0)) / (p.releaseDur || 1);
+          const cR = localR <= 0 ? 0 : (localR >= 1 ? 1 : localR);
+          const easedR = 1 - Math.pow(1 - cR, 3);
+          perParticleMp = 1 - easedR;
+        }
+
+        const commit = perParticleMp * COMMIT_CAP * personalCommit;
+        sx = flowSx + (targetSx - flowSx) * commit;
+        sy = flowSy + (targetSy - flowSy) * commit;
+        depth = flowDepth + (targetDepth - flowDepth) * commit;
+
+        // Juggle: small sinusoidal jiggle that peaks mid-release and
+        // tapers at both ends. Only audible while particles are letting go.
+        if (morph.targetProgress === 0 && mp > 0.001 && mp < 1) {
+          const jt = 1 - mp; // 0..1 release timeline
+          const env = Math.sin(jt * Math.PI); // bell curve
+          const wob = Math.sin(now * 0.018 + p.jiggleSeed) * p.jiggleAmp * env * baseR;
+          const wob2 = Math.cos(now * 0.022 + p.jiggleSeed * 1.7) * p.jiggleAmp * env * baseR;
+          sx += wob;
+          sy += wob2;
+        }
+      }
+
+      // Mouse repulsion — spring physics with cursor-velocity wake.
+      let targetPushX = 0, targetPushY = 0;
+      let falloff = 0;
+      if (cursorActive) {
+        const ddx = sx - pointerX;
+        const ddy = sy - pointerY;
+        const d2 = ddx * ddx + ddy * ddy;
+        if (d2 < activeR2 && d2 > 0.0001) {
+          const d = Math.sqrt(d2);
+          const t = 1 - d / activeR;
+          const ease = t * t * (3 - 2 * t);
+          falloff = ease * ease; // soft cubic ramp
+          const push = falloff * activeStrength;
+          targetPushX = (ddx / d) * push;
+          targetPushY = (ddy / d) * push;
+        }
+      }
+      // Spring step toward target push — soft return so released
+      // particles glide back instead of snapping.
+      const fx = (targetPushX - p.pushSx) * p.stiff;
+      const fy = (targetPushY - p.pushSy) * p.stiff;
+      p.pushVX = (p.pushVX + fx) * REPEL_DAMP;
+      p.pushVY = (p.pushVY + fy) * REPEL_DAMP;
+      // Cursor-velocity wake — particles in range get nudged in the
+      // cursor's motion direction. Stronger while dragging (fluid push).
+      if (falloff > 0.001) {
+        p.pushVX += ptrVX * falloff * activeWake;
+        p.pushVY += ptrVY * falloff * activeWake;
+      }
+      p.pushSx += p.pushVX;
+      p.pushSy += p.pushVY;
+      p.repelFalloff = falloff;
+
+      p.sx = sx + p.pushSx;
+      p.sy = sy + p.pushSy;
+      p.depth = depth;
+    }
+
+    // Two-pass render: back layer first, then bright foreground. Bucketing
+    // by depth into 4 alpha tiers avoids per-particle fillStyle thrash.
+    const tiers = [
+      { min: 0.45, max: 0.7,  alpha: 0.18, size: 1 },
+      { min: 0.7,  max: 0.95, alpha: 0.42, size: 1 },
+      { min: 0.95, max: 1.2,  alpha: 0.72, size: 1 },
+      { min: 1.2,  max: 5.0,  alpha: 1.0,  size: 1 },
+    ];
+
+    for (let tier = 0; tier < tiers.length; tier++) {
+      const T = tiers[tier];
+      ctx.fillStyle = `rgba(255,255,255,${T.alpha})`;
+      const baseSz = T.size * DPR;
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        if (p.depth < T.min || p.depth >= T.max) continue;
+        if (p.sx < -2 || p.sy < -2 || p.sx > W + 2 || p.sy > H + 2) continue;
+        const am = p.alphaMul != null ? p.alphaMul : p.lifeFade;
+        if (am < 1 && Math.random() > am) continue;
+        // Pushed particles swell slightly — gives the field weight as the
+        // cursor moves through it.
+        const sz = (p.repelFalloff > 0)
+          ? baseSz * (1 + p.repelFalloff * REPEL_SIZE_BOOST)
+          : baseSz;
+        ctx.fillRect((p.sx - sz / 2) | 0, (p.sy - sz / 2) | 0, Math.max(1, sz), Math.max(1, sz));
+      }
+    }
+
+    // Single-number coordinate labels — random-colored mono digits drift
+    // alongside a small subset of particles for a debug-overlay vibe.
+    if (labelsActive && labelIndices.length) {
+      const fontPx = Math.max(8, Math.round(9 * DPR));
+      ctx.font = `${fontPx}px ui-monospace, Menlo, Consolas, monospace`;
+      ctx.textBaseline = 'middle';
+      ctx.lineWidth = Math.max(1, DPR * 0.4);
+      const offX = 8 * DPR;
+      for (let li = 0; li < labelIndices.length; li++) {
+        const idx = labelIndices[li];
+        const p = particles[idx];
+        if (!p) continue;
+        if (p.sx < 0 || p.sy < 0 || p.sx > W || p.sy > H) continue;
+        const am = p.alphaMul != null ? p.alphaMul : 1;
+        if (am < 0.2) continue;
+        const txt = (p.sx / DPR).toFixed(0).padStart(4, ' ');
+        const tx = p.sx + offX;
+        const ty = p.sy;
+        const hue = labelHues[li] || 0;
+        // Bright, fully opaque label — number only, no leader/dash.
+        ctx.fillStyle = `hsl(${hue}, 100%, 60%)`;
+        ctx.fillText(txt, tx, ty);
+      }
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  function start() {
+    resize();
+    build();
+    // Pick the random subset of particles that carry coordinate labels.
+    setCoverLabels(true);
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, W, H);
+    last = performance.now();
+    startTime = last;
+    requestAnimationFrame(frame);
+  }
+
+  window.addEventListener('resize', () => { resize(); build(); setCoverLabels(true); }, { passive: true });
+  document.addEventListener('visibilitychange', () => {
+    running = !document.hidden;
+    if (running) {
+      last = performance.now();
+      requestAnimationFrame(frame);
+    }
+  });
+
+  start();
 })();
 
-// Hide the floating Luka Grčar wordmark + Contact link once the footer is
-// visible — the footer already has its own big wordmark and "Get in touch"
-// column, so the fixed chrome is redundant and overlaps awkwardly.
-const footerEl = document.querySelector('.site-footer');
-if (footerEl) {
-  const footerObs = new IntersectionObserver((entries) => {
-    const visible = entries.some(e => e.isIntersecting);
-    document.body.classList.toggle('footer-visible', visible);
-  }, { threshold: 0.05 });
-  footerObs.observe(footerEl);
-}
-
-barCounter.textContent = `1 / ${projects.length}`;
-
-// ========== PARALLAX ==========
-const blocks = document.querySelectorAll('.project-block');
-
-// Cache each block's absolute document position — block.offsetTop is relative
-// to the nearest positioned ancestor (scroll-container is position: relative
-// for z-index stacking over the sticky hero), which would return 0 and break
-// the title-fade math. We walk offsetParent chain once instead.
-function absoluteTop(el) {
-  let y = 0;
-  let n = el;
-  while (n) { y += n.offsetTop; n = n.offsetParent; }
-  return y;
-}
-const blockData = Array.from(blocks).map(block => ({
-  el: block,
-  top: absoluteTop(block),
-  row: block.querySelector('.project-row'),
-  wideIdx: parseInt(block.querySelector('.project-row')?.dataset.wide || '0', 10),
-  cellMedia: Array.from(block.querySelectorAll('.project-cell')).map(c =>
-    c.querySelector('img, video')
-  ),
-}));
-function recomputeBlockTops() {
-  for (const bd of blockData) bd.top = absoluteTop(bd.el);
-}
-window.addEventListener('resize', recomputeBlockTops, { passive: true });
-// Recompute once fonts + images finish loading — initial offsets are stale
-// otherwise (text reflows when webfont swaps, lazy images push content down).
-if (document.fonts && document.fonts.ready) {
-  document.fonts.ready.then(() => setTimeout(recomputeBlockTops, 100));
-}
-window.addEventListener('load', () => setTimeout(recomputeBlockTops, 50), { once: true });
-
-const heroMediaEl = () => document.querySelector('.hero-slide video, .hero-slide img');
-const heroTitleEl = () => document.querySelector('.hero-slide-title');
-
-function updateHeroParallax(scrollY, vh) {
-  const progress = Math.max(0, Math.min(1, scrollY / vh));
-  const media = heroMediaEl();
-  if (media) {
-    const scale = 1 + progress * 0.14;
-    const shiftY = progress * -40;
-    media.style.transform = `translate3d(0, ${shiftY}px, 0) scale(${scale})`;
+// ========== FOOTER SLIDE-IN ==========
+(function () {
+  const footerEl = document.querySelector('.site-footer');
+  if (!footerEl) return;
+  let pending = false;
+  function applyScroll() {
+    pending = false;
+    const y = window.scrollY;
+    const dist = window.innerHeight * 0.12;
+    const p = Math.max(0, Math.min(1, y / dist));
+    footerEl.style.transform = `translate3d(0, ${(1 - p) * 100}%, 0)`;
+    document.body.classList.toggle('footer-visible', p > 0.6);
   }
-  const title = heroTitleEl();
-  if (title) {
-    title.style.transform = `translate3d(0, ${-scrollY * 0.5}px, 0)`;
-    title.style.opacity = '1';
+  function onScroll() {
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(applyScroll);
   }
-  // Meta fades out fast as soon as the user starts scrolling
-  const meta = document.querySelector('.hero-slide-meta');
-  if (meta) {
-    const fade = Math.max(0, 1 - scrollY / (vh * 0.18));
-    meta.style.setProperty('--meta-scroll-fade', String(fade));
-  }
-}
-
-function updateParallax() {
-  const scrollY = window.scrollY;
-  const vh = window.innerHeight;
-  updateHeroParallax(scrollY, vh);
-
-  for (let idx = 0; idx < blockData.length; idx++) {
-    const bd = blockData[idx];
-    const blockTop = bd.top - scrollY;
-
-    if (blockTop > vh * 2 || blockTop < -bd.el.offsetHeight - vh) continue;
-
-    // Per-cell parallax: image shifts within its cell based on how far the
-    // block is from viewport center. Cells offset from each other so the
-    // three pictures don't move in lockstep.
-    const rawOffset = (blockTop + bd.el.offsetHeight / 2 - vh / 2) / vh;
-    const centerOffset = Math.max(-1, Math.min(1, rawOffset));
-    for (let ci = 0; ci < bd.cellMedia.length; ci++) {
-      const m = bd.cellMedia[ci];
-      if (!m) continue;
-      const speed = (isMobileHome ? [30, 50, 40] : [90, 160, 130])[ci] || (isMobileHome ? 40 : 120);
-      m.style.transform = `translate3d(0, ${centerOffset * speed}px, 0)`;
-    }
-
-    // Columns: equal (1fr 1fr 1fr) when the row is near the edges, wide cell
-    // expands (up to 2fr 1fr 1fr) as the row approaches viewport center.
-    if (bd.row) {
-      const expand = Math.max(0, 1 - Math.abs(centerOffset) * 1.2);
-      const cols = [1, 1, 1];
-      cols[bd.wideIdx] = 1 + expand;
-      bd.row.style.setProperty('--row-cols', `${cols[0]}fr ${cols[1]}fr ${cols[2]}fr`);
-    }
-
-    if (blockTop > -vh && blockTop < vh * 0.5) {
-      barName.textContent = projects[idx].name;
-      barCounter.textContent = `${idx + 1} / ${projects.length}`;
-    }
-  }
-
-  // Show/hide bar labels + dividers based on carousel position
-  const pastCarousel = scrollY > window.innerHeight * 0.8;
-  const onCarousel = scrollY < 30; // hide the bar entirely while the hero is showing
-  document.querySelectorAll('.bar-collapsible').forEach(el => el.classList.toggle('collapsed', !pastCarousel));
-  const bar = document.querySelector('.bottom-bar');
-  bar.classList.toggle('compact', !pastCarousel);
-  bar.classList.toggle('hidden', onCarousel);
-}
-
-// ========== WATERMARK LETTERS ==========
-const wmEl = document.getElementById('watermarkText');
-let wmLetters = [];
-let wmLastScroll = 0;
-let wmResetTimer = null;
-const MAX_ROT = 35;
-
-if (wmEl) {
-  const text = wmEl.textContent;
-  wmEl.innerHTML = '';
-  for (const char of text) {
-    const span = document.createElement('span');
-    span.className = 'wm-letter';
-    span.textContent = char === ' ' ? '\u00A0' : char;
-    wmEl.appendChild(span);
-    wmLetters.push(span);
-  }
-}
-
-// ========== SINGLE MOBILE SCROLL HANDLER ==========
-function onMobileScroll() {
-  const scrollY = window.scrollY;
-  const vh = window.innerHeight;
-
-  updateHeroParallax(scrollY, vh);
-
-  // Track which block is in view + per-cell parallax + wide-cell expand
-  for (let idx = 0; idx < blockData.length; idx++) {
-    const bd = blockData[idx];
-    const blockTop = bd.top - scrollY;
-    if (blockTop > vh * 2 || blockTop < -bd.el.offsetHeight - vh) continue;
-    const rawOffset = (blockTop + bd.el.offsetHeight / 2 - vh / 2) / vh;
-    const centerOffset = Math.max(-1, Math.min(1, rawOffset));
-    for (let ci = 0; ci < bd.cellMedia.length; ci++) {
-      const m = bd.cellMedia[ci];
-      if (!m) continue;
-      const speed = (isMobileHome ? [30, 50, 40] : [90, 160, 130])[ci] || (isMobileHome ? 40 : 120);
-      m.style.transform = `translate3d(0, ${centerOffset * speed}px, 0)`;
-    }
-    if (bd.row) {
-      const expand = Math.max(0, 1 - Math.abs(centerOffset) * 1.2);
-      const cols = [1, 1, 1];
-      cols[bd.wideIdx] = 1 + expand;
-      bd.row.style.setProperty('--row-cols', `${cols[0]}fr ${cols[1]}fr ${cols[2]}fr`);
-    }
-    if (blockTop > -vh && blockTop < vh * 0.5) {
-      barName.textContent = projects[idx].name;
-      barCounter.textContent = `${idx + 1} / ${projects.length}`;
-    }
-  }
-
-  const pastCarousel = scrollY > vh * 0.8;
-  const onCarousel = scrollY < 30;
-  document.querySelectorAll('.bar-collapsible').forEach(el => el.classList.toggle('collapsed', !pastCarousel));
-  const bar = document.querySelector('.bottom-bar');
-  bar.classList.toggle('compact', !pastCarousel);
-  bar.classList.toggle('hidden', onCarousel);
-
-  // Letter rotation
-  if (wmLetters.length) {
-    const delta = scrollY - wmLastScroll;
-    wmLetters.forEach((letter, i) => {
-      const raw = delta * -(1.2 + i * 0.12);
-      letter.style.transition = 'none';
-      letter.style.transform = `rotate(${Math.max(-MAX_ROT, Math.min(MAX_ROT, raw))}deg)`;
-    });
-    clearTimeout(wmResetTimer);
-    wmResetTimer = setTimeout(() => {
-      wmLetters.forEach(letter => {
-        letter.style.transition = 'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)';
-        letter.style.transform = 'rotate(0deg)';
-      });
-    }, 80);
-  }
-
-  wmLastScroll = scrollY;
-}
-
-// Initial bar-visibility sync — handlers above only run on scroll, but we
-// want the correct state from the first paint (e.g. after a reload mid-page).
-if (isMobileHome) onMobileScroll(); else updateParallax();
-
-// ========== DESKTOP: separate listeners ==========
-if (!isMobileHome) {
-  if (wmLetters.length) {
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      const delta = scrollY - wmLastScroll;
-      wmLastScroll = scrollY;
-      wmLetters.forEach((letter, i) => {
-        const raw = delta * -(1.2 + i * 0.12);
-        letter.style.transition = 'none';
-        letter.style.transform = `rotate(${Math.max(-MAX_ROT, Math.min(MAX_ROT, raw))}deg)`;
-      });
-      clearTimeout(wmResetTimer);
-      wmResetTimer = setTimeout(() => {
-        wmLetters.forEach(letter => {
-          letter.style.transition = 'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)';
-          letter.style.transform = 'rotate(0deg)';
-        });
-      }, 80);
-    }, { passive: true });
-  }
-
-}
-
-// ========== SCROLL HANDLER ==========
-// Desktop: smooth wheel physics (momentum + lerp) drive window.scrollY,
-// parallax updates in the same rAF loop so transforms stay synced with
-// the scroll position we just set. Mobile (incl. iOS Safari): native
-// scroll + continuous rAF parallax while scrolling, stops 200ms after idle.
-(function initScrollHandler() {
-  let lastAppliedScrollY = -1;
-  function applyParallax(y) {
-    const vh = window.innerHeight;
-    if (y === lastAppliedScrollY) return;
-    lastAppliedScrollY = y;
-    updateHeroParallax(y, vh);
-    if (!isMobileHome) updateParallax();
-    else onMobileScroll();
-  }
-
-  if (!isMobileHome) {
-    let targetScroll = window.scrollY;
-    let smoothScroll = window.scrollY;
-    let velocity = 0;
-    let rafId = null;
-    const FRICTION = 0.91;
-    const LERP = 0.13;
-
-    function maxY() { return document.documentElement.scrollHeight - window.innerHeight; }
-
-    function loop() {
-      velocity *= FRICTION;
-      targetScroll = Math.max(0, Math.min(maxY(), targetScroll + velocity));
-      smoothScroll += (targetScroll - smoothScroll) * LERP;
-      if (Math.abs(targetScroll - smoothScroll) < 0.4) smoothScroll = targetScroll;
-      window.scrollTo(0, smoothScroll);
-      applyParallax(smoothScroll);
-      if (Math.abs(velocity) > 0.05 || Math.abs(targetScroll - smoothScroll) > 0.5) {
-        rafId = requestAnimationFrame(loop);
-      } else {
-        rafId = null;
-      }
-    }
-
-    window.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      velocity += e.deltaY * 0.15;
-      if (!rafId) rafId = requestAnimationFrame(loop);
-    }, { passive: false });
-
-    // Keyboard / scrollbar / scrollTo should still work — sync when the
-    // page moved by something other than the wheel loop.
-    window.addEventListener('scroll', () => {
-      if (rafId) return;
-      const y = window.scrollY;
-      smoothScroll = y;
-      targetScroll = y;
-      applyParallax(y);
-    }, { passive: true });
-
-    applyParallax(window.scrollY);
-  } else {
-    // Mobile (iOS Safari): native momentum scrolling is already smooth on
-    // touch release — no JS physics, no continuous rAF. Just an event-driven
-    // rAF throttle: schedule one frame per scroll event, batch transform
-    // writes to that frame, no long-running timer for APP to flag.
-    let pendingRAF = null;
-    window.addEventListener('scroll', () => {
-      if (pendingRAF) return;
-      pendingRAF = requestAnimationFrame(() => {
-        pendingRAF = null;
-        applyParallax(window.scrollY);
-      });
-    }, { passive: true });
-    applyParallax(window.scrollY);
-  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', applyScroll, { passive: true });
+  applyScroll();
 })();

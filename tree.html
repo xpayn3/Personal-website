@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Windy Tree — Luka Grčar</title>
+  <meta name="description" content="A WebGPU procedural foliage studio. 35 species, gravity sag, length & angle ramps, crown attractor seeding, branch grab, LOD export, pipeline-ready glTF — running entirely in the browser." />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="tree.css" />
+  <link rel="stylesheet" href="floating-nav.css" />
+</head>
+<body class="page-tree">
+
+  <!-- Floating top-left nav (shared component) -->
+  <a href="index.html" class="floating-name">Luka Grčar</a>
+  <nav class="floating-nav" aria-label="Sections">
+    <a href="index.html" class="floating-nav-link">Home</a>
+    <a href="grid.html" class="floating-nav-link">Index</a>
+    <a href="lab.html" class="floating-nav-link">Lab</a>
+    <a href="tree.html" class="floating-nav-link is-active">Tree</a>
+    <a href="about.html" class="floating-nav-link">About</a>
+    <a href="about.html#contact" class="floating-nav-link">Contact</a>
+  </nav>
+
+<!-- ===================== TOP NAV ===================== -->
+<header class="t-top">
+  <div class="t-top-inner">
+    <a class="t-top-back" href="index.html">
+      <span class="t-arrow">←</span>
+      <span>Luka Grčar</span>
+    </a>
+    <div class="t-top-meta">
+      <span class="t-top-meta-name">Windy Tree</span>
+      <span class="t-dot"></span>
+      <span>v1.4 · webgpu · open source</span>
+    </div>
+    <div class="t-top-actions">
+      <a class="t-top-source" href="https://github.com/xpayn3/webtree" target="_blank" rel="noopener" aria-label="View source on GitHub">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12.02c0 5.09 3.29 9.4 7.86 10.93.58.11.79-.25.79-.56 0-.27-.01-1.01-.02-1.99-3.2.7-3.88-1.54-3.88-1.54-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.76 2.69 1.25 3.34.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.46.11-3.04 0 0 .96-.31 3.16 1.18.92-.26 1.9-.39 2.88-.39.98 0 1.96.13 2.88.39 2.19-1.49 3.16-1.18 3.16-1.18.62 1.58.23 2.75.11 3.04.74.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.4-5.25 5.68.41.36.78 1.07.78 2.16 0 1.56-.01 2.82-.01 3.21 0 .31.21.68.79.56 4.57-1.53 7.86-5.85 7.86-10.93C23.5 5.65 18.35.5 12 .5z"/></svg>
+        <span>Source</span>
+      </a>
+      <a class="t-top-launch" href="https://xpayn3.github.io/webtree/" target="_blank" rel="noopener">
+        Launch <span class="t-arrow">↗</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== HERO ===================== -->
+<section class="t-hero-wrap">
+  <div class="t-hero-haze"></div>
+
+  <div class="t-wrap t-hero-head">
+    <div class="t-pill">
+      <span class="t-pill-tag">v1.4</span>
+      <span>35 species · crown attractor · length curves · gravity sag</span>
+    </div>
+    <h1 class="t-h1">
+      <span class="t-h1-line">A foliage studio.</span>
+      <span class="t-h1-line t-h1-accent">In your browser.</span>
+    </h1>
+    <p class="t-lede">
+      Procedural trees built on WebGPU and TSL — with real-time wind, MTree-style
+      gravity sag, attractor-driven crown silhouettes, drag-to-bend branches,
+      and pipeline-ready glTF export. No install. No build step. Native render path.
+    </p>
+    <div class="t-cta-row">
+      <a class="t-btn t-btn-primary" href="https://xpayn3.github.io/webtree/" target="_blank" rel="noopener">
+        <span>Launch app</span>
+        <span class="t-arrow">↗</span>
+      </a>
+      <a class="t-btn t-btn-ghost" href="https://github.com/xpayn3/webtree" target="_blank" rel="noopener">
+        <span>View source</span>
+        <span class="t-arrow">↗</span>
+      </a>
+      <a class="t-btn t-btn-tertiary" href="#features">
+        <span>What's new</span>
+        <span class="t-arrow">↓</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="t-wrap t-hero-stage-wrap">
+    <div class="t-hero-stats">
+      <div class="t-stat"><span class="t-stat-num">35</span><span class="t-stat-lbl">Species</span></div>
+      <div class="t-stat"><span class="t-stat-num">60</span><span class="t-stat-lbl">FPS</span></div>
+      <div class="t-stat"><span class="t-stat-num">0.84<span class="t-stat-unit">ms</span></span><span class="t-stat-lbl">GPU</span></div>
+      <div class="t-stat"><span class="t-stat-num">2M</span><span class="t-stat-lbl">Verts</span></div>
+      <div class="t-stat"><span class="t-stat-num">4</span><span class="t-stat-lbl">LODs</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== HEADLINE STRIP ===================== -->
+<section class="t-band t-wrap">
+  <div class="t-band-inner">
+    <p class="t-band-eyebrow">Procedural foliage, native to the browser.</p>
+    <h2 class="t-band-title">
+      Drawn from <span class="t-band-accent">Weber-Penn</span>, sagged like
+      <span class="t-band-accent">MTree</span>, shaped like
+      <span class="t-band-accent">eztree</span>, exported like
+      <span class="t-band-accent">SpeedTree</span>.
+    </h2>
+    <p class="t-band-sub">
+      A canonical tree-grow kernel with refCurve trunks, segment splits, and
+      botanically-correct phyllotaxis — paired with attractor-driven crown
+      seeding, post-pass gravity, three live ramp curves per level, and a
+      Houdini-SOP-style typed-array pipeline that scales to 2M-vert trees.
+    </p>
+  </div>
+</section>
+
+<!-- ===================== FEATURES — BENTO ===================== -->
+<section class="t-section t-wrap" id="features">
+  <div class="t-section-head">
+    <span class="t-section-eyebrow">What's inside</span>
+    <h2 class="t-section-title">Built for the whole pipeline.</h2>
+    <p class="t-section-sub">From parametric growth to pipeline-ready export — every stage tuned for real-time foliage work in the browser.</p>
+  </div>
+
+  <div class="t-bento">
+
+    <!-- HERO CARD: Crown attractor (NEW v1.4) -->
+    <article class="t-feat t-feat--hero">
+      <div class="t-feat-tag">
+        <span class="t-feat-tag-dot"></span>
+        New in v1.4
+      </div>
+      <div class="t-feat-hero-grid">
+        <div class="t-feat-hero-copy">
+          <h3 class="t-feat-title">Crown attractor seeder.</h3>
+          <p class="t-feat-body">
+            Sketch the silhouette you want — a sphere, a teardrop, an upside-down
+            umbrella — and the grow kernel biases branch direction, length, and
+            phyllotactic placement to fill it. The crown emerges from the shape
+            you draw, not from a fixed Weber-Penn envelope.
+          </p>
+          <div class="t-feat-spec">
+            <div><span class="t-feat-spec-k">Bias</span><span class="t-feat-spec-v">tropism + length + density</span></div>
+            <div><span class="t-feat-spec-k">Falloff</span><span class="t-feat-spec-v">smoothstep · per-level</span></div>
+            <div><span class="t-feat-spec-k">Worker</span><span class="t-feat-spec-v">mirrored</span></div>
+          </div>
+        </div>
+        <div class="t-feat-hero-art" aria-hidden="true">
+          <svg viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <!-- attractor envelope -->
+            <ellipse cx="100" cy="78" rx="74" ry="60" stroke="currentColor" stroke-width="1" stroke-dasharray="3 4" opacity="0.45"/>
+            <!-- trunk -->
+            <path d="M100 195 L100 138" stroke="currentColor" stroke-width="2.4"/>
+            <!-- main scaffolds -->
+            <path d="M100 138 C 92 110, 70 95, 52 80" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M100 138 C 108 110, 130 95, 148 80" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M100 138 C 100 105, 95 80, 100 50" stroke="currentColor" stroke-width="1.8"/>
+            <!-- secondary forks bending toward envelope -->
+            <path d="M52 80 C 42 70, 38 60, 36 48" stroke="currentColor" stroke-width="1.2" opacity="0.85"/>
+            <path d="M52 80 C 56 70, 60 62, 64 50" stroke="currentColor" stroke-width="1.2" opacity="0.85"/>
+            <path d="M148 80 C 158 70, 162 60, 164 48" stroke="currentColor" stroke-width="1.2" opacity="0.85"/>
+            <path d="M148 80 C 144 70, 140 62, 136 50" stroke="currentColor" stroke-width="1.2" opacity="0.85"/>
+            <path d="M100 78 C 92 60, 86 48, 82 36" stroke="currentColor" stroke-width="1.2" opacity="0.85"/>
+            <path d="M100 78 C 108 60, 114 48, 118 36" stroke="currentColor" stroke-width="1.2" opacity="0.85"/>
+            <!-- attractor accent dots -->
+            <circle cx="36"  cy="48" r="3" fill="currentColor" opacity="0.85" class="t-feat-hero-dot"/>
+            <circle cx="64"  cy="50" r="3" fill="currentColor" opacity="0.85" class="t-feat-hero-dot"/>
+            <circle cx="82"  cy="36" r="3" fill="currentColor" opacity="0.85" class="t-feat-hero-dot"/>
+            <circle cx="118" cy="36" r="3" fill="currentColor" opacity="0.85" class="t-feat-hero-dot"/>
+            <circle cx="136" cy="50" r="3" fill="currentColor" opacity="0.85" class="t-feat-hero-dot"/>
+            <circle cx="164" cy="48" r="3" fill="currentColor" opacity="0.85" class="t-feat-hero-dot"/>
+          </svg>
+        </div>
+      </div>
+    </article>
+
+    <!-- WIDE: Gravity sag -->
+    <article class="t-feat t-feat--wide">
+      <div class="t-feat-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M5 8c2 4 4 6 7 6s5-2 7-6"/><path d="M3 14c3 5 6 7 9 7s6-2 9-7"/></svg>
+      </div>
+      <h3 class="t-feat-title">Gravity sag.</h3>
+      <p class="t-feat-body">An MTree-style post-pass cascades rotations leaf-to-root, weighting each branch by length × radius². Heavy limbs droop, twigs settle, whorls stay level. Two sliders replace pages of hand-tuning.</p>
+    </article>
+
+    <!-- MEDIUM: Branch grab -->
+    <article class="t-feat t-feat--medium">
+      <div class="t-feat-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
+      </div>
+      <h3 class="t-feat-title">Branch grab.</h3>
+      <p class="t-feat-body">Right-click any node and pull. Ancestors bend along the chain with soft-mass weights; release settles back with springy wind.</p>
+    </article>
+
+    <!-- WIDE: Length curves / per-level ramps -->
+    <article class="t-feat t-feat--wide">
+      <div class="t-feat-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18s2-7 8-7 8 4 10 4"/><circle cx="3" cy="18" r="1.5"/><circle cx="11" cy="11" r="1.5"/><circle cx="21" cy="15" r="1.5"/></svg>
+      </div>
+      <h3 class="t-feat-title">Per-level ramp curves.</h3>
+      <p class="t-feat-body">Three live Catmull-Rom ramps per level — <span class="t-code">length</span>, <span class="t-code">randomness</span>, <span class="t-code">startAngle</span> — plus density and split-points. Five knots each. Drag a knot, the tree reshapes the moment you release.</p>
+    </article>
+
+    <!-- MEDIUM: PBD wind -->
+    <article class="t-feat t-feat--medium">
+      <div class="t-feat-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/><path d="M12.6 19.4A2 2 0 1 0 14 16H2"/></svg>
+      </div>
+      <h3 class="t-feat-title">PBD wind.</h3>
+      <p class="t-feat-body">Position-based dynamics on every skeleton node. Direction, gust, swirl, turbulence — bark sway driven from a typed-array SoA solver.</p>
+    </article>
+
+    <!-- WIDE: LOD card -->
+    <article class="t-feat t-feat--wide">
+      <div class="t-feat-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>
+      </div>
+      <h3 class="t-feat-title">Side-by-side LODs + billboard impostor.</h3>
+      <p class="t-feat-body">Compare LOD0–LOD3 in the same scene. Meshoptimizer where it pays, SimplifyModifier where it doesn't. Final LOD is an 8-tri crossed-quad billboard captured orthographically — drop-in for scattering tools past 100 m.</p>
+      <div class="t-feat-lod">
+        <div class="t-feat-lod-cell"><span class="t-feat-lod-tag">LOD 0</span><span class="t-feat-lod-num">126k</span></div>
+        <div class="t-feat-lod-cell"><span class="t-feat-lod-tag">LOD 1</span><span class="t-feat-lod-num">42k</span></div>
+        <div class="t-feat-lod-cell"><span class="t-feat-lod-tag">LOD 2</span><span class="t-feat-lod-num">12k</span></div>
+        <div class="t-feat-lod-cell"><span class="t-feat-lod-tag">LOD 3</span><span class="t-feat-lod-num">3k</span></div>
+        <div class="t-feat-lod-cell t-feat-lod-cell--accent"><span class="t-feat-lod-tag">Billboard</span><span class="t-feat-lod-num">8</span></div>
+      </div>
+    </article>
+
+    <!-- MEDIUM: glTF export -->
+    <article class="t-feat t-feat--medium">
+      <div class="t-feat-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </div>
+      <h3 class="t-feat-title">Pipeline-ready glTF.</h3>
+      <p class="t-feat-body">Wind vertex colors, pivot-painter UVs, named material slots, bounds metadata in <span class="t-code">extras</span>. Drop-in for Unreal or Unity.</p>
+    </article>
+
+    <!-- Row: 3 medium cards (Live scrub · Worker pool · 3D pivot) -->
+    <article class="t-feat t-feat--medium">
+      <div class="t-feat-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg>
+      </div>
+      <h3 class="t-feat-title">Live scrub.</h3>
+      <p class="t-feat-body">Radius, profile, knots, buttress, react-wood — drag and the trunk re-extrudes in 50 ms. Tubes-only fast path; foliage skipped while you sculpt.</p>
+    </article>
+
+    <article class="t-feat t-feat--medium">
+      <div class="t-feat-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+      </div>
+      <h3 class="t-feat-title">Worker pool.</h3>
+      <p class="t-feat-body">Tree, chains, and tubes fan across <span class="t-code">hardwareConcurrency − 1</span> workers. Greedy bin-packing keeps each thread fed.</p>
+    </article>
+
+    <article class="t-feat t-feat--medium">
+      <div class="t-feat-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/></svg>
+      </div>
+      <h3 class="t-feat-title">3D-app pivot.</h3>
+      <p class="t-feat-body">Switch between target, cursor, and bounding-center pivot modes — like Maya, Houdini, or Blender. Capture-phase orbit, no camera reset.</p>
+    </article>
+
+    <!-- Row: 3 medium cards (Spotlight · PBR · Welcome card) -->
+    <article class="t-feat t-feat--medium">
+      <div class="t-feat-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      </div>
+      <h3 class="t-feat-title">Spotlight palette.</h3>
+      <p class="t-feat-body">⌘K opens a fuzzy command bar across every slider, species, and toggle. Type two letters and you're there.</p>
+    </article>
+
+    <article class="t-feat t-feat--medium">
+      <div class="t-feat-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20a15 15 0 0 1 0-20"/></svg>
+      </div>
+      <h3 class="t-feat-title">PBR + seasons.</h3>
+      <p class="t-feat-body">MeshPhysical with leaf translucency, tiling bark with normals, and a season palette that fades spring → summer → autumn → winter.</p>
+    </article>
+
+    <article class="t-feat t-feat--medium">
+      <div class="t-feat-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"/><path d="M7 9h4"/><path d="M7 13h10"/><path d="M7 17h7"/></svg>
+      </div>
+      <h3 class="t-feat-title">Welcome library.</h3>
+      <p class="t-feat-body">First load opens a tabbed species library — broadleaf, conifer, bush — with hand-shot thumbnails. Click a card, the tree applies. Dismissed for good after one click.</p>
+    </article>
+
+  </div>
+</section>
+
+<!-- ===================== SPECIES LIBRARY ===================== -->
+<section class="t-section t-wrap" id="species">
+  <div class="t-section-head">
+    <span class="t-section-eyebrow">Species library</span>
+    <h2 class="t-section-title">35 trees, one click away.</h2>
+    <p class="t-section-sub">Every preset is a botanically-tuned bundle of phyllotaxis, branching, leaf shape, and seasonal palette. Pick one and start sculpting — or stay on Custom.</p>
+  </div>
+
+  <div class="t-species">
+    <div class="t-species-cat">
+      <div class="t-species-cat-head">
+        <span class="t-species-cat-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>
+        </span>
+        <span class="t-species-cat-name">Broadleaf</span>
+        <span class="t-species-cat-count">19</span>
+      </div>
+      <div class="t-species-list">
+        <span class="t-species-chip">Oak</span>
+        <span class="t-species-chip">Maple</span>
+        <span class="t-species-chip">Cherry</span>
+        <span class="t-species-chip">Willow</span>
+        <span class="t-species-chip">Birch</span>
+        <span class="t-species-chip">Acacia</span>
+        <span class="t-species-chip">Olive</span>
+        <span class="t-species-chip">Baobab</span>
+        <span class="t-species-chip">Palm</span>
+        <span class="t-species-chip">Aspen</span>
+        <span class="t-species-chip">Tupelo</span>
+        <span class="t-species-chip">Sassafras</span>
+        <span class="t-species-chip">Lime</span>
+        <span class="t-species-chip">Beech</span>
+        <span class="t-species-chip">Plane Tree</span>
+        <span class="t-species-chip">Ginkgo</span>
+        <span class="t-species-chip">Lombardy Poplar</span>
+        <span class="t-species-chip">Japanese Maple</span>
+        <span class="t-species-chip">Eucalyptus</span>
+      </div>
+    </div>
+
+    <div class="t-species-cat">
+      <div class="t-species-cat-head">
+        <span class="t-species-cat-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L4 12 L8 12 L4 18 L9 18 L5 22 L19 22 L15 18 L20 18 L16 12 L20 12 Z"/></svg>
+        </span>
+        <span class="t-species-cat-name">Conifer</span>
+        <span class="t-species-cat-count">11</span>
+      </div>
+      <div class="t-species-list">
+        <span class="t-species-chip">Pine</span>
+        <span class="t-species-chip">Spruce</span>
+        <span class="t-species-chip">Cedar</span>
+        <span class="t-species-chip">Cypress</span>
+        <span class="t-species-chip">Fir</span>
+        <span class="t-species-chip">Larch</span>
+        <span class="t-species-chip">Scots Pine</span>
+        <span class="t-species-chip">Hemlock</span>
+        <span class="t-species-chip">Juniper</span>
+        <span class="t-species-chip">Redwood</span>
+        <span class="t-species-chip">Araucaria</span>
+      </div>
+    </div>
+
+    <div class="t-species-cat">
+      <div class="t-species-cat-head">
+        <span class="t-species-cat-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17q-3 0-3-3 0-2 2-2.5 0-2 2-2.5 1-3 4-3 3 0 4 3 2 .5 2 2.5 0 3-3 3z"/><path d="M9 17v4M15 17v4"/></svg>
+        </span>
+        <span class="t-species-cat-name">Bush</span>
+        <span class="t-species-cat-count">5</span>
+      </div>
+      <div class="t-species-list">
+        <span class="t-species-chip">Boxwood</span>
+        <span class="t-species-chip">Lavender</span>
+        <span class="t-species-chip">Hydrangea</span>
+        <span class="t-species-chip">Rosemary</span>
+        <span class="t-species-chip">Holly</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PIPELINE ===================== -->
+<section class="t-section t-wrap">
+  <div class="t-section-head">
+    <span class="t-section-eyebrow">How it works</span>
+    <h2 class="t-section-title">CPU to GPU, worker to glTF.</h2>
+    <p class="t-section-sub">A Houdini-SOP-style flat-attribute pipeline. Five O(V) passes collapsed into one pool-fill loop. Tubes-only fast path for live scrubbing.</p>
+  </div>
+
+  <div class="t-pipeline-wrap">
+    <div class="t-pipe-phase">
+      <div class="t-pipe-phase-label">
+        <span class="t-pipe-phase-num">Build</span>
+        <span class="t-pipe-phase-name">Generate the tree in parallel</span>
+      </div>
+      <div class="t-pipe-row">
+        <div class="t-pipe-step"><span class="t-pipe-name">Tree graph</span><span class="t-pipe-where">worker #0</span></div>
+        <div class="t-pipe-step"><span class="t-pipe-name">Gravity sag</span><span class="t-pipe-where">post-pass</span></div>
+        <div class="t-pipe-step"><span class="t-pipe-name">Tube extrude</span><span class="t-pipe-where">pool · parallel</span></div>
+        <div class="t-pipe-step"><span class="t-pipe-name">Pool-fill bark</span><span class="t-pipe-where">main thread</span></div>
+        <div class="t-pipe-step"><span class="t-pipe-name">Foliage phase</span><span class="t-pipe-where">instanced</span></div>
+        <div class="t-pipe-step"><span class="t-pipe-name">PBD + render</span><span class="t-pipe-where">webgpu</span></div>
+      </div>
+    </div>
+
+    <div class="t-pipe-phase">
+      <div class="t-pipe-phase-label">
+        <span class="t-pipe-phase-num">Export</span>
+        <span class="t-pipe-phase-name">Bake pipeline data into glTF</span>
+      </div>
+      <div class="t-pipe-row">
+        <div class="t-pipe-step"><span class="t-pipe-name">Wind colors</span><span class="t-pipe-where">vertex rgba</span></div>
+        <div class="t-pipe-step"><span class="t-pipe-name">Pivot UVs</span><span class="t-pipe-where">uv1 + uv2</span></div>
+        <div class="t-pipe-step"><span class="t-pipe-name">Material slots</span><span class="t-pipe-where">bark · leaf-a · leaf-b</span></div>
+        <div class="t-pipe-step"><span class="t-pipe-name">LOD bundle</span><span class="t-pipe-where">0 → 3</span></div>
+        <div class="t-pipe-step"><span class="t-pipe-name">Billboard atlas</span><span class="t-pipe-where">crossed quad</span></div>
+        <div class="t-pipe-step"><span class="t-pipe-name">.glb / .gltf</span><span class="t-pipe-where">+ extras</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== METRICS BIG ===================== -->
+<section class="t-section t-wrap">
+  <div class="t-section-head">
+    <span class="t-section-eyebrow">Numbers</span>
+    <h2 class="t-section-title">Engineered for big trees.</h2>
+    <p class="t-section-sub">Five O(V) passes collapsed into one pool-fill loop. Pooled leaf slots. SoA skeleton with typed-array hot paths. The kernel that builds your tree is the kernel that scales it.</p>
+  </div>
+  <div class="t-metrics">
+    <div class="t-metric">
+      <span class="t-metric-num">2M</span>
+      <span class="t-metric-lbl">Vertex tree, scrubbed live.</span>
+      <span class="t-metric-sub">Tubes-only fast path: ~300 ms per drag tick on a Macbook Pro. Foliage skipped while you sculpt, regenerated on release.</span>
+    </div>
+    <div class="t-metric">
+      <span class="t-metric-num">200K</span>
+      <span class="t-metric-lbl">Leaves, zero allocations.</span>
+      <span class="t-metric-sub">Pooled leaf slots — steady-state foliage scrub never hits the GC. Per-frame anchor offsets written direct into the instance matrix.</span>
+    </div>
+    <div class="t-metric">
+      <span class="t-metric-num">35</span>
+      <span class="t-metric-lbl">Species presets.</span>
+      <span class="t-metric-sub">Oak, Maple, Cherry, Birch, Aspen, Pine, Spruce, Cedar, Redwood, Ginkgo, Plane Tree, Boxwood, Palm — and 22 more.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== STACK ===================== -->
+<section class="t-section t-wrap">
+  <div class="t-section-head">
+    <span class="t-section-eyebrow">Stack</span>
+    <h2 class="t-section-title">No build step. Zero bundler.</h2>
+    <p class="t-section-sub">Vanilla ES modules, pinned Three.js from a CDN, a worker file, and a handful of textures. That's the whole app.</p>
+  </div>
+
+  <div class="t-stack">
+    <div class="t-stack-col">
+      <div class="t-stack-head">// rendering</div>
+      <ul class="t-stack-list">
+        <li><span class="t-stack-key">WebGPURenderer</span><span class="t-stack-val">native path</span></li>
+        <li><span class="t-stack-key">Three.js r184</span><span class="t-stack-val">node materials · TSL</span></li>
+        <li><span class="t-stack-key">RenderPipeline</span><span class="t-stack-val">bloom · GTAO · DOF</span></li>
+        <li><span class="t-stack-key">PMREM</span><span class="t-stack-val">HDRI environment</span></li>
+        <li><span class="t-stack-key">CanvasTexture</span><span class="t-stack-val">grid · procedural needles</span></li>
+        <li><span class="t-stack-key">Device-loss handler</span><span class="t-stack-val">graceful reload</span></li>
+      </ul>
+    </div>
+    <div class="t-stack-col">
+      <div class="t-stack-head">// data</div>
+      <ul class="t-stack-list">
+        <li><span class="t-stack-key">Web Workers</span><span class="t-stack-val">tree · chains · tubes</span></li>
+        <li><span class="t-stack-key">SoA skeleton</span><span class="t-stack-val">typed arrays per channel</span></li>
+        <li><span class="t-stack-key">PBD sim</span><span class="t-stack-val">edge · bend constraints</span></li>
+        <li><span class="t-stack-key">Pool-fill bark</span><span class="t-stack-val">grow-only typed pools</span></li>
+        <li><span class="t-stack-key">meshoptimizer</span><span class="t-stack-val">topology-preserving LOD</span></li>
+        <li><span class="t-stack-key">GLTFExporter</span><span class="t-stack-val">+ pipeline metadata</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CTA BAND ===================== -->
+<section class="t-wrap">
+  <div class="t-cta-band">
+    <span class="t-cta-band-eyebrow">Open source · MIT</span>
+    <h2 class="t-cta-band-title">Go plant something.</h2>
+    <p class="t-cta-band-sub">No install. Runs entirely in Chrome or Edge. Export straight to glTF — or fork the source and bend the kernel to your will.</p>
+    <div class="t-cta-row">
+      <a class="t-btn t-btn-primary" href="https://xpayn3.github.io/webtree/" target="_blank" rel="noopener">
+        <span>Launch Windy Tree</span>
+        <span class="t-arrow">↗</span>
+      </a>
+      <a class="t-btn t-btn-ghost" href="https://github.com/xpayn3/webtree" target="_blank" rel="noopener">
+        <span>github.com/xpayn3/webtree</span>
+        <span class="t-arrow">↗</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="t-foot">
+  <div class="t-wrap">
+    <div class="t-foot-row">
+      <a class="t-foot-back" href="index.html"><span class="t-arrow">←</span> back to portfolio</a>
+      <span class="t-foot-mid">made by Luka Grčar · 2026</span>
+      <a class="t-foot-launch" href="https://xpayn3.github.io/webtree/" target="_blank" rel="noopener">launch app <span class="t-arrow">↗</span></a>
+    </div>
+  </div>
+</footer>
+
+<script src="tree.js" defer></script>
+  <script src="floating-nav.js" defer></script>
+</body>
+</html>

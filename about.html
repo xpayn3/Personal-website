@@ -20,11 +20,12 @@
   <link rel="stylesheet" href="tokens.css" />
   <link rel="stylesheet" href="about.css" />
   <link rel="stylesheet" href="bar.css" />
+  <link rel="stylesheet" href="floating-nav.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" media="print" onload="this.media='all'" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
-<body>
+<body class="page-about theme-dark">
 
   <main class="about-page">
 
@@ -235,19 +236,22 @@
 
   </main>
 
-  <!-- ===== FLOATING BOTTOM BAR ===== -->
-  <nav class="bottom-bar">
-    <a href="index.html" class="bar-link">Home</a>
-    <a href="grid.html" class="bar-link">Index</a>
-    <a href="about.html" class="bar-link active">About</a>
-    <button type="button" class="bar-mute" id="barMute" aria-pressed="false" aria-label="Mute sound">
-      <svg class="bar-mute-on" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3 6v4h2l3 3V3L5 6H3zm7.5 2a3.5 3.5 0 0 0-1.8-3l-.7 1.1a2.2 2.2 0 0 1 0 3.8l.7 1.1a3.5 3.5 0 0 0 1.8-3zm.8-5.4l-.9 1.1a5.5 5.5 0 0 1 0 8.6l.9 1.1a6.9 6.9 0 0 0 0-10.8z"/></svg>
-      <svg class="bar-mute-off" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3 6v4h2l3 3V3L5 6H3zm11 .4L12.6 5 11.2 6.4 9.8 5 8.4 6.4 9.8 7.8 8.4 9.2 9.8 10.6 11.2 9.2 12.6 10.6 14 9.2 12.6 7.8z"/></svg>
-    </button>
+  <!-- Floating top-left nav (shared component) -->
+  <a href="index.html" class="floating-name">Luka Grčar</a>
+  <nav class="floating-nav" aria-label="Sections">
+    <a href="index.html" class="floating-nav-link">Home</a>
+    <a href="grid.html" class="floating-nav-link">Index</a>
+    <a href="lab.html" class="floating-nav-link">Lab</a>
+    <a href="tree.html" class="floating-nav-link">Tree</a>
+    <a href="about.html" class="floating-nav-link is-active">About</a>
+    <a href="#" class="floating-nav-link" id="contactBtnFloat">Contact</a>
   </nav>
 
-  <a href="index.html" class="watermark">Luka Grčar</a>
-  <a href="#" class="contact-btn" id="contactBtnFloat">Contact</a>
+  <!-- About-page-only mute toggle (preserves the gameboy sound control) -->
+  <button type="button" class="bar-mute about-mute" id="barMute" aria-pressed="false" aria-label="Mute sound">
+    <svg class="bar-mute-on" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3 6v4h2l3 3V3L5 6H3zm7.5 2a3.5 3.5 0 0 0-1.8-3l-.7 1.1a2.2 2.2 0 0 1 0 3.8l.7 1.1a3.5 3.5 0 0 0 1.8-3zm.8-5.4l-.9 1.1a5.5 5.5 0 0 1 0 8.6l.9 1.1a6.9 6.9 0 0 0 0-10.8z"/></svg>
+    <svg class="bar-mute-off" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3 6v4h2l3 3V3L5 6H3zm11 .4L12.6 5 11.2 6.4 9.8 5 8.4 6.4 9.8 7.8 8.4 9.2 9.8 10.6 11.2 9.2 12.6 10.6 14 9.2 12.6 7.8z"/></svg>
+  </button>
 
   <!-- Contact Form Popup -->
   <div class="contact-overlay" id="contactOverlay">
@@ -430,56 +434,51 @@
     }
 
     let cartBusy = false;
-    // True while an HTML-button flow owns the lockout. gb-ejected/gb-inserted
-    // events fire immediately when gameboy.js starts the animation, so without
-    // this flag the event listeners would clear cartBusy mid-animation and let
-    // rapid clicks slip through.
-    let htmlFlowOwned = false;
+    // Insert flow still uses a timer (animation has stable timing); eject flow
+    // waits for the 'gb-ejected' event which now fires at the end of the 3D
+    // eject animation. Spam-clicks during eject are blocked until the cart
+    // has fully slid out — otherwise the HTML could release early and let a
+    // follow-up click hit a state the 3D side silently no-ops.
+    const releaseAll = () => {
+      btns.forEach(b => {
+        b.classList.remove('loading');
+        b.style.pointerEvents = '';
+      });
+      cartBusy = false;
+      updateCartUI();
+    };
     btns.forEach(btn => {
       btn.addEventListener('click', () => {
         if (cartBusy) return;
-        // First interaction — drop the first-load pulse hint.
         btns.forEach(b => b.classList.remove('pulse-hint'));
         cartBusy = true;
-        htmlFlowOwned = true;
         btns.forEach(b => b.style.pointerEvents = 'none');
         const id = btn.dataset.cart;
         const icon = btn.querySelector('.cart-icon');
         icon.innerHTML = '<span class="cart-spinner"></span>';
         btn.classList.add('loading');
-        const release = (ms) => setTimeout(() => {
-          btn.classList.remove('loading');
-          updateCartUI();
-          cartBusy = false;
-          htmlFlowOwned = false;
-          btns.forEach(b => b.style.pointerEvents = '');
-        }, ms);
         if (id === insertedCart) {
           insertedCart = null;
+          // Cleanup happens in the 'gb-ejected' listener once the cart has
+          // finished sliding out (see gbEjectCartridge in gameboy.js).
           if (window.gbEjectCartridge) window.gbEjectCartridge();
-          release(1000); // matches eject animation duration
+          else releaseAll();
         } else if (insertedCart === null) {
           insertedCart = id;
           if (window.gbSelectCartridge) window.gbSelectCartridge(id);
-          release(3500);
+          setTimeout(releaseAll, 3500);
         } else {
           cartBusy = false;
-          htmlFlowOwned = false;
           btns.forEach(b => b.style.pointerEvents = '');
         }
       });
     });
 
-    // Listen for eject from GameBoy side. If the HTML flow started this eject,
-    // leave cartBusy/UI alone — the setTimeout owns it. Only sync when the 3D
-    // path triggered eject directly.
+    // gb-ejected fires at the END of the eject animation (both 3D raycast and
+    // HTML-driven paths), so full cleanup is always safe here.
     window.addEventListener('gb-ejected', () => {
       insertedCart = null;
-      if (!htmlFlowOwned) {
-        cartBusy = false;
-        btns.forEach(b => { b.style.pointerEvents = ''; b.classList.remove('loading'); });
-      }
-      updateCartUI();
+      releaseAll();
     });
 
     // Listen for insert from GameBoy side (A button / slot click)
@@ -496,6 +495,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/GLTFLoader.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/DRACOLoader.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/RGBELoader.js"></script>
-  <script defer src="gameboy.js?v=120"></script>
+  <script defer src="gameboy.js?v=134"></script>
+  <script src="floating-nav.js" defer></script>
 </body>
 </html>

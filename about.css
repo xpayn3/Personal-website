@@ -1,11 +1,12 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* Local aliases redirect to design tokens — flips automatically with .theme-dark */
 :root {
-  --bg: #faf7f2;
-  --text: #111111;
-  --dim: #111111;
-  --border: rgba(0,0,0,0.08);
-  --accent: #0066ff;
+  --bg: var(--color-bg);
+  --text: var(--color-text);
+  --dim: var(--color-text-dim);
+  --border: var(--color-border);
+  --accent: var(--color-accent);
 }
 
 body { background: var(--bg); }
@@ -48,7 +49,7 @@ body {
 
 .about-location {
   font-size: 0.85rem;
-  color: #111111;
+  color: var(--text);
 }
 
 /* ========== SECTIONS ========== */
@@ -118,20 +119,20 @@ body {
 }
 
 .cart-item:hover {
-  border-color: rgba(0,0,0,0.3);
+  border-color: var(--color-border-strong);
   color: var(--text);
 }
 
 .cart-item.inserted {
-  background: #111;
-  border-color: #111;
-  color: #fff;
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
 }
-.cart-item.inserted .pixel-icon { color: #fff; }
+.cart-item.inserted .pixel-icon { color: var(--bg); }
 
 .cart-item.loading {
-  background: rgba(0,0,0,0.08);
-  border-color: rgba(0,0,0,0.4);
+  background: var(--color-hover-strong);
+  border-color: var(--color-border-strong);
   color: var(--text);
 }
 
@@ -144,11 +145,11 @@ body {
    any cart is clicked or another becomes inserted. */
 .cart-item.pulse-hint {
   animation: cartPulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  border-color: rgba(0,0,0,0.35);
+  border-color: var(--color-border-strong);
 }
 @keyframes cartPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(0,0,0,0.25), 0 0 0 0 rgba(0,0,0,0.08); }
-  50%      { box-shadow: 0 0 0 6px rgba(0,0,0,0),    0 0 24px 4px rgba(0,0,0,0.12); }
+  0%, 100% { box-shadow: 0 0 0 0 var(--color-border-strong), 0 0 0 0 var(--color-border); }
+  50%      { box-shadow: 0 0 0 6px transparent,              0 0 24px 4px var(--color-border-strong); }
 }
 
 .cart-icon {
@@ -172,8 +173,8 @@ body {
   display: inline-block;
   width: 18px;
   height: 18px;
-  border: 3px solid rgba(0,0,0,0.15);
-  border-top-color: rgba(0,0,0,0.6);
+  border: 3px solid var(--color-border-strong);
+  border-top-color: var(--color-text-dim);
   border-radius: 50%;
   animation: cartSpin 0.6s linear infinite;
 }
@@ -203,7 +204,7 @@ body {
 
 .cart-hint {
   font-size: 0.7rem;
-  color: #111111;
+  color: var(--text);
   margin-top: 10px;
 }
 
@@ -220,7 +221,7 @@ body {
   position: absolute;
   bottom: 24px;
   font-size: 0.7rem;
-  color: #111111;
+  color: var(--text);
   letter-spacing: 0.05em;
 }
 
@@ -244,7 +245,7 @@ body {
 .gb-block {
   width: 8px;
   height: 8px;
-  background: rgba(0,0,0,0.3);
+  background: var(--color-text-dim);
   animation: gb-blink 1s ease infinite;
 }
 .gb-block:nth-child(2) { animation-delay: 0.15s; }
@@ -259,7 +260,7 @@ body {
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: #111111;
+  color: var(--text);
   margin-bottom: 24px;
 }
 
@@ -279,12 +280,12 @@ body {
 .about-text a {
   color: var(--text);
   text-decoration: none;
-  border-bottom: 1px solid rgba(0,0,0,0.25);
+  border-bottom: 1px solid var(--color-border-strong);
   transition: border-color 0.2s;
 }
 
 .about-text a:hover {
-  border-color: #111;
+  border-color: var(--text);
 }
 
 .about-links {
@@ -367,7 +368,7 @@ body {
 }
 
 .skill-tag:hover {
-  border-color: rgba(0,0,0,0.3);
+  border-color: var(--color-border-strong);
   color: var(--text);
 }
 
@@ -386,7 +387,7 @@ body {
   font-family: var(--font-display);
   font-size: clamp(1.2rem, 2.5vw, 1.8rem);
   font-weight: 600;
-  color: #111111;
+  color: var(--text);
   transition: color 0.3s;
   cursor: default;
 }
@@ -397,7 +398,7 @@ body {
 
 .clients-list span::after {
   content: ' / ';
-  color: #111111;
+  color: var(--text);
 }
 
 .clients-list span:last-child::after {
@@ -423,7 +424,7 @@ body {
 
 .award-name {
   font-size: 0.85rem;
-  color: #111111;
+  color: var(--text);
   flex-shrink: 0;
 }
 
@@ -437,7 +438,7 @@ body {
 
 .award-year {
   font-size: 0.75rem;
-  color: #111111;
+  color: var(--text);
   flex-shrink: 0;
 }
 
@@ -445,7 +446,7 @@ body {
 .about-footer {
   padding: 40px 0;
   font-size: 0.7rem;
-  color: #111111;
+  color: var(--text);
 }
 
 /* ========== BOTTOM BAR ========== */
@@ -694,4 +695,86 @@ body {
     padding: 64px 20px 28px;
   }
   .contact-close { top: 20px; right: 20px; font-size: 1.75rem; }
+}
+
+/* ===== Dark theme overrides ===== */
+body.theme-dark {
+  background: #0a0a0a;
+  color: #f0f0f0;
+}
+body.theme-dark .about-page,
+body.theme-dark .panel-block,
+body.theme-dark .lab-section,
+body.theme-dark .hero-split-right,
+body.theme-dark .contact-form {
+  background: transparent;
+  color: #f0f0f0;
+}
+body.theme-dark p,
+body.theme-dark h1,
+body.theme-dark h2,
+body.theme-dark h3,
+body.theme-dark h4,
+body.theme-dark span,
+body.theme-dark li,
+body.theme-dark a,
+body.theme-dark label,
+body.theme-dark .panel-title,
+body.theme-dark .panel-text,
+body.theme-dark .contact-title,
+body.theme-dark .contact-sub,
+body.theme-dark .contact-form input,
+body.theme-dark .contact-form textarea,
+body.theme-dark .cart-item,
+body.theme-dark .cart-label {
+  color: #f0f0f0;
+}
+body.theme-dark .panel-text,
+body.theme-dark .contact-sub,
+body.theme-dark .panel-meta {
+  color: rgba(240,240,240,0.7);
+}
+body.theme-dark .cart-item {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.18);
+}
+body.theme-dark .cart-item.inserted {
+  background: #f0f0f0;
+  border-color: #f0f0f0;
+  color: #0a0a0a;
+}
+body.theme-dark .cart-item:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.35);
+}
+body.theme-dark .contact-form input,
+body.theme-dark .contact-form textarea {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+body.theme-dark .contact-overlay {
+  background: rgba(0,0,0,0.7);
+}
+body.theme-dark .contact-form {
+  background: #141414;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+/* Borders / dividers / spinner for dark theme */
+body.theme-dark {
+  --border: rgba(255,255,255,0.12);
+}
+body.theme-dark .panel-block,
+body.theme-dark .lab-section {
+  border-color: rgba(255,255,255,0.12);
+}
+body.theme-dark *[class*="divider"],
+body.theme-dark hr {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.12);
+}
+body.theme-dark .gb-skeleton,
+body.theme-dark .gb-loader-blocks > * {
+  border-color: rgba(255,255,255,0.18);
+  background-color: rgba(255,255,255,0.04);
 }
