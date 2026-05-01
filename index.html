@@ -732,13 +732,32 @@
         startCycle(); // restart auto-cycle so user gets a fresh dwell
       }, { passive: false });
 
+      // On touch devices the first tap expands the card (since hover
+      // doesn't really apply); a second tap then opens the project.
+      const isTouch = window.matchMedia('(hover: none)').matches;
       card.addEventListener('click', (e) => {
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+        if (isTouch && !card.classList.contains('is-expanded')) {
+          e.preventDefault();
+          card.classList.add('is-expanded');
+          tryPlay(activeVideo);
+          return;
+        }
         if (typeof window.openProject === 'function') {
           e.preventDefault();
           window.openProject(PROJECTS[idx].id);
         }
       });
+
+      // Tap outside while expanded → collapse.
+      if (isTouch) {
+        document.addEventListener('click', (e) => {
+          if (!card.classList.contains('is-expanded')) return;
+          if (card.contains(e.target)) return;
+          card.classList.remove('is-expanded');
+          try { if (activeVideo) activeVideo.pause(); } catch {}
+        });
+      }
 
       document.addEventListener('visibilitychange', () => {
         if (document.hidden) stopCycle();

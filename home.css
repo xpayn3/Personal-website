@@ -402,11 +402,7 @@ img, video {
   50% { opacity: 0.45; transform: scale(0.85); }
 }
 
-body.footer-visible .services {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
+/* Services pin stays visible across scroll states. */
 
 @media (max-width: 600px) {
   .services-panel {
@@ -495,7 +491,8 @@ body.footer-visible .cover-desc {
     border-color 0.25s ease,
     background 0.25s ease;
 }
-.recent-card:hover {
+.recent-card:hover,
+.recent-card.is-expanded {
   width: var(--card-w-hover);
   height: var(--card-h-hover);
   background: rgba(0, 0, 0, 0.7);
@@ -551,7 +548,8 @@ body.footer-visible .cover-desc {
   transition: opacity 0.4s ease;
   pointer-events: none;
 }
-.recent-card:hover .recent-card-video { opacity: 1; }
+.recent-card:hover .recent-card-video,
+.recent-card.is-expanded .recent-card-video { opacity: 1; }
 
 /* Static thumbnail — visible only when collapsed. Sits top-left. */
 .recent-card-thumb {
@@ -576,7 +574,8 @@ body.footer-visible .cover-desc {
 }
 /* On hover with no real video, expand the thumb (animated WebP) to fill
    the whole card. Otherwise it'd sit tiny in the corner. */
-.recent-card.no-video:hover .recent-card-thumb {
+.recent-card.no-video:hover .recent-card-thumb,
+.recent-card.no-video.is-expanded .recent-card-thumb {
   top: 0;
   left: 0;
   width: 100%;
@@ -584,11 +583,14 @@ body.footer-visible .cover-desc {
   border-radius: 0;
   border-color: transparent;
 }
-.recent-card:hover .recent-card-thumb { opacity: 0; }
+.recent-card:hover .recent-card-thumb,
+.recent-card.is-expanded .recent-card-thumb { opacity: 0; }
 /* Projects without a real video (animated WebP only) keep the thumb
    visible on hover — the WebP itself provides the animation. */
-.recent-card.no-video:hover .recent-card-thumb { opacity: 1; }
-.recent-card.no-video:hover .recent-card-video { opacity: 0; }
+.recent-card.no-video:hover .recent-card-thumb,
+.recent-card.no-video.is-expanded .recent-card-thumb { opacity: 1; }
+.recent-card.no-video:hover .recent-card-video,
+.recent-card.no-video.is-expanded .recent-card-video { opacity: 0; }
 
 /* Body text — collapsed: right of thumb. Hover: full-width bottom overlay. */
 .recent-card-body {
@@ -611,7 +613,8 @@ body.footer-visible .cover-desc {
     padding 0.55s cubic-bezier(0.16, 1, 0.3, 1),
     background 0.4s ease;
 }
-.recent-card:hover .recent-card-body {
+.recent-card:hover .recent-card-body,
+.recent-card.is-expanded .recent-card-body {
   top: auto;
   left: 0;
   right: 0;
@@ -661,7 +664,8 @@ body.footer-visible .cover-desc {
   max-height: 0;
   transition: opacity 0.35s ease 0.1s, max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.recent-card:hover .recent-card-desc {
+.recent-card:hover .recent-card-desc,
+.recent-card.is-expanded .recent-card-desc {
   opacity: 1;
   max-height: 3em;
 }
@@ -682,7 +686,8 @@ body.footer-visible .cover-desc {
   white-space: nowrap;
   transition: opacity 0.3s ease, color 0.2s ease, border-color 0.2s ease;
 }
-.recent-card:hover .recent-card-cta {
+.recent-card:hover .recent-card-cta,
+.recent-card.is-expanded .recent-card-cta {
   color: #fff;
   border-color: rgba(255, 255, 255, 0.5);
   opacity: 1;
