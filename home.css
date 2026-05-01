@@ -110,10 +110,10 @@ img, video {
 
 /* ===== SERVICES PIN — top-right hover dropdown ===== */
 .services {
-  position: absolute;
+  position: fixed;
   top: clamp(20px, 3vh, 32px);
   right: clamp(20px, 3vw, 32px);
-  z-index: 6;
+  z-index: 250; /* above the footer (z 2) so it stays on top while scrolling */
   font-family: ui-monospace, Menlo, monospace;
   color: #f0f0f0;
 }
@@ -718,17 +718,24 @@ body.footer-visible .recent-card {
    In-flow spacer that gives the footer 100dvh of scroll distance to slide
    in over the sticky cover. */
 .scroll-runway {
-  height: 12vh;
-  height: 12dvh;
+  /* Tiny — any scroll snaps the footer in immediately. */
+  height: 1px;
   width: 100%;
   position: relative;
   z-index: 0;
   pointer-events: none;
+  /* Snap target: the moment the user scrolls at all the page snaps to
+     the end of the runway, fully revealing the footer. */
+  scroll-snap-align: end;
+  scroll-snap-stop: always;
 }
+html { scroll-snap-type: y mandatory; }
+.cover { scroll-snap-align: start; scroll-snap-stop: always; }
 
 /* ========== FOOTER ==========
-   Fixed at the bottom of the viewport, translated off-screen at rest, slid
-   into view by JS as the user scrolls the runway. */
+   Fixed at the bottom of the viewport, slid into view via a CSS transition
+   when body has .footer-visible (toggled by a single scroll-position check
+   in home.js — no per-frame transform updates). */
 .site-footer {
   position: fixed;
   left: 0;
@@ -739,6 +746,10 @@ body.footer-visible .recent-card {
   z-index: 2;
   transform: translate3d(0, 100%, 0);
   will-change: transform;
+  transition: transform 0.55s cubic-bezier(0.7, 0, 0.25, 1);
+}
+body.footer-visible .site-footer {
+  transform: translate3d(0, 0, 0);
 }
 
 @media (prefers-reduced-motion: reduce) {

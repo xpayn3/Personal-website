@@ -10,7 +10,12 @@
   const ctx = canvas.getContext('2d', { alpha: false });
   if (!ctx) return;
 
-  const COUNT = 7000;
+  // Mobile / coarse-pointer detection — fewer particles, no input handlers.
+  const IS_MOBILE = (window.matchMedia && (
+    window.matchMedia('(max-width: 768px)').matches ||
+    window.matchMedia('(pointer: coarse)').matches
+  ));
+  const COUNT = IS_MOBILE ? 1500 : 7000;
   const FIELD_R = 1;       // bounding sphere radius (in normalized field units)
   // Defaults — match the "base" preset below so the live values + their
   // lerp targets agree at startup.
@@ -143,7 +148,7 @@
 
   // ----- Setup -------------------------------------------------------------
   function resize() {
-    DPR = Math.min(window.devicePixelRatio || 1, 1.75);
+    DPR = Math.min(window.devicePixelRatio || 1, IS_MOBILE ? 1 : 1.75);
     const rect = canvas.getBoundingClientRect();
     W = canvas.width  = Math.max(1, Math.round(rect.width  * DPR));
     H = canvas.height = Math.max(1, Math.round(rect.height * DPR));
@@ -222,23 +227,25 @@
   let pointerX = -9999, pointerY = -9999; // off-canvas by default = no repulsion
   let prevPointerX = -9999, prevPointerY = -9999;
   let ptrVX = 0, ptrVY = 0; // cursor velocity in pixels/frame, decays each frame
-  window.addEventListener('pointermove', (e) => {
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const nx = (e.clientX - rect.left) * DPR;
-    const ny = (e.clientY - rect.top)  * DPR;
-    if (prevPointerX > -1000) {
-      ptrVX = nx - prevPointerX;
-      ptrVY = ny - prevPointerY;
-    }
-    prevPointerX = pointerX = nx;
-    prevPointerY = pointerY = ny;
-  }, { passive: true });
-  window.addEventListener('pointerout', () => {
-    pointerX = pointerY = -9999;
-    prevPointerX = prevPointerY = -9999;
-    ptrVX = ptrVY = 0;
-  }, { passive: true });
+  if (!IS_MOBILE) {
+    window.addEventListener('pointermove', (e) => {
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      const nx = (e.clientX - rect.left) * DPR;
+      const ny = (e.clientY - rect.top)  * DPR;
+      if (prevPointerX > -1000) {
+        ptrVX = nx - prevPointerX;
+        ptrVY = ny - prevPointerY;
+      }
+      prevPointerX = pointerX = nx;
+      prevPointerY = pointerY = ny;
+    }, { passive: true });
+    window.addEventListener('pointerout', () => {
+      pointerX = pointerY = -9999;
+      prevPointerX = prevPointerY = -9999;
+      ptrVX = ptrVY = 0;
+    }, { passive: true });
+  }
 
   // Click shockwave — punches a radial impulse into the particle field.
   // Reuses the spring system: just shoves nearby pushVX/VY outward, the
@@ -270,16 +277,20 @@
   }
   // Track drag state for the fluid-push mode. Held mouse = continuous
   // larger, stronger force biased toward the cursor's motion direction.
+  // Mobile / coarse-pointer: skip all interaction so taps and scrolls
+  // pass straight through.
   let isDragging = false;
-  canvas.addEventListener('pointerdown', (e) => {
-    if (e.button !== 0 && e.button !== undefined) return;
-    isDragging = true;
-    shockwave(e.clientX, e.clientY);
-  }, { passive: true });
-  function endDrag() { isDragging = false; }
-  window.addEventListener('pointerup', endDrag, { passive: true });
-  window.addEventListener('pointercancel', endDrag, { passive: true });
-  window.addEventListener('blur', endDrag, { passive: true });
+  if (!IS_MOBILE) {
+    canvas.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0 && e.button !== undefined) return;
+      isDragging = true;
+      shockwave(e.clientX, e.clientY);
+    }, { passive: true });
+    function endDrag() { isDragging = false; }
+    window.addEventListener('pointerup', endDrag, { passive: true });
+    window.addEventListener('pointercancel', endDrag, { passive: true });
+    window.addEventListener('blur', endDrag, { passive: true });
+  }
 
   let last = performance.now();
   let startTime = performance.now();
@@ -799,6 +810,9 @@
   let labelHues = [];     // one hue per labeled particle, stable
   function setCoverLabels(on) {
     labelsActive = on !== false; // default to enabled
+    // Mobile: skip label rendering entirely (saves a lot of text fillText
+    // ops per frame).
+    if (IS_MOBILE) labelsActive = false;
     if (!labelsActive) { labelIndices = []; labelHues = []; return; }
     labelIndices = [];
     labelHues = [];
@@ -1229,24 +1243,16 @@
 })();
 
 // ========== FOOTER SLIDE-IN ==========
+// CSS transition handles the slide; JS just toggles the class so the
+// transform animates cleanly in both directions without per-frame work.
 (function () {
   const footerEl = document.querySelector('.site-footer');
   if (!footerEl) return;
-  let pending = false;
-  function applyScroll() {
-    pending = false;
-    const y = window.scrollY;
-    const dist = window.innerHeight * 0.12;
-    const p = Math.max(0, Math.min(1, y / dist));
-    footerEl.style.transform = `translate3d(0, ${(1 - p) * 100}%, 0)`;
-    document.body.classList.toggle('footer-visible', p > 0.6);
+  function update() {
+    const visible = window.scrollY > 4;
+    document.body.classList.toggle('footer-visible', visible);
   }
-  function onScroll() {
-    if (pending) return;
-    pending = true;
-    requestAnimationFrame(applyScroll);
-  }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', applyScroll, { passive: true });
-  applyScroll();
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update, { passive: true });
+  update();
 })();

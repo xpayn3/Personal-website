@@ -21,7 +21,7 @@ body.page-grid {
   letter-spacing: -0.02em;
   color: var(--floating-nav-fg);
   text-decoration: none;
-  z-index: 100;
+  z-index: 250; /* above the footer */
   pointer-events: auto;
   opacity: 0;
   filter: blur(8px);
@@ -33,6 +33,7 @@ body.page-grid {
   position: fixed;
   top: calc(clamp(20px, 3vh, 32px) + clamp(1rem, 1.4vw, 1.25rem) + 18px);
   left: clamp(20px, 3vw, 32px);
+  z-index: 250; /* above the footer */
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -97,10 +98,4 @@ body.page-grid {
   }
 }
 
-/* Hide the floating nav once the home footer is fully revealed */
-body.footer-visible .floating-name,
-body.footer-visible .floating-nav {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
+/* Floating nav stays visible across scroll states (cover + footer). */
