@@ -199,6 +199,17 @@
       // ~10% partially commit (drift around the edges as a fuzzy halo);
       // the rest snap fully to the letter shape.
       p.commit = Math.random() < 0.10 ? 0.3 + Math.random() * 0.4 : 1;
+      // Some particles act as emitters: their commit periodically drops to
+      // 0, releasing them into the flow before re-locking to their letter
+      // anchor. Reads as letters breathing particles in/out.
+      p.emitter = Math.random() < 0.10;
+      p.emitterPhase = Math.random() * Math.PI * 2;
+      p.emitterFreq = 0.35 + Math.random() * 0.45; // 0.35–0.8 Hz
+      // Per-particle low-frequency flutter so anchored particles drift
+      // around their letter position rather than sitting still.
+      p.fluttFreq = 0.6 + Math.random() * 1.2;
+      p.fluttSeed = Math.random() * Math.PI * 2;
+      p.fluttAmp = 0.005 + Math.random() * 0.012;
       // Per-particle window inside the global swap progress — wide stagger
       // so the swarm reorganizes in pronounced waves, not in lockstep.
       // Constrained so every particle's local window finishes by global
@@ -1096,8 +1107,16 @@
         // Cap committed particles at <1 so the live flow always bleeds
         // through. Particles never fully freeze — they breathe along the
         // curl flow at their target position, while still reading as text.
-        const COMMIT_CAP = 0.97;
+        // Lower cap = more flow seeping through the letters.
+        const COMMIT_CAP = 0.88;
         const personalCommit = p.commit != null ? p.commit : 1;
+        // Emitter cycle — periodically drops this particle's commit to 0
+        // so it drifts off into the flow then snaps back to its anchor.
+        let emitterMul = 1;
+        if (p.emitter) {
+          const ph = Math.sin(elapsed * p.emitterFreq + p.emitterPhase);
+          if (ph > 0.4) emitterMul = Math.max(0, 1 - (ph - 0.4) * 1.7);
+        }
 
         // While releasing (mp falling, intent is 0), each particle peels
         // off on its own staggered window so they don't all let go at once.
@@ -1110,9 +1129,17 @@
           perParticleMp = 1 - easedR;
         }
 
-        const commit = perParticleMp * COMMIT_CAP * personalCommit;
-        sx = flowSx + (targetSx - flowSx) * commit;
-        sy = flowSy + (targetSy - flowSy) * commit;
+        const commit = perParticleMp * COMMIT_CAP * personalCommit * emitterMul;
+        // Anchored particles still flutter along low-frequency sine drifts
+        // around their letter position so the form reads as alive, not frozen.
+        let flutterX = 0, flutterY = 0;
+        if (commit > 0.2) {
+          const f = elapsed * p.fluttFreq + p.fluttSeed;
+          flutterX = Math.sin(f) * p.fluttAmp * baseR;
+          flutterY = Math.cos(f * 1.3 + 1.0) * p.fluttAmp * baseR;
+        }
+        sx = flowSx + (targetSx + flutterX - flowSx) * commit;
+        sy = flowSy + (targetSy + flutterY - flowSy) * commit;
         depth = flowDepth + (targetDepth - flowDepth) * commit;
 
         // Juggle: small sinusoidal jiggle that peaks mid-release and
