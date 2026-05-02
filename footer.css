@@ -3,7 +3,7 @@
   background: #f2f2f2;
   color: #111;
   position: relative;
-  z-index: 3;
+  z-index: 500; /* above floating-nav (250) so footer covers everything */
   overflow: hidden;
   min-height: 100vh;
   display: flex;

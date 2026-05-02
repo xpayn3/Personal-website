@@ -21,7 +21,7 @@ body.page-grid {
   letter-spacing: -0.02em;
   color: var(--floating-nav-fg);
   text-decoration: none;
-  z-index: 250; /* above the footer */
+  z-index: 600; /* above the footer (500) — wordmark stays on top of everything */
   pointer-events: auto;
   opacity: 0;
   filter: blur(8px);
@@ -33,7 +33,7 @@ body.page-grid {
   position: fixed;
   top: calc(clamp(20px, 3vh, 32px) + clamp(1rem, 1.4vw, 1.25rem) + 18px);
   left: clamp(20px, 3vw, 32px);
-  z-index: 250; /* above the footer */
+  z-index: 600; /* above the footer (500) — left nav stays on top */
   display: flex;
   flex-direction: column;
   gap: 4px;
