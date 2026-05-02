@@ -1268,6 +1268,51 @@
   window.__coverMorph = setMorphTarget;
   window.__coverShape = (name) => setMorphTarget(name ? { shape: name } : null);
 
+  // ----- Idle greetings ---------------------------------------------
+  // Every minute or so, when nothing else is happening, the swarm
+  // briefly assembles into a short word ("hello", "hej", etc.) at
+  // partial commit so it reads as a soft suggestion rather than text.
+  // Defers if the user is hovering a link, typing, dragging, or sculpting.
+  const GREETINGS = ['hello', 'hej', 'ahoj', 'bok', 'ciao', 'moin', 'aloha', 'salut', 'howdy', 'welcome', 'hi'];
+  let nextGreetAt = performance.now() + 18000 + Math.random() * 18000;
+  let greetUntil = 0;
+  let greetActive = false;
+  let greetKey = null;
+  function maybeGreet(now) {
+    if (typeof document !== 'undefined' && document.hidden) return;
+    if (sculptAnchors.length || rightDragging || isDragging) return;
+    if (typed && typed.length) return;
+
+    if (greetActive) {
+      // If our morph was overridden (user hovered a link), give up
+      // ownership without yanking the new morph.
+      if (morph.text !== greetKey) {
+        greetActive = false;
+        greetKey = null;
+        nextGreetAt = now + 45000 + Math.random() * 30000;
+        return;
+      }
+      if (now >= greetUntil) {
+        greetActive = false;
+        greetKey = null;
+        setMorphTarget(null);
+        nextGreetAt = now + 25000 + Math.random() * 45000; // 25 – 70 s
+      }
+      return;
+    }
+    if (morph.text) return; // some other morph is already mounted
+    if (now < nextGreetAt) return;
+
+    const word = GREETINGS[(Math.random() * GREETINGS.length) | 0];
+    greetKey = word;
+    greetActive = true;
+    greetUntil = now + 2200 + Math.random() * 800; // 2.2 – 3.0 s
+    setMorphTarget(word);
+    // Loose commit — a soft ghost of the word, half the cloud stays
+    // on free flow so the greeting reads as a hint, not text.
+    morph.targetProgress = 0.32;
+  }
+
   // ----- Typewriter ---------------------------------------------------
   // Type any letters / digits / punctuation on the keyboard and the
   // particles spell out the word in real time. Backspace deletes the
@@ -1513,6 +1558,7 @@
     if (!running) return;
     const dt = Math.min(now - last, 50) / 1000; // seconds
     recordFps(dt);
+    maybeGreet(now);
     last = now;
     const elapsed = (now - startTime) / 1000;
 
