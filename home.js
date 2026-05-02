@@ -213,6 +213,12 @@
       // ~22% of particles are "fat" — drawn slightly bigger when locked
       // into a letter, so glyph strokes pop a touch over the field.
       p.fat = Math.random() < 0.22;
+      // Deterministic alpha-skip threshold per particle. Without this we
+      // call Math.random() per frame and the same particle blinks on/off
+      // randomly — looks like a glitch. With a stable phase, particles
+      // cross the visibility threshold in fixed order as alpha smoothly
+      // rises, producing a clean fade-in instead of flicker.
+      p.alphaPhase = Math.random();
       // Per-particle window inside the global swap progress — wide stagger
       // so the swarm reorganizes in pronounced waves, not in lockstep.
       // Constrained so every particle's local window finishes by global
@@ -802,7 +808,10 @@
       // swap progress so the next animation starts EXACTLY where the eyes
       // see — no jump back to the un-blended previous form.
       if (morph.points && morph.text) {
-        if (morph.prevPoints && morph.swap < 1) {
+        // Defensive: only snapshot-blend if both arrays are the same
+        // length (a particle rebuild between calls could desync them).
+        if (morph.prevPoints && morph.swap < 1
+            && morph.prevPoints.length === morph.points.length) {
           const len = morph.points.length;
           const snap = new Float32Array(len);
           const s = morph.swap;
@@ -1065,7 +1074,9 @@
       if (hasTargets) {
         const ti = i * 3;
         let tx, ty, tz;
-        if (morph.prevPoints && morph.swap < 1) {
+        if (morph.prevPoints && morph.swap < 1
+            && morph.prevPoints.length === morph.points.length
+            && ti + 2 < morph.prevPoints.length) {
           // Per-particle stagger window
           const local = (morph.swap - (p.swapDelay || 0)) / (p.swapDur || 1);
           const t = local <= 0 ? 0 : (local >= 1 ? 1 : local);
@@ -1207,11 +1218,26 @@
       }
       p.pushSx += p.pushVX;
       p.pushSy += p.pushVY;
+      // Spring/wake can occasionally produce a NaN if it gets fed a NaN
+      // delta — clamp to zero so the particle doesn't disappear.
+      if (!isFinite(p.pushSx)) { p.pushSx = 0; p.pushVX = 0; }
+      if (!isFinite(p.pushSy)) { p.pushSy = 0; p.pushVY = 0; }
       p.repelFalloff = falloff;
 
-      p.sx = sx + p.pushSx;
-      p.sy = sy + p.pushSy;
-      p.depth = depth;
+      let outSx = sx + p.pushSx;
+      let outSy = sy + p.pushSy;
+      let outDepth = depth;
+      // Bulletproof: any non-finite value fall back to the flow position
+      // so a single frame of bad math doesn't visibly glitch.
+      if (!isFinite(outSx) || !isFinite(outSy) || !isFinite(outDepth)) {
+        outSx = flowSx;
+        outSy = flowSy;
+        outDepth = flowDepth;
+        p.morphCommit = 0;
+      }
+      p.sx = outSx;
+      p.sy = outSy;
+      p.depth = outDepth;
     }
 
     // Two-pass render: back layer first, then bright foreground. Bucketing
@@ -1232,7 +1258,9 @@
         if (p.depth < T.min || p.depth >= T.max) continue;
         if (p.sx < -2 || p.sy < -2 || p.sx > W + 2 || p.sy > H + 2) continue;
         const am = p.alphaMul != null ? p.alphaMul : p.lifeFade;
-        if (am < 1 && Math.random() > am) continue;
+        // Deterministic threshold — particle is visible iff its stable
+        // phase is below current alpha. Smooth fade-in, no flicker.
+        if (am < 1 && (p.alphaPhase || 0) > am) continue;
         // Pushed particles swell slightly — gives the field weight as the
         // cursor moves through it.
         let sz = baseSz;
