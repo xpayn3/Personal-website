@@ -1915,7 +1915,14 @@
           if (ph > 0.4) emitterMul = Math.max(0, 1 - (ph - 0.4) * 1.7);
         }
         let perParticleMp = mp;
-        if (releasing && mp < 1) {
+        // Per-particle staggered release uses (1 - mp) as a 0..1
+        // timeline. That assumes mp peaks at 1. For greeting morphs
+        // (mp peaks at ~0.32) the math thinks every particle is well
+        // past its release window the moment mp starts dropping —
+        // commit jumps to 0 in one frame → visible "snap to noise".
+        // For greetings, just use mp directly so the smooth global
+        // lerp is what controls the fade.
+        if (releasing && mp < 1 && !morph.greet) {
           const releaseT = 1 - mp;
           const localR = (releaseT - pRelDel[i]) / pRelDur[i];
           const cR = localR <= 0 ? 0 : (localR >= 1 ? 1 : localR);
