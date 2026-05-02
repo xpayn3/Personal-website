@@ -38,9 +38,11 @@
   let force2D = false;
   try { force2D = localStorage.getItem('cover-no-webgl') === '1'; } catch {}
   const probe = force2D ? { ok: false } : probeWebGL2Renderer();
+  // Note: desynchronized:true caused stutter on some Windows/ANGLE/G-Sync
+  // setups even on fast GPUs. Letting the browser sync normally fixes it.
   const gl = probe.ok ? canvas.getContext('webgl2', {
     alpha: false, antialias: false, premultipliedAlpha: false,
-    preserveDrawingBuffer: false, desynchronized: true,
+    preserveDrawingBuffer: false,
   }) : null;
   const useWebGL = !!gl;
   if (typeof console !== 'undefined' && console.log) {
