@@ -2092,7 +2092,12 @@
           size = DPR;
           const rf = pRepelF[i];
           if (rf > 0) size *= 1 + rf * REPEL_SIZE_BOOST;
-          if (pFat[i] && pMorphCm[i] > 0.5) size *= 1.7;
+          // Morph commit grows particle size — committed text/word
+          // particles read clearer than the free-flow ones around them.
+          // Tune the 0.55 multiplier higher/lower to taste.
+          const cm = pMorphCm[i];
+          if (cm > 0.05) size *= 1 + cm * 0.55;
+          if (pFat[i] && cm > 0.5) size *= 1.7;
           if (size < 1) size = 1;
         }
         particleBuf[o] = sxi;
@@ -2137,7 +2142,9 @@
           let sz = baseSz;
           const rf = pRepelF[i];
           if (rf > 0) sz *= 1 + rf * REPEL_SIZE_BOOST;
-          if (pFat[i] && pMorphCm[i] > 0.5) sz *= 1.7;
+          const cm2 = pMorphCm[i];
+          if (cm2 > 0.05) sz *= 1 + cm2 * 0.55;
+          if (pFat[i] && cm2 > 0.5) sz *= 1.7;
           const half = sz / 2;
           const w = sz < 1 ? 1 : sz;
           ctx.fillRect((sxi - half) | 0, (syi - half) | 0, w, w);
