@@ -753,8 +753,10 @@ if (hashMatch) {
       handle.classList.remove('is-visible');
     }
   }
-  // Initial: panel open, handle hidden + invisible.
+  // Initial: panel collapsed by default — user opens it via the handle
+  // when they want filters / layout / cols.
   if (handle) handle.hidden = false;
+  setCollapsed(true);
   if (collapseBtn) collapseBtn.addEventListener('click', () => setCollapsed(true));
   if (handle) handle.addEventListener('click', () => setCollapsed(false));
 
