@@ -502,6 +502,11 @@ img, video {
   --card-h: 92px;
   --card-w-hover: 340px;
   --card-h-hover: 340px;
+  /* One curve / duration for every animatable property on the card so
+     geometry, opacity, and layout shifts stay in sync — kills the
+     janky out-of-phase motion when expanding / collapsing. */
+  --card-dur: 0.5s;
+  --card-ease: cubic-bezier(0.7, 0, 0.25, 1);
 
   position: absolute;
   bottom: clamp(20px, 3vh, 28px);
@@ -518,11 +523,12 @@ img, video {
   font-family: ui-monospace, Menlo, monospace;
   backdrop-filter: blur(8px) saturate(1.2);
   -webkit-backdrop-filter: blur(8px) saturate(1.2);
+  will-change: width, height;
+  transform: translateZ(0); /* GPU layer */
   transition:
-    width  0.55s cubic-bezier(0.16, 1, 0.3, 1),
-    height 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.25s ease,
-    background 0.25s ease;
+    width  var(--card-dur) var(--card-ease),
+    height var(--card-dur) var(--card-ease),
+    background var(--card-dur) var(--card-ease);
 }
 .recent-card:hover,
 .recent-card.is-expanded {
@@ -570,9 +576,7 @@ img, video {
 .recent-card-frame.is-enter-down { animation: recentSlideDownIn  0.5s cubic-bezier(0.7,0,0.25,1) forwards; }
 .recent-card-frame.is-leave-down { animation: recentSlideDownOut 0.5s cubic-bezier(0.7,0,0.25,1) forwards; }
 
-/* Animated thumbnail — sits in the top-left when collapsed and expands
-   to fill the card on hover. Always shows the project's animation
-   (looping <video> for webm, animated <img> for webp). */
+/* Animated thumbnail — small, top-left, only in collapsed state. */
 .recent-card-thumb {
   position: absolute;
   top: 14px;
@@ -584,22 +588,28 @@ img, video {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
   filter: contrast(1.05);
-  transition:
-    top 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-    left 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-    width 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-    height 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-    border-radius 0.4s ease,
-    border-color 0.3s ease;
+  transition: opacity var(--card-dur) var(--card-ease);
 }
 .recent-card:hover .recent-card-thumb,
 .recent-card.is-expanded .recent-card-thumb {
-  top: 0;
-  left: 0;
+  opacity: 0;
+}
+
+/* Static cover image — fills the card in expanded (hover) state. */
+.recent-card-cover {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  border-radius: 0;
-  border-color: transparent;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--card-dur) var(--card-ease);
+}
+.recent-card:hover .recent-card-cover,
+.recent-card.is-expanded .recent-card-cover {
+  opacity: 1;
 }
 
 /* Body text — collapsed: right of thumb. Hover: full-width bottom overlay. */
@@ -615,13 +625,14 @@ img, video {
   gap: 4px;
   min-width: 0;
   line-height: 1.35;
+  will-change: top, left, right, bottom, padding;
   transition:
-    top    0.55s cubic-bezier(0.16, 1, 0.3, 1),
-    left   0.55s cubic-bezier(0.16, 1, 0.3, 1),
-    right  0.55s cubic-bezier(0.16, 1, 0.3, 1),
-    bottom 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-    padding 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-    background 0.4s ease;
+    top    var(--card-dur) var(--card-ease),
+    left   var(--card-dur) var(--card-ease),
+    right  var(--card-dur) var(--card-ease),
+    bottom var(--card-dur) var(--card-ease),
+    padding var(--card-dur) var(--card-ease),
+    background var(--card-dur) var(--card-ease);
 }
 .recent-card:hover .recent-card-body,
 .recent-card.is-expanded .recent-card-body {
@@ -672,7 +683,8 @@ img, video {
   overflow: hidden;
   opacity: 0;
   max-height: 0;
-  transition: opacity 0.35s ease 0.1s, max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity var(--card-dur) var(--card-ease),
+              max-height var(--card-dur) var(--card-ease);
 }
 .recent-card:hover .recent-card-desc,
 .recent-card.is-expanded .recent-card-desc {
@@ -680,8 +692,7 @@ img, video {
   max-height: 3em;
 }
 
-/* CTA — top-right pin while collapsed, fades out on hover (the whole card
-   is the button at that point). */
+/* CTA — hidden when card is collapsed; appears on hover. */
 .recent-card-cta {
   position: absolute;
   top: 14px;
@@ -690,17 +701,21 @@ img, video {
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.75);
+  color: #fff;
   padding: 4px 8px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   white-space: nowrap;
-  transition: opacity 0.3s ease, color 0.2s ease, border-color 0.2s ease;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-2px);
+  transition: opacity var(--card-dur) var(--card-ease),
+              transform var(--card-dur) var(--card-ease);
 }
 .recent-card:hover .recent-card-cta,
 .recent-card.is-expanded .recent-card-cta {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.5);
   opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 

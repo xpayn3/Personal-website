@@ -599,28 +599,38 @@
         frame.className = 'recent-card-frame';
         frame.dataset.projId = p.id;
 
-        const hasVideo = isVideoSrc(p.video);
-
-        // Thumb is now ALWAYS the project's animation:
-        // - real video file (webm/mp4) → looping <video> auto-playing
-        // - animated webp / static image → <img> (animated WebPs loop in
-        //   the img tag natively).
-        // The same element scales up to fill the card on hover.
+        // Two media elements:
+        //   .recent-card-thumb — animated; small, top-left (collapsed)
+        //   .recent-card-cover — static still; full-card (expanded)
+        // Hover crossfades: thumb fades out, static cover fades in.
         let thumb;
-        if (hasVideo) {
+        if (isVideoSrc(p.video)) {
           thumb = document.createElement('video');
           thumb.muted = true; thumb.loop = true; thumb.playsInline = true;
           thumb.preload = 'metadata';
           thumb.autoplay = true;
           thumb.src = p.video;
           thumb.setAttribute('aria-hidden', 'true');
+        } else if (p.video) {
+          // Animated WebP fed via the `video` slot
+          thumb = document.createElement('img');
+          thumb.src = p.video;
+          thumb.alt = p.name;
         } else {
+          // No animation — fall back to the static thumb
           thumb = document.createElement('img');
           thumb.src = p.thumb;
           thumb.alt = p.name;
         }
         thumb.className = 'recent-card-thumb';
         frame.appendChild(thumb);
+
+        // Static cover image — visible only in expanded (hover) state.
+        const cover = document.createElement('img');
+        cover.className = 'recent-card-cover';
+        cover.src = p.thumb;
+        cover.alt = p.name;
+        frame.appendChild(cover);
 
         const body = document.createElement('div');
         body.className = 'recent-card-body';
