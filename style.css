@@ -1247,36 +1247,39 @@ body.scroll-locked .site-footer {
 }
 .cp-filter-btn .color-indicator.visible { display: block; }
 
-/* dropdown anchored to the LEFT of the panel since panel hugs right edge */
+/* dropdown opens BELOW the trigger button, right-aligned to its section.
+   Override every property the .bar-dropdown base rule sets so it doesn't
+   try to fly upward like the old bottom-bar dropdowns. */
 .cp-dropdown {
   position: absolute;
-  top: 0;
-  right: calc(100% + 10px);
+  top: calc(100% + 4px);
+  right: 0;
   left: auto;
   bottom: auto;
-  transform: translateX(8px) scale(0.96);
-  transform-origin: right top;
-  background: rgba(12, 12, 14, 0.95);
+  transform: translateY(-4px) scale(0.97);
+  transform-origin: top right;
+  background: rgba(12, 12, 14, 0.96);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 0;
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
   padding: 6px;
-  min-width: 160px;
-  max-width: 220px;
+  min-width: 180px;
+  max-width: min(240px, calc(100vw - 60px));
   max-height: 320px;
   overflow-y: auto;
+  z-index: 250;
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
-  transition: visibility 0s 0.2s, opacity 0.2s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: visibility 0s 0.2s, opacity 0.18s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .cp-dropdown::before { display: none; } /* kill the upward bridge from old dropdown */
 .cp-dropdown.open {
   visibility: visible;
   opacity: 1;
   pointer-events: auto;
-  transform: translateX(0) scale(1);
-  transition: visibility 0s, opacity 0.2s ease, transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(0) scale(1);
+  transition: visibility 0s, opacity 0.18s ease, transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .cp-dropdown button {
   color: rgba(255, 255, 255, 0.7);
