@@ -850,33 +850,6 @@
     return out;
   }
 
-  // 3D cube — particles spread evenly across the 6 faces. Reads as a
-  // projection-mapped surface as it rotates.
-  function generateCubePoints() {
-    const N = particles.length;
-    const out = new Float32Array(N * 3);
-    const S = 0.36; // half-edge (smaller than before)
-    for (let i = 0; i < N; i++) {
-      const face = i % 6;
-      // Two uniform coords on the face plane.
-      const u = (Math.random() - 0.5) * 2 * S;
-      const v = (Math.random() - 0.5) * 2 * S;
-      let x, y, z;
-      switch (face) {
-        case 0: x =  S; y = u; z = v; break; // +X
-        case 1: x = -S; y = u; z = v; break; // -X
-        case 2: x = u; y =  S; z = v; break; // +Y
-        case 3: x = u; y = -S; z = v; break; // -Y
-        case 4: x = u; y = v; z =  S; break; // +Z
-        default: x = u; y = v; z = -S;       // -Z
-      }
-      out[i * 3 + 0] = x;
-      out[i * 3 + 1] = y;
-      out[i * 3 + 2] = z;
-    }
-    return out;
-  }
-
   // 3D room — wireframe one-point-perspective architectural room. The
   // camera sits at the open front, looking into a deep interior. Particles
   // trace the 12 edges of the room + a floor grid + a framed back wall,
@@ -1142,14 +1115,6 @@
     // 3D rotating torus — store base points; render loop rotates them live.
     if (spec && typeof spec === 'object' && spec.shape === 'torus') {
       const base = generateTorusPoints();
-      morph.basePoints3D = base;
-      morph.rotating = true;
-      morph.points = new Float32Array(base);
-      return;
-    }
-    // 3D rotating cube — particles tile the 6 faces; rotates each frame.
-    if (spec && typeof spec === 'object' && spec.shape === 'cube') {
-      const base = generateCubePoints();
       morph.basePoints3D = base;
       morph.rotating = true;
       morph.points = new Float32Array(base);
@@ -1828,7 +1793,6 @@
     const focal = baseR * 1.8;
     const COMMIT_CAP = 0.98;
     const fastSwap = !!morph.fast || !!morph.straight;
-    const dynScale = fastSwap ? 0 : 1;
     const morphPts = morph.points;
     const morphPrev = morph.prevPoints;
     const swap = morph.swap;
@@ -1879,11 +1843,11 @@
         pLife[i] = life;
       }
 
-      // Fade in / age fade.
+      // Fade in / age fade. maxLife is always > 0 (set at spawn), so
+      // skip the defensive divide check.
       const lifeFade = Math.min(1, pLifeFade[i] + dt * pFadeRate[i]);
       pLifeFade[i] = lifeFade;
-      const maxLife = pMaxLife[i];
-      const ageK = maxLife > 0 ? life / maxLife : 0;
+      const ageK = life / pMaxLife[i];
       const ageFade = ageK > 0.7 ? Math.max(0, 1 - (ageK - 0.7) / 0.3) : 1;
       pAlphaMul[i] = lifeFade * ageFade;
 
@@ -1910,34 +1874,46 @@
           const local = (swap - pSwpDel[i]) / pSwpDur[i];
           const t = local <= 0 ? 0 : (local >= 1 ? 1 : local);
           const eio = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-          const bell = Math.sin(t * Math.PI);
           const ppx = morphPrev[ti], ppy = morphPrev[ti + 1], ppz = morphPrev[ti + 2];
           const nx = morphPts[ti],   ny = morphPts[ti + 1],   nz = morphPts[ti + 2];
-          const dx = nx - ppx, dy = ny - ppy;
-          const cx0 = (ppx + nx) * 0.5;
-          const cy0 = (ppy + ny) * 0.5;
-          const cz0 = (ppz + nz) * 0.5;
-          const swpCX = pSwpCX[i], swpCY = pSwpCY[i], swpCZ = pSwpCZ[i];
-          const perpScale = swpCX * dynScale;
-          const ctrlX = cx0 + (-dy) * perpScale + swpCX * 0.25 * dynScale;
-          const ctrlY = cy0 + ( dx) * perpScale + swpCY * 0.25 * dynScale;
-          const ctrlZ = cz0 + swpCZ * 0.5 * dynScale;
-          const u = 1 - eio;
-          let bx = u * u * ppx + 2 * u * eio * ctrlX + eio * eio * nx;
-          let by = u * u * ppy + 2 * u * eio * ctrlY + eio * eio * ny;
-          const bz = u * u * ppz + 2 * u * eio * ctrlZ + eio * eio * nz;
-          const ang = bell * pSwpSpn[i] * dynScale;
-          if (ang !== 0) {
-            const cs = Math.cos(ang), sn = Math.sin(ang);
-            const ox = bx - cx0, oy = by - cy0;
-            bx = cx0 + ox * cs - oy * sn;
-            by = cy0 + ox * sn + oy * cs;
+          if (fastSwap) {
+            // Straight lerp prev → new — used for text/greet/scroll
+            // morphs (the dominant case). Skips ~25 multiplies plus
+            // sin/cos/sqrt that the bezier path computes only to
+            // multiply by zero in this mode.
+            tx = ppx + (nx - ppx) * eio;
+            ty = ppy + (ny - ppy) * eio;
+            tz = ppz + (nz - ppz) * eio;
+          } else {
+            // Full bezier path with per-particle control offsets, mid-
+            // transition spin, and outward radial puff. Only shape
+            // morphs (torus/room/tree/portrait) hit this path.
+            const bell = Math.sin(t * Math.PI);
+            const dx = nx - ppx, dy = ny - ppy;
+            const cx0 = (ppx + nx) * 0.5;
+            const cy0 = (ppy + ny) * 0.5;
+            const cz0 = (ppz + nz) * 0.5;
+            const swpCX = pSwpCX[i], swpCY = pSwpCY[i], swpCZ = pSwpCZ[i];
+            const ctrlX = cx0 + (-dy) * swpCX + swpCX * 0.25;
+            const ctrlY = cy0 + ( dx) * swpCX + swpCY * 0.25;
+            const ctrlZ = cz0 + swpCZ * 0.5;
+            const u = 1 - eio;
+            let bx = u * u * ppx + 2 * u * eio * ctrlX + eio * eio * nx;
+            let by = u * u * ppy + 2 * u * eio * ctrlY + eio * eio * ny;
+            const bz = u * u * ppz + 2 * u * eio * ctrlZ + eio * eio * nz;
+            const ang = bell * pSwpSpn[i];
+            if (ang !== 0) {
+              const cs = Math.cos(ang), sn = Math.sin(ang);
+              const ox = bx - cx0, oy = by - cy0;
+              bx = cx0 + ox * cs - oy * sn;
+              by = cy0 + ox * sn + oy * cs;
+            }
+            const mLen = Math.sqrt(cx0 * cx0 + cy0 * cy0) + 1e-6;
+            const burst = bell * pSwpBur[i];
+            tx = bx + (cx0 / mLen) * burst;
+            ty = by + (cy0 / mLen) * burst;
+            tz = bz;
           }
-          const mLen = Math.sqrt(cx0 * cx0 + cy0 * cy0) + 1e-6;
-          const burst = bell * pSwpBur[i] * dynScale;
-          tx = bx + (cx0 / mLen) * burst;
-          ty = by + (cy0 / mLen) * burst;
-          tz = bz;
         } else {
           tx = morphPts[ti];
           ty = morphPts[ti + 1];
@@ -2114,8 +2090,10 @@
       gl.bindVertexArray(null);
     }
 
-    // Constellation lines on top of the dots (overlay 2D in WebGL mode).
-    drawConstellation();
+    // Constellation lines under the dots. Skipped while a morph is
+    // strongly committed — the lines would tangle between word
+    // particles and add noise without value.
+    if (mp < 0.4) drawConstellation();
 
     if (!useWebGL) {
       // Pure 2D fallback tier render.
