@@ -279,34 +279,6 @@
     }, { passive: true });
   }
 
-  // Click shockwave — soft radial impulse into the particle field.
-  // Spring + damping then lets it dissipate as a fluid ripple rather
-  // than a hard punch.
-  const SHOCK_RADIUS = 340;     // CSS pixels
-  const SHOCK_STRENGTH = 26;    // peak impulse (was 78 — much gentler)
-  function shockwave(clientX, clientY) {
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const cxp = (clientX - rect.left) * DPR;
-    const cyp = (clientY - rect.top)  * DPR;
-    const R = SHOCK_RADIUS * DPR;
-    const R2 = R * R;
-    const strength = SHOCK_STRENGTH * DPR;
-    for (let i = 0; i < particles.length; i++) {
-      const p = particles[i];
-      const dx = p.sx - cxp;
-      const dy = p.sy - cyp;
-      const d2 = dx * dx + dy * dy;
-      if (d2 >= R2 || d2 < 0.001) continue;
-      const d = Math.sqrt(d2);
-      const t = 1 - d / R;
-      // Soft smoothstep falloff — gentle ripple, not a hard punch.
-      const falloff = t * t * (3 - 2 * t);
-      const imp = falloff * strength;
-      p.pushVX += (dx / d) * imp;
-      p.pushVY += (dy / d) * imp;
-    }
-  }
   // Track drag state for the fluid-push mode. Held mouse = continuous
   // larger, stronger force biased toward the cursor's motion direction.
   // Mobile / coarse-pointer: skip all interaction so taps and scrolls
@@ -319,24 +291,37 @@
   let rightDragLastY = 0;
 
   // ----- Sculpt-with-decay -------------------------------------------
-  // Left-drag drops a chain of "sculpt anchors" along the cursor path.
-  // Each anchor pulls nearby particles toward it for ~8s, gradually
-  // weakening so the trail fades out smoothly. Reuses the existing
-  // spring system so particles spring back to free flow once anchors die.
-  const sculptAnchors = [];           // {x, y, life, maxLife}
-  const SCULPT_MAX = 80;              // hard cap so perf doesn't degrade
-  const SCULPT_LIFE = 7.5;            // seconds before an anchor dies
-  const SCULPT_R_CSS = 75;            // CSS pixels: pull radius
-  const SCULPT_PULL = 0.85;           // peak per-anchor pull velocity
-  const SCULPT_SPACING_CSS = 22;      // min cursor travel before new anchor
+  // Left-drag drops a chain of line segments along the cursor path.
+  // Each segment pulls particles toward the closest point ON THE LINE
+  // (not just an endpoint), so the trail reads as a continuous brush
+  // stroke rather than a string of blobs. Segments fade over ~6s and
+  // the spring system glides particles back to free flow naturally.
+  const sculptAnchors = [];           // {x1,y1, x2,y2, life, maxLife}
+  const SCULPT_MAX = 80;
+  const SCULPT_LIFE = 6.0;
+  const SCULPT_R_CSS = 95;            // wider radius softens the line
+  const SCULPT_PULL = 0.45;           // gentler pull → no blob clumps
+  const SCULPT_SPACING_CSS = 14;      // tighter spacing → smoother line
   let sculptLastX = 0, sculptLastY = 0;
   let sculptDist = 0;
-  function addSculptAnchor(clientX, clientY) {
+  let sculptHasPrev = false;
+  function addSculptSegment(prevClientX, prevClientY, clientX, clientY) {
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    const x = (clientX - rect.left) * DPR;
-    const y = (clientY - rect.top) * DPR;
-    sculptAnchors.push({ x, y, life: SCULPT_LIFE, maxLife: SCULPT_LIFE });
+    const x1 = (prevClientX - rect.left) * DPR;
+    const y1 = (prevClientY - rect.top) * DPR;
+    const x2 = (clientX - rect.left) * DPR;
+    const y2 = (clientY - rect.top) * DPR;
+    // Cache the segment's AABB so the per-particle force loop can reject
+    // far-away particles with four scalar compares.
+    const minX = (x1 < x2 ? x1 : x2);
+    const maxX = (x1 > x2 ? x1 : x2);
+    const minY = (y1 < y2 ? y1 : y2);
+    const maxY = (y1 > y2 ? y1 : y2);
+    sculptAnchors.push({
+      x1, y1, x2, y2, minX, maxX, minY, maxY,
+      life: SCULPT_LIFE, maxLife: SCULPT_LIFE,
+    });
     if (sculptAnchors.length > SCULPT_MAX) sculptAnchors.shift();
   }
   if (!IS_MOBILE) {
@@ -355,25 +340,25 @@
       }
       if (e.button !== 0 && e.button !== undefined) return;
       isDragging = true;
-      shockwave(e.clientX, e.clientY);
-      // Seed the sculpt path on click so a single click leaves a small mark.
+      // Sculpt path: record the start point. Segments only emit once the
+      // cursor actually moves — plain click leaves nothing behind.
       sculptLastX = e.clientX;
       sculptLastY = e.clientY;
       sculptDist = 0;
-      addSculptAnchor(e.clientX, e.clientY);
+      sculptHasPrev = true;
     }, { passive: true });
 
-    // Sculpt path while left-drag is held — drop a new anchor every
-    // SCULPT_SPACING_CSS pixels of cursor travel.
+    // Sculpt path while left-drag is held — emit a SEGMENT from the
+    // last point to a new one every SCULPT_SPACING_CSS pixels travelled.
     canvas.addEventListener('pointermove', (e) => {
-      if (!isDragging) return;
+      if (!isDragging || !sculptHasPrev) return;
       const dx = e.clientX - sculptLastX;
       const dy = e.clientY - sculptLastY;
-      sculptLastX = e.clientX;
-      sculptLastY = e.clientY;
       sculptDist += Math.hypot(dx, dy);
       if (sculptDist >= SCULPT_SPACING_CSS) {
-        addSculptAnchor(e.clientX, e.clientY);
+        addSculptSegment(sculptLastX, sculptLastY, e.clientX, e.clientY);
+        sculptLastX = e.clientX;
+        sculptLastY = e.clientY;
         sculptDist = 0;
       }
     }, { passive: true });
@@ -390,7 +375,7 @@
       morph.manualPitch += dy * 0.012;
     }, { passive: true });
 
-    function endDrag() { isDragging = false; }
+    function endDrag() { isDragging = false; sculptHasPrev = false; }
     function endRightDrag() {
       if (!rightDragging) return;
       rightDragging = false;
@@ -1233,8 +1218,12 @@
       anchorIndices.push(i);
     }
   }
-  // Reusable spatial-hash buffers (built once, resized as needed).
-  let _binsArr = null;
+  // Counting-sort spatial bins — typed-array buffers reused frame to
+  // frame, no per-frame Array allocations or GC churn.
+  let _binCount = null;     // Int32Array(cols*rows): count per cell
+  let _binStart = null;     // Int32Array(cols*rows + 1): cumulative offsets
+  let _binData  = null;     // Int32Array(ANCHOR_COUNT): anchor idx sorted by cell
+  let _anchorCells = null;  // Int32Array(ANCHOR_COUNT): per-anchor cell hash
   let _binsCols = 0, _binsRows = 0;
   function drawConstellation() {
     if (!anchorIndices.length || W < 2 || H < 2) return;
@@ -1243,47 +1232,77 @@
     const cellSize = LINK_R;
     const cols = Math.max(1, Math.ceil(W / cellSize));
     const rows = Math.max(1, Math.ceil(H / cellSize));
-    if (!_binsArr || _binsCols !== cols || _binsRows !== rows) {
-      _binsArr = new Array(cols * rows);
+    const cellTotal = cols * rows;
+    if (!_binCount || _binsCols !== cols || _binsRows !== rows) {
+      _binCount = new Int32Array(cellTotal);
+      _binStart = new Int32Array(cellTotal + 1);
       _binsCols = cols; _binsRows = rows;
+    } else {
+      _binCount.fill(0);
     }
-    // Clear bins.
-    for (let i = 0; i < _binsArr.length; i++) _binsArr[i] = null;
-    // Populate.
+    if (!_binData || _binData.length < anchorIndices.length) {
+      _binData = new Int32Array(anchorIndices.length);
+    }
+    if (!_anchorCells || _anchorCells.length < anchorIndices.length) {
+      _anchorCells = new Int32Array(anchorIndices.length);
+    }
+    const anchorCells = _anchorCells;
+    // Pass 1: count per cell + record each anchor's cell index.
     for (let i = 0; i < anchorIndices.length; i++) {
-      const idx = anchorIndices[i];
-      const p = particles[idx];
-      if (!p || p.sx < 0 || p.sx > W || p.sy < 0 || p.sy > H) continue;
+      const p = particles[anchorIndices[i]];
+      if (!p || p.sx < 0 || p.sx > W || p.sy < 0 || p.sy > H) {
+        anchorCells[i] = -1;
+        continue;
+      }
       const cx = (p.sx / cellSize) | 0;
       const cy = (p.sy / cellSize) | 0;
       const k = cy * cols + cx;
-      if (!_binsArr[k]) _binsArr[k] = [];
-      _binsArr[k].push(idx);
+      anchorCells[i] = k;
+      _binCount[k]++;
     }
+    // Pass 2: cumulative starts.
+    let acc = 0;
+    for (let k = 0; k < cellTotal; k++) {
+      _binStart[k] = acc;
+      acc += _binCount[k];
+    }
+    _binStart[cellTotal] = acc;
+    // Pass 3: fill _binData with anchor indices grouped by cell. Reuse
+    // _binCount as a per-cell write cursor.
+    _binCount.fill(0);
+    for (let i = 0; i < anchorIndices.length; i++) {
+      const k = anchorCells[i];
+      if (k < 0) continue;
+      _binData[_binStart[k] + _binCount[k]] = anchorIndices[i];
+      _binCount[k]++;
+    }
+    // Render: nearest 2 in 3x3 neighborhood for each anchor.
     ctx.strokeStyle = 'rgba(255,255,255,0.07)';
     ctx.lineWidth = Math.max(0.5, DPR * 0.4);
     ctx.beginPath();
     for (let i = 0; i < anchorIndices.length; i++) {
+      const k = anchorCells[i];
+      if (k < 0) continue;
       const idx = anchorIndices[i];
       const p = particles[idx];
-      if (!p || p.sx < 0 || p.sx > W || p.sy < 0 || p.sy > H) continue;
-      // Only draw lines for visible-enough anchors so fading particles
-      // don't suddenly sprout/lose lines.
       const am = p.alphaMul != null ? p.alphaMul : 1;
       if (am < 0.4) continue;
-      const cx = (p.sx / cellSize) | 0;
-      const cy = (p.sy / cellSize) | 0;
+      const cx = k % cols;
+      const cy = (k / cols) | 0;
       let nearest = -1, nearestD = Infinity;
       let next = -1, nextD = Infinity;
       for (let dy = -1; dy <= 1; dy++) {
+        const ny = cy + dy;
+        if (ny < 0 || ny >= rows) continue;
         for (let dx = -1; dx <= 1; dx++) {
-          const nx = cx + dx, ny = cy + dy;
-          if (nx < 0 || ny < 0 || nx >= cols || ny >= rows) continue;
-          const bin = _binsArr[ny * cols + nx];
-          if (!bin) continue;
-          for (let j = 0; j < bin.length; j++) {
-            const j2 = bin[j];
-            if (j2 <= idx) continue; // each pair only once (smaller side draws)
+          const nx = cx + dx;
+          if (nx < 0 || nx >= cols) continue;
+          const cellK = ny * cols + nx;
+          const start = _binStart[cellK];
+          const end = _binStart[cellK + 1];
+          for (let j = start; j < end; j++) {
+            const j2 = _binData[j];
+            if (j2 <= idx) continue;
             const q = particles[j2];
             const ddx = q.sx - p.sx, ddy = q.sy - p.sy;
             const d2 = ddx * ddx + ddy * ddy;
@@ -1467,7 +1486,8 @@
         p.y +=  p.x * SWIRL * dt;
       }
       if (RADIAL !== 0) {
-        const rd = Math.hypot(p.x, p.y) + 1e-5;
+        // Inline sqrt(x²+y²) — Math.hypot is materially slower in V8.
+        const rd = Math.sqrt(p.x * p.x + p.y * p.y) + 1e-5;
         p.x += (p.x / rd) * RADIAL * dt;
         p.y += (p.y / rd) * RADIAL * dt;
       }
@@ -1662,20 +1682,35 @@
         p.pushVX += ptrVX * falloff * activeWake;
         p.pushVY += ptrVY * falloff * activeWake;
       }
-      // Sculpt anchors — pull toward each nearby anchor with a strength
-      // that fades as the anchor's life ticks down.
+      // Sculpt segments — pull toward the closest point on each line
+      // segment. AABB pre-check rejects 90%+ of segment iterations with
+      // four scalar compares before touching the closest-point math.
       if (sculptAnchors.length) {
         for (let a = 0; a < sculptAnchors.length; a++) {
           const an = sculptAnchors[a];
-          const adx = an.x - sx;
-          const ady = an.y - sy;
+          if (sx < an.minX - _sculptR) continue;
+          if (sx > an.maxX + _sculptR) continue;
+          if (sy < an.minY - _sculptR) continue;
+          if (sy > an.maxY + _sculptR) continue;
+          const ex = an.x2 - an.x1, ey = an.y2 - an.y1;
+          const len2 = ex * ex + ey * ey;
+          let cx, cy;
+          if (len2 < 0.001) { cx = an.x1; cy = an.y1; }
+          else {
+            let t = ((sx - an.x1) * ex + (sy - an.y1) * ey) / len2;
+            if (t < 0) t = 0; else if (t > 1) t = 1;
+            cx = an.x1 + ex * t;
+            cy = an.y1 + ey * t;
+          }
+          const adx = cx - sx;
+          const ady = cy - sy;
           const ad2 = adx * adx + ady * ady;
           if (ad2 > _sculptR2) continue;
           const ad = Math.sqrt(ad2);
           if (ad < 0.001) continue;
           const lifeR = an.life / an.maxLife;
-          const t = 1 - ad / _sculptR;
-          const ease = t * t;
+          const t2 = 1 - ad / _sculptR;
+          const ease = t2 * t2;
           const pull = ease * SCULPT_PULL * lifeR * DPR;
           p.pushVX += (adx / ad) * pull;
           p.pushVY += (ady / ad) * pull;
