@@ -214,20 +214,36 @@ function buildDropdowns() {
 
 }
 
-// Build color dropdown statically from project data
+// Build color swatches inline in the control panel + a hidden dropdown
+// twin so the existing applyFilters() loop (which toggles `.active` on
+// dropdown buttons) keeps working without special-casing.
 function buildColorDropdown() {
   const colorMenu = document.getElementById('menu-color');
-  colorMenu.classList.add('color-grid');
+  const inline = document.getElementById('cpSwatches');
+  if (colorMenu) colorMenu.classList.add('color-grid');
   const colors = [...new Set(Object.values(projects).map(p => p.color).filter(Boolean))].sort();
   for (const name of colors) {
     const hex = COLOR_HEX[name] || '#888';
-    const btn = document.createElement('button');
-    btn.className = 'color-swatch-btn';
-    btn.dataset.value = name;
-    btn.style.background = hex;
-    btn.title = name;
-    btn.addEventListener('click', () => setFilter('color', name));
-    colorMenu.appendChild(btn);
+    if (inline) {
+      const btn = document.createElement('button');
+      btn.className = 'color-swatch-btn cp-swatch';
+      btn.dataset.value = name;
+      btn.style.background = hex;
+      btn.title = name;
+      btn.type = 'button';
+      btn.addEventListener('click', (e) => { e.stopPropagation(); setFilter('color', name); });
+      inline.appendChild(btn);
+    }
+    if (colorMenu) {
+      // Twin button kept hidden — only used as the active-state tracker.
+      const ghost = document.createElement('button');
+      ghost.className = 'color-swatch-btn';
+      ghost.dataset.value = name;
+      ghost.style.background = hex;
+      ghost.title = name;
+      ghost.addEventListener('click', () => setFilter('color', name));
+      colorMenu.appendChild(ghost);
+    }
   }
 }
 
@@ -336,6 +352,10 @@ function applyFilters() {
     if (!parent) return;
     const type = parent.id.replace('menu-', '');
     btn.classList.toggle('active', String(activeFilters[type]) === String(btn.dataset.value));
+  });
+  // Mirror the same active state to inline swatches in the control panel.
+  document.querySelectorAll('#cpSwatches .cp-swatch').forEach(btn => {
+    btn.classList.toggle('active', String(activeFilters.color) === String(btn.dataset.value));
   });
 
   // Update project button text + thumbnail
@@ -723,8 +743,18 @@ if (hashMatch) {
   function setCollapsed(yes) {
     if (!panel || !handle) return;
     panel.classList.toggle('is-collapsed', yes);
-    handle.hidden = !yes;
+    // Keep the handle in the DOM and toggle a class so it can animate
+    // its scale/opacity in time with the panel pinch.
+    handle.hidden = false;
+    if (yes) {
+      // Allow the handle to fade in after the panel finishes shrinking.
+      requestAnimationFrame(() => handle.classList.add('is-visible'));
+    } else {
+      handle.classList.remove('is-visible');
+    }
   }
+  // Initial: panel open, handle hidden + invisible.
+  if (handle) handle.hidden = false;
   if (collapseBtn) collapseBtn.addEventListener('click', () => setCollapsed(true));
   if (handle) handle.addEventListener('click', () => setCollapsed(false));
 

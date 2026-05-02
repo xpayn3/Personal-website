@@ -165,14 +165,13 @@
       <div class="bar-dropdown cp-dropdown" id="menu-project"></div>
     </div>
 
-    <div class="cp-section">
+    <div class="cp-section cp-section-color">
       <span class="cp-row-label">COLOR</span>
-      <button class="cp-filter-btn bar-toggle" data-menu="color" id="colorToggle" type="button">
-        <span class="color-indicator" id="colorIndicator"></span>
-        <span id="colorToggleText">Any</span>
-        <span class="cp-caret" aria-hidden="true">▾</span>
-      </button>
-      <div class="bar-dropdown cp-dropdown" id="menu-color"></div>
+      <div class="cp-swatches" id="cpSwatches" role="group" aria-label="Filter by color"></div>
+      <span class="color-indicator" id="colorIndicator" hidden></span>
+      <!-- Hidden dropdown stub kept so the existing applyFilters wiring
+           that reads dropdown buttons by data-value still works. -->
+      <div class="bar-dropdown cp-dropdown" id="menu-color" hidden></div>
     </div>
 
     <div class="cp-section">
@@ -216,7 +215,7 @@
   </aside>
 
   <!-- Collapsed-state handle: small dot in the top-right that re-opens the panel. -->
-  <button class="cp-handle" id="cpHandle" type="button" aria-label="Open control panel" hidden>
+  <button class="cp-handle" id="cpHandle" type="button" aria-label="Open control panel">
     <span class="cp-handle-pulse"></span>
     <span class="cp-handle-label">CTRL</span>
   </button>

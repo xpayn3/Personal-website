@@ -969,13 +969,24 @@ body.scroll-locked .site-footer {
   font-size: 0.72rem;
   letter-spacing: 0.02em;
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255,255,255,0.04);
-  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.22s ease;
+  transform-origin: top right;
+  transform: scale(1);
+  opacity: 1;
+  transition: transform 0.36s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.22s ease 0.04s,
+              clip-path 0.36s cubic-bezier(0.16, 1, 0.3, 1);
+  clip-path: inset(0 0 0 0);
 }
+/* Collapsed: pinch into the handle's footprint at the top-right corner.
+   The clip-path keeps the inner content from poking out while it scales. */
 .control-panel.is-collapsed {
-  transform: translateX(calc(100% + clamp(20px, 3vw, 32px) + 20px));
+  transform: scale(0.18);
   opacity: 0;
+  clip-path: inset(0 0 calc(100% - 28px) calc(100% - 64px));
   pointer-events: none;
+  transition: transform 0.28s cubic-bezier(0.7, 0, 0.32, 1),
+              opacity 0.18s ease,
+              clip-path 0.28s cubic-bezier(0.7, 0, 0.32, 1);
 }
 
 /* tiny corner ticks for tech feel */
@@ -1316,6 +1327,35 @@ body.scroll-locked .site-footer {
   border-radius: 2px;
 }
 
+/* Inline color swatches — replaces the color dropdown trigger */
+.cp-section-color { align-items: flex-start; }
+.cp-section-color .cp-row-label { padding-top: 4px; }
+.cp-swatches {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.cp-swatch {
+  width: 16px;
+  height: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 0;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.cp-swatch:hover {
+  transform: scale(1.18);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+.cp-swatch.active {
+  border-color: #4ade80;
+  box-shadow: 0 0 0 1px #4ade80, 0 0 8px rgba(74, 222, 128, 0.6);
+  transform: scale(1.18);
+}
+
 .cp-sort {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -1417,12 +1457,12 @@ body.scroll-locked .site-footer {
   margin-left: auto;
 }
 
-/* Collapsed-state handle */
+/* Collapsed-state handle — the panel pinches into roughly this footprint. */
 .cp-handle {
   position: fixed;
   top: clamp(20px, 3vh, 32px);
   right: clamp(20px, 3vw, 32px);
-  z-index: 200;
+  z-index: 199;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -1435,7 +1475,21 @@ body.scroll-locked .site-footer {
   font-weight: 700;
   letter-spacing: 0.16em;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transform-origin: top right;
+  transform: scale(0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.18s ease,
+              background 0.15s ease, border-color 0.15s ease;
+}
+.cp-handle.is-visible {
+  transform: scale(1);
+  opacity: 1;
+  pointer-events: auto;
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1) 0.18s,
+              opacity 0.22s ease 0.18s,
+              background 0.15s ease, border-color 0.15s ease;
 }
 .cp-handle[hidden] { display: none; }
 .cp-handle:hover {
