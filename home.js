@@ -1291,6 +1291,7 @@
       if (morph.text !== greetKey) {
         greetActive = false;
         greetKey = null;
+        morph.greet = false;
         nextGreetAt = now + 45000 + Math.random() * 30000;
         return;
       }
@@ -1298,6 +1299,8 @@
         greetActive = false;
         greetKey = null;
         setMorphTarget(null);
+        // Keep morph.greet on through the slow fade-out; cleared once
+        // progress reaches ~0 in the morph drop block.
         nextGreetAt = now + 25000 + Math.random() * 45000; // 25 – 70 s
       }
       return;
@@ -1308,11 +1311,12 @@
     const word = GREETINGS[(Math.random() * GREETINGS.length) | 0];
     greetKey = word;
     greetActive = true;
-    greetUntil = now + 2200 + Math.random() * 800; // 2.2 – 3.0 s
+    greetUntil = now + 2800 + Math.random() * 1000; // a touch longer hold
     setMorphTarget(word);
-    // Loose commit — a soft ghost of the word, half the cloud stays
-    // on free flow so the greeting reads as a hint, not text.
+    // Loose commit + slow ramp — feels like a faint attractor turning
+    // on, rather than a hard snap to text.
     morph.targetProgress = 0.32;
+    morph.greet = true;
   }
 
   // ----- Typewriter ---------------------------------------------------
@@ -1643,7 +1647,13 @@
 
     // Smooth morph progress toward target — eased so transitions feel soft.
     // Slower decay when releasing so the per-particle stagger reads.
-    const easeRate = morph.targetProgress > morph.progress ? 0.08 : 0.04;
+    // Greetings ease MUCH slower than nav/text morphs — feels like a
+    // faint attractor turning on rather than a snap. ~3-4× slower
+    // both directions.
+    const greetMode = !!morph.greet;
+    const easeRate = morph.targetProgress > morph.progress
+      ? (greetMode ? 0.022 : 0.08)
+      : (greetMode ? 0.018 : 0.04);
     morph.progress += (morph.targetProgress - morph.progress) * easeRate;
     if (morph.swap < 1) {
       // Fast swap when typing (so adjacent letters don't overlap into
@@ -1690,6 +1700,7 @@
       morph.progress = 0;
       morph.points = null;
       morph.prevPoints = null;
+      morph.greet = false;
     }
     const mp = morph.progress;
     const hasTargets = mp > 0.001 && morph.points;
