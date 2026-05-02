@@ -464,6 +464,8 @@
       model.visible = true;
       const skel = document.getElementById('gbSkeleton');
       if (skel) skel.remove();
+      // Signal the about-page boot loader that the GameBoy is ready.
+      try { window.dispatchEvent(new CustomEvent('gameboyready')); } catch {}
     });
 
     // Light: red translucent LED — glass housing with light passing through

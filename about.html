@@ -27,6 +27,53 @@
 </head>
 <body class="page-about theme-dark">
 
+  <!-- ===== BOOT LOADER =====
+       Full-screen techy splash until the GameBoy 3D model + textures
+       finish loading. Fades out via the 'gameboyready' window event
+       (dispatched from gameboy.js) or a 9s safety timeout. -->
+  <div class="boot-loader" id="bootLoader" aria-hidden="true">
+    <div class="boot-grid"></div>
+    <div class="boot-frame">
+      <span class="boot-corner boot-corner-tl"></span>
+      <span class="boot-corner boot-corner-tr"></span>
+      <span class="boot-corner boot-corner-bl"></span>
+      <span class="boot-corner boot-corner-br"></span>
+      <div class="boot-head">
+        <span class="boot-pulse"></span>
+        <span class="boot-id">SYS_INIT · v0.4</span>
+        <span class="boot-coord" id="bootCoord">0×00</span>
+      </div>
+      <div class="boot-block">
+        <div class="boot-row" id="bootStep">&gt; bootstrapping&hellip;</div>
+        <div class="boot-bar" aria-hidden="true">
+          <div class="boot-bar-fill" id="bootBarFill"></div>
+          <div class="boot-bar-ticks">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="boot-meter">
+          <span class="boot-meter-num" id="bootPct">000</span>
+          <span class="boot-meter-sep">/</span>
+          <span class="boot-meter-num boot-meter-total">100</span>
+          <span class="boot-meter-label">PCT_LOADED</span>
+        </div>
+      </div>
+      <div class="boot-list" id="bootList">
+        <div class="boot-list-row" data-task="cart"   data-label="cart_data">[ ] cart_data</div>
+        <div class="boot-list-row" data-task="ram"    data-label="ram_alloc">[ ] ram_alloc</div>
+        <div class="boot-list-row" data-task="glb"    data-label="model.glb">[ ] model.glb</div>
+        <div class="boot-list-row" data-task="tex"    data-label="textures">[ ] textures</div>
+        <div class="boot-list-row" data-task="audio"  data-label="audio.opus">[ ] audio.opus</div>
+        <div class="boot-list-row" data-task="ready"  data-label="boot_ok">[ ] boot_ok</div>
+      </div>
+      <div class="boot-foot">
+        <span class="boot-foot-tag">// LUKA_GRCAR / GAMEBOY</span>
+        <span class="boot-cursor" aria-hidden="true">█</span>
+      </div>
+    </div>
+  </div>
+
   <main class="about-page">
 
     <section class="hero-split">
@@ -497,5 +544,99 @@
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.138.0/examples/js/loaders/RGBELoader.js"></script>
   <script defer src="gameboy.js?v=134"></script>
   <script src="floating-nav.js" defer></script>
+
+  <!-- Boot loader driver: animates the splash + handshakes with the
+       gameboy.js 'gameboyready' event to fade out and reveal the page. -->
+  <script>
+  (function () {
+    const loader = document.getElementById('bootLoader');
+    if (!loader) return;
+    const stepEl = document.getElementById('bootStep');
+    const barEl  = document.getElementById('bootBarFill');
+    const pctEl  = document.getElementById('bootPct');
+    const coordEl = document.getElementById('bootCoord');
+    const list = document.querySelectorAll('#bootList .boot-list-row');
+    const tasks = ['cart_data', 'ram_alloc', 'model.glb', 'textures', 'audio.opus', 'boot_ok'];
+    let pct = 0;          // visible 0..100
+    let cap = 90;         // soft cap until ready event arrives
+    let ready = false;
+    let raf = 0;
+    let lastT = performance.now();
+    let coordT = 0;
+
+    function setStep(text) { if (stepEl) stepEl.innerHTML = '&gt; ' + text; }
+    function setRowState(idx, state) {
+      const row = list[idx];
+      if (!row) return;
+      const label = row.dataset.label || '';
+      let glyph = '[ ]';
+      if (state === 'doing') glyph = '[~]';
+      else if (state === 'done') glyph = '[x]';
+      row.textContent = `${glyph} ${label}`;
+      row.classList.toggle('is-doing', state === 'doing');
+      row.classList.toggle('is-done', state === 'done');
+    }
+    list.forEach((_, i) => setRowState(i, 'idle'));
+
+    function tick(now) {
+      const dt = Math.min(0.1, (now - lastT) / 1000);
+      lastT = now;
+      // Easing toward cap, then to 100 once ready.
+      const target = ready ? 100 : cap;
+      pct += (target - pct) * 0.04 + 0.05;
+      if (ready && pct > 99.4) pct = 100;
+      if (pct > target) pct = target;
+      const pInt = Math.min(100, Math.max(0, Math.floor(pct)));
+      if (barEl) barEl.style.width = pInt + '%';
+      if (pctEl) pctEl.textContent = String(pInt).padStart(3, '0');
+      // Hex address scrubber for techy detail.
+      coordT += dt;
+      if (coordEl && coordT > 0.08) {
+        coordT = 0;
+        coordEl.textContent = '0×' + (Math.random() * 0xFFFF | 0)
+          .toString(16).toUpperCase().padStart(4, '0');
+      }
+      // Sequence step + task rows by progress band.
+      const bands = [
+        [ 0, 14,  'init memory',         0],
+        [14, 28,  'allocating ram',      1],
+        [28, 50,  'loading model.glb',   2],
+        [50, 78,  'streaming textures',  3],
+        [78, 90,  'decoding audio',      4],
+        [90, 100, 'ready',               5],
+      ];
+      for (let i = 0; i < bands.length; i++) {
+        const [lo, hi, label, taskIdx] = bands[i];
+        if (pInt >= lo && pInt < hi) {
+          setStep(label);
+          for (let k = 0; k < taskIdx; k++) setRowState(k, 'done');
+          setRowState(taskIdx, 'doing');
+          break;
+        }
+        if (pInt >= 100 && i === bands.length - 1) {
+          for (let k = 0; k < tasks.length; k++) setRowState(k, 'done');
+          setStep('ready');
+        }
+      }
+      if (pInt >= 100) {
+        cancelAnimationFrame(raf);
+        // Brief beat to let the user read "ready", then fade out.
+        setTimeout(() => {
+          loader.classList.add('is-done');
+          document.body.classList.add('is-booted');
+          setTimeout(() => loader.remove(), 600);
+        }, 240);
+        return;
+      }
+      raf = requestAnimationFrame(tick);
+    }
+    raf = requestAnimationFrame(tick);
+
+    function onReady() { ready = true; }
+    window.addEventListener('gameboyready', onReady, { once: true });
+    // Safety net: never hang the visitor more than 9s.
+    setTimeout(onReady, 9000);
+  })();
+  </script>
 </body>
 </html>

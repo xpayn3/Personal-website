@@ -1369,10 +1369,13 @@
     return SCROLL_PHASES[SCROLL_PHASES.length - 1];
   }
   function updateScrollMorph() {
-    // Defer if user is interacting with another morph source.
+    // Defer only if another *morph* source owns the cloud (nav-link
+    // hover, typewriter). Sculpt anchors live in the spring-push
+    // system and don't conflict with the morph render — they decay
+    // for ~6s after a drag, which used to block the projects word
+    // from appearing while the trail was settling.
     const userOwnsMorph = morph.text && !PHASE_WORDS.has(morph.text) && !greetActive;
-    const blocked = sculptAnchors.length || rightDragging ||
-                    (typed && typed.length) || userOwnsMorph;
+    const blocked = rightDragging || (typed && typed.length) || userOwnsMorph;
 
     if (blocked || scrollProgress < 0.005) {
       if (scrollMorphActive) {
