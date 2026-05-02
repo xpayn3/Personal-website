@@ -628,6 +628,13 @@ img, video {
   gap: 4px;
   min-width: 0;
   line-height: 1.35;
+  /* Same gradient definition as the hover state but fully transparent —
+     having a gradient (not `none`) on both sides of the transition lets
+     the colors interpolate, so the gradient fades in/out smoothly. */
+  background: linear-gradient(to top,
+    rgba(0,0,0,0) 0%,
+    rgba(0,0,0,0) 18%,
+    rgba(0,0,0,0) 45%);
   will-change: top, left, right, bottom, padding;
   transition:
     top    var(--card-dur) var(--card-ease),
