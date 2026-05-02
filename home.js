@@ -1366,23 +1366,33 @@
       setMorphTarget(PROJECTS_WORD);
       morph.greet = true; // reuse the slow-attractor lerp
     }
-    // Map scroll → commit. Cap at 0.9 so the cloud never fully freezes.
-    morph.targetProgress = Math.min(0.9, scrollProgress * 1.4);
+    // Map scroll → commit. Cap at 0.92. Steeper ramp so the word is
+    // legible early in the scroll instead of forming late.
+    morph.targetProgress = Math.min(0.92, scrollProgress * 2.4);
     const wasClickable = projectsClickable;
-    projectsClickable = scrollProgress > 0.25;
+    // Activate clickability as soon as the word has any meaningful
+    // presence — first ~15% of the scroll budget.
+    projectsClickable = scrollProgress > 0.12;
     if (projectsClickable !== wasClickable && canvas) {
       canvas.style.cursor = projectsClickable ? 'pointer' : '';
     }
   }
-  if (canvas) {
-    canvas.addEventListener('click', (e) => {
-      if (!projectsClickable || !scrollMorphActive) return;
-      // Suppress the click only for the projects-navigation case.
-      e.preventDefault();
-      e.stopPropagation();
-      window.location.href = 'grid.html';
-    });
-  }
+  // Document-level click capture so the navigation works even if some
+  // overlay (footer, etc.) ends up over the canvas. We only navigate
+  // when the projects morph is actively clickable.
+  document.addEventListener('click', (e) => {
+    if (!projectsClickable || !scrollMorphActive) return;
+    // Skip clicks on real interactive elements (links, buttons, etc).
+    let el = e.target;
+    while (el && el !== document) {
+      const t = el.tagName;
+      if (t === 'A' || t === 'BUTTON' || t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT') return;
+      el = el.parentNode;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    window.location.href = 'grid.html';
+  }, true);
 
   // ----- Typewriter ---------------------------------------------------
   // Type any letters / digits / punctuation on the keyboard and the
@@ -2179,23 +2189,21 @@
   start();
 })();
 
-// Footer slide-in: cover stays fixed to the viewport, footer translates
-// in from the bottom in lockstep with scroll progress through the runway.
+// Footer-visibility flag for legacy CSS — kept so the cover-overlay UI
+// (services, recent-card, floating nav) fades when the user scrolls
+// near the page bottom. No more slide-in animation: footer is just a
+// regular block in normal flow below the (sticky) cover.
 (function () {
   const footerEl = document.querySelector('.site-footer');
   if (!footerEl) return;
   let pending = false;
   function apply() {
     pending = false;
-    // First 25dvh of scroll forms the "projects" word; the next 35dvh
-    // slides the footer up. Subtracting the word budget below keeps
-    // the footer pinned at its rest position while the word forms.
-    const wordBudget = window.innerHeight * 0.25;
-    const dist = window.innerHeight * 0.35;
-    const past = Math.max(0, window.scrollY - wordBudget);
-    const p = Math.max(0, Math.min(1, past / dist));
-    footerEl.style.transform = `translate3d(0, ${(1 - p) * 100}%, 0)`;
-    document.body.classList.toggle('footer-visible', p > 0.6);
+    const rect = footerEl.getBoundingClientRect();
+    // Footer is "visible" once its top has crossed the upper 40% of
+    // the viewport — i.e. user is well into reading it.
+    const visible = rect.top < window.innerHeight * 0.4;
+    document.body.classList.toggle('footer-visible', visible);
   }
   function onScroll() {
     if (pending) return;
