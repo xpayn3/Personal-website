@@ -1,13 +1,12 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body {
-  background: #fff;
+  background: #000;
   color: var(--color-text);
   font-family: var(--font-body);
 }
 
 html {
-  scrollbar-gutter: stable;
   /* Firefox */
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
