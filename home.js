@@ -873,6 +873,8 @@
     }
   }
   window.addEventListener('keydown', (e) => {
+    // Ignore OS key-repeat (holding a key) so we don't spam the buffer.
+    if (e.repeat) return;
     if (isFormFocus()) return;
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.key === 'Escape' || e.key === 'Enter') {
