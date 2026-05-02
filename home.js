@@ -7,13 +7,45 @@
 (function () {
   const canvas = document.getElementById('coverCanvas');
   if (!canvas) return;
-  // WebGL2 first — orders of magnitude faster on machines with even a
-  // basic iGPU. Falls back to Canvas 2D where WebGL2 isn't available.
-  const gl = canvas.getContext('webgl2', {
+  // WebGL2 — orders of magnitude faster on machines with a real iGPU,
+  // but materially SLOWER than the SoA Canvas 2D path when the browser
+  // falls back to software rasterization (SwiftShader/llvmpipe). Probe
+  // the unmasked renderer string on a throwaway canvas before deciding,
+  // so users on software-WebGL machines stay on the 2D path.
+  function probeWebGL2Renderer() {
+    try {
+      const probe = document.createElement('canvas');
+      const g = probe.getContext('webgl2', { failIfMajorPerformanceCaveat: true });
+      if (!g) return { ok: false };
+      const dbg = g.getExtension('WEBGL_debug_renderer_info');
+      const renderer = dbg ? (g.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || '') : '';
+      const r = renderer.toLowerCase();
+      const software = !renderer ||
+        r.includes('swiftshader') ||
+        r.includes('software') ||
+        r.includes('llvmpipe') ||
+        r.includes('basic render') ||
+        r.includes('microsoft basic') ||
+        r.includes('apple software') ||
+        r.indexOf('angle (software') !== -1;
+      return { ok: !software, renderer };
+    } catch {
+      return { ok: false };
+    }
+  }
+  // Manual override for debugging: localStorage.setItem('cover-no-webgl','1')
+  // forces the 2D fallback even on hardware-accelerated browsers.
+  let force2D = false;
+  try { force2D = localStorage.getItem('cover-no-webgl') === '1'; } catch {}
+  const probe = force2D ? { ok: false } : probeWebGL2Renderer();
+  const gl = probe.ok ? canvas.getContext('webgl2', {
     alpha: false, antialias: false, premultipliedAlpha: false,
     preserveDrawingBuffer: false, desynchronized: true,
-  });
+  }) : null;
   const useWebGL = !!gl;
+  if (typeof console !== 'undefined' && console.log) {
+    console.log('[cover] renderer:', useWebGL ? `WebGL2 (${probe.renderer || 'unknown'})` : '2D fallback' + (force2D ? ' (forced)' : ''));
+  }
   let ctx;            // 2D context — main canvas in fallback, sibling overlay in WebGL mode.
   let overlayCanvas;  // sibling 2D canvas for constellation/labels/tags when WebGL is active.
   if (useWebGL) {
