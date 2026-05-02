@@ -1249,7 +1249,9 @@
   const footerEl = document.querySelector('.site-footer');
   if (!footerEl) return;
   function update() {
-    const visible = window.scrollY > 4;
+    // Visible once the user is more than half-way through the runway —
+    // scroll-snap commits the snap quickly so the threshold flips fast.
+    const visible = window.scrollY > window.innerHeight * 0.25;
     document.body.classList.toggle('footer-visible', visible);
   }
   window.addEventListener('scroll', update, { passive: true });
