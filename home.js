@@ -2189,9 +2189,11 @@
     requestAnimationFrame(frame);
   }
 
-  // Resize: re-fit canvas + rebuild particle pool, but keep label
-  // assignments so debug numbers don't all jump to new particles on every
-  // viewport change. Debounced via rAF coalescing.
+  // Resize: re-fit canvas only — DO NOT rebuild the particle pool.
+  // Particle world coords are normalised to FIELD_R, independent of
+  // pixel dimensions; rebuilding teleports every particle back to the
+  // spawn core, which on mobile (where the address bar fires resize on
+  // every scroll) reads as "particles go crazy then settle".
   let resizePending = false;
   window.addEventListener('resize', () => {
     if (resizePending) return;
@@ -2199,10 +2201,6 @@
     requestAnimationFrame(() => {
       resizePending = false;
       resize();
-      build();
-      // Re-pick anchors since the particle array was rebuilt; preserve
-      // labelIndices since the particle indices are still valid.
-      rebuildAnchors();
     });
   }, { passive: true });
   document.addEventListener('visibilitychange', () => {
