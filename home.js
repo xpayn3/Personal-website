@@ -399,57 +399,72 @@
     return pts;
   }
 
-  // ----- Portrait attractor ----------------------------------------------
-  // Rasterizes Luka's gameboy photo into a 3D point cloud weighted by
-  // luminance — darker pixels (face features, hair, eyes) get more
-  // particles; lighter pixels (highlights, skin) pop slightly toward
-  // the camera via z-depth, so the face reads with subtle relief.
-  let portraitPoints = null; // [x,y,z, x,y,z, ...] flat array
-  let portraitLoading = false;
-  function loadPortraitPoints() {
-    if (portraitPoints || portraitLoading) return;
-    portraitLoading = true;
-    const img = new Image();
-    img.onload = () => {
-      const W = 360, H = 360;
-      const off = document.createElement('canvas');
-      off.width = W; off.height = H;
-      const c = off.getContext('2d');
-      c.fillStyle = '#fff';
-      c.fillRect(0, 0, W, H);
-      // Cover-fit the photo into the square canvas
-      const r = Math.max(W / img.width, H / img.height);
-      const dw = img.width * r, dh = img.height * r;
-      c.drawImage(img, (W - dw) / 2, (H - dh) / 2, dw, dh);
-      const data = c.getImageData(0, 0, W, H).data;
-      const pts = [];
-      const STEP = 2;
-      for (let y = 0; y < H; y += STEP) {
-        for (let x = 0; x < W; x += STEP) {
-          const i = (y * W + x) * 4;
-          const lum = (data[i] + data[i + 1] + data[i + 2]) / (3 * 255);
-          // Skip pure-white background + sample dark pixels more often
-          const includeP = Math.pow(1 - lum, 1.4) * 0.95;
-          if (Math.random() > includeP) continue;
-          // World coords — slightly taller than wide range so the face
-          // doesn't shrink against the cover.
-          const wx = (x / W - 0.5) * 1.4;
-          const wy = (y / H - 0.5) * 1.4;
-          // Z depth — brighter pixels pop forward, dark ones recede.
-          const wz = (lum - 0.5) * 0.35;
-          pts.push(wx, wy, wz);
-        }
+  // ----- Generic 3D head / portrait shape --------------------------------
+  // Procedurally builds a stylized 3D head: ellipsoid skull + denser
+  // clusters for eyes, nose ridge and mouth. No image dependency.
+  const portraitPoints = (function buildHead() {
+    const pts = [];
+    // Skull — ellipsoid surface
+    const A = 0.42, B = 0.55, C = 0.40;
+    const SKULL_N = 2400;
+    for (let i = 0; i < SKULL_N; i++) {
+      const u = Math.random(), v = Math.random();
+      const theta = 2 * Math.PI * u;
+      const phi = Math.acos(2 * v - 1);
+      const x = A * Math.sin(phi) * Math.cos(theta);
+      const y = B * Math.cos(phi);
+      const z = C * Math.sin(phi) * Math.sin(theta);
+      pts.push(x, y, z);
+    }
+    // Eyes — dense disks slightly inset from the front
+    const EYE_X = 0.15, EYE_Y = -0.12, EYE_Z = 0.32, EYE_R = 0.052;
+    for (let side = -1; side <= 1; side += 2) {
+      for (let i = 0; i < 280; i++) {
+        const a = Math.random() * Math.PI * 2;
+        const r = Math.sqrt(Math.random()) * EYE_R;
+        pts.push(
+          side * EYE_X + Math.cos(a) * r * 0.85,
+          EYE_Y + Math.sin(a) * r * 0.55,
+          EYE_Z + (Math.random() - 0.5) * 0.03
+        );
       }
-      portraitPoints = pts;
-      portraitLoading = false;
-    };
-    img.onerror = () => {
-      portraitPoints = [];
-      portraitLoading = false;
-    };
-    img.src = 'gameboy/photo_2026-04-16_22-04-23.jpg';
-  }
-  loadPortraitPoints();
+    }
+    // Brow ridges — thin horizontal arcs above each eye
+    for (let side = -1; side <= 1; side += 2) {
+      for (let i = 0; i < 90; i++) {
+        const t = Math.random() - 0.5;
+        pts.push(
+          side * EYE_X + t * EYE_R * 1.7,
+          EYE_Y - 0.06 - Math.abs(t) * 0.02,
+          EYE_Z - 0.005
+        );
+      }
+    }
+    // Nose ridge — vertical line popping forward
+    for (let i = 0; i < 280; i++) {
+      const t = Math.random();
+      const yy = -0.06 + t * 0.18;
+      const zz = 0.40 - t * 0.04; // tip slightly forward
+      pts.push((Math.random() - 0.5) * 0.045, yy, zz);
+    }
+    // Mouth — small horizontal cluster
+    for (let i = 0; i < 220; i++) {
+      const t = Math.random();
+      const xx = -0.07 + t * 0.14;
+      const yy = 0.22 + (Math.random() - 0.5) * 0.022;
+      const zz = 0.34;
+      pts.push(xx, yy, zz);
+    }
+    // Jawline — gentle U curve below the mouth
+    for (let i = 0; i < 220; i++) {
+      const t = Math.random() * 2 - 1; // -1..1
+      const xx = t * 0.30;
+      const yy = 0.36 + Math.abs(t) * 0.10;
+      const zz = 0.18 - t * t * 0.05;
+      pts.push(xx, yy, zz);
+    }
+    return pts;
+  })();
 
   // Procedural fractal tree — recursive branching, leaf clusters at tips.
   // Returns flat [x,y, x,y, ...] in [-1, 1] world units. Trunk at bottom
