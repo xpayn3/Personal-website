@@ -600,21 +600,27 @@
         frame.dataset.projId = p.id;
 
         const hasVideo = isVideoSrc(p.video);
-        if (hasVideo) {
-          const v = document.createElement('video');
-          v.className = 'recent-card-video';
-          v.muted = true; v.loop = true; v.playsInline = true;
-          v.preload = 'metadata';
-          v.src = p.video;
-          v.setAttribute('aria-hidden', 'true');
-          frame.appendChild(v);
-        }
 
-        const img = document.createElement('img');
-        img.className = 'recent-card-thumb';
-        img.src = p.thumb;
-        img.alt = p.name;
-        frame.appendChild(img);
+        // Thumb is now ALWAYS the project's animation:
+        // - real video file (webm/mp4) → looping <video> auto-playing
+        // - animated webp / static image → <img> (animated WebPs loop in
+        //   the img tag natively).
+        // The same element scales up to fill the card on hover.
+        let thumb;
+        if (hasVideo) {
+          thumb = document.createElement('video');
+          thumb.muted = true; thumb.loop = true; thumb.playsInline = true;
+          thumb.preload = 'metadata';
+          thumb.autoplay = true;
+          thumb.src = p.video;
+          thumb.setAttribute('aria-hidden', 'true');
+        } else {
+          thumb = document.createElement('img');
+          thumb.src = p.thumb;
+          thumb.alt = p.name;
+        }
+        thumb.className = 'recent-card-thumb';
+        frame.appendChild(thumb);
 
         const body = document.createElement('div');
         body.className = 'recent-card-body';
@@ -636,7 +642,6 @@
 
       function applyProject(p) {
         card.href = `grid.html#project=${p.id}`;
-        card.classList.toggle('no-video', !isVideoSrc(p.video));
       }
 
       function tryPlay(v) {
@@ -649,7 +654,7 @@
         const frame = buildFrame(p);
         track.appendChild(frame);
         activeFrame = frame;
-        activeVideo = frame.querySelector('.recent-card-video');
+        activeVideo = frame.querySelector('video.recent-card-thumb');
         applyProject(p);
       }
 
@@ -673,7 +678,7 @@
         const oldFrame = activeFrame;
         const oldVideo = activeVideo;
         activeFrame = incoming;
-        activeVideo = incoming.querySelector('.recent-card-video');
+        activeVideo = incoming.querySelector('video.recent-card-thumb');
         applyProject(p);
 
         // Start playing the new video if hovered

@@ -20,7 +20,7 @@ html {
 }
 
 body {
-  background: var(--bg);
+  background: #000;
   color: var(--text);
   font-family: var(--font-body);
   min-height: 100vh;
@@ -30,7 +30,7 @@ body {
 
 html {
   overflow-x: hidden;
-  background: #fff;
+  background: #000;
   touch-action: manipulation;
   -ms-touch-action: manipulation;
 }

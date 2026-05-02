@@ -570,21 +570,9 @@ img, video {
 .recent-card-frame.is-enter-down { animation: recentSlideDownIn  0.5s cubic-bezier(0.7,0,0.25,1) forwards; }
 .recent-card-frame.is-leave-down { animation: recentSlideDownOut 0.5s cubic-bezier(0.7,0,0.25,1) forwards; }
 
-/* Background video — fills the frame, only visible on hover. */
-.recent-card-video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-}
-.recent-card:hover .recent-card-video,
-.recent-card.is-expanded .recent-card-video { opacity: 1; }
-
-/* Static thumbnail — visible only when collapsed. Sits top-left. */
+/* Animated thumbnail — sits in the top-left when collapsed and expands
+   to fill the card on hover. Always shows the project's animation
+   (looping <video> for webm, animated <img> for webp). */
 .recent-card-thumb {
   position: absolute;
   top: 14px;
@@ -597,7 +585,6 @@ img, video {
   border-radius: 4px;
   filter: contrast(1.05);
   transition:
-    opacity 0.3s ease,
     top 0.55s cubic-bezier(0.16, 1, 0.3, 1),
     left 0.55s cubic-bezier(0.16, 1, 0.3, 1),
     width 0.55s cubic-bezier(0.16, 1, 0.3, 1),
@@ -605,10 +592,8 @@ img, video {
     border-radius 0.4s ease,
     border-color 0.3s ease;
 }
-/* On hover with no real video, expand the thumb (animated WebP) to fill
-   the whole card. Otherwise it'd sit tiny in the corner. */
-.recent-card.no-video:hover .recent-card-thumb,
-.recent-card.no-video.is-expanded .recent-card-thumb {
+.recent-card:hover .recent-card-thumb,
+.recent-card.is-expanded .recent-card-thumb {
   top: 0;
   left: 0;
   width: 100%;
@@ -616,14 +601,6 @@ img, video {
   border-radius: 0;
   border-color: transparent;
 }
-.recent-card:hover .recent-card-thumb,
-.recent-card.is-expanded .recent-card-thumb { opacity: 0; }
-/* Projects without a real video (animated WebP only) keep the thumb
-   visible on hover — the WebP itself provides the animation. */
-.recent-card.no-video:hover .recent-card-thumb,
-.recent-card.no-video.is-expanded .recent-card-thumb { opacity: 1; }
-.recent-card.no-video:hover .recent-card-video,
-.recent-card.no-video.is-expanded .recent-card-video { opacity: 0; }
 
 /* Body text — collapsed: right of thumb. Hover: full-width bottom overlay. */
 .recent-card-body {
