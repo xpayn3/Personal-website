@@ -846,47 +846,56 @@
   window.__coverMorph = setMorphTarget;
   window.__coverShape = (name) => setMorphTarget(name ? { shape: name } : null);
 
-  // ----- Keyboard letter attractor -----------------------------------
-  // Hold any letter / digit key on the keyboard and the particles form
-  // that glyph. Release → particles return to the curl flow. Multiple
-  // keys queue up; the most recently pressed one is shown.
-  const heldKeys = [];
-  function syncHeldMorph() {
-    const top = heldKeys[heldKeys.length - 1];
-    if (top) setMorphTarget(top);
-    else setMorphTarget(null);
-  }
+  // ----- Typewriter ---------------------------------------------------
+  // Type any letters / digits / punctuation on the keyboard and the
+  // particles spell out the word in real time. Backspace deletes the
+  // last char. Esc / Enter clears. Auto-clears 3.5 s after the last
+  // keystroke if the user stops typing.
+  let typed = '';
+  let idleTimer = null;
   function isFormFocus() {
     const el = document.activeElement;
     if (!el) return false;
     const tag = el.tagName;
     return tag === 'INPUT' || tag === 'TEXTAREA' || el.isContentEditable;
   }
+  function pushTyped() {
+    if (idleTimer) clearTimeout(idleTimer);
+    if (typed) {
+      setMorphTarget(typed);
+      idleTimer = setTimeout(() => {
+        typed = '';
+        setMorphTarget(null);
+        idleTimer = null;
+      }, 3500);
+    } else {
+      setMorphTarget(null);
+    }
+  }
   window.addEventListener('keydown', (e) => {
     if (isFormFocus()) return;
     if (e.ctrlKey || e.metaKey || e.altKey) return;
-    if (!e.key || e.key.length !== 1) return; // single-char keys only
-    const k = e.key;
-    // Already at the top → don't restart the swap
-    if (heldKeys[heldKeys.length - 1] === k) return;
-    // Move to top (or add)
-    const i = heldKeys.indexOf(k);
-    if (i !== -1) heldKeys.splice(i, 1);
-    heldKeys.push(k);
-    syncHeldMorph();
-  });
-  window.addEventListener('keyup', (e) => {
-    if (!e.key || e.key.length !== 1) return;
-    const i = heldKeys.indexOf(e.key);
-    if (i !== -1) {
-      heldKeys.splice(i, 1);
-      syncHeldMorph();
+    if (e.key === 'Escape' || e.key === 'Enter') {
+      typed = '';
+      pushTyped();
+      return;
     }
+    if (e.key === 'Backspace') {
+      typed = typed.slice(0, -1);
+      pushTyped();
+      return;
+    }
+    if (!e.key || e.key.length !== 1) return;
+    // Cap length so we don't build infinite strings.
+    if (typed.length >= 20) return;
+    typed += e.key;
+    pushTyped();
   });
   window.addEventListener('blur', () => {
-    if (heldKeys.length) {
-      heldKeys.length = 0;
-      syncHeldMorph();
+    if (typed) {
+      typed = '';
+      if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; }
+      setMorphTarget(null);
     }
   });
 
