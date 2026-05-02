@@ -636,7 +636,9 @@ img, video {
 }
 .recent-card:hover .recent-card-body,
 .recent-card.is-expanded .recent-card-body {
-  top: auto;
+  /* Use a numeric `top` (not `auto`) so every property is
+     interpolatable — `auto → 14px` was snapping during collapse. */
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
