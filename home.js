@@ -83,7 +83,51 @@
   window.__coverFlow = (name) => setCoverFlow(name || 'base');
 
   let W = 0, H = 0, DPR = 1, cx = 0, cy = 0;
-  const particles = [];
+  // Struct-of-Arrays particle storage — typed arrays for the entire
+  // hot path. Lets V8 keep everything in monomorphic, contiguous,
+  // indexable memory and avoids per-particle object property lookups.
+  const pX        = new Float32Array(COUNT);
+  const pY        = new Float32Array(COUNT);
+  const pZ        = new Float32Array(COUNT);
+  const pSx       = new Float32Array(COUNT);
+  const pSy       = new Float32Array(COUNT);
+  const pDepth    = new Float32Array(COUNT);
+  const pLifeFade = new Float32Array(COUNT);
+  const pAlphaMul = new Float32Array(COUNT);
+  const pLife     = new Float32Array(COUNT);
+  const pMaxLife  = new Float32Array(COUNT);
+  const pFadeRate = new Float32Array(COUNT);
+  const pTravelR  = new Float32Array(COUNT);
+  const pAlphaPh  = new Float32Array(COUNT);
+  const pPushSx   = new Float32Array(COUNT);
+  const pPushSy   = new Float32Array(COUNT);
+  const pPushVX   = new Float32Array(COUNT);
+  const pPushVY   = new Float32Array(COUNT);
+  const pStiff    = new Float32Array(COUNT);
+  const pCommit   = new Float32Array(COUNT);
+  const pEmitPh   = new Float32Array(COUNT);
+  const pEmitFq   = new Float32Array(COUNT);
+  const pFluttFq  = new Float32Array(COUNT);
+  const pFluttSd  = new Float32Array(COUNT);
+  const pFluttAm  = new Float32Array(COUNT);
+  const pSwpDel   = new Float32Array(COUNT);
+  const pSwpDur   = new Float32Array(COUNT);
+  const pSwpCX    = new Float32Array(COUNT);
+  const pSwpCY    = new Float32Array(COUNT);
+  const pSwpCZ    = new Float32Array(COUNT);
+  const pSwpBur   = new Float32Array(COUNT);
+  const pSwpSpn   = new Float32Array(COUNT);
+  const pRelDel   = new Float32Array(COUNT);
+  const pRelDur   = new Float32Array(COUNT);
+  const pJigSd    = new Float32Array(COUNT);
+  const pJigAm    = new Float32Array(COUNT);
+  const pMorphCm  = new Float32Array(COUNT);
+  const pRepelF   = new Float32Array(COUNT);
+  const pFat      = new Uint8Array(COUNT);
+  const pEmitter  = new Uint8Array(COUNT);
+  // Stub array kept only so existing `particles.length` references
+  // resolve to COUNT without a sweeping rename. No object stored.
+  const particles = { length: COUNT };
 
   // Camera state — slow auto-orbit; gyroscope on mobile overrides
   // the auto-orbit when permission is granted and a tilt is detected.
@@ -165,94 +209,52 @@
     cy = H / 2;
   }
 
-  function spawnInside(p) {
+  function spawnInside(i) {
     // Random point inside a small core sphere — particles emerge from
     // somewhere near the middle, then flow outward via the field.
     const u = Math.random(), v = Math.random();
     const theta = 2 * Math.PI * u;
     const phi = Math.acos(2 * v - 1);
-    // Vary the spawn-zone radius per particle so they don't all bunch at
-    // exactly the same depth from center.
     const r = Math.cbrt(Math.random()) * FIELD_R * (0.18 + Math.random() * 0.30);
-    p.x = r * Math.sin(phi) * Math.cos(theta);
-    p.y = r * Math.sin(phi) * Math.sin(theta);
-    p.z = r * Math.cos(phi);
-    p.lifeFade = 0;
-    // Long, varied per-particle lifetime — gives the flow field time to
-    // trace genuine shapes before the particle is recycled.
-    p.life = 0;
-    p.maxLife = 6.0 + Math.random() * 14.0;    // 6 – 20 s
-    p.fadeInRate = 1.0 + Math.random() * 2.0;  // 1.0 – 3.0 / s (gentler)
-    // Most particles can reach the edge of the bounding sphere; some
-    // travel past it before recycling.
-    p.travelRadius = FIELD_R * (0.85 + Math.random() * 0.5); // 0.85 – 1.35
+    pX[i] = r * Math.sin(phi) * Math.cos(theta);
+    pY[i] = r * Math.sin(phi) * Math.sin(theta);
+    pZ[i] = r * Math.cos(phi);
+    pLifeFade[i] = 0;
+    pLife[i] = 0;
+    pMaxLife[i]  = 6.0 + Math.random() * 14.0;
+    pFadeRate[i] = 1.0 + Math.random() * 2.0;
+    pTravelR[i]  = FIELD_R * (0.85 + Math.random() * 0.5);
   }
 
   function build() {
-    particles.length = 0;
     for (let i = 0; i < COUNT; i++) {
-      const p = {
-        x: 0, y: 0, z: 0,
-        sx: 0, sy: 0, depth: 0,
-        lifeFade: 0,
-        // Spring-physics mouse repulsion: position + velocity.
-        pushSx: 0, pushSy: 0, pushVX: 0, pushVY: 0,
-        // Per-particle stiffness variance — keeps the field organic.
-        stiff: REPEL_STIFF * (0.78 + Math.random() * 0.44),
-      };
-      spawnInside(p);
-      p.lifeFade = Math.random();
-      // Per-particle commitment to morph targets. Most fully snap (1.0),
-      // but ~18% only partially commit (0.0 — 0.6), so the rendered word
-      // has a "fuzzy halo" of free particles drifting around the edges.
-      // ~10% partially commit (drift around the edges as a fuzzy halo);
-      // the rest snap fully to the letter shape.
-      p.commit = Math.random() < 0.05 ? 0.55 + Math.random() * 0.30 : 1;
-      // ~3% of particles act as letter emitters: commit periodically dips,
-      // releasing them into the flow then re-locking. Smaller share keeps
-      // the letter form crisp.
-      p.emitter = Math.random() < 0.03;
-      p.emitterPhase = Math.random() * Math.PI * 2;
-      p.emitterFreq = 0.35 + Math.random() * 0.45;
-      // Very small per-particle flutter — letters read sharp.
-      p.fluttFreq = 0.6 + Math.random() * 1.2;
-      p.fluttSeed = Math.random() * Math.PI * 2;
-      p.fluttAmp = 0.0008 + Math.random() * 0.0018;
-      // ~22% of particles are "fat" — drawn slightly bigger when locked
-      // into a letter, so glyph strokes pop a touch over the field.
-      p.fat = Math.random() < 0.22;
-      // Deterministic alpha-skip threshold per particle. Without this we
-      // call Math.random() per frame and the same particle blinks on/off
-      // randomly — looks like a glitch. With a stable phase, particles
-      // cross the visibility threshold in fixed order as alpha smoothly
-      // rises, producing a clean fade-in instead of flicker.
-      p.alphaPhase = Math.random();
-      // Per-particle window inside the global swap progress — wide stagger
-      // so the swarm reorganizes in pronounced waves, not in lockstep.
-      // Constrained so every particle's local window finishes by global
-      // swap = 1 (delay + dur ≤ 1). Without this, slow-tail particles
-      // freeze partway when prevPoints is cleared at swap=1 → looks like
-      // the animation "doesn't complete".
-      p.swapDelay = Math.random() * 0.30;
-      p.swapDur = 0.55 + Math.random() * 0.20; // 0.55 – 0.75
-      // Per-particle 3D control-point offset — turns each transition into
-      // a unique curved trajectory through space (quadratic Bezier).
-      // Magnitudes are large so paths visibly swoop, swirl, and overshoot.
-      p.swapCtrlX = (Math.random() - 0.5) * 1.8; // perpendicular bend (XY)
-      p.swapCtrlY = (Math.random() - 0.5) * 1.8;
-      p.swapCtrlZ = (Math.random() - 0.5) * 1.4; // depth swing
-      // Mid-path radial puff so the swarm bulges then collapses.
-      p.swapBurst = 0.15 + Math.random() * 0.55;
-      // Spin angle traversed mid-transition — particles rotate around the
-      // path midpoint in addition to following the curve.
-      p.swapSpin = (Math.random() - 0.5) * 1.4;
-      // Release window — when the user unhovers, each particle peels off
-      // the letter on its own schedule, with a small jiggle along the way.
-      p.releaseDelay = Math.random() * 0.45;
-      p.releaseDur = 0.45 + Math.random() * 0.35;
-      p.jiggleSeed = Math.random() * Math.PI * 2;
-      p.jiggleAmp = 0.005 + Math.random() * 0.012;
-      particles.push(p);
+      pSx[i] = 0; pSy[i] = 0; pDepth[i] = 0;
+      pPushSx[i] = 0; pPushSy[i] = 0; pPushVX[i] = 0; pPushVY[i] = 0;
+      pAlphaMul[i] = 0; pMorphCm[i] = 0; pRepelF[i] = 0;
+      pStiff[i] = REPEL_STIFF * (0.78 + Math.random() * 0.44);
+      spawnInside(i);
+      // Stagger initial fade so they don't all pop in together.
+      pLifeFade[i] = Math.random();
+      pCommit[i]  = Math.random() < 0.05 ? 0.55 + Math.random() * 0.30 : 1;
+      pEmitter[i] = Math.random() < 0.03 ? 1 : 0;
+      pEmitPh[i]  = Math.random() * Math.PI * 2;
+      pEmitFq[i]  = 0.35 + Math.random() * 0.45;
+      pFluttFq[i] = 0.6 + Math.random() * 1.2;
+      pFluttSd[i] = Math.random() * Math.PI * 2;
+      pFluttAm[i] = 0.0008 + Math.random() * 0.0018;
+      pFat[i]     = Math.random() < 0.22 ? 1 : 0;
+      pAlphaPh[i] = Math.random();
+      pSwpDel[i]  = Math.random() * 0.30;
+      pSwpDur[i]  = 0.55 + Math.random() * 0.20;
+      pSwpCX[i]   = (Math.random() - 0.5) * 1.8;
+      pSwpCY[i]   = (Math.random() - 0.5) * 1.8;
+      pSwpCZ[i]   = (Math.random() - 0.5) * 1.4;
+      pSwpBur[i]  = 0.15 + Math.random() * 0.55;
+      pSwpSpn[i]  = (Math.random() - 0.5) * 1.4;
+      pRelDel[i]  = Math.random() * 0.45;
+      pRelDur[i]  = 0.45 + Math.random() * 0.35;
+      pJigSd[i]   = Math.random() * Math.PI * 2;
+      pJigAm[i]   = 0.005 + Math.random() * 0.012;
     }
   }
 
@@ -1249,13 +1251,14 @@
     const anchorCells = _anchorCells;
     // Pass 1: count per cell + record each anchor's cell index.
     for (let i = 0; i < anchorIndices.length; i++) {
-      const p = particles[anchorIndices[i]];
-      if (!p || p.sx < 0 || p.sx > W || p.sy < 0 || p.sy > H) {
+      const idx = anchorIndices[i];
+      const sxi = pSx[idx], syi = pSy[idx];
+      if (sxi < 0 || sxi > W || syi < 0 || syi > H) {
         anchorCells[i] = -1;
         continue;
       }
-      const cx = (p.sx / cellSize) | 0;
-      const cy = (p.sy / cellSize) | 0;
+      const cx = (sxi / cellSize) | 0;
+      const cy = (syi / cellSize) | 0;
       const k = cy * cols + cx;
       anchorCells[i] = k;
       _binCount[k]++;
@@ -1284,9 +1287,8 @@
       const k = anchorCells[i];
       if (k < 0) continue;
       const idx = anchorIndices[i];
-      const p = particles[idx];
-      const am = p.alphaMul != null ? p.alphaMul : 1;
-      if (am < 0.4) continue;
+      if (pAlphaMul[idx] < 0.4) continue;
+      const psx = pSx[idx], psy = pSy[idx];
       const cx = k % cols;
       const cy = (k / cols) | 0;
       let nearest = -1, nearestD = Infinity;
@@ -1303,8 +1305,7 @@
           for (let j = start; j < end; j++) {
             const j2 = _binData[j];
             if (j2 <= idx) continue;
-            const q = particles[j2];
-            const ddx = q.sx - p.sx, ddy = q.sy - p.sy;
+            const ddx = pSx[j2] - psx, ddy = pSy[j2] - psy;
             const d2 = ddx * ddx + ddy * ddy;
             if (d2 > R2) continue;
             if (d2 < nearestD) { nextD = nearestD; next = nearest; nearestD = d2; nearest = j2; }
@@ -1313,14 +1314,12 @@
         }
       }
       if (nearest >= 0) {
-        const q = particles[nearest];
-        ctx.moveTo(p.sx, p.sy);
-        ctx.lineTo(q.sx, q.sy);
+        ctx.moveTo(psx, psy);
+        ctx.lineTo(pSx[nearest], pSy[nearest]);
       }
       if (next >= 0) {
-        const q = particles[next];
-        ctx.moveTo(p.sx, p.sy);
-        ctx.lineTo(q.sx, q.sy);
+        ctx.moveTo(psx, psy);
+        ctx.lineTo(pSx[next], pSy[next]);
       }
     }
     ctx.stroke();
@@ -1464,64 +1463,73 @@
     const mp = morph.progress;
     const hasTargets = mp > 0.001 && morph.points;
 
-    // Render directly via fillRect on a 1×1 footprint — sharp pixel dots.
-    // Group fillStyle changes via simple alpha bucketing for perf.
-    for (let i = 0; i < particles.length; i++) {
-      const p = particles[i];
+    // SoA hot loop — all field accesses go through typed-array index.
+    const focal = baseR * 1.8;
+    const COMMIT_CAP = 0.98;
+    const fastSwap = !!morph.fast || !!morph.straight;
+    const dynScale = fastSwap ? 0 : 1;
+    const morphPts = morph.points;
+    const morphPrev = morph.prevPoints;
+    const swap = morph.swap;
+    const morphActiveSwap = morphPrev && swap < 1
+      && morphPts && morphPrev.length === morphPts.length;
+    const releasing = morph.targetProgress === 0;
+    const sculptN = sculptAnchors.length;
 
-      // Sample curl field at this particle's position. curl() writes into
-      // a shared buffer to avoid 7000+ array allocations per frame.
-      curl(p.x * NOISE_SCALE, p.y * NOISE_SCALE, p.z * NOISE_SCALE, tNoise);
+    for (let i = 0; i < COUNT; i++) {
+      // Sample curl field at this particle's position.
+      curl(pX[i] * NOISE_SCALE, pY[i] * NOISE_SCALE, pZ[i] * NOISE_SCALE, tNoise);
       const vx = _curlOut[0], vy = _curlOut[1], vz = _curlOut[2];
 
-      // Move along the flow
-      p.x += vx * FLOW_SPEED * dt;
-      p.y += vy * FLOW_SPEED * dt;
-      p.z += vz * FLOW_SPEED * dt;
+      // Move along the flow.
+      let px_ = pX[i] + vx * FLOW_SPEED * dt;
+      let py_ = pY[i] + vy * FLOW_SPEED * dt;
+      let pz_ = pZ[i] + vz * FLOW_SPEED * dt;
 
-      // Preset-driven extra forces.
       if (SWIRL !== 0) {
-        // Tangential rotation around z-axis — particles orbit the center.
-        p.x += -p.y * SWIRL * dt;
-        p.y +=  p.x * SWIRL * dt;
+        const ox = px_, oy = py_;
+        px_ += -oy * SWIRL * dt;
+        py_ +=  ox * SWIRL * dt;
       }
       if (RADIAL !== 0) {
-        // Inline sqrt(x²+y²) — Math.hypot is materially slower in V8.
-        const rd = Math.sqrt(p.x * p.x + p.y * p.y) + 1e-5;
-        p.x += (p.x / rd) * RADIAL * dt;
-        p.y += (p.y / rd) * RADIAL * dt;
+        const rd = Math.sqrt(px_ * px_ + py_ * py_) + 1e-5;
+        px_ += (px_ / rd) * RADIAL * dt;
+        py_ += (py_ / rd) * RADIAL * dt;
       }
       if (JITTER !== 0) {
-        p.x += (Math.random() - 0.5) * JITTER;
-        p.y += (Math.random() - 0.5) * JITTER;
+        px_ += (Math.random() - 0.5) * JITTER;
+        py_ += (Math.random() - 0.5) * JITTER;
       }
       if (WIND_X !== 0 || WIND_Y !== 0) {
-        p.x += WIND_X * dt;
-        p.y += WIND_Y * dt;
+        px_ += WIND_X * dt;
+        py_ += WIND_Y * dt;
       }
 
-      // Recycle when either the per-particle travel radius is exceeded or
-      // its lifetime runs out — staggered deaths instead of one big purge
-      // at the bounding sphere.
-      p.life += dt;
-      const dist2 = p.x * p.x + p.y * p.y + p.z * p.z;
-      const tr = p.travelRadius || FIELD_R;
-      if (dist2 > tr * tr || p.life >= p.maxLife) {
-        spawnInside(p);
+      // Lifetime + recycle.
+      let life = pLife[i] + dt;
+      const dist2 = px_ * px_ + py_ * py_ + pz_ * pz_;
+      const tr = pTravelR[i];
+      if (dist2 > tr * tr || life >= pMaxLife[i]) {
+        spawnInside(i);
+        px_ = pX[i]; py_ = pY[i]; pz_ = pZ[i];
+        life = 0;
+      } else {
+        pX[i] = px_; pY[i] = py_; pZ[i] = pz_;
+        pLife[i] = life;
       }
 
-      // Per-particle fade-in rate (varies, set in spawnInside).
-      p.lifeFade = Math.min(1, p.lifeFade + dt * (p.fadeInRate || 2.0));
-      // Fade out toward end of lifetime — last 30% of life dims out.
-      const ageK = p.maxLife > 0 ? p.life / p.maxLife : 0;
+      // Fade in / age fade.
+      const lifeFade = Math.min(1, pLifeFade[i] + dt * pFadeRate[i]);
+      pLifeFade[i] = lifeFade;
+      const maxLife = pMaxLife[i];
+      const ageK = maxLife > 0 ? life / maxLife : 0;
       const ageFade = ageK > 0.7 ? Math.max(0, 1 - (ageK - 0.7) / 0.3) : 1;
-      p.alphaMul = p.lifeFade * ageFade;
+      pAlphaMul[i] = lifeFade * ageFade;
 
-      // Flow path: apply full camera transform (yaw + pitch + perspective).
-      const focal = baseR * 1.8;
-      const flx = p.x * baseR;
-      const fly = p.y * baseR;
-      const flz = p.z * baseR;
+      // Camera transform.
+      const flx = px_ * baseR;
+      const fly = py_ * baseR;
+      const flz = pz_ * baseR;
       const fcx = flx * yawCos - flz * yawSin;
       const fcz = flx * yawSin + flz * yawCos;
       const fcy = fly * pitchCos - fcz * pitchSin;
@@ -1532,128 +1540,90 @@
       const flowDepth = fpersp;
 
       let sx = flowSx, sy = flowSy, depth = flowDepth;
-      p.morphCommit = 0;
+      let commit = 0;
 
       if (hasTargets) {
         const ti = i * 3;
         let tx, ty, tz;
-        if (morph.prevPoints && morph.swap < 1
-            && morph.prevPoints.length === morph.points.length
-            && ti + 2 < morph.prevPoints.length) {
-          // Per-particle stagger window
-          const local = (morph.swap - (p.swapDelay || 0)) / (p.swapDur || 1);
+        if (morphActiveSwap && ti + 2 < morphPrev.length) {
+          const local = (swap - pSwpDel[i]) / pSwpDur[i];
           const t = local <= 0 ? 0 : (local >= 1 ? 1 : local);
-          // Ease-in-out cubic — accelerates into motion, decelerates into shape
           const eio = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-          // Bell that peaks mid-transition (used for spin + radial puff)
           const bell = Math.sin(t * Math.PI);
-
-          const px = morph.prevPoints[ti], py = morph.prevPoints[ti + 1], pz = morph.prevPoints[ti + 2];
-          const nx = morph.points[ti],     ny = morph.points[ti + 1],     nz = morph.points[ti + 2];
-          // Build a per-particle 3D control point offset perpendicular-ish
-          // from the old→new line, plus a depth swing. Quadratic Bezier
-          // through (prev, ctrl, new) gives each particle its own swooping
-          // curved trajectory rather than a tween straight line.
-          const dx = nx - px, dy = ny - py;
-          const cx0 = (px + nx) * 0.5;
-          const cy0 = (py + ny) * 0.5;
-          const cz0 = (pz + nz) * 0.5;
-          // In fast (typewriter) or straight (nav-text) mode skip the
-          // curve / spin / burst theatrics — straight lerp from prev to
-          // new so the snapshot blend on rapid hover doesn't visibly
-          // jump (the renderer's actual position would have been on the
-          // bezier curve, but the snapshot only captures the linear
-          // midpoint).
-          const fastSwap = !!morph.fast || !!morph.straight;
-          const dynScale = fastSwap ? 0 : 1;
-          const perpScale = (p.swapCtrlX || 0) * dynScale;
-          const ctrlX = cx0 + (-dy) * perpScale + (p.swapCtrlX || 0) * 0.25 * dynScale;
-          const ctrlY = cy0 + ( dx) * perpScale + (p.swapCtrlY || 0) * 0.25 * dynScale;
-          const ctrlZ = cz0 + (p.swapCtrlZ || 0) * 0.5 * dynScale;
-
-          // Quadratic Bezier evaluation in 3D
+          const ppx = morphPrev[ti], ppy = morphPrev[ti + 1], ppz = morphPrev[ti + 2];
+          const nx = morphPts[ti],   ny = morphPts[ti + 1],   nz = morphPts[ti + 2];
+          const dx = nx - ppx, dy = ny - ppy;
+          const cx0 = (ppx + nx) * 0.5;
+          const cy0 = (ppy + ny) * 0.5;
+          const cz0 = (ppz + nz) * 0.5;
+          const swpCX = pSwpCX[i], swpCY = pSwpCY[i], swpCZ = pSwpCZ[i];
+          const perpScale = swpCX * dynScale;
+          const ctrlX = cx0 + (-dy) * perpScale + swpCX * 0.25 * dynScale;
+          const ctrlY = cy0 + ( dx) * perpScale + swpCY * 0.25 * dynScale;
+          const ctrlZ = cz0 + swpCZ * 0.5 * dynScale;
           const u = 1 - eio;
-          let bx = u * u * px + 2 * u * eio * ctrlX + eio * eio * nx;
-          let by = u * u * py + 2 * u * eio * ctrlY + eio * eio * ny;
-          const bz = u * u * pz + 2 * u * eio * ctrlZ + eio * eio * nz;
-
-          // Mid-transition spin around the path midpoint — adds rotational
-          // dynamism so paths twist around each other.
-          const ang = bell * (p.swapSpin || 0) * dynScale;
+          let bx = u * u * ppx + 2 * u * eio * ctrlX + eio * eio * nx;
+          let by = u * u * ppy + 2 * u * eio * ctrlY + eio * eio * ny;
+          const bz = u * u * ppz + 2 * u * eio * ctrlZ + eio * eio * nz;
+          const ang = bell * pSwpSpn[i] * dynScale;
           if (ang !== 0) {
             const cs = Math.cos(ang), sn = Math.sin(ang);
             const ox = bx - cx0, oy = by - cy0;
             bx = cx0 + ox * cs - oy * sn;
             by = cy0 + ox * sn + oy * cs;
           }
-
-          // Outward radial puff from origin — swarm bulges then converges.
-          const mLen = Math.hypot(cx0, cy0) + 1e-6;
-          const burst = bell * (p.swapBurst || 0) * dynScale;
+          const mLen = Math.sqrt(cx0 * cx0 + cy0 * cy0) + 1e-6;
+          const burst = bell * pSwpBur[i] * dynScale;
           tx = bx + (cx0 / mLen) * burst;
           ty = by + (cy0 / mLen) * burst;
           tz = bz;
         } else {
-          tx = morph.points[ti];
-          ty = morph.points[ti + 1];
-          tz = morph.points[ti + 2];
+          tx = morphPts[ti];
+          ty = morphPts[ti + 1];
+          tz = morphPts[ti + 2];
         }
-        // Target screen position — map directly with no yaw/pitch so the
-        // text always reads frontal regardless of camera orbit.
         const tpersp = focal / (focal + tz * baseR);
         const targetSx = cx + tx * baseR * tpersp;
         const targetSy = cy + ty * baseR * tpersp;
         const targetDepth = tpersp;
 
-        // Cap committed particles at <1 so the live flow always bleeds
-        // through. Particles never fully freeze — they breathe along the
-        // curl flow at their target position, while still reading as text.
-        const COMMIT_CAP = 0.98;
-        const personalCommit = p.commit != null ? p.commit : 1;
+        const personalCommit = pCommit[i];
         let emitterMul = 1;
-        if (p.emitter) {
-          const ph = Math.sin(elapsed * p.emitterFreq + p.emitterPhase);
+        if (pEmitter[i]) {
+          const ph = Math.sin(elapsed * pEmitFq[i] + pEmitPh[i]);
           if (ph > 0.4) emitterMul = Math.max(0, 1 - (ph - 0.4) * 1.7);
         }
-
-        // While releasing (mp falling, intent is 0), each particle peels
-        // off on its own staggered window so they don't all let go at once.
         let perParticleMp = mp;
-        if (morph.targetProgress === 0 && mp < 1) {
+        if (releasing && mp < 1) {
           const releaseT = 1 - mp;
-          const localR = (releaseT - (p.releaseDelay || 0)) / (p.releaseDur || 1);
+          const localR = (releaseT - pRelDel[i]) / pRelDur[i];
           const cR = localR <= 0 ? 0 : (localR >= 1 ? 1 : localR);
           const easedR = 1 - Math.pow(1 - cR, 3);
           perParticleMp = 1 - easedR;
         }
-
-        const commit = perParticleMp * COMMIT_CAP * personalCommit * emitterMul;
-        // Anchored particles still flutter along low-frequency sine drifts
-        // around their letter position so the form reads as alive, not frozen.
+        commit = perParticleMp * COMMIT_CAP * personalCommit * emitterMul;
         let flutterX = 0, flutterY = 0;
         if (commit > 0.2) {
-          const f = elapsed * p.fluttFreq + p.fluttSeed;
-          flutterX = Math.sin(f) * p.fluttAmp * baseR;
-          flutterY = Math.cos(f * 1.3 + 1.0) * p.fluttAmp * baseR;
+          const f = elapsed * pFluttFq[i] + pFluttSd[i];
+          const amp = pFluttAm[i] * baseR;
+          flutterX = Math.sin(f) * amp;
+          flutterY = Math.cos(f * 1.3 + 1.0) * amp;
         }
         sx = flowSx + (targetSx + flutterX - flowSx) * commit;
         sy = flowSy + (targetSy + flutterY - flowSy) * commit;
         depth = flowDepth + (targetDepth - flowDepth) * commit;
-        p.morphCommit = commit;
-
-        // Juggle: small sinusoidal jiggle that peaks mid-release and
-        // tapers at both ends. Only audible while particles are letting go.
-        if (morph.targetProgress === 0 && mp > 0.001 && mp < 1) {
-          const jt = 1 - mp; // 0..1 release timeline
-          const env = Math.sin(jt * Math.PI); // bell curve
-          const wob = Math.sin(now * 0.018 + p.jiggleSeed) * p.jiggleAmp * env * baseR;
-          const wob2 = Math.cos(now * 0.022 + p.jiggleSeed * 1.7) * p.jiggleAmp * env * baseR;
-          sx += wob;
-          sy += wob2;
+        if (releasing && mp > 0.001 && mp < 1) {
+          const jt = 1 - mp;
+          const env = Math.sin(jt * Math.PI);
+          const jSeed = pJigSd[i];
+          const jAmp = pJigAm[i] * env * baseR;
+          sx += Math.sin(now * 0.018 + jSeed) * jAmp;
+          sy += Math.cos(now * 0.022 + jSeed * 1.7) * jAmp;
         }
       }
+      pMorphCm[i] = commit;
 
-      // Mouse repulsion — spring physics with cursor-velocity wake.
+      // Mouse repulsion (spring + wake).
       let targetPushX = 0, targetPushY = 0;
       let falloff = 0;
       if (cursorActive) {
@@ -1664,29 +1634,25 @@
           const d = Math.sqrt(d2);
           const t = 1 - d / activeR;
           const ease = t * t * (3 - 2 * t);
-          falloff = ease * ease; // soft cubic ramp
+          falloff = ease * ease;
           const push = falloff * activeStrength;
           targetPushX = (ddx / d) * push;
           targetPushY = (ddy / d) * push;
         }
       }
-      // Spring step toward target push — soft return so released
-      // particles glide back instead of snapping.
-      const fx = (targetPushX - p.pushSx) * p.stiff;
-      const fy = (targetPushY - p.pushSy) * p.stiff;
-      p.pushVX = (p.pushVX + fx) * REPEL_DAMP;
-      p.pushVY = (p.pushVY + fy) * REPEL_DAMP;
-      // Cursor-velocity wake — particles in range get nudged in the
-      // cursor's motion direction. Stronger while dragging (fluid push).
+      let pushSx = pPushSx[i], pushSy = pPushSy[i];
+      let pushVX = pPushVX[i], pushVY = pPushVY[i];
+      const stiff = pStiff[i];
+      const fx = (targetPushX - pushSx) * stiff;
+      const fy = (targetPushY - pushSy) * stiff;
+      pushVX = (pushVX + fx) * REPEL_DAMP;
+      pushVY = (pushVY + fy) * REPEL_DAMP;
       if (falloff > 0.001) {
-        p.pushVX += ptrVX * falloff * activeWake;
-        p.pushVY += ptrVY * falloff * activeWake;
+        pushVX += ptrVX * falloff * activeWake;
+        pushVY += ptrVY * falloff * activeWake;
       }
-      // Sculpt segments — pull toward the closest point on each line
-      // segment. AABB pre-check rejects 90%+ of segment iterations with
-      // four scalar compares before touching the closest-point math.
-      if (sculptAnchors.length) {
-        for (let a = 0; a < sculptAnchors.length; a++) {
+      if (sculptN) {
+        for (let a = 0; a < sculptN; a++) {
           const an = sculptAnchors[a];
           if (sx < an.minX - _sculptR) continue;
           if (sx > an.maxX + _sculptR) continue;
@@ -1694,16 +1660,16 @@
           if (sy > an.maxY + _sculptR) continue;
           const ex = an.x2 - an.x1, ey = an.y2 - an.y1;
           const len2 = ex * ex + ey * ey;
-          let cx, cy;
-          if (len2 < 0.001) { cx = an.x1; cy = an.y1; }
+          let acx, acy;
+          if (len2 < 0.001) { acx = an.x1; acy = an.y1; }
           else {
             let t = ((sx - an.x1) * ex + (sy - an.y1) * ey) / len2;
             if (t < 0) t = 0; else if (t > 1) t = 1;
-            cx = an.x1 + ex * t;
-            cy = an.y1 + ey * t;
+            acx = an.x1 + ex * t;
+            acy = an.y1 + ey * t;
           }
-          const adx = cx - sx;
-          const ady = cy - sy;
+          const adx = acx - sx;
+          const ady = acy - sy;
           const ad2 = adx * adx + ady * ady;
           if (ad2 > _sculptR2) continue;
           const ad = Math.sqrt(ad2);
@@ -1712,53 +1678,58 @@
           const t2 = 1 - ad / _sculptR;
           const ease = t2 * t2;
           const pull = ease * SCULPT_PULL * lifeR * DPR;
-          p.pushVX += (adx / ad) * pull;
-          p.pushVY += (ady / ad) * pull;
+          pushVX += (adx / ad) * pull;
+          pushVY += (ady / ad) * pull;
         }
       }
-      p.pushSx += p.pushVX;
-      p.pushSy += p.pushVY;
-      // Spring/wake can occasionally produce a NaN if it gets fed a NaN
-      // delta — clamp to zero so the particle doesn't disappear.
-      if (!isFinite(p.pushSx)) { p.pushSx = 0; p.pushVX = 0; }
-      if (!isFinite(p.pushSy)) { p.pushSy = 0; p.pushVY = 0; }
-      p.repelFalloff = falloff;
+      pushSx += pushVX;
+      pushSy += pushVY;
+      if (!isFinite(pushSx)) { pushSx = 0; pushVX = 0; }
+      if (!isFinite(pushSy)) { pushSy = 0; pushVY = 0; }
+      pPushSx[i] = pushSx; pPushSy[i] = pushSy;
+      pPushVX[i] = pushVX; pPushVY[i] = pushVY;
+      pRepelF[i] = falloff;
 
-      let outSx = sx + p.pushSx;
-      let outSy = sy + p.pushSy;
+      let outSx = sx + pushSx;
+      let outSy = sy + pushSy;
       let outDepth = depth;
-      // Bulletproof: any non-finite value fall back to the flow position
-      // so a single frame of bad math doesn't visibly glitch.
       if (!isFinite(outSx) || !isFinite(outSy) || !isFinite(outDepth)) {
         outSx = flowSx;
         outSy = flowSy;
         outDepth = flowDepth;
-        p.morphCommit = 0;
+        pMorphCm[i] = 0;
       }
-      p.sx = outSx;
-      p.sy = outSy;
-      p.depth = outDepth;
+      pSx[i] = outSx;
+      pSy[i] = outSy;
+      pDepth[i] = outDepth;
     }
 
     // Constellation lines under the dots.
     drawConstellation();
 
-    // Two-pass render: back layer first, then bright foreground. Bucketing
-    // by depth into 4 alpha tiers avoids per-particle fillStyle thrash.
+    // Two-pass tier render — SoA accesses straight into typed arrays.
     for (let tier = 0; tier < TIERS.length; tier++) {
       const T = TIERS[tier];
       ctx.fillStyle = `rgba(255,255,255,${T.alpha})`;
       const baseSz = T.size * DPR;
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        if (p.depth < T.min || p.depth >= T.max) continue;
-        if (p.sx < -2 || p.sy < -2 || p.sx > W + 2 || p.sy > H + 2) continue;
-        const am = p.alphaMul != null ? p.alphaMul : p.lifeFade;
-        if (am < 1 && (p.alphaPhase || 0) > am) continue;
+      const tMin = T.min, tMax = T.max;
+      const Wmax = W + 2, Hmax = H + 2;
+      for (let i = 0; i < COUNT; i++) {
+        const dpth = pDepth[i];
+        if (dpth < tMin || dpth >= tMax) continue;
+        const sxi = pSx[i];
+        if (sxi < -2 || sxi > Wmax) continue;
+        const syi = pSy[i];
+        if (syi < -2 || syi > Hmax) continue;
+        const am = pAlphaMul[i];
+        if (am < 1 && pAlphaPh[i] > am) continue;
         let sz = baseSz;
-        if (p.repelFalloff > 0) sz *= 1 + p.repelFalloff * REPEL_SIZE_BOOST;
-        if (p.fat && (p.morphCommit || 0) > 0.5) sz *= 1.7;
-        ctx.fillRect((p.sx - sz / 2) | 0, (p.sy - sz / 2) | 0, Math.max(1, sz), Math.max(1, sz));
+        const rf = pRepelF[i];
+        if (rf > 0) sz *= 1 + rf * REPEL_SIZE_BOOST;
+        if (pFat[i] && pMorphCm[i] > 0.5) sz *= 1.7;
+        const half = sz / 2;
+        const w = sz < 1 ? 1 : sz;
+        ctx.fillRect((sxi - half) | 0, (syi - half) | 0, w, w);
       }
     }
 
@@ -1772,18 +1743,13 @@
       const offX = 8 * DPR;
       for (let li = 0; li < labelIndices.length; li++) {
         const idx = labelIndices[li];
-        const p = particles[idx];
-        if (!p) continue;
-        if (p.sx < 0 || p.sy < 0 || p.sx > W || p.sy > H) continue;
-        const am = p.alphaMul != null ? p.alphaMul : 1;
-        if (am < 0.2) continue;
-        const txt = (p.sx / DPR).toFixed(0).padStart(4, ' ');
-        const tx = p.sx + offX;
-        const ty = p.sy;
+        const sxi = pSx[idx], syi = pSy[idx];
+        if (sxi < 0 || syi < 0 || sxi > W || syi > H) continue;
+        if (pAlphaMul[idx] < 0.2) continue;
+        const txt = (sxi / DPR).toFixed(0).padStart(4, ' ');
         const hue = labelHues[li] || 0;
-        // Bright, fully opaque label — number only, no leader/dash.
         ctx.fillStyle = `hsl(${hue}, 100%, 60%)`;
-        ctx.fillText(txt, tx, ty);
+        ctx.fillText(txt, sxi + offX, syi);
       }
     }
 
@@ -1796,20 +1762,17 @@
       const offX = 10 * DPR;
       for (let li = 0; li < serviceTagIndices.length; li++) {
         const idx = serviceTagIndices[li];
-        const p = particles[idx];
-        if (!p) continue;
-        if (p.sx < 0 || p.sy < 0 || p.sx > W || p.sy > H) continue;
-        const am = p.alphaMul != null ? p.alphaMul : 1;
-        if (am < 0.25) continue;
+        const sxi = pSx[idx], syi = pSy[idx];
+        if (sxi < 0 || syi < 0 || sxi > W || syi > H) continue;
+        if (pAlphaMul[idx] < 0.25) continue;
         const num = String(li + 1).padStart(2, '0');
         const lab = serviceTagLabels[li] || '';
-        const tx = p.sx + offX;
-        const ty = p.sy;
+        const tx = sxi + offX;
         ctx.fillStyle = '#4ade80';
-        ctx.fillText(num, tx, ty);
+        ctx.fillText(num, tx, syi);
         const numW = ctx.measureText(num).width;
         ctx.fillStyle = '#ffffff';
-        ctx.fillText(' ' + lab, tx + numW, ty);
+        ctx.fillText(' ' + lab, tx + numW, syi);
       }
     }
 
