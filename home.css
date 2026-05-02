@@ -7,13 +7,20 @@ html, body {
 }
 
 html {
-  /* Standard thin scrollbar — works the same on modern Firefox + Chrome
-     121+. Don't add ::-webkit-scrollbar pseudo rules: that forces a
-     constant always-visible bar on WebKit instead of the auto-hide
-     behavior we want. */
+  /* Firefox + Chrome 121+ standard thin scrollbar (auto-hide). */
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
 }
+/* Chrome / Safari fallback for older versions: transparent track so the
+   page background shows through, no opaque grey gutter. */
+html::-webkit-scrollbar { width: 8px; height: 8px; background: transparent; }
+html::-webkit-scrollbar-track { background: transparent; }
+html::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+}
+html::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.45); }
+html::-webkit-scrollbar-corner { background: transparent; }
 
 img, video {
   -webkit-user-select: none;
