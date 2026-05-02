@@ -35,15 +35,27 @@ img, video {
   -webkit-touch-callout: none;
 }
 
-/* ========== COVER ========== */
+/* ========== COVER ==========
+   Fixed to the viewport so the canvas stays in place while the user
+   scrolls and the footer slides up over it from below. */
 .cover {
-  position: relative;
+  position: fixed;
+  inset: 0;
   height: 100vh;
   height: 100dvh;
   width: 100%;
   overflow: hidden;
   background: #000;
   z-index: 1;
+}
+
+/* Scroll runway — gives the body real scroll distance so the footer
+   has something to translate against. */
+.scroll-runway {
+  height: 100vh;
+  height: 100dvh;
+  width: 100%;
+  pointer-events: none;
 }
 
 .cover-media {
@@ -734,6 +746,20 @@ img, video {
    In-flow spacer that gives the footer 100dvh of scroll distance to slide
    in over the sticky cover. */
 
-/* Footer sits naturally after the cover in document flow — scroll lands
-   on it directly. No fixed positioning, no transitions. */
-.site-footer { z-index: 2; }
+/* Footer is fixed at the bottom of the viewport and slid in by JS
+   progressively as the user scrolls the runway. The particle cover
+   stays put behind it. */
+.site-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 500;
+  transform: translate3d(0, 100%, 0);
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-footer { transition: transform 0.3s ease; }
+}

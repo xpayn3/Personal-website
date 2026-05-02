@@ -1349,14 +1349,25 @@
   start();
 })();
 
-// Cover is just 100vh, footer follows in normal flow — no scroll JS needed.
-// IntersectionObserver toggles `body.footer-visible` so footer.css can fire
-// its content fade-in when the user actually reaches the footer.
+// Footer slide-in: cover stays fixed to the viewport, footer translates
+// in from the bottom in lockstep with scroll progress through the runway.
 (function () {
   const footerEl = document.querySelector('.site-footer');
-  if (!footerEl || !('IntersectionObserver' in window)) return;
-  const io = new IntersectionObserver((entries) => {
-    document.body.classList.toggle('footer-visible', entries[0].isIntersecting);
-  }, { threshold: 0.05 });
-  io.observe(footerEl);
+  if (!footerEl) return;
+  let pending = false;
+  function apply() {
+    pending = false;
+    const dist = window.innerHeight;
+    const p = Math.max(0, Math.min(1, window.scrollY / dist));
+    footerEl.style.transform = `translate3d(0, ${(1 - p) * 100}%, 0)`;
+    document.body.classList.toggle('footer-visible', p > 0.6);
+  }
+  function onScroll() {
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(apply);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', apply, { passive: true });
+  apply();
 })();
