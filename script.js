@@ -119,7 +119,17 @@ function renderGrid() {
         label.innerHTML = 'L<span style="font-weight:300">a</span>B';
       });
     } else {
-      label.textContent = item.projectName;
+      // Multi-line techy label: tag (year · category) + project name.
+      const tag = document.createElement('span');
+      tag.className = 'item-label-tag';
+      const cat = (item.category || [])[0] || '';
+      const yearStr = item.year ? `// ${item.year}` : '//';
+      tag.textContent = cat ? `${yearStr} · ${cat}` : yearStr;
+      const name = document.createElement('span');
+      name.className = 'item-label-name';
+      name.textContent = item.projectName;
+      label.appendChild(tag);
+      label.appendChild(name);
     }
     div.appendChild(label);
 
