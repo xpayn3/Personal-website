@@ -690,8 +690,8 @@
           // Canvas y grows down; in our world, positive Y also reads as
           // down (after the pitch transform). Don't flip — straight map.
           pts.push(
-            (x / W2 - 0.5) * 2 * 0.9 + (Math.random() - 0.5) * 0.01,
-            (y / H2 - 0.5) * 2 * 0.45 + (Math.random() - 0.5) * 0.01
+            (x / W2 - 0.5) * 2 * 1.45 + (Math.random() - 0.5) * 0.01,
+            (y / H2 - 0.5) * 2 * 0.72 + (Math.random() - 0.5) * 0.01
           );
         }
       }
@@ -1311,7 +1311,7 @@
     const word = GREETINGS[(Math.random() * GREETINGS.length) | 0];
     greetKey = word;
     greetActive = true;
-    greetUntil = now + 2800 + Math.random() * 1000; // a touch longer hold
+    greetUntil = now + 5500 + Math.random() * 2000; // 5.5 – 7.5 s hold
     setMorphTarget(word);
     // Loose commit + slow ramp — feels like a faint attractor turning
     // on, rather than a hard snap to text.
@@ -1727,12 +1727,12 @@
     // Smooth morph progress toward target — eased so transitions feel soft.
     // Slower decay when releasing so the per-particle stagger reads.
     // Greetings ease MUCH slower than nav/text morphs — feels like a
-    // faint attractor turning on rather than a snap. ~3-4× slower
-    // both directions.
+    // faint attractor that fades in and out, not a snap. ~6-8× slower
+    // both directions vs nav-text morphs.
     const greetMode = !!morph.greet;
     const easeRate = morph.targetProgress > morph.progress
-      ? (greetMode ? 0.022 : 0.08)
-      : (greetMode ? 0.018 : 0.04);
+      ? (greetMode ? 0.010 : 0.08)
+      : (greetMode ? 0.008 : 0.04);
     morph.progress += (morph.targetProgress - morph.progress) * easeRate;
     if (morph.swap < 1) {
       // Fast swap when typing (so adjacent letters don't overlap into
