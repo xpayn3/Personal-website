@@ -88,23 +88,24 @@
   // Camera state — slow auto-orbit only (no cursor tilt).
   const cam = { yaw: 0, pitch: 0.18 };
 
-  // Repulsion params — spring-physics push for weight + bounce.
-  // Lower stiffness + higher damping means particles drift back to home
-  // slowly instead of springing the moment force is removed.
+  // Repulsion params — spring-physics push for weight + bounce. Tuned
+  // very soft so the particle field reads as fluid: long-lasting decay
+  // with minimal initial punch, particles glide rather than snap.
   const REPEL_RADIUS = 240;        // CSS pixels (hover)
-  const REPEL_STRENGTH = 32;       // peak radial push (pixels)
-  // Tuned closer to critical damping — slow, smooth return with no
-  // visible overshoot/bounce.
-  const REPEL_STIFF = 0.07;        // very soft spring
-  const REPEL_DAMP = 0.78;         // dissipates velocity faster → no springy oscillation
-  const REPEL_WAKE = 0.22;         // cursor-velocity wake while hovering
+  const REPEL_STRENGTH = 22;       // peak radial push (pixels) — softer hover
+  // Spring tuned just past critical damping: smooth glide back to home,
+  // no visible oscillation/jiggle when the cursor lifts.
+  const REPEL_STIFF = 0.055;       // soft spring
+  const REPEL_DAMP = 0.74;         // strong friction → no overshoot ringing
+  const REPEL_WAKE = 0.14;         // cursor-velocity wake while hovering
   const REPEL_SIZE_BOOST = 0.55;   // extra size factor at peak push
 
-  // Drag mode — fluid-push interaction. Held mouse with motion = sustained
-  // wider, stronger force in the cursor's direction.
-  const DRAG_RADIUS = 380;         // CSS pixels while drag is held
-  const DRAG_STRENGTH = 48;        // stronger radial push while dragging
-  const DRAG_WAKE = 0.65;          // much stronger directional carry
+  // Drag mode — fluid-push interaction. Wider but much gentler than
+  // before; the wake carries the cloud like a slow current instead of
+  // a hard shove.
+  const DRAG_RADIUS = 360;         // CSS pixels while drag is held
+  const DRAG_STRENGTH = 22;        // matches hover so dragging feels continuous
+  const DRAG_WAKE = 0.28;          // soft directional carry (was 0.65)
 
   // ----- Cheap 3D value noise + curl ---------------------------------------
   // Hash → pseudo-random unit vector at integer 3D lattice point.
@@ -181,7 +182,19 @@
     p.travelRadius = FIELD_R * (0.85 + Math.random() * 0.5); // 0.85 – 1.35
   }
 
+  // Project galaxy — every particle is "from" one of the 21 projects.
+  // Indexes map deterministically by particle index so clicks always
+  // resolve to a stable project assignment.
+  let __projectIds = [];
+  function refreshProjectIds() {
+    if (!window.projects) return;
+    __projectIds = Object.keys(window.projects).filter((id) => id !== 'lab');
+  }
+  refreshProjectIds();
+
   function build() {
+    if (!__projectIds.length) refreshProjectIds();
+    const PCNT = Math.max(1, __projectIds.length);
     particles.length = 0;
     for (let i = 0; i < COUNT; i++) {
       const p = {
@@ -245,6 +258,8 @@
       p.releaseDur = 0.45 + Math.random() * 0.35;
       p.jiggleSeed = Math.random() * Math.PI * 2;
       p.jiggleAmp = 0.005 + Math.random() * 0.012;
+      // Project galaxy assignment — stable per particle index.
+      p.projectIdx = i % PCNT;
       particles.push(p);
     }
   }
@@ -272,11 +287,11 @@
     }, { passive: true });
   }
 
-  // Click shockwave — punches a radial impulse into the particle field.
-  // Reuses the spring system: just shoves nearby pushVX/VY outward, the
-  // springs ease it back over the next ~1s with their natural overshoot.
-  const SHOCK_RADIUS = 380;     // CSS pixels
-  const SHOCK_STRENGTH = 78;    // peak impulse
+  // Click shockwave — soft radial impulse into the particle field.
+  // Spring + damping then lets it dissipate as a fluid ripple rather
+  // than a hard punch.
+  const SHOCK_RADIUS = 340;     // CSS pixels
+  const SHOCK_STRENGTH = 26;    // peak impulse (was 78 — much gentler)
   function shockwave(clientX, clientY) {
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
@@ -293,8 +308,8 @@
       if (d2 >= R2 || d2 < 0.001) continue;
       const d = Math.sqrt(d2);
       const t = 1 - d / R;
-      // Sharper cubic falloff so the ring reads as a punch, not a fade.
-      const falloff = t * t * t;
+      // Soft smoothstep falloff — gentle ripple, not a hard punch.
+      const falloff = t * t * (3 - 2 * t);
       const imp = falloff * strength;
       p.pushVX += (dx / d) * imp;
       p.pushVY += (dy / d) * imp;
@@ -305,16 +320,84 @@
   // Mobile / coarse-pointer: skip all interaction so taps and scrolls
   // pass straight through.
   let isDragging = false;
+  // Right-mouse-drag orientation control for the projection-mapping
+  // room shape. Lets the visitor look around inside the wireframe room.
+  let rightDragging = false;
+  let rightDragLastX = 0;
+  let rightDragLastY = 0;
   if (!IS_MOBILE) {
     canvas.addEventListener('pointerdown', (e) => {
+      // Right mouse → orientation drag (only meaningful while a rotating
+      // shape is mounted). Suppress the context menu via contextmenu
+      // listener below.
+      if (e.button === 2) {
+        if (morph.rotating && morph.shapeName) {
+          rightDragging = true;
+          rightDragLastX = e.clientX;
+          rightDragLastY = e.clientY;
+          morph.manualActive = true;
+        }
+        return;
+      }
       if (e.button !== 0 && e.button !== undefined) return;
       isDragging = true;
       shockwave(e.clientX, e.clientY);
+      // Project galaxy: pick the nearest particle, look up its assigned
+      // project, swap the swarm into that project's first-frame raster.
+      // Clicking the same project releases back to free flow.
+      if (window.projects && __projectIds.length) {
+        const rect = canvas.getBoundingClientRect();
+        const px = (e.clientX - rect.left) * DPR;
+        const py = (e.clientY - rect.top) * DPR;
+        let bestI = -1, bestD = Infinity;
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          const dx = p.sx - px, dy = p.sy - py;
+          const d = dx * dx + dy * dy;
+          if (d < bestD) { bestD = d; bestI = i; }
+        }
+        if (bestI >= 0) {
+          const projId = __projectIds[particles[bestI].projectIdx];
+          if (projId) {
+            if (activeProjectId === projId) {
+              activeProjectId = null;
+              setMorphTarget(null);
+            } else {
+              setProjectMorph(projId);
+            }
+          }
+        }
+      }
     }, { passive: true });
+
+    canvas.addEventListener('pointermove', (e) => {
+      if (!rightDragging) return;
+      const dx = e.clientX - rightDragLastX;
+      const dy = e.clientY - rightDragLastY;
+      rightDragLastX = e.clientX;
+      rightDragLastY = e.clientY;
+      // Pixel → radians. ~360px ≈ a full turn. Drag works on every axis
+      // regardless of shape (room can now be tumbled too).
+      morph.manualYaw += dx * 0.012;
+      morph.manualPitch += dy * 0.012;
+    }, { passive: true });
+
     function endDrag() { isDragging = false; }
-    window.addEventListener('pointerup', endDrag, { passive: true });
-    window.addEventListener('pointercancel', endDrag, { passive: true });
-    window.addEventListener('blur', endDrag, { passive: true });
+    function endRightDrag() {
+      if (!rightDragging) return;
+      rightDragging = false;
+      morph.manualActive = false;
+    }
+    window.addEventListener('pointerup', (e) => {
+      if (e.button === 2) endRightDrag(); else endDrag();
+    }, { passive: true });
+    window.addEventListener('pointercancel', () => { endDrag(); endRightDrag(); }, { passive: true });
+    window.addEventListener('blur', () => { endDrag(); endRightDrag(); }, { passive: true });
+    // Suppress the browser context menu while a rotating shape is active
+    // so right-drag doesn't pop the OS menu.
+    canvas.addEventListener('contextmenu', (e) => {
+      if (morph.rotating && morph.shapeName) e.preventDefault();
+    });
   }
 
   let last = performance.now();
@@ -336,6 +419,12 @@
     rotating: false,       // when true, points are regenerated each frame
     basePoints3D: null,    // un-rotated source for rotating shapes
     rotateMode: 'tumble',  // 'tumble' = X+Y; 'yaw' = Y only (rooms)
+    shapeName: null,       // 'torus' | 'cube' | 'room' | 'tree' | 'portrait'
+    manualYaw: 0,          // user right-mouse-drag yaw delta
+    manualPitch: 0,        // user right-mouse-drag pitch delta
+    manualActive: false,   // true while right-mouse drag is engaged
+    accAutoYaw: 0,         // accumulated auto yaw — paused while dragging
+    accAutoPitch: 0,       // accumulated auto pitch — paused while dragging
     fast: false,           // typewriter mode: skip swap theatrics for speed
     straight: false,       // text morphs: linear lerp + moderate swap; no
                            // bezier/spin/burst so rapid hover doesn't glitch
@@ -832,10 +921,17 @@
   }
 
   function buildMorphTargets(spec) {
-    // Reset rotating state — only re-enabled by 3D shapes.
+    // Reset rotating state — only re-enabled by 3D shapes. Switching
+    // shapes also clears any user-applied manual orientation.
     morph.rotating = false;
     morph.basePoints3D = null;
     morph.rotateMode = 'tumble';
+    morph.shapeName = (spec && typeof spec === 'object' && spec.shape) || null;
+    morph.manualYaw = 0;
+    morph.manualPitch = 0;
+    morph.manualActive = false;
+    morph.accAutoYaw = 0;
+    morph.accAutoPitch = 0;
 
     // 3D rotating torus — store base points; render loop rotates them live.
     if (spec && typeof spec === 'object' && spec.shape === 'torus') {
@@ -963,8 +1059,94 @@
   // Public API for the floating-nav hover listeners below.
   // - __coverMorph(text|null): word morph (also accepts null to release)
   // - __coverShape(name|null): special shape (e.g. 'tree')
+  // - __coverProject(id|null): rasterize a project's first frame and
+  //   morph the swarm into it.
   window.__coverMorph = setMorphTarget;
   window.__coverShape = (name) => setMorphTarget(name ? { shape: name } : null);
+
+  // ---- Project galaxy: rasterize project images on demand ------------
+  const projectPointsCache = new Map(); // projId → Float32Array (flat 2D)
+  let activeProjectId = null;
+  function rasterizeProjectImage(projId, cb) {
+    if (projectPointsCache.has(projId)) { cb(projectPointsCache.get(projId)); return; }
+    const projects = window.projects;
+    if (!projects || !projects[projId]) { cb(null); return; }
+    const firstSrc = projects[projId].images && projects[projId].images[0];
+    if (!firstSrc) { cb(null); return; }
+    const isVid = /\.(webm|mp4|mov)$/i.test(firstSrc);
+    const src = isVid ? firstSrc.replace(/\.(webm|mp4|mov)$/i, '_thumb.webp') : firstSrc;
+    const img = new Image();
+    img.onload = () => {
+      const W2 = 256, H2 = 256;
+      const off = document.createElement('canvas');
+      off.width = W2; off.height = H2;
+      const c = off.getContext('2d');
+      c.fillStyle = '#000';
+      c.fillRect(0, 0, W2, H2);
+      // Cover-fit so portrait + landscape both fill the rasterization box.
+      const ar = img.width / img.height;
+      let dw = W2, dh = H2, dx = 0, dy = 0;
+      if (ar > 1) { dh = W2 / ar; dy = (H2 - dh) / 2; }
+      else if (ar < 1) { dw = H2 * ar; dx = (W2 - dw) / 2; }
+      c.drawImage(img, dx, dy, dw, dh);
+      const data = c.getImageData(0, 0, W2, H2).data;
+      const pts = [];
+      const STEP = 3;
+      const THRESHOLD = 70;
+      for (let y = 0; y < H2; y += STEP) {
+        for (let x = 0; x < W2; x += STEP) {
+          const i = (y * W2 + x) * 4;
+          const lum = (data[i] + data[i + 1] + data[i + 2]) / 3;
+          if (lum > THRESHOLD) {
+            pts.push((x / W2 - 0.5) * 1.5, (y / H2 - 0.5) * 1.5);
+          }
+        }
+      }
+      const flat = new Float32Array(pts);
+      projectPointsCache.set(projId, flat);
+      cb(flat);
+    };
+    img.onerror = () => cb(null);
+    img.src = src;
+  }
+  function setProjectMorph(projId) {
+    rasterizeProjectImage(projId, (flat) => {
+      if (!flat || !flat.length) return;
+      const N = particles.length;
+      const samples = flat.length / 2;
+      const out = new Float32Array(N * 3);
+      for (let i = 0; i < N; i++) {
+        const s = ((Math.random() * samples) | 0) * 2;
+        out[i * 3 + 0] = flat[s];
+        out[i * 3 + 1] = flat[s + 1];
+        out[i * 3 + 2] = (Math.random() - 0.5) * 0.06;
+      }
+      // Drive the existing morph machinery (snapshot blend + swap easing).
+      if (morph.points && morph.text) {
+        morph.prevPoints = morph.points;
+        morph.swap = 0;
+      } else {
+        morph.prevPoints = null;
+        morph.swap = 1;
+      }
+      morph.text = `__project:${projId}`;
+      morph.points = out;
+      morph.targetProgress = 1;
+      morph.straight = true;          // straight lerp — no bezier flair
+      morph.rotating = false;
+      morph.basePoints3D = null;
+      morph.shapeName = null;
+      activeProjectId = projId;
+    });
+  }
+  window.__coverProject = (id) => {
+    if (!id) {
+      activeProjectId = null;
+      setMorphTarget(null);
+    } else {
+      setProjectMorph(id);
+    }
+  };
 
   // ----- Typewriter ---------------------------------------------------
   // Type any letters / digits / punctuation on the keyboard and the
@@ -1006,6 +1188,11 @@
     if (e.key === 'Escape' || e.key === 'Enter') {
       typed = '';
       pushTyped();
+      // Also release a project-galaxy morph if active.
+      if (activeProjectId) {
+        activeProjectId = null;
+        setMorphTarget(null);
+      }
       return;
     }
     if (e.key === 'Backspace') {
@@ -1074,6 +1261,98 @@
     }
   }
   window.__coverServiceTags = setCoverServiceTags;
+
+  // ---- Constellation links ------------------------------------------
+  // A small pool of "anchor" particles draw 1-2 thin lines to their
+  // nearest neighbors via a spatial hash. Cheap (~250 anchors), faint,
+  // adds depth without obscuring the dots. Always-on.
+  const ANCHOR_COUNT = IS_MOBILE ? 80 : 250;
+  let anchorIndices = [];
+  function rebuildAnchors() {
+    anchorIndices = [];
+    if (!particles.length) return;
+    const want = Math.min(ANCHOR_COUNT, particles.length);
+    const seen = new Set();
+    while (anchorIndices.length < want && seen.size < particles.length) {
+      const i = (Math.random() * particles.length) | 0;
+      if (seen.has(i)) continue;
+      seen.add(i);
+      anchorIndices.push(i);
+    }
+  }
+  // Reusable spatial-hash buffers (built once, resized as needed).
+  let _binsArr = null;
+  let _binsCols = 0, _binsRows = 0;
+  function drawConstellation() {
+    if (!anchorIndices.length || W < 2 || H < 2) return;
+    const LINK_R = (IS_MOBILE ? 90 : 110) * DPR;
+    const R2 = LINK_R * LINK_R;
+    const cellSize = LINK_R;
+    const cols = Math.max(1, Math.ceil(W / cellSize));
+    const rows = Math.max(1, Math.ceil(H / cellSize));
+    if (!_binsArr || _binsCols !== cols || _binsRows !== rows) {
+      _binsArr = new Array(cols * rows);
+      _binsCols = cols; _binsRows = rows;
+    }
+    // Clear bins.
+    for (let i = 0; i < _binsArr.length; i++) _binsArr[i] = null;
+    // Populate.
+    for (let i = 0; i < anchorIndices.length; i++) {
+      const idx = anchorIndices[i];
+      const p = particles[idx];
+      if (!p || p.sx < 0 || p.sx > W || p.sy < 0 || p.sy > H) continue;
+      const cx = (p.sx / cellSize) | 0;
+      const cy = (p.sy / cellSize) | 0;
+      const k = cy * cols + cx;
+      if (!_binsArr[k]) _binsArr[k] = [];
+      _binsArr[k].push(idx);
+    }
+    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+    ctx.lineWidth = Math.max(0.5, DPR * 0.4);
+    ctx.beginPath();
+    for (let i = 0; i < anchorIndices.length; i++) {
+      const idx = anchorIndices[i];
+      const p = particles[idx];
+      if (!p || p.sx < 0 || p.sx > W || p.sy < 0 || p.sy > H) continue;
+      // Only draw lines for visible-enough anchors so fading particles
+      // don't suddenly sprout/lose lines.
+      const am = p.alphaMul != null ? p.alphaMul : 1;
+      if (am < 0.4) continue;
+      const cx = (p.sx / cellSize) | 0;
+      const cy = (p.sy / cellSize) | 0;
+      let nearest = -1, nearestD = Infinity;
+      let next = -1, nextD = Infinity;
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          const nx = cx + dx, ny = cy + dy;
+          if (nx < 0 || ny < 0 || nx >= cols || ny >= rows) continue;
+          const bin = _binsArr[ny * cols + nx];
+          if (!bin) continue;
+          for (let j = 0; j < bin.length; j++) {
+            const j2 = bin[j];
+            if (j2 <= idx) continue; // each pair only once (smaller side draws)
+            const q = particles[j2];
+            const ddx = q.sx - p.sx, ddy = q.sy - p.sy;
+            const d2 = ddx * ddx + ddy * ddy;
+            if (d2 > R2) continue;
+            if (d2 < nearestD) { nextD = nearestD; next = nearest; nearestD = d2; nearest = j2; }
+            else if (d2 < nextD) { nextD = d2; next = j2; }
+          }
+        }
+      }
+      if (nearest >= 0) {
+        const q = particles[nearest];
+        ctx.moveTo(p.sx, p.sy);
+        ctx.lineTo(q.sx, q.sy);
+      }
+      if (next >= 0) {
+        const q = particles[next];
+        ctx.moveTo(p.sx, p.sy);
+        ctx.lineTo(q.sx, q.sy);
+      }
+    }
+    ctx.stroke();
+  }
 
   // Depth → alpha buckets — hoisted out of the frame loop so it isn't
   // reallocated every frame.
@@ -1156,32 +1435,32 @@
     // Live-rotate the 3D shape's base points into morph.points each frame.
     if (morph.rotating && morph.basePoints3D && morph.points) {
       const yawOnly = morph.rotateMode === 'yaw';
-      const rotY = elapsed * (yawOnly ? 0.35 : 0.6);
-      const rotX = yawOnly ? 0 : elapsed * 0.32;
+      const autoYawSpeed = yawOnly ? 0.35 : 0.6;
+      const autoPitchSpeed = yawOnly ? 0 : 0.32;
+      // Auto rotation accumulates only when the user isn't right-dragging.
+      // Manual offsets stack on top so release resumes seamlessly.
+      if (!morph.manualActive) {
+        morph.accAutoYaw += dt * autoYawSpeed;
+        morph.accAutoPitch += dt * autoPitchSpeed;
+      }
+      const rotY = morph.accAutoYaw + morph.manualYaw;
+      const rotX = morph.accAutoPitch + morph.manualPitch;
       const cyR = Math.cos(rotY), syR = Math.sin(rotY);
       const cxR = Math.cos(rotX), sxR = Math.sin(rotX);
       const src = morph.basePoints3D;
       const dst = morph.points;
       const n = src.length;
-      if (yawOnly) {
-        // Pure Y rotation — floor stays down, ceiling stays up.
-        for (let i = 0; i < n; i += 3) {
-          const x0 = src[i], z0 = src[i + 2];
-          dst[i] = x0 * cyR + z0 * syR;
-          dst[i + 1] = src[i + 1];
-          dst[i + 2] = -x0 * syR + z0 * cyR;
-        }
-      } else {
-        for (let i = 0; i < n; i += 3) {
-          const x0 = src[i], y0 = src[i + 1], z0 = src[i + 2];
-          const x1 = x0 * cyR + z0 * syR;
-          const z1 = -x0 * syR + z0 * cyR;
-          const y2 = y0 * cxR - z1 * sxR;
-          const z2 = y0 * sxR + z1 * cxR;
-          dst[i] = x1;
-          dst[i + 1] = y2;
-          dst[i + 2] = z2;
-        }
+      // Always full-tumble (yaw then pitch) so right-drag can re-orient
+      // on every axis, even on the room.
+      for (let i = 0; i < n; i += 3) {
+        const x0 = src[i], y0 = src[i + 1], z0 = src[i + 2];
+        const x1 = x0 * cyR + z0 * syR;
+        const z1 = -x0 * syR + z0 * cyR;
+        const y2 = y0 * cxR - z1 * sxR;
+        const z2 = y0 * sxR + z1 * cxR;
+        dst[i] = x1;
+        dst[i + 1] = y2;
+        dst[i + 2] = z2;
       }
     }
     if (morph.progress < 0.001 && morph.targetProgress === 0) {
@@ -1437,6 +1716,9 @@
       p.depth = outDepth;
     }
 
+    // Constellation lines under the dots.
+    drawConstellation();
+
     // Two-pass render: back layer first, then bright foreground. Bucketing
     // by depth into 4 alpha tiers avoids per-particle fillStyle thrash.
     for (let tier = 0; tier < TIERS.length; tier++) {
@@ -1520,6 +1802,7 @@
     build();
     // Pick the random subset of particles that carry coordinate labels.
     setCoverLabels(true);
+    rebuildAnchors();
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, W, H);
     last = performance.now();
@@ -1538,8 +1821,9 @@
       resizePending = false;
       resize();
       build();
-      // Keep current labelIndices/labelHues — particles regenerated but the
-      // indices remain valid for the new pool.
+      // Re-pick anchors since the particle array was rebuilt; preserve
+      // labelIndices since the particle indices are still valid.
+      rebuildAnchors();
     });
   }, { passive: true });
   document.addEventListener('visibilitychange', () => {
