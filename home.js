@@ -1338,10 +1338,10 @@
   let activePhase = null;
   let projectsClickable = false;
   function recomputeScrollProgress() {
-    // The full word activity zone covers 100dvh of scroll. Sticky cover
-    // budget (cover-wrap height − 100dvh) is 120dvh, so after the
-    // word zone the user has ~20dvh of empty cover before unstick.
-    const dist = window.innerHeight * 1.0;
+    // Full word activity zone covers 200dvh of scroll — each phase
+    // (projects, about) gets ~100dvh, so a single fast wheel/touch
+    // gesture can't blow past both words at once.
+    const dist = window.innerHeight * 2.0;
     scrollProgress = Math.max(0, Math.min(1, window.scrollY / dist));
   }
   if (typeof window !== 'undefined') {
