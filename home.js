@@ -1292,7 +1292,7 @@
     const word = GREETINGS[(Math.random() * GREETINGS.length) | 0];
     greetKey = word;
     greetActive = true;
-    greetUntil = now + 13000 + Math.random() * 5000; // 13 – 18 s hold
+    greetUntil = now + 4000; // 4 s hold
     // Render greeting at 1.7× world scale — much bigger than the
     // 1.0× default used for projects/about scroll words.
     setMorphTarget({ word: word, scale: 1.7 });
