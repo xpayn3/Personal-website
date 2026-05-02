@@ -334,27 +334,40 @@
   // Rasterize a word into a sample of {x,y} points in [-1, 1] range.
   function rasterizeWord(word) {
     const off = document.createElement('canvas');
-    // Wide canvas so longer phrases ("ALL PROJECTS", "GET IN TOUCH") can
-    // sit at a readable size instead of shrinking to a thin line.
     const W2 = 1100, H2 = 280;
     off.width = W2; off.height = H2;
     const c = off.getContext('2d');
     c.fillStyle = '#000';
     c.fillRect(0, 0, W2, H2);
     c.fillStyle = '#fff';
-    let fontSize = 220;
     c.textBaseline = 'middle';
-    c.textAlign = 'center';
-    // Wider tracking + medium-bold weight = less condensed glyphs with
-    // room between them. Canvas letterSpacing is supported in modern
-    // browsers and falls back gracefully where it isn't.
-    if ('letterSpacing' in c) c.letterSpacing = '6px';
-    do {
-      c.font = `700 ${fontSize}px Geist, "Helvetica Neue", Arial, sans-serif`;
-      if (c.measureText(word).width <= W2 * 0.92) break;
-      fontSize -= 8;
-    } while (fontSize > 40);
-    c.fillText(word, W2 / 2, H2 / 2);
+    c.textAlign = 'left';
+
+    // Manual glyph-by-glyph layout with explicit tracking — guarantees
+    // visible spacing between letters regardless of canvas API support.
+    const TRACK_FRACTION = 0.18; // gap added per glyph as a fraction of fontSize
+    let fontSize = 220;
+    function measureLine(size) {
+      c.font = `700 ${size}px Geist, "Helvetica Neue", Arial, sans-serif`;
+      const gap = size * TRACK_FRACTION;
+      let w = 0;
+      for (let i = 0; i < word.length; i++) {
+        w += c.measureText(word[i]).width;
+        if (i < word.length - 1) w += gap;
+      }
+      return w;
+    }
+    while (fontSize > 40 && measureLine(fontSize) > W2 * 0.92) fontSize -= 8;
+
+    c.font = `700 ${fontSize}px Geist, "Helvetica Neue", Arial, sans-serif`;
+    const gap = fontSize * TRACK_FRACTION;
+    const lineW = measureLine(fontSize);
+    let x = (W2 - lineW) / 2;
+    for (let i = 0; i < word.length; i++) {
+      const ch = word[i];
+      c.fillText(ch, x, H2 / 2);
+      x += c.measureText(ch).width + gap;
+    }
 
     const img = c.getImageData(0, 0, W2, H2).data;
     const pts = [];
