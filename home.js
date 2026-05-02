@@ -66,7 +66,11 @@
     window.matchMedia('(max-width: 768px)').matches ||
     window.matchMedia('(pointer: coarse)').matches
   ));
-  const COUNT = IS_MOBILE ? 1500 : 11000;
+  // Hard cap. Render path iterates `activeCount` (≤ COUNT) so the
+  // FPS throttle below can shrink the effective swarm without
+  // re-allocating any of the typed-array storage.
+  const COUNT = IS_MOBILE ? 2000 : 38000;
+  let activeCount = COUNT;
   const FIELD_R = 1;       // bounding sphere radius (in normalized field units)
   // Defaults — match the "base" preset below so the live values + their
   // lerp targets agree at startup.
@@ -564,6 +568,45 @@
   let last = performance.now();
   let startTime = performance.now();
   let running = true;
+
+  // ----- Auto FPS throttle ------------------------------------------
+  // Watch frame durations on a rolling window. If the page is slipping
+  // below ~45fps for ~2s, halve activeCount (down to a sane floor).
+  // Once-only — never grows back to avoid oscillation when the user
+  // hovers/drags (which spikes per-particle work). The floor matches
+  // the old hard-coded count so behaviour at floor matches the prior
+  // build for low-spec machines.
+  const FPS_WIN = 60;          // sample window (frames)
+  const FPS_MIN = 45;          // throttle trigger
+  const FPS_LOW_DUR = 2.0;     // seconds at sub-FPS_MIN before action
+  const FLOOR = IS_MOBILE ? 1500 : 11000;
+  const fpsBuf = new Float32Array(FPS_WIN);
+  let fpsBufI = 0, fpsBufFilled = 0;
+  let lowSecs = 0;
+  function recordFps(dtSeconds) {
+    if (dtSeconds <= 0 || dtSeconds > 0.25) return;   // skip warmup spikes
+    fpsBuf[fpsBufI] = 1 / dtSeconds;
+    fpsBufI = (fpsBufI + 1) % FPS_WIN;
+    if (fpsBufFilled < FPS_WIN) fpsBufFilled++;
+    if (fpsBufFilled < FPS_WIN || activeCount <= FLOOR) return;
+    let sum = 0;
+    for (let i = 0; i < fpsBufFilled; i++) sum += fpsBuf[i];
+    const avg = sum / fpsBufFilled;
+    if (avg < FPS_MIN) {
+      lowSecs += dtSeconds;
+      if (lowSecs >= FPS_LOW_DUR) {
+        const next = Math.max(FLOOR, Math.floor(activeCount * 0.5));
+        if (typeof console !== 'undefined') {
+          console.log(`[cover] fps throttle: ${activeCount} → ${next} (avg ${avg.toFixed(1)}fps)`);
+        }
+        activeCount = next;
+        lowSecs = 0;
+        fpsBufFilled = 0;        // reset window so next decision is fresh
+      }
+    } else {
+      lowSecs = 0;
+    }
+  }
 
   // ----- Morph state -------------------------------------------------------
   // When the user hovers a floating-nav link, particles get pulled toward
@@ -1467,6 +1510,7 @@
   function frame(now) {
     if (!running) return;
     const dt = Math.min(now - last, 50) / 1000; // seconds
+    recordFps(dt);
     last = now;
     const elapsed = (now - startTime) / 1000;
 
@@ -1613,7 +1657,7 @@
     const releasing = morph.targetProgress === 0;
     const sculptN = sculptAnchors.length;
 
-    for (let i = 0; i < COUNT; i++) {
+    for (let i = 0; i < activeCount; i++) {
       // Sample curl field at this particle's position.
       curl(pX[i] * NOISE_SCALE, pY[i] * NOISE_SCALE, pZ[i] * NOISE_SCALE, tNoise);
       const vx = _curlOut[0], vy = _curlOut[1], vz = _curlOut[2];
@@ -1844,9 +1888,10 @@
     // Particles render path. WebGL = single GPU draw. Fallback = 2D tier loop.
     if (useWebGL && glProgram) {
       // Pack (x, y, size, alpha) per particle into the buffer. Size=0
-      // for invisible particles → GPU skips them.
+      // for invisible particles → GPU skips them. Only active range is
+      // packed; the GPU only draws activeCount points.
       const Wmax = W + 2, Hmax = H + 2;
-      for (let i = 0; i < COUNT; i++) {
+      for (let i = 0; i < activeCount; i++) {
         const o = i * 4;
         const dpth = pDepth[i];
         const sxi = pSx[i];
@@ -1879,7 +1924,7 @@
       gl.bindVertexArray(glVAO);
       gl.bindBuffer(gl.ARRAY_BUFFER, glPosBuffer);
       gl.bufferSubData(gl.ARRAY_BUFFER, 0, particleBuf);
-      gl.drawArrays(gl.POINTS, 0, COUNT);
+      gl.drawArrays(gl.POINTS, 0, activeCount);
       gl.bindVertexArray(null);
     }
 
@@ -1894,7 +1939,7 @@
         const baseSz = T.size * DPR;
         const tMin = T.min, tMax = T.max;
         const Wmax = W + 2, Hmax = H + 2;
-        for (let i = 0; i < COUNT; i++) {
+        for (let i = 0; i < activeCount; i++) {
           const dpth = pDepth[i];
           if (dpth < tMin || dpth >= tMax) continue;
           const sxi = pSx[i];
