@@ -710,23 +710,8 @@
       });
 
       // Wheel cycling: scroll down → next (slide left), up → prev (slide right).
-      let wheelLock = 0;
-      let wheelAccum = 0;
-      const WHEEL_THRESHOLD = 24;
-      card.addEventListener('wheel', (e) => {
-        if (!hovered) return;
-        e.preventDefault();
-        wheelAccum += e.deltaY;
-        const now = performance.now();
-        if (Math.abs(wheelAccum) < WHEEL_THRESHOLD) return;
-        if (now - wheelLock < 200) return;
-        wheelLock = now;
-        const dir = wheelAccum > 0 ? +1 : -1;
-        wheelAccum = 0;
-        const next = (idx + dir + PROJECTS.length) % PROJECTS.length;
-        slideTo(next, dir);
-        startCycle(); // restart auto-cycle so user gets a fresh dwell
-      }, { passive: false });
+      // Wheel handler intentionally absent — wheel always scrolls the page,
+      // never gets captured by the card. Auto-cycle handles project rotation.
 
       // On touch devices the first tap expands the card (since hover
       // doesn't really apply); a second tap then opens the project.
