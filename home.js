@@ -1831,6 +1831,15 @@
       && morphPts && morphPrev.length === morphPts.length;
     const releasing = morph.targetProgress === 0;
     const sculptN = sculptAnchors.length;
+    // Slow lazy float for greeting words — drifts on a Lissajous so
+    // the word never sits frozen at center while held. Multiplied by
+    // morph.progress so it eases in/out with the attractor commit.
+    const greetFloatX = morph.greet
+      ? Math.sin(now * 0.00038) * 42 * morph.progress
+      : 0;
+    const greetFloatY = morph.greet
+      ? Math.cos(now * 0.00029) * 26 * morph.progress
+      : 0;
 
     for (let i = 0; i < activeCount; i++) {
       // Sample curl field at this particle's position.
@@ -1951,8 +1960,8 @@
           tz = morphPts[ti + 2];
         }
         const tpersp = focal / (focal + tz * baseR);
-        const targetSx = cx + tx * baseR * tpersp;
-        const targetSy = cy + ty * baseR * tpersp;
+        const targetSx = cx + tx * baseR * tpersp + greetFloatX;
+        const targetSy = cy + ty * baseR * tpersp + greetFloatY;
         const targetDepth = tpersp;
 
         const personalCommit = pCommit[i];
