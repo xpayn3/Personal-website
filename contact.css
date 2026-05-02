@@ -6,7 +6,9 @@
   position: fixed;
   inset: 0;
   background: #000;
-  z-index: 200;
+  /* Above the floating-nav (600) so the form fully takes over the
+     viewport when open. */
+  z-index: 999;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0s 0.3s;
