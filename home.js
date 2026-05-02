@@ -340,8 +340,8 @@
 
     const img = c.getImageData(0, 0, W2, H2).data;
     const pts = [];
-    // Denser sampling = more particle anchor points per glyph.
-    const STEP = 2;
+    // Sample every Nth pixel for speed
+    const STEP = 3;
     for (let y = 0; y < H2; y += STEP) {
       for (let x = 0; x < W2; x += STEP) {
         const i = (y * W2 + x) * 4;
@@ -1029,7 +1029,6 @@
       const flowDepth = fpersp;
 
       let sx = flowSx, sy = flowSy, depth = flowDepth;
-      p.morphCommit = 0;
 
       if (hasTargets) {
         const ti = i * 3;
@@ -1115,9 +1114,6 @@
         sx = flowSx + (targetSx - flowSx) * commit;
         sy = flowSy + (targetSy - flowSy) * commit;
         depth = flowDepth + (targetDepth - flowDepth) * commit;
-        // Stash for the render pass — used to brighten + thicken letter
-        // particles so the text reads clearly against the field.
-        p.morphCommit = commit;
 
         // Juggle: small sinusoidal jiggle that peaks mid-release and
         // tapers at both ends. Only audible while particles are letting go.
@@ -1184,9 +1180,6 @@
       const baseSz = T.size * DPR;
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
-        // Heavily-committed particles are drawn in a separate brighter
-        // pass below — skip them here so we don't double-stamp.
-        if ((p.morphCommit || 0) > 0.5) continue;
         if (p.depth < T.min || p.depth >= T.max) continue;
         if (p.sx < -2 || p.sy < -2 || p.sx > W + 2 || p.sy > H + 2) continue;
         const am = p.alphaMul != null ? p.alphaMul : p.lifeFade;
@@ -1200,24 +1193,9 @@
       }
     }
 
-    // Letter-pass: full-opaque, slightly thicker dots for the particles
-    // currently locked into a morph target. Crisp glyphs over the field.
-    if (mp > 0.05) {
-      ctx.fillStyle = '#fff';
-      const letterSz = Math.max(1, Math.round(1.6 * DPR));
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        const c = p.morphCommit || 0;
-        if (c <= 0.5) continue;
-        if (p.sx < -2 || p.sy < -2 || p.sx > W + 2 || p.sy > H + 2) continue;
-        ctx.fillRect((p.sx - letterSz / 2) | 0, (p.sy - letterSz / 2) | 0, letterSz, letterSz);
-      }
-    }
-
     // Single-number coordinate labels — random-colored mono digits drift
     // alongside a small subset of particles for a debug-overlay vibe.
-    // Hidden during a morph so the rendered text/shape stays clean.
-    if (labelsActive && labelIndices.length && mp < 0.15) {
+    if (labelsActive && labelIndices.length) {
       const fontPx = Math.max(8, Math.round(9 * DPR));
       ctx.font = `${fontPx}px ui-monospace, Menlo, Consolas, monospace`;
       ctx.textBaseline = 'middle';
