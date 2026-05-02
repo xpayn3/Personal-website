@@ -653,12 +653,12 @@
     const TRACK_FRACTION = 0.08;
     const USE_WIDTH = W2 * 0.96;
     let fontSize = 230;
-    // Funky display serif — Fraunces 900 has the chunky strokes + soft
-    // serifs that read clearly even when sampled into a few-thousand
-    // particles. Falls back to other display serifs if not loaded.
-    const FONT_STACK = '"Fraunces", "DM Serif Display", "Playfair Display", "Bodoni Moda", "Times New Roman", serif';
+    // Blackletter — UnifrakturMaguntia. Very distinctive medieval gothic
+    // shapes, reads beautifully with mixed case (the lowercase glyphs
+    // carry the most personality, so callers should NOT uppercase).
+    const FONT_STACK = '"UnifrakturMaguntia", "Times New Roman", serif';
     function measureLine(size) {
-      c.font = `900 italic ${size}px ${FONT_STACK}`;
+      c.font = `400 ${size}px ${FONT_STACK}`;
       const gap = size * TRACK_FRACTION;
       let w = 0;
       for (let i = 0; i < word.length; i++) {
@@ -667,11 +667,9 @@
       }
       return w;
     }
-    // Don't shrink past a comfortable minimum — better to overflow slightly
-    // than render unreadable micro-glyphs.
     while (fontSize > 110 && measureLine(fontSize) > USE_WIDTH) fontSize -= 6;
 
-    c.font = `900 italic ${fontSize}px ${FONT_STACK}`;
+    c.font = `400 ${fontSize}px ${FONT_STACK}`;
     const gap = fontSize * TRACK_FRACTION;
     const lineW = measureLine(fontSize);
     let x = (W2 - lineW) / 2;
@@ -1190,7 +1188,7 @@
     if (spec && typeof spec === 'object' && spec.shape === 'tree') {
       flat = generateTreePoints();
     } else if (typeof spec === 'string' && spec.length) {
-      flat = rasterizeWord(spec.toUpperCase());
+      flat = rasterizeWord(spec);
     }
     if (!flat) { morph.points = null; return; }
     const sampleCount = flat.length / 2;
