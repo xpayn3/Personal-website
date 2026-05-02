@@ -621,7 +621,10 @@ img, video {
   bottom: 14px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* flex-end in BOTH states — `justify-content` is not animatable, so
+     keeping it constant prevents the mid-transition jump where text
+     snapped to center before the card had finished collapsing. */
+  justify-content: flex-end;
   gap: 4px;
   min-width: 0;
   line-height: 1.35;
@@ -643,8 +646,12 @@ img, video {
   right: 0;
   bottom: 0;
   padding: 14px;
-  background: linear-gradient(to top, rgba(0,0,0,0.92), rgba(0,0,0,0.5) 60%, transparent);
-  justify-content: flex-end;
+  /* Gradient only over the bottom ~45% so the static cover image stays
+     visible across most of the card. */
+  background: linear-gradient(to top,
+    rgba(0,0,0,0.88) 0%,
+    rgba(0,0,0,0.55) 18%,
+    rgba(0,0,0,0.0) 45%);
 }
 
 .recent-card-label {
