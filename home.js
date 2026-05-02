@@ -690,8 +690,8 @@
           // Canvas y grows down; in our world, positive Y also reads as
           // down (after the pitch transform). Don't flip — straight map.
           pts.push(
-            (x / W2 - 0.5) * 2 * 1.45 + (Math.random() - 0.5) * 0.01,
-            (y / H2 - 0.5) * 2 * 0.72 + (Math.random() - 0.5) * 0.01
+            (x / W2 - 0.5) * 2 * 1.05 + (Math.random() - 0.5) * 0.01,
+            (y / H2 - 0.5) * 2 * 0.52 + (Math.random() - 0.5) * 0.01
           );
         }
       }
@@ -1349,12 +1349,19 @@
     const blocked = sculptAnchors.length || rightDragging ||
                     (typed && typed.length) || userOwnsMorph;
 
-    if (blocked || scrollProgress < 0.04) {
+    if (blocked || scrollProgress < 0.02) {
       if (scrollMorphActive) {
         scrollMorphActive = false;
         projectsClickable = false;
         if (canvas) canvas.style.cursor = '';
-        if (morph.text === PROJECTS_WORD) setMorphTarget(null);
+        // Don't go through setMorphTarget(null) — that bakes in a
+        // 220ms leaveTimer wait that creates a visible pause-then-
+        // snap. Set targetProgress directly so the global lerp can
+        // glide commit down smoothly. morph.text + morph.scroll are
+        // cleared in the drop block once progress reaches ~0.
+        if (morph.text === PROJECTS_WORD) {
+          morph.targetProgress = 0;
+        }
       }
       return;
     }
@@ -1368,11 +1375,13 @@
       }
       scrollMorphActive = true;
       setMorphTarget(PROJECTS_WORD);
-      morph.greet = true; // reuse the slow-attractor lerp
+      morph.greet = false;   // not a self-fading attractor
+      morph.scroll = true;   // commit follows scroll position
     }
-    // Map scroll → commit. Cap at 0.92. Steeper ramp so the word is
-    // legible early in the scroll instead of forming late.
-    morph.targetProgress = Math.min(0.92, scrollProgress * 2.4);
+    // Map scroll → commit. Linear so the further you scroll, the more
+    // committed the cloud is to the word — and the inverse on scroll
+    // up. Reaches full attraction (1.0) at the top of the scroll budget.
+    morph.targetProgress = Math.min(1, scrollProgress);
     const wasClickable = projectsClickable;
     // Clickable as soon as there's any noticeable scroll.
     projectsClickable = scrollProgress > 0.05;
@@ -1726,13 +1735,19 @@
 
     // Smooth morph progress toward target — eased so transitions feel soft.
     // Slower decay when releasing so the per-particle stagger reads.
-    // Greetings ease MUCH slower than nav/text morphs — feels like a
-    // faint attractor that fades in and out, not a snap. ~6-8× slower
-    // both directions vs nav-text morphs.
+    // Easing modes:
+    //   greet  — soft attractor that fades on/off automatically (slow)
+    //   scroll — commit tracks scroll position responsively (fast lerp)
+    //   default (nav-text/shapes) — original snappy lerp
     const greetMode = !!morph.greet;
+    const scrollMode = !!morph.scroll;
+    // Going up: scroll-mode is fast so commit tracks scroll position.
+    // Going down: scroll-mode uses a slower rate so when the user
+    // scrolls back to the top, the cloud GLIDES back to noise instead
+    // of snapping.
     const easeRate = morph.targetProgress > morph.progress
-      ? (greetMode ? 0.010 : 0.08)
-      : (greetMode ? 0.008 : 0.04);
+      ? (scrollMode ? 0.18 : (greetMode ? 0.010 : 0.08))
+      : (scrollMode ? 0.05 : (greetMode ? 0.008 : 0.04));
     morph.progress += (morph.targetProgress - morph.progress) * easeRate;
     if (morph.swap < 1) {
       // Fast swap when typing (so adjacent letters don't overlap into
@@ -1780,6 +1795,8 @@
       morph.points = null;
       morph.prevPoints = null;
       morph.greet = false;
+      morph.scroll = false;
+      morph.text = null; // ensure it's released since we bypassed setMorphTarget(null)
     }
     const mp = morph.progress;
     const hasTargets = mp > 0.001 && morph.points;
@@ -1916,13 +1933,12 @@
         }
         let perParticleMp = mp;
         // Per-particle staggered release uses (1 - mp) as a 0..1
-        // timeline. That assumes mp peaks at 1. For greeting morphs
-        // (mp peaks at ~0.32) the math thinks every particle is well
-        // past its release window the moment mp starts dropping —
-        // commit jumps to 0 in one frame → visible "snap to noise".
-        // For greetings, just use mp directly so the smooth global
-        // lerp is what controls the fade.
-        if (releasing && mp < 1 && !morph.greet) {
+        // timeline assuming mp peaks at 1. For greet/scroll modes mp
+        // can peak well below 1 — the math then thinks every particle
+        // is past its release window and snaps perParticleMp to 0,
+        // creating a visible "jump back to noise". For those modes,
+        // let the global lerp own the fade.
+        if (releasing && mp < 1 && !morph.greet && !morph.scroll) {
           const releaseT = 1 - mp;
           const localR = (releaseT - pRelDel[i]) / pRelDur[i];
           const cR = localR <= 0 ? 0 : (localR >= 1 ? 1 : localR);
