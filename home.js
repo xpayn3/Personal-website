@@ -1804,13 +1804,20 @@
     const morphActiveSwap = morphPrev && swap < 1
       && morphPts && morphPrev.length === morphPts.length;
     const releasing = morph.targetProgress === 0;
-    // Marvel-style disintegration: as commit drops on greet/scroll
-    // releases, particles drift outward via a stable per-particle
-    // direction seed instead of just collapsing back to flow.
+    // Marvel-style disintegration: during greet/scroll releases each
+    // particle's WORLD position drifts outward along its own direction
+    // seed. Because flow coords drift, the particle ends up at a
+    // displaced position when commit reaches 0 — no snap back to
+    // original flow position.
     const peakMp = morph.peakMp;
     const disintegrating = releasing && peakMp > 0.05 && (morph.greet || morph.scroll);
     const releaseT = disintegrating ? Math.min(1, 1 - mp / peakMp) : 0;
-    const driftAmt = releaseT * baseR * 0.45;
+    // Per-frame world-coord kick during disintegration. Tuned so the
+    // total integrated displacement over a full release is ~0.5 world
+    // units (≈ 250 screen px at 1080p). Multiplies releaseT so the
+    // kick GROWS as the release progresses, then stops when peakMp
+    // resets (after morph fully ends).
+    const kickRate = releaseT * 0.0018;
     const sculptN = sculptAnchors.length;
 
     for (let i = 0; i < activeCount; i++) {
@@ -1840,6 +1847,17 @@
       if (WIND_X !== 0 || WIND_Y !== 0) {
         px_ += WIND_X * dt;
         py_ += WIND_Y * dt;
+      }
+      // Disintegration: nudge world position outward along this
+      // particle's direction seed so it permanently drifts away from
+      // the word as commit fades. After release ends, particle stays
+      // at its displaced flow position — no snap.
+      if (kickRate !== 0) {
+        const dxSeed = pSwpCX[i];
+        const dySeed = pSwpCY[i];
+        const dirLen = Math.sqrt(dxSeed * dxSeed + dySeed * dySeed) + 1e-6;
+        px_ += (dxSeed / dirLen) * kickRate;
+        py_ += (dySeed / dirLen) * kickRate;
       }
 
       // Lifetime + recycle.
@@ -1964,19 +1982,8 @@
           flutterX = Math.sin(f) * amp;
           flutterY = Math.cos(f * 1.3 + 1.0) * amp;
         }
-        // Disintegration drift: per-particle outward offset that grows
-        // with releaseT, applied to the morph target so committed
-        // particles fly away while uncommitted ones stay on free flow.
-        let driftX = 0, driftY = 0;
-        if (driftAmt !== 0) {
-          const dxSeed = pSwpCX[i];
-          const dySeed = pSwpCY[i];
-          const dirLen = Math.sqrt(dxSeed * dxSeed + dySeed * dySeed) + 1e-6;
-          driftX = (dxSeed / dirLen) * driftAmt;
-          driftY = (dySeed / dirLen) * driftAmt;
-        }
-        sx = flowSx + (targetSx + flutterX + driftX - flowSx) * commit;
-        sy = flowSy + (targetSy + flutterY + driftY - flowSy) * commit;
+        sx = flowSx + (targetSx + flutterX - flowSx) * commit;
+        sy = flowSy + (targetSy + flutterY - flowSy) * commit;
         depth = flowDepth + (targetDepth - flowDepth) * commit;
         // Sinusoidal jiggle during release — designed for nav-link
         // drama. Greet / scroll releases get a clean lerp instead, so
