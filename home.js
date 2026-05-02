@@ -199,17 +199,20 @@
       // ~10% partially commit (drift around the edges as a fuzzy halo);
       // the rest snap fully to the letter shape.
       p.commit = Math.random() < 0.10 ? 0.3 + Math.random() * 0.4 : 1;
-      // Some particles act as emitters: their commit periodically drops to
-      // 0, releasing them into the flow before re-locking to their letter
-      // anchor. Reads as letters breathing particles in/out.
-      p.emitter = Math.random() < 0.10;
+      // ~5% of particles act as letter emitters: commit periodically dips,
+      // releasing them into the flow then re-locking. Lower count = letters
+      // stay readable while the form still breathes.
+      p.emitter = Math.random() < 0.05;
       p.emitterPhase = Math.random() * Math.PI * 2;
-      p.emitterFreq = 0.35 + Math.random() * 0.45; // 0.35–0.8 Hz
-      // Per-particle low-frequency flutter so anchored particles drift
-      // around their letter position rather than sitting still.
+      p.emitterFreq = 0.35 + Math.random() * 0.45;
+      // Tiny per-particle flutter so anchored particles drift slightly
+      // around their letter position. Small amplitude keeps glyphs sharp.
       p.fluttFreq = 0.6 + Math.random() * 1.2;
       p.fluttSeed = Math.random() * Math.PI * 2;
-      p.fluttAmp = 0.005 + Math.random() * 0.012;
+      p.fluttAmp = 0.002 + Math.random() * 0.004;
+      // ~22% of particles are "fat" — drawn slightly bigger when locked
+      // into a letter, so glyph strokes pop a touch over the field.
+      p.fat = Math.random() < 0.22;
       // Per-particle window inside the global swap progress — wide stagger
       // so the swarm reorganizes in pronounced waves, not in lockstep.
       // Constrained so every particle's local window finishes by global
@@ -1040,6 +1043,7 @@
       const flowDepth = fpersp;
 
       let sx = flowSx, sy = flowSy, depth = flowDepth;
+      p.morphCommit = 0;
 
       if (hasTargets) {
         const ti = i * 3;
@@ -1107,8 +1111,8 @@
         // Cap committed particles at <1 so the live flow always bleeds
         // through. Particles never fully freeze — they breathe along the
         // curl flow at their target position, while still reading as text.
-        // Lower cap = more flow seeping through the letters.
-        const COMMIT_CAP = 0.88;
+        // Slightly under 1 so letters keep a hint of motion.
+        const COMMIT_CAP = 0.95;
         const personalCommit = p.commit != null ? p.commit : 1;
         // Emitter cycle — periodically drops this particle's commit to 0
         // so it drifts off into the flow then snaps back to its anchor.
@@ -1141,6 +1145,7 @@
         sx = flowSx + (targetSx + flutterX - flowSx) * commit;
         sy = flowSy + (targetSy + flutterY - flowSy) * commit;
         depth = flowDepth + (targetDepth - flowDepth) * commit;
+        p.morphCommit = commit;
 
         // Juggle: small sinusoidal jiggle that peaks mid-release and
         // tapers at both ends. Only audible while particles are letting go.
@@ -1213,9 +1218,10 @@
         if (am < 1 && Math.random() > am) continue;
         // Pushed particles swell slightly — gives the field weight as the
         // cursor moves through it.
-        const sz = (p.repelFalloff > 0)
-          ? baseSz * (1 + p.repelFalloff * REPEL_SIZE_BOOST)
-          : baseSz;
+        let sz = baseSz;
+        if (p.repelFalloff > 0) sz *= 1 + p.repelFalloff * REPEL_SIZE_BOOST;
+        // Fat particles bulk up while heavily committed to a letter.
+        if (p.fat && (p.morphCommit || 0) > 0.5) sz *= 1.7;
         ctx.fillRect((p.sx - sz / 2) | 0, (p.sy - sz / 2) | 0, Math.max(1, sz), Math.max(1, sz));
       }
     }
