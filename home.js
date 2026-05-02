@@ -7,7 +7,24 @@
 (function () {
   const canvas = document.getElementById('coverCanvas');
   if (!canvas) return;
-  const ctx = canvas.getContext('2d', { alpha: false });
+  // WebGL2 first — orders of magnitude faster on machines with even a
+  // basic iGPU. Falls back to Canvas 2D where WebGL2 isn't available.
+  const gl = canvas.getContext('webgl2', {
+    alpha: false, antialias: false, premultipliedAlpha: false,
+    preserveDrawingBuffer: false, desynchronized: true,
+  });
+  const useWebGL = !!gl;
+  let ctx;            // 2D context — main canvas in fallback, sibling overlay in WebGL mode.
+  let overlayCanvas;  // sibling 2D canvas for constellation/labels/tags when WebGL is active.
+  if (useWebGL) {
+    overlayCanvas = document.createElement('canvas');
+    overlayCanvas.className = 'cover-media-overlay';
+    overlayCanvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;display:block;';
+    if (canvas.parentNode) canvas.parentNode.insertBefore(overlayCanvas, canvas.nextSibling);
+    ctx = overlayCanvas.getContext('2d', { alpha: true });
+  } else {
+    ctx = canvas.getContext('2d', { alpha: false });
+  }
   if (!ctx) return;
 
   // Mobile / coarse-pointer detection — fewer particles, no input handlers.
@@ -129,6 +146,81 @@
   // resolve to COUNT without a sweeping rename. No object stored.
   const particles = { length: COUNT };
 
+  // ---- WebGL2 renderer (active when useWebGL = true) ---------------
+  // Single instanced POINT draw per frame: CPU populates a packed Float32
+  // buffer (x, y, size, alpha) per particle and uploads it; GPU rasterises
+  // all 11k+ points in one call. Replaces 11k Canvas2D fillRects/frame.
+  const particleBuf = useWebGL ? new Float32Array(COUNT * 4) : null;
+  let glProgram = null;
+  let glPosBuffer = null;
+  let glVAO = null;
+  let glLocRes = null;
+  function compileShader(src, type) {
+    const sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+      console.warn('[cover] shader compile failed:', gl.getShaderInfoLog(sh));
+      gl.deleteShader(sh);
+      return null;
+    }
+    return sh;
+  }
+  function initWebGL() {
+    if (!useWebGL) return;
+    const vsSrc = `#version 300 es
+      in vec2 a_pos;
+      in float a_size;
+      in float a_alpha;
+      uniform vec2 u_res;
+      out float v_alpha;
+      void main() {
+        vec2 p = (a_pos / u_res) * 2.0 - 1.0;
+        p.y = -p.y;
+        gl_Position = vec4(p, 0.0, 1.0);
+        gl_PointSize = a_size;
+        v_alpha = a_alpha;
+      }`;
+    const fsSrc = `#version 300 es
+      precision mediump float;
+      in float v_alpha;
+      out vec4 outColor;
+      void main() {
+        outColor = vec4(1.0, 1.0, 1.0, v_alpha);
+      }`;
+    const vs = compileShader(vsSrc, gl.VERTEX_SHADER);
+    const fs = compileShader(fsSrc, gl.FRAGMENT_SHADER);
+    if (!vs || !fs) return;
+    const prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      console.warn('[cover] program link failed:', gl.getProgramInfoLog(prog));
+      return;
+    }
+    glProgram = prog;
+    glLocRes = gl.getUniformLocation(prog, 'u_res');
+    const locPos   = gl.getAttribLocation(prog, 'a_pos');
+    const locSize  = gl.getAttribLocation(prog, 'a_size');
+    const locAlpha = gl.getAttribLocation(prog, 'a_alpha');
+    glPosBuffer = gl.createBuffer();
+    glVAO = gl.createVertexArray();
+    gl.bindVertexArray(glVAO);
+    gl.bindBuffer(gl.ARRAY_BUFFER, glPosBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, particleBuf.byteLength, gl.DYNAMIC_DRAW);
+    const stride = 16; // 4 floats × 4 bytes
+    gl.enableVertexAttribArray(locPos);
+    gl.vertexAttribPointer(locPos, 2, gl.FLOAT, false, stride, 0);
+    gl.enableVertexAttribArray(locSize);
+    gl.vertexAttribPointer(locSize, 1, gl.FLOAT, false, stride, 8);
+    gl.enableVertexAttribArray(locAlpha);
+    gl.vertexAttribPointer(locAlpha, 1, gl.FLOAT, false, stride, 12);
+    gl.bindVertexArray(null);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  }
+
   // Camera state — slow auto-orbit; gyroscope on mobile overrides
   // the auto-orbit when permission is granted and a tilt is detected.
   const cam = {
@@ -207,6 +299,10 @@
     H = canvas.height = Math.max(1, Math.round(rect.height * DPR));
     cx = W / 2;
     cy = H / 2;
+    if (overlayCanvas) {
+      overlayCanvas.width = W;
+      overlayCanvas.height = H;
+    }
   }
 
   function spawnInside(i) {
@@ -1349,9 +1445,16 @@
       cam.yaw += dt * 0.05;
     }
 
-    // Hard black wash so dots stay sharp (no trails)
-    ctx.fillStyle = '#000';
-    ctx.fillRect(0, 0, W, H);
+    // Background wash. WebGL path: clear to opaque black via gl.clear.
+    // 2D fallback: fillRect black on the same canvas. The overlay 2D
+    // canvas (used in WebGL mode) is cleared transparent so labels +
+    // constellation composite over the GPU-rendered dots.
+    if (useWebGL) {
+      ctx.clearRect(0, 0, W, H);
+    } else {
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, W, H);
+    }
 
     const baseR = Math.min(W, H) * 0.45;
     const yawCos = Math.cos(cam.yaw);
@@ -1704,32 +1807,76 @@
       pDepth[i] = outDepth;
     }
 
-    // Constellation lines under the dots.
-    drawConstellation();
-
-    // Two-pass tier render — SoA accesses straight into typed arrays.
-    for (let tier = 0; tier < TIERS.length; tier++) {
-      const T = TIERS[tier];
-      ctx.fillStyle = `rgba(255,255,255,${T.alpha})`;
-      const baseSz = T.size * DPR;
-      const tMin = T.min, tMax = T.max;
+    // Particles render path. WebGL = single GPU draw. Fallback = 2D tier loop.
+    if (useWebGL && glProgram) {
+      // Pack (x, y, size, alpha) per particle into the buffer. Size=0
+      // for invisible particles → GPU skips them.
       const Wmax = W + 2, Hmax = H + 2;
       for (let i = 0; i < COUNT; i++) {
+        const o = i * 4;
         const dpth = pDepth[i];
-        if (dpth < tMin || dpth >= tMax) continue;
         const sxi = pSx[i];
-        if (sxi < -2 || sxi > Wmax) continue;
         const syi = pSy[i];
-        if (syi < -2 || syi > Hmax) continue;
         const am = pAlphaMul[i];
-        if (am < 1 && pAlphaPh[i] > am) continue;
-        let sz = baseSz;
-        const rf = pRepelF[i];
-        if (rf > 0) sz *= 1 + rf * REPEL_SIZE_BOOST;
-        if (pFat[i] && pMorphCm[i] > 0.5) sz *= 1.7;
-        const half = sz / 2;
-        const w = sz < 1 ? 1 : sz;
-        ctx.fillRect((sxi - half) | 0, (syi - half) | 0, w, w);
+        let alpha = 0, size = 0;
+        if (dpth >= 0.45 && sxi > -2 && sxi < Wmax && syi > -2 && syi < Hmax &&
+            !(am < 1 && pAlphaPh[i] > am)) {
+          // Continuous depth → alpha mapping (was 4 buckets for fillStyle batching).
+          if (dpth < 0.7)       alpha = 0.18;
+          else if (dpth < 0.95) alpha = 0.42;
+          else if (dpth < 1.2)  alpha = 0.72;
+          else                  alpha = 1.0;
+          size = DPR;
+          const rf = pRepelF[i];
+          if (rf > 0) size *= 1 + rf * REPEL_SIZE_BOOST;
+          if (pFat[i] && pMorphCm[i] > 0.5) size *= 1.7;
+          if (size < 1) size = 1;
+        }
+        particleBuf[o] = sxi;
+        particleBuf[o + 1] = syi;
+        particleBuf[o + 2] = size;
+        particleBuf[o + 3] = alpha;
+      }
+      gl.viewport(0, 0, W, H);
+      gl.clearColor(0, 0, 0, 1);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.useProgram(glProgram);
+      gl.uniform2f(glLocRes, W, H);
+      gl.bindVertexArray(glVAO);
+      gl.bindBuffer(gl.ARRAY_BUFFER, glPosBuffer);
+      gl.bufferSubData(gl.ARRAY_BUFFER, 0, particleBuf);
+      gl.drawArrays(gl.POINTS, 0, COUNT);
+      gl.bindVertexArray(null);
+    }
+
+    // Constellation lines on top of the dots (overlay 2D in WebGL mode).
+    drawConstellation();
+
+    if (!useWebGL) {
+      // Pure 2D fallback tier render.
+      for (let tier = 0; tier < TIERS.length; tier++) {
+        const T = TIERS[tier];
+        ctx.fillStyle = `rgba(255,255,255,${T.alpha})`;
+        const baseSz = T.size * DPR;
+        const tMin = T.min, tMax = T.max;
+        const Wmax = W + 2, Hmax = H + 2;
+        for (let i = 0; i < COUNT; i++) {
+          const dpth = pDepth[i];
+          if (dpth < tMin || dpth >= tMax) continue;
+          const sxi = pSx[i];
+          if (sxi < -2 || sxi > Wmax) continue;
+          const syi = pSy[i];
+          if (syi < -2 || syi > Hmax) continue;
+          const am = pAlphaMul[i];
+          if (am < 1 && pAlphaPh[i] > am) continue;
+          let sz = baseSz;
+          const rf = pRepelF[i];
+          if (rf > 0) sz *= 1 + rf * REPEL_SIZE_BOOST;
+          if (pFat[i] && pMorphCm[i] > 0.5) sz *= 1.7;
+          const half = sz / 2;
+          const w = sz < 1 ? 1 : sz;
+          ctx.fillRect((sxi - half) | 0, (syi - half) | 0, w, w);
+        }
       }
     }
 
@@ -1782,11 +1929,18 @@
   function start() {
     resize();
     build();
-    // Pick the random subset of particles that carry coordinate labels.
     setCoverLabels(true);
     rebuildAnchors();
-    ctx.fillStyle = '#000';
-    ctx.fillRect(0, 0, W, H);
+    if (useWebGL) {
+      initWebGL();
+      gl.viewport(0, 0, W, H);
+      gl.clearColor(0, 0, 0, 1);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      ctx.clearRect(0, 0, W, H);
+    } else {
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, W, H);
+    }
     last = performance.now();
     startTime = last;
     requestAnimationFrame(frame);
