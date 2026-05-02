@@ -134,16 +134,18 @@
     );
   }
   // Curl of a 3D scalar-noise field — divergence-free flow.
+  // Writes into a shared 3-element buffer instead of allocating a new array
+  // on every call (this runs N×60 times per second).
   const E = 0.08;
+  const _curlOut = new Float32Array(3);
   function curl(x, y, z, t) {
     const n1 = noise3(x, y + E, z + t) - noise3(x, y - E, z + t);
     const n2 = noise3(x + E, y, z - t) - noise3(x - E, y, z - t);
     const n3 = noise3(x + t, y, z + E) - noise3(x + t, y, z - E);
-    return [
-      (n2 - n1) / (2 * E),
-      (n3 - n2) / (2 * E),
-      (n1 - n3) / (2 * E),
-    ];
+    _curlOut[0] = (n2 - n1) / (2 * E);
+    _curlOut[1] = (n3 - n2) / (2 * E);
+    _curlOut[2] = (n1 - n3) / (2 * E);
+    return _curlOut;
   }
 
   // ----- Setup -------------------------------------------------------------
@@ -334,6 +336,9 @@
     rotating: false,       // when true, points are regenerated each frame
     basePoints3D: null,    // un-rotated source for rotating shapes
     rotateMode: 'tumble',  // 'tumble' = X+Y; 'yaw' = Y only (rooms)
+    fast: false,           // typewriter mode: skip swap theatrics for speed
+    straight: false,       // text morphs: linear lerp + moderate swap; no
+                           // bezier/spin/burst so rapid hover doesn't glitch
   };
 
   // Rasterize a word into a sample of {x,y} points in [-1, 1] range.
@@ -400,11 +405,14 @@
   }
 
   // ----- 3D skull point cloud ---------------------------------------------
-  // Tries to load a real skull GLB from a CDN, parsing vertex positions
-  // out of the binary glTF. Falls back to a procedural skull silhouette
-  // (cranium + eye sockets + nasal cavity + jaw + tooth row) if the
-  // network refuses or the parse fails — no Three.js dependency required.
-  let portraitPoints = procSkull();
+  // Procedural skull silhouette (cranium + eye sockets + nasal cavity +
+  // jaw + tooth row). Lazy-built on first portrait request — saves the
+  // ~3.5k point allocation when the visitor never hovers About.
+  let portraitPoints = null;
+  function getPortraitPoints() {
+    if (!portraitPoints) portraitPoints = procSkull();
+    return portraitPoints;
+  }
 
   function procSkull() {
     const pts = [];
@@ -480,91 +488,6 @@
       pts.push(xx, 0.32, 0.27);
     }
     return pts;
-  }
-
-  // Try to load a real skull GLB from a public CDN (CC-licensed). If it
-  // succeeds, swap in the real geometry. Failure leaves the procedural
-  // skull untouched.
-  (function tryLoadSkullGlb() {
-    const URL = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Skull/glTF-Binary/Skull.glb';
-    fetch(URL).then((r) => r.ok ? r.arrayBuffer() : null).then((buf) => {
-      if (!buf) return;
-      const verts = parseGlbVertices(buf);
-      if (!verts || verts.length < 300) return;
-      // Normalize the mesh to fit roughly within ±0.55 in each axis.
-      let minX = Infinity, minY = Infinity, minZ = Infinity;
-      let maxX = -Infinity, maxY = -Infinity, maxZ = -Infinity;
-      for (let i = 0; i < verts.length; i += 3) {
-        if (verts[i]   < minX) minX = verts[i];
-        if (verts[i+1] < minY) minY = verts[i+1];
-        if (verts[i+2] < minZ) minZ = verts[i+2];
-        if (verts[i]   > maxX) maxX = verts[i];
-        if (verts[i+1] > maxY) maxY = verts[i+1];
-        if (verts[i+2] > maxZ) maxZ = verts[i+2];
-      }
-      const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2, cz = (minZ + maxZ) / 2;
-      const span = Math.max(maxX - minX, maxY - minY, maxZ - minZ);
-      const scale = (span > 0 ? 1.0 / span : 1) * 0.95;
-      const out = new Array(verts.length);
-      for (let i = 0; i < verts.length; i += 3) {
-        out[i]   = (verts[i]   - cx) * scale;
-        // Flip Y so the skull is upright in our coord system
-        out[i+1] = -(verts[i+1] - cy) * scale;
-        out[i+2] = (verts[i+2] - cz) * scale;
-      }
-      portraitPoints = out;
-    }).catch(() => { /* keep procedural skull */ });
-  })();
-
-  // Minimal GLB → vertex-positions parser. Reads the JSON chunk to find
-  // the first POSITION accessor, then extracts that range from the
-  // following BIN chunk. Just enough to feed our point cloud.
-  function parseGlbVertices(buf) {
-    try {
-      const dv = new DataView(buf);
-      if (dv.getUint32(0, true) !== 0x46546C67) return null; // 'glTF'
-      const totalLen = dv.getUint32(8, true);
-      if (totalLen > buf.byteLength) return null;
-      // Chunk 0 — JSON
-      const jsonLen = dv.getUint32(12, true);
-      const jsonType = dv.getUint32(16, true);
-      if (jsonType !== 0x4E4F534A) return null; // 'JSON'
-      const jsonBytes = new Uint8Array(buf, 20, jsonLen);
-      const json = JSON.parse(new TextDecoder('utf-8').decode(jsonBytes));
-      // Chunk 1 — BIN
-      const binStart = 20 + jsonLen;
-      const binLen = dv.getUint32(binStart, true);
-      const binType = dv.getUint32(binStart + 4, true);
-      if (binType !== 0x004E4942) return null; // 'BIN '
-      const binData = new Uint8Array(buf, binStart + 8, binLen);
-      // Find any POSITION accessor on any primitive
-      let accIdx = -1;
-      const meshes = json.meshes || [];
-      for (const m of meshes) {
-        for (const prim of (m.primitives || [])) {
-          if (prim.attributes && prim.attributes.POSITION != null) {
-            accIdx = prim.attributes.POSITION;
-            break;
-          }
-        }
-        if (accIdx >= 0) break;
-      }
-      if (accIdx < 0) return null;
-      const acc = json.accessors[accIdx];
-      const bv = json.bufferViews[acc.bufferView];
-      const offset = (bv.byteOffset || 0) + (acc.byteOffset || 0);
-      const count = acc.count;
-      const stride = bv.byteStride || 12;
-      const out = new Float32Array(count * 3);
-      const view = new DataView(binData.buffer, binData.byteOffset, binData.byteLength);
-      for (let i = 0; i < count; i++) {
-        const o = offset + i * stride;
-        out[i * 3 + 0] = view.getFloat32(o, true);
-        out[i * 3 + 1] = view.getFloat32(o + 4, true);
-        out[i * 3 + 2] = view.getFloat32(o + 8, true);
-      }
-      return out;
-    } catch { return null; }
   }
 
   // Procedural fractal tree — recursive branching, leaf clusters at tips.
@@ -943,7 +866,7 @@
 
     // Portrait — generic 3D head; tumble in space like the torus/cube.
     if (spec && typeof spec === 'object' && spec.shape === 'portrait') {
-      const flat3 = portraitPoints;
+      const flat3 = getPortraitPoints();
       if (!flat3 || !flat3.length) { morph.points = null; return; }
       const samples = flat3.length / 3;
       const base = new Float32Array(particles.length * 3);
@@ -1023,6 +946,10 @@
       morph.text = key;
       buildMorphTargets(spec);
       morph.targetProgress = 1;
+      // Text morphs (nav-link words) skip the bezier/spin/burst flair so
+      // rapid hover-switching doesn't visibly jump — particles just
+      // straight-lerp prev→new. Shape morphs keep the dynamic flair.
+      morph.straight = (typeof spec === 'string');
     } else {
       // Brief delay before releasing — gives the user a chance to land on
       // an adjacent link without the particles flashing back to free flow.
@@ -1148,6 +1075,15 @@
   }
   window.__coverServiceTags = setCoverServiceTags;
 
+  // Depth → alpha buckets — hoisted out of the frame loop so it isn't
+  // reallocated every frame.
+  const TIERS = [
+    { min: 0.45, max: 0.7,  alpha: 0.18, size: 1 },
+    { min: 0.7,  max: 0.95, alpha: 0.42, size: 1 },
+    { min: 0.95, max: 1.2,  alpha: 0.72, size: 1 },
+    { min: 1.2,  max: 5.0,  alpha: 1.0,  size: 1 },
+  ];
+
   function frame(now) {
     if (!running) return;
     const dt = Math.min(now - last, 50) / 1000; // seconds
@@ -1184,11 +1120,10 @@
     const flowLerp = 0.06;
     // Subtle ambient breathing — when no preset wind is active, gently
     // modulate wind/swirl on long sine cycles so the default state still
-    // feels alive instead of static.
-    const ambientWind = (flowTarget.windX === 0 && flowTarget.windY === 0)
-      ? { x: Math.sin(elapsed * 0.11) * 0.05,
-          y: Math.cos(elapsed * 0.083) * 0.025 }
-      : { x: 0, y: 0 };
+    // feels alive instead of static. (Computed inline, no allocation.)
+    const noPresetWind = (flowTarget.windX === 0 && flowTarget.windY === 0);
+    const ambientWindX = noPresetWind ? Math.sin(elapsed * 0.11) * 0.05 : 0;
+    const ambientWindY = noPresetWind ? Math.cos(elapsed * 0.083) * 0.025 : 0;
     const ambientSwirlBoost = (flowTarget.swirl !== 0)
       ? Math.sin(elapsed * 0.07) * 0.04
       : 0;
@@ -1199,8 +1134,8 @@
     SWIRL       += (flowTarget.swirl + ambientSwirlBoost - SWIRL) * flowLerp;
     RADIAL      += (flowTarget.radial     - RADIAL)      * flowLerp;
     JITTER      += (flowTarget.jitter     - JITTER)      * flowLerp;
-    WIND_X      += ((flowTarget.windX || 0) + ambientWind.x - WIND_X) * flowLerp;
-    WIND_Y      += ((flowTarget.windY || 0) + ambientWind.y - WIND_Y) * flowLerp;
+    WIND_X      += ((flowTarget.windX || 0) + ambientWindX - WIND_X) * flowLerp;
+    WIND_Y      += ((flowTarget.windY || 0) + ambientWindY - WIND_Y) * flowLerp;
 
     const tNoise = elapsed * TIME_DRIFT;
 
@@ -1209,10 +1144,11 @@
     const easeRate = morph.targetProgress > morph.progress ? 0.08 : 0.04;
     morph.progress += (morph.targetProgress - morph.progress) * easeRate;
     if (morph.swap < 1) {
-      // Fast swap when the user is typing (so adjacent letters don't
-      // visually overlap), normal slower swap for hover transitions where
-      // the bezier paths + arcs should be readable.
-      const swapRate = morph.fast ? 3.0 : 0.65;
+      // Fast swap when typing (so adjacent letters don't overlap into
+      // chaos), moderate swap for nav-text (smooth straight lerp), and
+      // slower swap for shape morphs where the bezier theatrics need
+      // visual room to read.
+      const swapRate = morph.fast ? 3.0 : (morph.straight ? 1.4 : 0.65);
       morph.swap = Math.min(1, morph.swap + dt * swapRate);
       if (morph.swap >= 1) morph.prevPoints = null;
     }
@@ -1261,13 +1197,10 @@
     for (let i = 0; i < particles.length; i++) {
       const p = particles[i];
 
-      // Sample curl field at this particle's position
-      const [vx, vy, vz] = curl(
-        p.x * NOISE_SCALE,
-        p.y * NOISE_SCALE,
-        p.z * NOISE_SCALE,
-        tNoise
-      );
+      // Sample curl field at this particle's position. curl() writes into
+      // a shared buffer to avoid 7000+ array allocations per frame.
+      curl(p.x * NOISE_SCALE, p.y * NOISE_SCALE, p.z * NOISE_SCALE, tNoise);
+      const vx = _curlOut[0], vy = _curlOut[1], vz = _curlOut[2];
 
       // Move along the flow
       p.x += vx * FLOW_SPEED * dt;
@@ -1352,10 +1285,13 @@
           const cx0 = (px + nx) * 0.5;
           const cy0 = (py + ny) * 0.5;
           const cz0 = (pz + nz) * 0.5;
-          // In fast (typewriter) mode skip all the curve / spin / burst
-          // theatrics — straight lerp from prev to new so consecutive
-          // letters don't overlap into chaos.
-          const fastSwap = !!morph.fast;
+          // In fast (typewriter) or straight (nav-text) mode skip the
+          // curve / spin / burst theatrics — straight lerp from prev to
+          // new so the snapshot blend on rapid hover doesn't visibly
+          // jump (the renderer's actual position would have been on the
+          // bezier curve, but the snapshot only captures the linear
+          // midpoint).
+          const fastSwap = !!morph.fast || !!morph.straight;
           const dynScale = fastSwap ? 0 : 1;
           const perpScale = (p.swapCtrlX || 0) * dynScale;
           const ctrlX = cx0 + (-dy) * perpScale + (p.swapCtrlX || 0) * 0.25 * dynScale;
@@ -1503,15 +1439,8 @@
 
     // Two-pass render: back layer first, then bright foreground. Bucketing
     // by depth into 4 alpha tiers avoids per-particle fillStyle thrash.
-    const tiers = [
-      { min: 0.45, max: 0.7,  alpha: 0.18, size: 1 },
-      { min: 0.7,  max: 0.95, alpha: 0.42, size: 1 },
-      { min: 0.95, max: 1.2,  alpha: 0.72, size: 1 },
-      { min: 1.2,  max: 5.0,  alpha: 1.0,  size: 1 },
-    ];
-
-    for (let tier = 0; tier < tiers.length; tier++) {
-      const T = tiers[tier];
+    for (let tier = 0; tier < TIERS.length; tier++) {
+      const T = TIERS[tier];
       ctx.fillStyle = `rgba(255,255,255,${T.alpha})`;
       const baseSz = T.size * DPR;
       for (let i = 0; i < particles.length; i++) {
@@ -1598,7 +1527,21 @@
     requestAnimationFrame(frame);
   }
 
-  window.addEventListener('resize', () => { resize(); build(); setCoverLabels(true); }, { passive: true });
+  // Resize: re-fit canvas + rebuild particle pool, but keep label
+  // assignments so debug numbers don't all jump to new particles on every
+  // viewport change. Debounced via rAF coalescing.
+  let resizePending = false;
+  window.addEventListener('resize', () => {
+    if (resizePending) return;
+    resizePending = true;
+    requestAnimationFrame(() => {
+      resizePending = false;
+      resize();
+      build();
+      // Keep current labelIndices/labelHues — particles regenerated but the
+      // indices remain valid for the new pool.
+    });
+  }, { passive: true });
   document.addEventListener('visibilitychange', () => {
     running = !document.hidden;
     if (running) {

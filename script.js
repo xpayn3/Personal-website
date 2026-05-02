@@ -182,8 +182,9 @@ const lazyObserver = new IntersectionObserver((entries) => {
 document.querySelectorAll('.grid-item').forEach(item => lazyObserver.observe(item));
 
 // ========== FILTERS ==========
-let activeFilters = { project: null, year: null, color: null, category: null };
+let activeFilters = { project: null, year: null, color: null, category: null, search: '' };
 window.activeFilters = activeFilters;
+let activeSort = 'newest'; // 'newest' | 'oldest' | 'random'
 
 function buildDropdowns() {
   // Project dropdown
@@ -248,6 +249,21 @@ buildColorDropdown();
   }
 })();
 
+// Year filter — pulled from project data.
+(function buildYearDropdown() {
+  const menu = document.getElementById('menu-year');
+  if (!menu) return;
+  const years = [...new Set(Object.values(projects).map(p => p.year).filter(Boolean))]
+    .sort((a, b) => b - a);
+  for (const y of years) {
+    const btn = document.createElement('button');
+    btn.dataset.value = String(y);
+    btn.textContent = String(y);
+    btn.addEventListener('click', (e) => { e.stopPropagation(); setFilter('year', y); });
+    menu.appendChild(btn);
+  }
+})();
+
 function setFilter(type, value) {
   if (activeFilters[type] === value) {
     activeFilters[type] = null;
@@ -265,12 +281,18 @@ function applyFilters() {
   const toShow = [];
   const toHide = [];
 
+  const q = (activeFilters.search || '').trim().toLowerCase();
   items.forEach(item => {
     let show = true;
     if (activeFilters.project && item.dataset.project !== activeFilters.project) show = false;
     if (activeFilters.year && item.dataset.year !== String(activeFilters.year)) show = false;
     if (activeFilters.color && item.dataset.color !== activeFilters.color) show = false;
     if (activeFilters.category && !(item.dataset.category || '').split(',').includes(activeFilters.category)) show = false;
+    if (q) {
+      const proj = projects[item.dataset.project];
+      const hay = ((proj && proj.name) || item.dataset.project || '').toLowerCase();
+      if (!hay.includes(q)) show = false;
+    }
 
     const isHidden = item.classList.contains('hidden');
     if (show && isHidden) toShow.push(item);
@@ -322,28 +344,42 @@ function applyFilters() {
   if (activeFilters.project) {
     const proj = projects[activeFilters.project];
     const name = proj.name;
-    const maxLen = isMobile ? 10 : 18;
-    projToggleText.textContent = name.length > maxLen ? name.slice(0, maxLen) + '...' : name;
+    const maxLen = 14;
+    projToggleText.textContent = name.length > maxLen ? name.slice(0, maxLen) + '…' : name;
     const firstSrc = proj.images[0];
     const isVid = firstSrc.endsWith('.webm') || firstSrc.endsWith('.mp4');
     projToggleThumb.src = isVid ? firstSrc.replace(/\.(webm|mp4)$/, '_thumb.webp') : firstSrc;
     projToggleThumb.classList.add('visible');
   } else {
-    projToggleText.textContent = 'Projects';
+    projToggleText.textContent = 'All';
     projToggleThumb.classList.remove('visible');
   }
 
-  // Update category button text
+  // Update category button text — preserve the dropdown caret span.
   const categoryToggle = document.getElementById('categoryToggle');
-  if (activeFilters.category) {
-    categoryToggle.textContent = activeFilters.category;
-  } else {
-    categoryToggle.textContent = 'Type';
-  }
+  const catLabelSpan = categoryToggle && categoryToggle.querySelector('span:not(.cp-caret)');
+  if (catLabelSpan) catLabelSpan.textContent = activeFilters.category || 'Any';
 
-  // Show/hide "All" reset button
-  const hasAnyFilter = Object.values(activeFilters).some(v => v !== null);
-  document.getElementById('resetFilters').style.display = hasAnyFilter ? 'flex' : 'none';
+  // Year button text
+  const yearText = document.getElementById('yearToggleText');
+  if (yearText) yearText.textContent = activeFilters.year ? String(activeFilters.year) : 'Any';
+
+  // Color button text mirrors color name
+  const colorText = document.getElementById('colorToggleText');
+  if (colorText) colorText.textContent = activeFilters.color || 'Any';
+
+  // Show/hide reset button
+  const hasAnyFilter = !!(activeFilters.project || activeFilters.year || activeFilters.color || activeFilters.category || (activeFilters.search && activeFilters.search.length));
+  const resetBtn = document.getElementById('resetFilters');
+  if (resetBtn) resetBtn.style.display = hasAnyFilter ? 'inline-block' : 'none';
+
+  // Live counts in the control-panel meter
+  const cpVisible = document.getElementById('cpVisible');
+  const cpTotal = document.getElementById('cpTotal');
+  if (cpVisible) cpVisible.textContent = String(visibleCount).padStart(3, '0');
+  if (cpTotal) cpTotal.textContent = String(items.length).padStart(3, '0');
+  const cpStatus = document.getElementById('cpStatus');
+  if (cpStatus) cpStatus.textContent = hasAnyFilter ? '// FILTER' : '// IDLE';
 
   // Update color indicator
   const indicator = document.getElementById('colorIndicator');
@@ -373,9 +409,14 @@ document.getElementById('resetFilters').addEventListener('click', (e) => {
   const btn = e.currentTarget;
   btn.style.animation = 'barItemOut 0.3s cubic-bezier(0.32,0.72,0,1) forwards';
   setTimeout(() => {
-    activeFilters = { project: null, year: null, color: null, category: null };
-    // Re-expose after reassignment so overlay.js sees the fresh object
+    activeFilters = { project: null, year: null, color: null, category: null, search: '' };
     window.activeFilters = activeFilters;
+    const searchEl = document.getElementById('cpSearch');
+    if (searchEl) {
+      searchEl.value = '';
+      const wrap = searchEl.closest('.cp-search');
+      if (wrap) wrap.classList.remove('has-text');
+    }
     applyFilters();
     closeAllDropdowns();
     btn.style.animation = '';
@@ -384,8 +425,14 @@ document.getElementById('resetFilters').addEventListener('click', (e) => {
 
 
 document.getElementById('clearFiltersBtn').addEventListener('click', () => {
-  activeFilters = { project: null, year: null, color: null, category: null };
+  activeFilters = { project: null, year: null, color: null, category: null, search: '' };
   window.activeFilters = activeFilters;
+  const searchEl = document.getElementById('cpSearch');
+  if (searchEl) {
+    searchEl.value = '';
+    const wrap = searchEl.closest('.cp-search');
+    if (wrap) wrap.classList.remove('has-text');
+  }
   applyFilters();
   closeAllDropdowns();
 });
@@ -420,7 +467,7 @@ document.querySelectorAll('.bar-toggle').forEach(btn => {
 });
 
 document.addEventListener('click', (e) => {
-  if (!e.target.closest('.bottom-bar')) closeAllDropdowns();
+  if (!e.target.closest('.control-panel')) closeAllDropdowns();
 });
 
 // ========== DROPDOWN MOUSE TILT ==========
@@ -474,33 +521,6 @@ function updateSlider() {
 
 gridSlider.addEventListener('input', updateSlider);
 updateSlider();
-
-// ========== MOBILE TOP SLIDER ==========
-const mobileSlider = document.getElementById('mobileGridSlider');
-const mobileDotsEl = document.getElementById('mobileSliderDots');
-if (mobileSlider && mobileDotsEl) {
-  const mMin = parseInt(mobileSlider.min);
-  const mMax = parseInt(mobileSlider.max);
-  for (let i = 0; i <= mMax - mMin; i++) {
-    const dot = document.createElement('div');
-    dot.className = 'slider-dot';
-    mobileDotsEl.appendChild(dot);
-  }
-  mobileSlider.value = _mobile ? 3 : 5;
-
-  function updateMobileSlider() {
-    const val = parseInt(mobileSlider.value);
-    gridEl.style.gridTemplateColumns = `repeat(${val}, 1fr)`;
-    const pct = ((val - mMin) / (mMax - mMin)) * 100;
-    mobileSlider.style.background = `linear-gradient(to right, #fff ${pct}%, rgba(0,0,0,0.1) ${pct}%)`;
-    mobileDotsEl.querySelectorAll('.slider-dot').forEach((dot, i) => {
-      dot.classList.toggle('filled', i <= val - mMin);
-    });
-  }
-
-  mobileSlider.addEventListener('input', updateMobileSlider);
-  if (_mobile) updateMobileSlider();
-}
 
 // ========== LIST VIEW TOGGLE ==========
 const layoutGridBtn = document.getElementById('layoutGrid');
@@ -594,6 +614,123 @@ const hashMatch = location.hash.match(/project=(\w+)/);
 if (hashMatch) {
   setTimeout(() => window.openProject(hashMatch[1]), 100);
 }
+
+// ========== CONTROL PANEL — sort / search / collapse =================
+(function initControlPanelExtras() {
+  // ---- Sort: reorders DOM children of the grid in place. -------------
+  const sortBtns = document.querySelectorAll('.cp-sort-btn');
+  function applySort() {
+    const items = Array.from(gridEl.querySelectorAll('.grid-item'));
+    let sorted;
+    if (activeSort === 'random') {
+      sorted = items.slice();
+      for (let i = sorted.length - 1; i > 0; i--) {
+        const j = (Math.random() * (i + 1)) | 0;
+        [sorted[i], sorted[j]] = [sorted[j], sorted[i]];
+      }
+    } else {
+      const dir = activeSort === 'oldest' ? 1 : -1;
+      sorted = items.slice().sort((a, b) => {
+        const ya = parseInt(a.dataset.year, 10) || 0;
+        const yb = parseInt(b.dataset.year, 10) || 0;
+        return (ya - yb) * dir;
+      });
+    }
+    const frag = document.createDocumentFragment();
+    sorted.forEach(el => frag.appendChild(el));
+    gridEl.appendChild(frag);
+  }
+  sortBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      activeSort = btn.dataset.sort || 'newest';
+      sortBtns.forEach(b => b.classList.toggle('active', b === btn));
+      applySort();
+    });
+  });
+
+  // ---- Search: live name filter. -------------------------------------
+  const searchEl = document.getElementById('cpSearch');
+  const searchClear = document.getElementById('cpSearchClear');
+  if (searchEl) {
+    const wrap = searchEl.closest('.cp-search');
+    let debounceTimer = null;
+    searchEl.addEventListener('input', () => {
+      activeFilters.search = searchEl.value;
+      window.activeFilters = activeFilters;
+      if (wrap) wrap.classList.toggle('has-text', !!searchEl.value);
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => applyFilters(), 80);
+    });
+    searchEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        searchEl.value = '';
+        activeFilters.search = '';
+        if (wrap) wrap.classList.remove('has-text');
+        applyFilters();
+      }
+    });
+  }
+  if (searchClear && searchEl) {
+    searchClear.addEventListener('click', (e) => {
+      e.stopPropagation();
+      searchEl.value = '';
+      activeFilters.search = '';
+      const wrap = searchEl.closest('.cp-search');
+      if (wrap) wrap.classList.remove('has-text');
+      applyFilters();
+      searchEl.focus();
+    });
+  }
+
+  // Keyboard shortcut: '/' or Ctrl/Cmd-K focuses search.
+  window.addEventListener('keydown', (e) => {
+    const inFormField = document.activeElement && (
+      document.activeElement.tagName === 'INPUT' ||
+      document.activeElement.tagName === 'TEXTAREA' ||
+      document.activeElement.isContentEditable
+    );
+    if (inFormField) return;
+    if (e.key === '/' || ((e.ctrlKey || e.metaKey) && e.key === 'k')) {
+      e.preventDefault();
+      if (searchEl) searchEl.focus();
+    }
+  });
+
+  // ---- Cols slider value display + integer chip. ---------------------
+  const colsVal = document.getElementById('cpColsVal');
+  const slider = document.getElementById('gridSlider');
+  function syncColsVal() { if (colsVal && slider) colsVal.textContent = slider.value; }
+  if (slider) { slider.addEventListener('input', syncColsVal); syncColsVal(); }
+
+  // ---- Hide cols section when in list view. --------------------------
+  const colsSection = document.getElementById('cpColsSection');
+  const layoutGridBtn = document.getElementById('layoutGrid');
+  const layoutListBtn = document.getElementById('layoutList');
+  function syncColsVisibility() {
+    if (!colsSection) return;
+    const inList = gridEl.classList.contains('list-view');
+    colsSection.style.display = inList ? 'none' : '';
+  }
+  if (layoutGridBtn) layoutGridBtn.addEventListener('click', () => requestAnimationFrame(syncColsVisibility));
+  if (layoutListBtn) layoutListBtn.addEventListener('click', () => requestAnimationFrame(syncColsVisibility));
+  syncColsVisibility();
+
+  // ---- Collapse / handle toggle. -------------------------------------
+  const panel = document.getElementById('controlPanel');
+  const collapseBtn = document.getElementById('cpCollapse');
+  const handle = document.getElementById('cpHandle');
+  function setCollapsed(yes) {
+    if (!panel || !handle) return;
+    panel.classList.toggle('is-collapsed', yes);
+    handle.hidden = !yes;
+  }
+  if (collapseBtn) collapseBtn.addEventListener('click', () => setCollapsed(true));
+  if (handle) handle.addEventListener('click', () => setCollapsed(false));
+
+  // ---- Initial count + label sync. ----------------------------------
+  applyFilters();
+})();
 
 // ========== FOOTER REVEAL ==========
 // footer.css hides footer text until body has .footer-visible — toggle it

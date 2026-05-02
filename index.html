@@ -83,6 +83,17 @@
   <!-- Hover description, bottom-left of cover -->
   <div class="cover-desc" id="coverDesc" aria-hidden="true"></div>
 
+  <!-- Side project list — opens after committing a service. Lists all
+       projects under that service in a small mono list view. -->
+  <aside class="service-projects" id="serviceProjects" aria-hidden="true">
+    <header class="service-projects-head">
+      <span class="service-projects-eyebrow">// Projects</span>
+      <span class="service-projects-title" id="serviceProjectsTitle"></span>
+      <button class="service-projects-close" id="serviceProjectsClose" type="button" aria-label="Close">×</button>
+    </header>
+    <ol class="service-projects-list" id="serviceProjectsList"></ol>
+  </aside>
+
   <!-- Services pin, top-right of cover -->
   <div class="services" id="servicesPin">
     <span class="services-label">Services</span>
@@ -92,6 +103,7 @@
         <li class="services-item"
             data-cover-shape="torus"
             data-tags="C4D|Houdini|Redshift|FUI|Loops"
+            data-projects="cestel|grounded2025|grounded2024|grounded2023|grounded2022|grounded2021|grounded2020|grounded2018|taf|halloween|blackfriday|ment"
             data-desc="Cinema 4D · Houdini · Redshift — narrative loops, product films, simulations, FUI / HUD, abstract motion."
             data-proj="cestel"
             data-proj-name="CESTEL"
@@ -100,6 +112,7 @@
         <li class="services-item"
             data-flow="kinetic"
             data-tags="AE|Expressions|Stings|Type|Broadcast"
+            data-projects="grounded2025|grounded2024|grounded2023|grounded2022|grounded2021|grounded2020|cestel|ment|taf|halloween|blackfriday|accbox"
             data-desc="After Effects · expressions — brand stings, kinetic type, broadcast packages, motion identity systems."
             data-proj="grounded2023"
             data-proj-name="Grounded 2023"
@@ -108,6 +121,7 @@
         <li class="services-item"
             data-flow="structural"
             data-tags="Logos|Color|Type|Brand books|Guidelines"
+            data-projects="grounded2025|grounded2024|grounded2023|grounded2022|grounded2021|grounded2020|grounded2018|tamtam|largavida|newedge|kersnikova|natureta|accbox"
             data-desc="Logo systems, color, type, brand books — built motion-first. Guideline doc + asset kit included."
             data-proj="grounded2025"
             data-proj-name="Grounded 2025"
@@ -116,6 +130,7 @@
         <li class="services-item"
             data-flow="pixelated"
             data-tags="Figma|Flows|Prototypes|Systems|Handoff"
+            data-projects="accbox"
             data-desc="Figma flows, prototypes, design systems, dev handoff — user-tested and engineering-ready."
             data-proj="accbox"
             data-proj-name="AccountingBox"
@@ -124,6 +139,7 @@
         <li class="services-item"
             data-flow="implode"
             data-tags="Renders|4K|Alpha|Configurators|Exploded"
+            data-projects="natureta_renders|natureta|kersnikova"
             data-desc="Photoreal renders, exploded views, configurator scenes — 4K + alpha + masks delivered."
             data-proj="natureta_renders"
             data-proj-name="Natureta product renders"
@@ -133,6 +149,7 @@
             data-cover-shape="room"
             data-cover-labels="true"
             data-tags="Shaders|MadMapper|TouchDesigner|Mapping|Live"
+            data-projects="radenci"
             data-desc="Custom shaders, multi-projector blends, MadMapper / TouchDesigner — live event control."
             data-proj="radenci"
             data-proj-name="Radenci spatial projection"
@@ -141,6 +158,7 @@
         <li class="services-item"
             data-flow="swirl"
             data-tags="Three.js|WebGPU|TSL|Next.js|Webflow"
+            data-projects=""
             data-desc="Three.js · WebGPU · TSL · Next.js · Webflow — marketing sites, real-time 3D web, configurators."
             data-proj-name="Webtree — webgpu foliage studio"
             data-proj-thumb="Images/tree_thumb.svg"
@@ -149,6 +167,7 @@
         <li class="services-item"
             data-flow="drift"
             data-tags="Concept|Mood|Art direction|Brief|Delivery"
+            data-projects="cestel|grounded2025|grounded2024|grounded2023|taf|halloween|blackfriday"
             data-desc="Concept, mood, art direction across teams — from brief to delivery, single point of contact."
             data-proj="halloween"
             data-proj-name="TAF Halloween"
@@ -869,6 +888,110 @@
         }
       }
 
+      // Side project list — populated from data-projects on the clicked
+      // service item; pulls names + years from window.projects.
+      const projPanel = document.getElementById('serviceProjects');
+      const projTitleEl = document.getElementById('serviceProjectsTitle');
+      const projListEl = document.getElementById('serviceProjectsList');
+      const projCloseEl = document.getElementById('serviceProjectsClose');
+
+      // Active typewriter timers — cancelled if the panel is reopened
+      // for a different service.
+      const typeTimers = [];
+      function clearTypeTimers() {
+        while (typeTimers.length) clearTimeout(typeTimers.pop());
+      }
+      function typeLine(el, full, startDelay, charSpeed) {
+        el.textContent = '';
+        const t0 = setTimeout(() => {
+          let i = 0;
+          const step = () => {
+            el.textContent = full.slice(0, ++i);
+            if (i < full.length) {
+              const t = setTimeout(step, charSpeed);
+              typeTimers.push(t);
+            }
+          };
+          step();
+        }, startDelay);
+        typeTimers.push(t0);
+      }
+
+      function openServiceProjects(el) {
+        if (!projPanel || !projListEl) return;
+        clearTypeTimers();
+        const ids = (el.getAttribute('data-projects') || '')
+          .split('|').map(s => s.trim()).filter(Boolean);
+        const projects = window.projects || {};
+        const records = ids
+          .map(id => ({ id, p: projects[id] }))
+          .filter(r => r.p)
+          .sort((a, b) => (b.p.year || 0) - (a.p.year || 0));
+        const titleText = el.dataset.label || el.textContent;
+        if (projTitleEl) typeLine(projTitleEl, titleText, 0, 10);
+        projListEl.innerHTML = '';
+        if (!records.length) {
+          const li = document.createElement('li');
+          li.className = 'service-projects-item';
+          const span = document.createElement('span');
+          span.className = 'service-projects-link';
+          span.style.color = 'rgba(255,255,255,0.5)';
+          li.appendChild(span);
+          projListEl.appendChild(li);
+          typeLine(span, 'No archived projects yet.', 80, 8);
+        } else {
+          // Each line starts after the previous reaches a certain number
+          // of chars — keeps the cascade tight without waiting full lines.
+          let runningDelay = 80;
+          records.forEach((r) => {
+            const li = document.createElement('li');
+            li.className = 'service-projects-item';
+            const a = document.createElement('a');
+            a.className = 'service-projects-link';
+            a.href = `grid.html#project=${r.id}`;
+            a.addEventListener('click', (ev) => {
+              if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.button === 1) return;
+              if (typeof window.openProject === 'function') {
+                ev.preventDefault();
+                window.openProject(r.id);
+              }
+            });
+            const year = document.createElement('span');
+            year.className = 'service-projects-year';
+            year.style.opacity = '0';
+            year.style.transition = 'opacity 0.2s ease';
+            li.appendChild(a);
+            li.appendChild(year);
+            projListEl.appendChild(li);
+            const fullName = r.p.name || r.id;
+            const charSpeed = 6;
+            typeLine(a, fullName, runningDelay, charSpeed);
+            const totalLineMs = runningDelay + fullName.length * charSpeed;
+            // Year fades in once the name finishes typing.
+            const yearTimer = setTimeout(() => {
+              year.textContent = r.p.year ? String(r.p.year) : '';
+              year.style.opacity = '1';
+            }, totalLineMs + 20);
+            typeTimers.push(yearTimer);
+            // Next line starts after just a couple chars of this one for a
+            // tight rolling cascade.
+            runningDelay += Math.min(70, fullName.length * charSpeed * 0.4);
+          });
+        }
+        projPanel.setAttribute('aria-hidden', 'false');
+        projPanel.classList.add('is-open');
+      }
+      function closeServiceProjects() {
+        if (!projPanel) return;
+        clearTypeTimers();
+        projPanel.classList.remove('is-open');
+        projPanel.setAttribute('aria-hidden', 'true');
+      }
+      if (projCloseEl) projCloseEl.addEventListener('click', closeServiceProjects);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeServiceProjects();
+      });
+
       items.forEach((el) => {
         el.dataset.label = el.textContent;
         el.addEventListener('mouseenter', () => {
@@ -879,7 +1002,8 @@
         });
         el.addEventListener('mouseleave', () => stopScramble(el));
 
-        // Click → commit this service's preset and close the dropdown.
+        // Click → commit this service's preset, close dropdown, open
+        // the side project list.
         el.addEventListener('click', (e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -888,30 +1012,40 @@
           lockedShape = shape || null;
           lockedFlow = shape ? null : (flow || null);
           applyPreset(lockedShape, lockedFlow);
-
           const services = document.getElementById('servicesPin');
-          if (services) {
-            services.classList.add('is-locked');
-            // Re-arm: once the cursor leaves, drop the lock so re-hover
-            // opens the panel again.
-            const release = () => {
-              services.classList.remove('is-locked');
-              services.removeEventListener('pointerleave', release);
-            };
-            services.addEventListener('pointerleave', release);
-          }
+          if (services) services.classList.remove('is-open');
+          openServiceProjects(el);
         });
       });
 
-      const panel = document.querySelector('.services-panel');
-      if (panel) {
-        panel.addEventListener('mouseleave', () => {
-          clearPreview();
-          hideServiceTags();
-          // Restore the locked-in preset (or release if nothing committed).
-          applyPreset(lockedShape, lockedFlow);
+      // Click toggle on the Services label — open/close the dropdown.
+      const services = document.getElementById('servicesPin');
+      const label = services ? services.querySelector('.services-label') : null;
+      if (label && services) {
+        label.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          services.classList.toggle('is-open');
         });
       }
+      // Click outside closes the panel.
+      document.addEventListener('click', (e) => {
+        if (!services || !services.classList.contains('is-open')) return;
+        if (services.contains(e.target)) return;
+        services.classList.remove('is-open');
+        clearPreview();
+        hideServiceTags();
+        applyPreset(lockedShape, lockedFlow);
+      });
+      // Escape closes too.
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        if (!services || !services.classList.contains('is-open')) return;
+        services.classList.remove('is-open');
+        clearPreview();
+        hideServiceTags();
+        applyPreset(lockedShape, lockedFlow);
+      });
 
       // Click on the preview thumb opens the project overlay on home (no nav).
       if (link) {

@@ -118,42 +118,108 @@
     </div>
   </div>
 
-  <!-- ===== FLOATING BOTTOM BAR ===== -->
-  <nav class="bottom-bar bar-animate-in" id="bottomBar">
-    <div class="bar-section">
-      <button class="bar-toggle" data-menu="project" id="projectToggle"><img class="proj-toggle-thumb" id="projToggleThumb" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" /><span id="projToggleText">Projects</span></button>
-      <div class="bar-dropdown" id="menu-project"></div>
-    </div>
-    <div class="bar-section">
-      <button class="bar-toggle" data-menu="color"><span class="color-indicator" id="colorIndicator"></span>Color</button>
-      <div class="bar-dropdown" id="menu-color"></div>
-    </div>
-    <div class="bar-section">
-      <button class="bar-toggle" data-menu="category" id="categoryToggle">Type</button>
-      <div class="bar-dropdown" id="menu-category"></div>
-    </div>
-    <button class="bar-reset" id="resetFilters">All</button>
-    <div class="bar-slider">
-      <input type="range" id="gridSlider" min="2" max="8" value="5" step="1" />
-      <div class="slider-dots" id="sliderDots"></div>
-    </div>
-  </nav>
+  <!-- ===== CONTROL PANEL — top-right unified controls ===== -->
+  <aside class="control-panel" id="controlPanel" aria-label="Archive controls">
+    <header class="cp-head">
+      <span class="cp-pulse" aria-hidden="true"></span>
+      <span class="cp-title">// CONTROL</span>
+      <button class="cp-collapse" id="cpCollapse" type="button" aria-label="Collapse panel" title="Collapse"><span class="cp-collapse-glyph">−</span></button>
+    </header>
 
-  <!-- ===== MOBILE TOP SLIDER ===== -->
-  <div class="mobile-slider-pill" id="mobileSliderPill">
-    <input type="range" id="mobileGridSlider" min="2" max="4" value="3" step="1" />
-    <div class="slider-dots" id="mobileSliderDots"></div>
-  </div>
+    <div class="cp-meter" id="cpMeter">
+      <span class="cp-meter-num" id="cpVisible">000</span>
+      <span class="cp-meter-sep">/</span>
+      <span class="cp-meter-num cp-meter-total" id="cpTotal">000</span>
+      <span class="cp-meter-label">items</span>
+    </div>
 
-  <!-- ===== LAYOUT TOGGLE ===== -->
-  <div class="layout-toggle" id="layoutToggle">
-    <button class="layout-btn active" id="layoutGrid" title="Grid view">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg>
-    </button>
-    <button class="layout-btn" id="layoutList" title="List view">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="1" y1="3" x2="15" y2="3"/><line x1="1" y1="8" x2="15" y2="8"/><line x1="1" y1="13" x2="15" y2="13"/></svg>
-    </button>
-  </div>
+    <div class="cp-section">
+      <span class="cp-row-label">LAYOUT</span>
+      <div class="cp-toggle-pair" role="group" aria-label="Layout">
+        <button class="cp-icon-btn active" id="layoutGrid" title="Grid view" type="button">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+        </button>
+        <button class="cp-icon-btn" id="layoutList" title="List view" type="button">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><line x1="1" y1="3" x2="15" y2="3"/><line x1="1" y1="8" x2="15" y2="8"/><line x1="1" y1="13" x2="15" y2="13"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="cp-section cp-section-cols" id="cpColsSection">
+      <span class="cp-row-label">COLS</span>
+      <div class="cp-slider-wrap">
+        <input type="range" id="gridSlider" min="2" max="8" value="5" step="1" aria-label="Columns" />
+        <div class="slider-dots" id="sliderDots"></div>
+      </div>
+      <span class="cp-slider-val" id="cpColsVal">5</span>
+    </div>
+    <div class="cp-divider"><span>FILTERS</span></div>
+
+    <div class="cp-section">
+      <span class="cp-row-label">PROJ</span>
+      <button class="cp-filter-btn bar-toggle" data-menu="project" id="projectToggle" type="button">
+        <img class="proj-toggle-thumb" id="projToggleThumb" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" />
+        <span id="projToggleText">All</span>
+        <span class="cp-caret" aria-hidden="true">▾</span>
+      </button>
+      <div class="bar-dropdown cp-dropdown" id="menu-project"></div>
+    </div>
+
+    <div class="cp-section">
+      <span class="cp-row-label">COLOR</span>
+      <button class="cp-filter-btn bar-toggle" data-menu="color" id="colorToggle" type="button">
+        <span class="color-indicator" id="colorIndicator"></span>
+        <span id="colorToggleText">Any</span>
+        <span class="cp-caret" aria-hidden="true">▾</span>
+      </button>
+      <div class="bar-dropdown cp-dropdown" id="menu-color"></div>
+    </div>
+
+    <div class="cp-section">
+      <span class="cp-row-label">TYPE</span>
+      <button class="cp-filter-btn bar-toggle" data-menu="category" id="categoryToggle" type="button">
+        <span>Any</span>
+        <span class="cp-caret" aria-hidden="true">▾</span>
+      </button>
+      <div class="bar-dropdown cp-dropdown" id="menu-category"></div>
+    </div>
+
+    <div class="cp-section">
+      <span class="cp-row-label">YEAR</span>
+      <button class="cp-filter-btn bar-toggle" data-menu="year" id="yearToggle" type="button">
+        <span id="yearToggleText">Any</span>
+        <span class="cp-caret" aria-hidden="true">▾</span>
+      </button>
+      <div class="bar-dropdown cp-dropdown" id="menu-year"></div>
+    </div>
+
+    <div class="cp-divider"><span>SORT</span></div>
+
+    <div class="cp-sort" role="group" aria-label="Sort">
+      <button class="cp-sort-btn active" data-sort="newest" type="button">↓ NEW</button>
+      <button class="cp-sort-btn" data-sort="oldest" type="button">↑ OLD</button>
+      <button class="cp-sort-btn" data-sort="random" type="button">⤬ RND</button>
+    </div>
+
+    <div class="cp-divider"><span>SEARCH</span></div>
+
+    <div class="cp-search">
+      <span class="cp-search-prompt" aria-hidden="true">&gt;</span>
+      <input type="text" id="cpSearch" placeholder="filter…" autocomplete="off" spellcheck="false" />
+      <button class="cp-search-clear" id="cpSearchClear" aria-label="Clear search" type="button">×</button>
+    </div>
+
+    <div class="cp-foot">
+      <button class="bar-reset cp-reset" id="resetFilters" type="button">[ RESET ALL ]</button>
+      <span class="cp-foot-status" id="cpStatus">// IDLE</span>
+    </div>
+  </aside>
+
+  <!-- Collapsed-state handle: small dot in the top-right that re-opens the panel. -->
+  <button class="cp-handle" id="cpHandle" type="button" aria-label="Open control panel" hidden>
+    <span class="cp-handle-pulse"></span>
+    <span class="cp-handle-label">CTRL</span>
+  </button>
 
   <!-- Floating top-left nav (shared component) -->
   <a href="index.html" class="floating-name">Luka Grčar</a>
