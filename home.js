@@ -15,7 +15,7 @@
     window.matchMedia('(max-width: 768px)').matches ||
     window.matchMedia('(pointer: coarse)').matches
   ));
-  const COUNT = IS_MOBILE ? 1500 : 7000;
+  const COUNT = IS_MOBILE ? 1500 : 11000;
   const FIELD_R = 1;       // bounding sphere radius (in normalized field units)
   // Defaults — match the "base" preset below so the live values + their
   // lerp targets agree at startup.
@@ -783,10 +783,13 @@
     if (!flat) { morph.points = null; return; }
     const sampleCount = flat.length / 2;
     if (sampleCount === 0) { morph.points = null; return; }
-    // Assign each particle a target (cycled through samples)
+    // Assign each particle a *random* sample. Cycling top-to-bottom
+    // through the pixel list left long words covered only along the
+    // upper rows when sampleCount > particles.length; random sampling
+    // gives even coverage across the whole glyph regardless of length.
     const out = new Float32Array(particles.length * 3);
     for (let i = 0; i < particles.length; i++) {
-      const sIdx = (i % sampleCount) * 2;
+      const sIdx = ((Math.random() * sampleCount) | 0) * 2;
       out[i * 3 + 0] = flat[sIdx];
       out[i * 3 + 1] = flat[sIdx + 1];
       // Tiny z scatter so the form reads with a hint of depth
