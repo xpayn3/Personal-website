@@ -1240,7 +1240,7 @@
   // Defers if the user is hovering a link, typing, dragging, or sculpting.
   const GREETINGS = ['hello', 'hej', 'ahoj', 'bok', 'ciao', 'moin', 'aloha', 'salut', 'howdy', 'welcome', 'hi'];
   // First greeting fires ~5s after page load (welcomes the visitor),
-  // then subsequent ones space out to 25-70s.
+  // then subsequent ones space out to 12-30s — much more present.
   let nextGreetAt = performance.now() + 5000;
   let greetUntil = 0;
   let greetActive = false;
@@ -1257,7 +1257,7 @@
         greetActive = false;
         greetKey = null;
         morph.greet = false;
-        nextGreetAt = now + 45000 + Math.random() * 30000;
+        nextGreetAt = now + 18000 + Math.random() * 14000;
         return;
       }
       if (now >= greetUntil) {
@@ -1266,7 +1266,7 @@
         setMorphTarget(null);
         // Keep morph.greet on through the slow fade-out; cleared once
         // progress reaches ~0 in the morph drop block.
-        nextGreetAt = now + 25000 + Math.random() * 45000; // 25 – 70 s
+        nextGreetAt = now + 12000 + Math.random() * 18000; // 12 – 30 s
       }
       return;
     }
@@ -1276,11 +1276,11 @@
     const word = GREETINGS[(Math.random() * GREETINGS.length) | 0];
     greetKey = word;
     greetActive = true;
-    greetUntil = now + 5500 + Math.random() * 2000; // 5.5 – 7.5 s hold
+    greetUntil = now + 9000 + Math.random() * 4000; // 9 – 13 s hold
     setMorphTarget(word);
-    // Loose commit + slow ramp — feels like a faint attractor turning
-    // on, rather than a hard snap to text.
-    morph.targetProgress = 0.32;
+    // Higher commit cap so the word reads bigger / more present, but
+    // still soft enough to feel like an attractor rather than a snap.
+    morph.targetProgress = 0.55;
     morph.greet = true;
   }
 
