@@ -205,15 +205,19 @@
       // swap = 1 (delay + dur ≤ 1). Without this, slow-tail particles
       // freeze partway when prevPoints is cleared at swap=1 → looks like
       // the animation "doesn't complete".
-      p.swapDelay = Math.random() * 0.25;
+      p.swapDelay = Math.random() * 0.30;
       p.swapDur = 0.55 + Math.random() * 0.20; // 0.55 – 0.75
-      // Tangential detour seed — gives each particle a unique curl-around
-      // arc as it travels from old letter shape to new one. Larger range
-      // makes the transition feel like a swarm rather than a tween.
-      p.swapArc = (Math.random() - 0.5) * 1.8;
-      // Radial outward bulge mid-swap — particles puff out before locking
-      // onto the new shape, reading as an explosive swarm reformation.
-      p.swapBurst = 0.15 + Math.random() * 0.45;
+      // Per-particle 3D control-point offset — turns each transition into
+      // a unique curved trajectory through space (quadratic Bezier).
+      // Magnitudes are large so paths visibly swoop, swirl, and overshoot.
+      p.swapCtrlX = (Math.random() - 0.5) * 1.8; // perpendicular bend (XY)
+      p.swapCtrlY = (Math.random() - 0.5) * 1.8;
+      p.swapCtrlZ = (Math.random() - 0.5) * 1.4; // depth swing
+      // Mid-path radial puff so the swarm bulges then collapses.
+      p.swapBurst = 0.15 + Math.random() * 0.55;
+      // Spin angle traversed mid-transition — particles rotate around the
+      // path midpoint in addition to following the curve.
+      p.swapSpin = (Math.random() - 0.5) * 1.4;
       // Release window — when the user unhovers, each particle peels off
       // the letter on its own schedule, with a small jiggle along the way.
       p.releaseDelay = Math.random() * 0.45;
@@ -912,7 +916,7 @@
     morph.progress += (morph.targetProgress - morph.progress) * easeRate;
     if (morph.swap < 1) {
       // Slow global swap so per-particle stagger + arcs read clearly.
-      morph.swap = Math.min(1, morph.swap + dt * 0.85); // ~1.18s swap
+      morph.swap = Math.min(1, morph.swap + dt * 0.65); // ~1.55s swap
       if (morph.swap >= 1) morph.prevPoints = null;
     }
 
@@ -1032,26 +1036,51 @@
         if (morph.prevPoints && morph.swap < 1) {
           // Per-particle stagger window
           const local = (morph.swap - (p.swapDelay || 0)) / (p.swapDur || 1);
-          const localClamped = local <= 0 ? 0 : (local >= 1 ? 1 : local);
-          // Ease-out cubic for the actual blend
-          const eased = 1 - Math.pow(1 - localClamped, 3);
-          // A bell-curve offset that peaks mid-transition then collapses —
-          // each particle takes a tangential arc instead of a straight line.
-          const bell = Math.sin(localClamped * Math.PI);
-          const arc = bell * (p.swapArc || 0);
+          const t = local <= 0 ? 0 : (local >= 1 ? 1 : local);
+          // Ease-in-out cubic — accelerates into motion, decelerates into shape
+          const eio = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+          // Bell that peaks mid-transition (used for spin + radial puff)
+          const bell = Math.sin(t * Math.PI);
+
           const px = morph.prevPoints[ti], py = morph.prevPoints[ti + 1], pz = morph.prevPoints[ti + 2];
           const nx = morph.points[ti],     ny = morph.points[ti + 1],     nz = morph.points[ti + 2];
-          // Direction old→new and a perpendicular for the arc
+          // Build a per-particle 3D control point offset perpendicular-ish
+          // from the old→new line, plus a depth swing. Quadratic Bezier
+          // through (prev, ctrl, new) gives each particle its own swooping
+          // curved trajectory rather than a tween straight line.
           const dx = nx - px, dy = ny - py;
-          // Radial outward bulge from the midpoint — swarm puffs out,
-          // then converges. Direction is the offset from origin so
-          // particles fly outward radially.
-          const mx = (px + nx) * 0.5, my = (py + ny) * 0.5;
-          const mLen = Math.hypot(mx, my) + 1e-6;
+          const cx0 = (px + nx) * 0.5;
+          const cy0 = (py + ny) * 0.5;
+          const cz0 = (pz + nz) * 0.5;
+          // Mix a perpendicular bend (rotated direction) with a free random
+          // offset — combination keeps paths organic rather than uniform.
+          const perpScale = (p.swapCtrlX || 0);
+          const ctrlX = cx0 + (-dy) * perpScale + (p.swapCtrlX || 0) * 0.25;
+          const ctrlY = cy0 + ( dx) * perpScale + (p.swapCtrlY || 0) * 0.25;
+          const ctrlZ = cz0 + (p.swapCtrlZ || 0) * 0.5;
+
+          // Quadratic Bezier evaluation in 3D
+          const u = 1 - eio;
+          let bx = u * u * px + 2 * u * eio * ctrlX + eio * eio * nx;
+          let by = u * u * py + 2 * u * eio * ctrlY + eio * eio * ny;
+          const bz = u * u * pz + 2 * u * eio * ctrlZ + eio * eio * nz;
+
+          // Mid-transition spin around the path midpoint — adds rotational
+          // dynamism so paths twist around each other.
+          const ang = bell * (p.swapSpin || 0);
+          if (ang !== 0) {
+            const cs = Math.cos(ang), sn = Math.sin(ang);
+            const ox = bx - cx0, oy = by - cy0;
+            bx = cx0 + ox * cs - oy * sn;
+            by = cy0 + ox * sn + oy * cs;
+          }
+
+          // Outward radial puff from origin — swarm bulges then converges.
+          const mLen = Math.hypot(cx0, cy0) + 1e-6;
           const burst = bell * (p.swapBurst || 0);
-          tx = px + dx * eased + (-dy) * arc + (mx / mLen) * burst;
-          ty = py + dy * eased + ( dx) * arc + (my / mLen) * burst;
-          tz = pz + (nz - pz) * eased + bell * 0.12 * (p.swapArc || 0);
+          tx = bx + (cx0 / mLen) * burst;
+          ty = by + (cy0 / mLen) * burst;
+          tz = bz;
         } else {
           tx = morph.points[ti];
           ty = morph.points[ti + 1];
