@@ -351,8 +351,11 @@
 
     // Manual glyph-by-glyph layout with explicit tracking — guarantees
     // visible spacing between letters regardless of canvas API support.
-    const TRACK_FRACTION = 0.18; // gap added per glyph as a fraction of fontSize
-    let fontSize = 220;
+    // Smaller TRACK_FRACTION + wider usable ratio so long words don't
+    // get shrunk to a tiny size when the canvas still has horizontal room.
+    const TRACK_FRACTION = 0.08;
+    const USE_WIDTH = W2 * 0.96;
+    let fontSize = 230;
     function measureLine(size) {
       c.font = `700 ${size}px "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif`;
       const gap = size * TRACK_FRACTION;
@@ -363,7 +366,9 @@
       }
       return w;
     }
-    while (fontSize > 40 && measureLine(fontSize) > W2 * 0.92) fontSize -= 8;
+    // Don't shrink past a comfortable minimum — better to overflow slightly
+    // than render unreadable micro-glyphs.
+    while (fontSize > 110 && measureLine(fontSize) > USE_WIDTH) fontSize -= 6;
 
     c.font = `700 ${fontSize}px "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif`;
     const gap = fontSize * TRACK_FRACTION;
