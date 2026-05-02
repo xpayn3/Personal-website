@@ -1328,11 +1328,10 @@
   let scrollProgress = 0;       // 0..1 across the runway
   let projectsClickable = false;
   function recomputeScrollProgress() {
-    // Cover is ~100dvh tall in flow; user must scroll up to ~50dvh
-    // before half the cover is gone. Map word formation to the first
-    // 30dvh so it's strongly present while still well within the
-    // visible cover region.
-    const dist = window.innerHeight * 0.3;
+    // Cover is sticky for the full 50dvh runway. Word formation
+    // maps to the first ~25dvh; remaining 25dvh is dwell time so the
+    // user can read + click before the cover unsticks.
+    const dist = window.innerHeight * 0.25;
     scrollProgress = Math.max(0, Math.min(1, window.scrollY / dist));
   }
   if (typeof window !== 'undefined') {

@@ -36,24 +36,29 @@ img, video {
 }
 
 /* ========== COVER ==========
-   Normal block flow, one viewport tall. Footer is the next block in
-   flow below — user scrolls the cover off the top to reach it.
-   No sticky / no fixed / no slide-in. */
+   Sticky to the top while the user scrolls through a runway below it.
+   z-index sits ABOVE the footer (500) so the footer can't paint over
+   the cover during the sticky window — that was the "slide-in" bug.
+   Once the runway is exhausted the cover releases and scrolls off
+   the top normally, revealing the footer. */
 .cover {
-  position: relative;
+  position: sticky;
+  top: 0;
   height: 100vh;
   height: 100dvh;
   width: 100%;
   overflow: hidden;
   background: #000;
-  z-index: 1;
+  z-index: 800;
 }
 
-/* Runway no longer needed — the cover IS the layout spacer. Kept the
-   class as a no-op so existing markup doesn't error if it's still in
-   the HTML. */
+/* Runway: extra layout space below the (sticky) cover. The first
+   ~half of it forms the projects word, the rest is dwell time so the
+   user can read + click before the cover releases and the footer
+   takes over. */
 .scroll-runway {
-  height: 0;
+  height: 50vh;
+  height: 50dvh;
   width: 100%;
   pointer-events: none;
 }
