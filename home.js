@@ -840,19 +840,21 @@
       return;
     }
 
-    // Portrait — already a flat [x,y,z, ...] array from loadPortraitPoints.
+    // Portrait — generic 3D head; tumble in space like the torus/cube.
     if (spec && typeof spec === 'object' && spec.shape === 'portrait') {
       const flat3 = portraitPoints;
       if (!flat3 || !flat3.length) { morph.points = null; return; }
       const samples = flat3.length / 3;
-      const out3 = new Float32Array(particles.length * 3);
+      const base = new Float32Array(particles.length * 3);
       for (let i = 0; i < particles.length; i++) {
         const s = ((Math.random() * samples) | 0) * 3;
-        out3[i * 3 + 0] = flat3[s];
-        out3[i * 3 + 1] = flat3[s + 1];
-        out3[i * 3 + 2] = flat3[s + 2];
+        base[i * 3 + 0] = flat3[s];
+        base[i * 3 + 1] = flat3[s + 1];
+        base[i * 3 + 2] = flat3[s + 2];
       }
-      morph.points = out3;
+      morph.basePoints3D = base;
+      morph.rotating = true;
+      morph.points = new Float32Array(base);
       return;
     }
 
