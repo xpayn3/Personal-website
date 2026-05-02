@@ -399,6 +399,58 @@
     return pts;
   }
 
+  // ----- Portrait attractor ----------------------------------------------
+  // Rasterizes Luka's gameboy photo into a 3D point cloud weighted by
+  // luminance — darker pixels (face features, hair, eyes) get more
+  // particles; lighter pixels (highlights, skin) pop slightly toward
+  // the camera via z-depth, so the face reads with subtle relief.
+  let portraitPoints = null; // [x,y,z, x,y,z, ...] flat array
+  let portraitLoading = false;
+  function loadPortraitPoints() {
+    if (portraitPoints || portraitLoading) return;
+    portraitLoading = true;
+    const img = new Image();
+    img.onload = () => {
+      const W = 360, H = 360;
+      const off = document.createElement('canvas');
+      off.width = W; off.height = H;
+      const c = off.getContext('2d');
+      c.fillStyle = '#fff';
+      c.fillRect(0, 0, W, H);
+      // Cover-fit the photo into the square canvas
+      const r = Math.max(W / img.width, H / img.height);
+      const dw = img.width * r, dh = img.height * r;
+      c.drawImage(img, (W - dw) / 2, (H - dh) / 2, dw, dh);
+      const data = c.getImageData(0, 0, W, H).data;
+      const pts = [];
+      const STEP = 2;
+      for (let y = 0; y < H; y += STEP) {
+        for (let x = 0; x < W; x += STEP) {
+          const i = (y * W + x) * 4;
+          const lum = (data[i] + data[i + 1] + data[i + 2]) / (3 * 255);
+          // Skip pure-white background + sample dark pixels more often
+          const includeP = Math.pow(1 - lum, 1.4) * 0.95;
+          if (Math.random() > includeP) continue;
+          // World coords — slightly taller than wide range so the face
+          // doesn't shrink against the cover.
+          const wx = (x / W - 0.5) * 1.4;
+          const wy = (y / H - 0.5) * 1.4;
+          // Z depth — brighter pixels pop forward, dark ones recede.
+          const wz = (lum - 0.5) * 0.35;
+          pts.push(wx, wy, wz);
+        }
+      }
+      portraitPoints = pts;
+      portraitLoading = false;
+    };
+    img.onerror = () => {
+      portraitPoints = [];
+      portraitLoading = false;
+    };
+    img.src = 'gameboy/photo_2026-04-16_22-04-23.jpg';
+  }
+  loadPortraitPoints();
+
   // Procedural fractal tree — recursive branching, leaf clusters at tips.
   // Returns flat [x,y, x,y, ...] in [-1, 1] world units. Trunk at bottom
   // (positive Y), canopy at top (negative Y).
@@ -770,6 +822,22 @@
       morph.rotating = true;
       morph.rotateMode = 'yaw';
       morph.points = new Float32Array(base);
+      return;
+    }
+
+    // Portrait — already a flat [x,y,z, ...] array from loadPortraitPoints.
+    if (spec && typeof spec === 'object' && spec.shape === 'portrait') {
+      const flat3 = portraitPoints;
+      if (!flat3 || !flat3.length) { morph.points = null; return; }
+      const samples = flat3.length / 3;
+      const out3 = new Float32Array(particles.length * 3);
+      for (let i = 0; i < particles.length; i++) {
+        const s = ((Math.random() * samples) | 0) * 3;
+        out3[i * 3 + 0] = flat3[s];
+        out3[i * 3 + 1] = flat3[s + 1];
+        out3[i * 3 + 2] = flat3[s + 2];
+      }
+      morph.points = out3;
       return;
     }
 
