@@ -629,6 +629,9 @@
     manualActive: false,   // true while right-mouse drag is engaged
     accAutoYaw: 0,         // accumulated auto yaw — paused while dragging
     accAutoPitch: 0,       // accumulated auto pitch — paused while dragging
+    peakMp: 0,             // highest commit reached this morph cycle —
+                           // used to normalise Marvel-style disintegration
+                           // drift on release.
     fast: false,           // typewriter mode: skip swap theatrics for speed
     straight: false,       // text morphs: linear lerp + moderate swap; no
                            // bezier/spin/burst so rapid hover doesn't glitch
@@ -1735,6 +1738,9 @@
       ? (scrollMode ? 0.18 : (greetMode ? 0.022 : 0.08))
       : (scrollMode ? 0.05 : (greetMode ? 0.014 : 0.04));
     morph.progress += (morph.targetProgress - morph.progress) * easeRate;
+    // Track peak commit so the disintegration drift below knows where
+    // the release "started from".
+    if (morph.progress > morph.peakMp) morph.peakMp = morph.progress;
     if (morph.swap < 1) {
       // Fast swap when typing (so adjacent letters don't overlap into
       // chaos), moderate swap for nav-text (smooth straight lerp), and
@@ -1782,6 +1788,7 @@
       morph.prevPoints = null;
       morph.greet = false;
       morph.scroll = false;
+      morph.peakMp = 0;
       morph.text = null; // ensure it's released since we bypassed setMorphTarget(null)
     }
     const mp = morph.progress;
@@ -1797,6 +1804,13 @@
     const morphActiveSwap = morphPrev && swap < 1
       && morphPts && morphPrev.length === morphPts.length;
     const releasing = morph.targetProgress === 0;
+    // Marvel-style disintegration: as commit drops on greet/scroll
+    // releases, particles drift outward via a stable per-particle
+    // direction seed instead of just collapsing back to flow.
+    const peakMp = morph.peakMp;
+    const disintegrating = releasing && peakMp > 0.05 && (morph.greet || morph.scroll);
+    const releaseT = disintegrating ? Math.min(1, 1 - mp / peakMp) : 0;
+    const driftAmt = releaseT * baseR * 0.45;
     const sculptN = sculptAnchors.length;
 
     for (let i = 0; i < activeCount; i++) {
@@ -1950,8 +1964,19 @@
           flutterX = Math.sin(f) * amp;
           flutterY = Math.cos(f * 1.3 + 1.0) * amp;
         }
-        sx = flowSx + (targetSx + flutterX - flowSx) * commit;
-        sy = flowSy + (targetSy + flutterY - flowSy) * commit;
+        // Disintegration drift: per-particle outward offset that grows
+        // with releaseT, applied to the morph target so committed
+        // particles fly away while uncommitted ones stay on free flow.
+        let driftX = 0, driftY = 0;
+        if (driftAmt !== 0) {
+          const dxSeed = pSwpCX[i];
+          const dySeed = pSwpCY[i];
+          const dirLen = Math.sqrt(dxSeed * dxSeed + dySeed * dySeed) + 1e-6;
+          driftX = (dxSeed / dirLen) * driftAmt;
+          driftY = (dySeed / dirLen) * driftAmt;
+        }
+        sx = flowSx + (targetSx + flutterX + driftX - flowSx) * commit;
+        sy = flowSy + (targetSy + flutterY + driftY - flowSy) * commit;
         depth = flowDepth + (targetDepth - flowDepth) * commit;
         // Sinusoidal jiggle during release — designed for nav-link
         // drama. Greet / scroll releases get a clean lerp instead, so
