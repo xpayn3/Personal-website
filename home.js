@@ -1955,7 +1955,11 @@
         sx = flowSx + (targetSx + flutterX - flowSx) * commit;
         sy = flowSy + (targetSy + flutterY - flowSy) * commit;
         depth = flowDepth + (targetDepth - flowDepth) * commit;
-        if (releasing && mp > 0.001 && mp < 1) {
+        // Sinusoidal jiggle during release — designed for nav-link
+        // drama. Greet / scroll releases get a clean lerp instead, so
+        // skip the jiggle there (it reads as 1–2s of unexplained
+        // wiggle to the visitor).
+        if (releasing && mp > 0.001 && mp < 1 && !morph.greet && !morph.scroll) {
           const jt = 1 - mp;
           const env = Math.sin(jt * Math.PI);
           const jSeed = pJigSd[i];
