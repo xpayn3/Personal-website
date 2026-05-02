@@ -1276,7 +1276,7 @@
     const word = GREETINGS[(Math.random() * GREETINGS.length) | 0];
     greetKey = word;
     greetActive = true;
-    greetUntil = now + 9000 + Math.random() * 4000; // 9 – 13 s hold
+    greetUntil = now + 13000 + Math.random() * 5000; // 13 – 18 s hold
     setMorphTarget(word);
     // Higher commit cap so the word reads bigger / more present, but
     // still soft enough to feel like an attractor rather than a snap.
@@ -1724,18 +1724,16 @@
     // Smooth morph progress toward target — eased so transitions feel soft.
     // Slower decay when releasing so the per-particle stagger reads.
     // Easing modes:
-    //   greet  — soft attractor that fades on/off automatically (slow)
+    //   greet  — soft attractor; fast enough that particles fully
+    //             settle into the word during the hold, slow enough
+    //             that it still reads as fading in/out.
     //   scroll — commit tracks scroll position responsively (fast lerp)
     //   default (nav-text/shapes) — original snappy lerp
     const greetMode = !!morph.greet;
     const scrollMode = !!morph.scroll;
-    // Going up: scroll-mode is fast so commit tracks scroll position.
-    // Going down: scroll-mode uses a slower rate so when the user
-    // scrolls back to the top, the cloud GLIDES back to noise instead
-    // of snapping.
     const easeRate = morph.targetProgress > morph.progress
-      ? (scrollMode ? 0.18 : (greetMode ? 0.010 : 0.08))
-      : (scrollMode ? 0.05 : (greetMode ? 0.008 : 0.04));
+      ? (scrollMode ? 0.18 : (greetMode ? 0.022 : 0.08))
+      : (scrollMode ? 0.05 : (greetMode ? 0.014 : 0.04));
     morph.progress += (morph.targetProgress - morph.progress) * easeRate;
     if (morph.swap < 1) {
       // Fast swap when typing (so adjacent letters don't overlap into
