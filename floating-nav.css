@@ -15,7 +15,7 @@ body.page-grid {
   position: fixed;
   top: clamp(20px, 3vh, 32px);
   left: clamp(20px, 3vw, 32px);
-  font-family: var(--font-display, Geist, system-ui, sans-serif);
+  font-family: var(--font-display, "IBM Plex Sans", system-ui, sans-serif);
   font-size: clamp(1rem, 1.4vw, 1.25rem);
   font-weight: 600;
   letter-spacing: -0.02em;

@@ -354,7 +354,7 @@
     const TRACK_FRACTION = 0.18; // gap added per glyph as a fraction of fontSize
     let fontSize = 220;
     function measureLine(size) {
-      c.font = `700 ${size}px Geist, "Helvetica Neue", Arial, sans-serif`;
+      c.font = `700 ${size}px "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif`;
       const gap = size * TRACK_FRACTION;
       let w = 0;
       for (let i = 0; i < word.length; i++) {
@@ -365,7 +365,7 @@
     }
     while (fontSize > 40 && measureLine(fontSize) > W2 * 0.92) fontSize -= 8;
 
-    c.font = `700 ${fontSize}px Geist, "Helvetica Neue", Arial, sans-serif`;
+    c.font = `700 ${fontSize}px "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif`;
     const gap = fontSize * TRACK_FRACTION;
     const lineW = measureLine(fontSize);
     let x = (W2 - lineW) / 2;

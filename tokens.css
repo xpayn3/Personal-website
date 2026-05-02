@@ -15,9 +15,9 @@
   --color-overlay: rgba(0,0,0,0.5);
 
   /* --- Typography --- */
-  --font-body: 'Geist', system-ui, sans-serif;
-  --font-display: 'Geist', system-ui, sans-serif;
-  --font-mono: ui-monospace, Menlo, monospace;
+  --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-display: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
   --font-pixel: 'Press Start 2P', monospace;
 
   --text-xs: 0.65rem;
