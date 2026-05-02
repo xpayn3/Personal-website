@@ -1328,7 +1328,10 @@
   let scrollProgress = 0;       // 0..1 across the runway
   let projectsClickable = false;
   function recomputeScrollProgress() {
-    const dist = window.innerHeight * 0.35;
+    // Word forms across the FIRST 25dvh of scroll — same budget the
+    // footer-slide handler subtracts before it starts moving. Keeps
+    // word formation cleanly separated from footer reveal.
+    const dist = window.innerHeight * 0.25;
     scrollProgress = Math.max(0, Math.min(1, window.scrollY / dist));
   }
   if (typeof window !== 'undefined') {
@@ -2184,10 +2187,13 @@
   let pending = false;
   function apply() {
     pending = false;
-    // Match the .scroll-runway height (35dvh). Smaller distance =
-    // footer reaches its fully-revealed state with a short scroll.
+    // First 25dvh of scroll forms the "projects" word; the next 35dvh
+    // slides the footer up. Subtracting the word budget below keeps
+    // the footer pinned at its rest position while the word forms.
+    const wordBudget = window.innerHeight * 0.25;
     const dist = window.innerHeight * 0.35;
-    const p = Math.max(0, Math.min(1, window.scrollY / dist));
+    const past = Math.max(0, window.scrollY - wordBudget);
+    const p = Math.max(0, Math.min(1, past / dist));
     footerEl.style.transform = `translate3d(0, ${(1 - p) * 100}%, 0)`;
     document.body.classList.toggle('footer-visible', p > 0.6);
   }

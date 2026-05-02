@@ -49,11 +49,13 @@ img, video {
   z-index: 1;
 }
 
-/* Scroll runway — short distance so the footer slides in quickly with
-   a small scroll instead of forcing a full viewport's worth. */
+/* Scroll runway — first 25dvh forms the "projects" word, the next
+   35dvh slides the footer up over the cover. Total 60dvh keeps the
+   page from feeling endless while still giving the word a real
+   moment before the footer takes over. */
 .scroll-runway {
-  height: 35vh;
-  height: 35dvh;
+  height: 60vh;
+  height: 60dvh;
   width: 100%;
   pointer-events: none;
 }
