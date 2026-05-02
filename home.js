@@ -846,6 +846,50 @@
   window.__coverMorph = setMorphTarget;
   window.__coverShape = (name) => setMorphTarget(name ? { shape: name } : null);
 
+  // ----- Keyboard letter attractor -----------------------------------
+  // Hold any letter / digit key on the keyboard and the particles form
+  // that glyph. Release → particles return to the curl flow. Multiple
+  // keys queue up; the most recently pressed one is shown.
+  const heldKeys = [];
+  function syncHeldMorph() {
+    const top = heldKeys[heldKeys.length - 1];
+    if (top) setMorphTarget(top);
+    else setMorphTarget(null);
+  }
+  function isFormFocus() {
+    const el = document.activeElement;
+    if (!el) return false;
+    const tag = el.tagName;
+    return tag === 'INPUT' || tag === 'TEXTAREA' || el.isContentEditable;
+  }
+  window.addEventListener('keydown', (e) => {
+    if (isFormFocus()) return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (!e.key || e.key.length !== 1) return; // single-char keys only
+    const k = e.key;
+    // Already at the top → don't restart the swap
+    if (heldKeys[heldKeys.length - 1] === k) return;
+    // Move to top (or add)
+    const i = heldKeys.indexOf(k);
+    if (i !== -1) heldKeys.splice(i, 1);
+    heldKeys.push(k);
+    syncHeldMorph();
+  });
+  window.addEventListener('keyup', (e) => {
+    if (!e.key || e.key.length !== 1) return;
+    const i = heldKeys.indexOf(e.key);
+    if (i !== -1) {
+      heldKeys.splice(i, 1);
+      syncHeldMorph();
+    }
+  });
+  window.addEventListener('blur', () => {
+    if (heldKeys.length) {
+      heldKeys.length = 0;
+      syncHeldMorph();
+    }
+  });
+
   // ----- Particle coordinate labels --------------------------------------
   // Always-on debug overlay: a handful of particles carry a small live
   // coordinate readout in a random color, drifting along with the flow.
