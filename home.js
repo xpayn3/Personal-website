@@ -85,8 +85,14 @@
   let W = 0, H = 0, DPR = 1, cx = 0, cy = 0;
   const particles = [];
 
-  // Camera state — slow auto-orbit only (no cursor tilt).
-  const cam = { yaw: 0, pitch: 0.18 };
+  // Camera state — slow auto-orbit; gyroscope on mobile overrides
+  // the auto-orbit when permission is granted and a tilt is detected.
+  const cam = {
+    yaw: 0, pitch: 0.18,
+    gyroActive: false,
+    gyroBaseA: null, gyroBaseB: null,
+    gyroYaw: 0, gyroPitch: 0,
+  };
 
   // Repulsion params — spring-physics push for weight + bounce. Tuned
   // very soft so the particle field reads as fluid: long-lasting decay
@@ -182,19 +188,7 @@
     p.travelRadius = FIELD_R * (0.85 + Math.random() * 0.5); // 0.85 – 1.35
   }
 
-  // Project galaxy — every particle is "from" one of the 21 projects.
-  // Indexes map deterministically by particle index so clicks always
-  // resolve to a stable project assignment.
-  let __projectIds = [];
-  function refreshProjectIds() {
-    if (!window.projects) return;
-    __projectIds = Object.keys(window.projects).filter((id) => id !== 'lab');
-  }
-  refreshProjectIds();
-
   function build() {
-    if (!__projectIds.length) refreshProjectIds();
-    const PCNT = Math.max(1, __projectIds.length);
     particles.length = 0;
     for (let i = 0; i < COUNT; i++) {
       const p = {
@@ -258,8 +252,6 @@
       p.releaseDur = 0.45 + Math.random() * 0.35;
       p.jiggleSeed = Math.random() * Math.PI * 2;
       p.jiggleAmp = 0.005 + Math.random() * 0.012;
-      // Project galaxy assignment — stable per particle index.
-      p.projectIdx = i % PCNT;
       particles.push(p);
     }
   }
@@ -325,6 +317,28 @@
   let rightDragging = false;
   let rightDragLastX = 0;
   let rightDragLastY = 0;
+
+  // ----- Sculpt-with-decay -------------------------------------------
+  // Left-drag drops a chain of "sculpt anchors" along the cursor path.
+  // Each anchor pulls nearby particles toward it for ~8s, gradually
+  // weakening so the trail fades out smoothly. Reuses the existing
+  // spring system so particles spring back to free flow once anchors die.
+  const sculptAnchors = [];           // {x, y, life, maxLife}
+  const SCULPT_MAX = 80;              // hard cap so perf doesn't degrade
+  const SCULPT_LIFE = 7.5;            // seconds before an anchor dies
+  const SCULPT_R_CSS = 75;            // CSS pixels: pull radius
+  const SCULPT_PULL = 0.85;           // peak per-anchor pull velocity
+  const SCULPT_SPACING_CSS = 22;      // min cursor travel before new anchor
+  let sculptLastX = 0, sculptLastY = 0;
+  let sculptDist = 0;
+  function addSculptAnchor(clientX, clientY) {
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = (clientX - rect.left) * DPR;
+    const y = (clientY - rect.top) * DPR;
+    sculptAnchors.push({ x, y, life: SCULPT_LIFE, maxLife: SCULPT_LIFE });
+    if (sculptAnchors.length > SCULPT_MAX) sculptAnchors.shift();
+  }
   if (!IS_MOBILE) {
     canvas.addEventListener('pointerdown', (e) => {
       // Right mouse → orientation drag (only meaningful while a rotating
@@ -342,31 +356,25 @@
       if (e.button !== 0 && e.button !== undefined) return;
       isDragging = true;
       shockwave(e.clientX, e.clientY);
-      // Project galaxy: pick the nearest particle, look up its assigned
-      // project, swap the swarm into that project's first-frame raster.
-      // Clicking the same project releases back to free flow.
-      if (window.projects && __projectIds.length) {
-        const rect = canvas.getBoundingClientRect();
-        const px = (e.clientX - rect.left) * DPR;
-        const py = (e.clientY - rect.top) * DPR;
-        let bestI = -1, bestD = Infinity;
-        for (let i = 0; i < particles.length; i++) {
-          const p = particles[i];
-          const dx = p.sx - px, dy = p.sy - py;
-          const d = dx * dx + dy * dy;
-          if (d < bestD) { bestD = d; bestI = i; }
-        }
-        if (bestI >= 0) {
-          const projId = __projectIds[particles[bestI].projectIdx];
-          if (projId) {
-            if (activeProjectId === projId) {
-              activeProjectId = null;
-              setMorphTarget(null);
-            } else {
-              setProjectMorph(projId);
-            }
-          }
-        }
+      // Seed the sculpt path on click so a single click leaves a small mark.
+      sculptLastX = e.clientX;
+      sculptLastY = e.clientY;
+      sculptDist = 0;
+      addSculptAnchor(e.clientX, e.clientY);
+    }, { passive: true });
+
+    // Sculpt path while left-drag is held — drop a new anchor every
+    // SCULPT_SPACING_CSS pixels of cursor travel.
+    canvas.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - sculptLastX;
+      const dy = e.clientY - sculptLastY;
+      sculptLastX = e.clientX;
+      sculptLastY = e.clientY;
+      sculptDist += Math.hypot(dx, dy);
+      if (sculptDist >= SCULPT_SPACING_CSS) {
+        addSculptAnchor(e.clientX, e.clientY);
+        sculptDist = 0;
       }
     }, { passive: true });
 
@@ -398,6 +406,42 @@
     canvas.addEventListener('contextmenu', (e) => {
       if (morph.rotating && morph.shapeName) e.preventDefault();
     });
+  } else {
+    // ---- Mobile: gyroscope tilts the swarm ---------------------------
+    // beta  = front-back tilt (-180..180), gamma = left-right tilt (-90..90).
+    // We treat the first reading as the rest pose and feed deltas into
+    // cam.gyroYaw/Pitch. The frame loop lerps cam.yaw/pitch toward those
+    // targets and skips the auto-orbit while gyroActive is set.
+    function onOrient(e) {
+      if (e.beta == null || e.gamma == null) return;
+      if (cam.gyroBaseA == null) {
+        cam.gyroBaseA = e.gamma;
+        cam.gyroBaseB = e.beta;
+      }
+      cam.gyroActive = true;
+      const D = Math.PI / 180;
+      // Cap each axis so extreme tilts don't spin the cloud wildly.
+      const dY = Math.max(-1.4, Math.min(1.4, (e.gamma - cam.gyroBaseA) * D * 1.3));
+      const dP = Math.max(-1.0, Math.min(1.0, (e.beta - cam.gyroBaseB) * D * 0.9));
+      cam.gyroYaw = dY;
+      cam.gyroPitch = 0.18 + dP;
+    }
+    function attachGyro() {
+      window.addEventListener('deviceorientation', onOrient, { passive: true });
+    }
+    if (typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function') {
+      // iOS 13+: permission gate. Request on first user touch.
+      const onceTap = () => {
+        document.removeEventListener('touchend', onceTap);
+        DeviceOrientationEvent.requestPermission()
+          .then((state) => { if (state === 'granted') attachGyro(); })
+          .catch(() => {});
+      };
+      document.addEventListener('touchend', onceTap, { passive: true });
+    } else {
+      attachGyro();
+    }
   }
 
   let last = performance.now();
@@ -1059,94 +1103,8 @@
   // Public API for the floating-nav hover listeners below.
   // - __coverMorph(text|null): word morph (also accepts null to release)
   // - __coverShape(name|null): special shape (e.g. 'tree')
-  // - __coverProject(id|null): rasterize a project's first frame and
-  //   morph the swarm into it.
   window.__coverMorph = setMorphTarget;
   window.__coverShape = (name) => setMorphTarget(name ? { shape: name } : null);
-
-  // ---- Project galaxy: rasterize project images on demand ------------
-  const projectPointsCache = new Map(); // projId → Float32Array (flat 2D)
-  let activeProjectId = null;
-  function rasterizeProjectImage(projId, cb) {
-    if (projectPointsCache.has(projId)) { cb(projectPointsCache.get(projId)); return; }
-    const projects = window.projects;
-    if (!projects || !projects[projId]) { cb(null); return; }
-    const firstSrc = projects[projId].images && projects[projId].images[0];
-    if (!firstSrc) { cb(null); return; }
-    const isVid = /\.(webm|mp4|mov)$/i.test(firstSrc);
-    const src = isVid ? firstSrc.replace(/\.(webm|mp4|mov)$/i, '_thumb.webp') : firstSrc;
-    const img = new Image();
-    img.onload = () => {
-      const W2 = 256, H2 = 256;
-      const off = document.createElement('canvas');
-      off.width = W2; off.height = H2;
-      const c = off.getContext('2d');
-      c.fillStyle = '#000';
-      c.fillRect(0, 0, W2, H2);
-      // Cover-fit so portrait + landscape both fill the rasterization box.
-      const ar = img.width / img.height;
-      let dw = W2, dh = H2, dx = 0, dy = 0;
-      if (ar > 1) { dh = W2 / ar; dy = (H2 - dh) / 2; }
-      else if (ar < 1) { dw = H2 * ar; dx = (W2 - dw) / 2; }
-      c.drawImage(img, dx, dy, dw, dh);
-      const data = c.getImageData(0, 0, W2, H2).data;
-      const pts = [];
-      const STEP = 3;
-      const THRESHOLD = 70;
-      for (let y = 0; y < H2; y += STEP) {
-        for (let x = 0; x < W2; x += STEP) {
-          const i = (y * W2 + x) * 4;
-          const lum = (data[i] + data[i + 1] + data[i + 2]) / 3;
-          if (lum > THRESHOLD) {
-            pts.push((x / W2 - 0.5) * 1.5, (y / H2 - 0.5) * 1.5);
-          }
-        }
-      }
-      const flat = new Float32Array(pts);
-      projectPointsCache.set(projId, flat);
-      cb(flat);
-    };
-    img.onerror = () => cb(null);
-    img.src = src;
-  }
-  function setProjectMorph(projId) {
-    rasterizeProjectImage(projId, (flat) => {
-      if (!flat || !flat.length) return;
-      const N = particles.length;
-      const samples = flat.length / 2;
-      const out = new Float32Array(N * 3);
-      for (let i = 0; i < N; i++) {
-        const s = ((Math.random() * samples) | 0) * 2;
-        out[i * 3 + 0] = flat[s];
-        out[i * 3 + 1] = flat[s + 1];
-        out[i * 3 + 2] = (Math.random() - 0.5) * 0.06;
-      }
-      // Drive the existing morph machinery (snapshot blend + swap easing).
-      if (morph.points && morph.text) {
-        morph.prevPoints = morph.points;
-        morph.swap = 0;
-      } else {
-        morph.prevPoints = null;
-        morph.swap = 1;
-      }
-      morph.text = `__project:${projId}`;
-      morph.points = out;
-      morph.targetProgress = 1;
-      morph.straight = true;          // straight lerp — no bezier flair
-      morph.rotating = false;
-      morph.basePoints3D = null;
-      morph.shapeName = null;
-      activeProjectId = projId;
-    });
-  }
-  window.__coverProject = (id) => {
-    if (!id) {
-      activeProjectId = null;
-      setMorphTarget(null);
-    } else {
-      setProjectMorph(id);
-    }
-  };
 
   // ----- Typewriter ---------------------------------------------------
   // Type any letters / digits / punctuation on the keyboard and the
@@ -1188,11 +1146,6 @@
     if (e.key === 'Escape' || e.key === 'Enter') {
       typed = '';
       pushTyped();
-      // Also release a project-galaxy morph if active.
-      if (activeProjectId) {
-        activeProjectId = null;
-        setMorphTarget(null);
-      }
       return;
     }
     if (e.key === 'Backspace') {
@@ -1369,8 +1322,14 @@
     last = now;
     const elapsed = (now - startTime) / 1000;
 
-    // Slow auto-yaw. No cursor-driven tilt — cursor only repels particles.
-    cam.yaw += dt * 0.05;
+    // Slow auto-yaw. Suspended when the gyroscope is driving the camera
+    // — we ease cam.yaw/pitch toward the gyro deltas instead.
+    if (cam.gyroActive) {
+      cam.yaw += (cam.gyroYaw - cam.yaw) * 0.08;
+      cam.pitch += (cam.gyroPitch - cam.pitch) * 0.08;
+    } else {
+      cam.yaw += dt * 0.05;
+    }
 
     // Hard black wash so dots stay sharp (no trails)
     ctx.fillStyle = '#000';
@@ -1381,6 +1340,21 @@
     const yawSin = Math.sin(cam.yaw);
     const pitchCos = Math.cos(cam.pitch);
     const pitchSin = Math.sin(cam.pitch);
+
+    // Sculpt anchor housekeeping: age each anchor; cull dead ones from
+    // the back of the array. Cache radius² for the per-particle loop.
+    const _sculptR = SCULPT_R_CSS * DPR;
+    const _sculptR2 = _sculptR * _sculptR;
+    if (sculptAnchors.length) {
+      for (let a = sculptAnchors.length - 1; a >= 0; a--) {
+        sculptAnchors[a].life -= dt;
+        if (sculptAnchors[a].life <= 0) {
+          // Swap-pop for O(1) removal without preserving order.
+          sculptAnchors[a] = sculptAnchors[sculptAnchors.length - 1];
+          sculptAnchors.pop();
+        }
+      }
+    }
 
     // Drag mode boosts radius / strength / wake.
     const activeR = (isDragging ? DRAG_RADIUS : REPEL_RADIUS) * DPR;
@@ -1614,12 +1588,8 @@
         // Cap committed particles at <1 so the live flow always bleeds
         // through. Particles never fully freeze — they breathe along the
         // curl flow at their target position, while still reading as text.
-        // Higher cap = particles lock tighter onto letters with only a
-        // hint of flow shimmer.
         const COMMIT_CAP = 0.98;
         const personalCommit = p.commit != null ? p.commit : 1;
-        // Emitter cycle — periodically drops this particle's commit to 0
-        // so it drifts off into the flow then snaps back to its anchor.
         let emitterMul = 1;
         if (p.emitter) {
           const ph = Math.sin(elapsed * p.emitterFreq + p.emitterPhase);
@@ -1692,6 +1662,25 @@
         p.pushVX += ptrVX * falloff * activeWake;
         p.pushVY += ptrVY * falloff * activeWake;
       }
+      // Sculpt anchors — pull toward each nearby anchor with a strength
+      // that fades as the anchor's life ticks down.
+      if (sculptAnchors.length) {
+        for (let a = 0; a < sculptAnchors.length; a++) {
+          const an = sculptAnchors[a];
+          const adx = an.x - sx;
+          const ady = an.y - sy;
+          const ad2 = adx * adx + ady * ady;
+          if (ad2 > _sculptR2) continue;
+          const ad = Math.sqrt(ad2);
+          if (ad < 0.001) continue;
+          const lifeR = an.life / an.maxLife;
+          const t = 1 - ad / _sculptR;
+          const ease = t * t;
+          const pull = ease * SCULPT_PULL * lifeR * DPR;
+          p.pushVX += (adx / ad) * pull;
+          p.pushVY += (ady / ad) * pull;
+        }
+      }
       p.pushSx += p.pushVX;
       p.pushSy += p.pushVY;
       // Spring/wake can occasionally produce a NaN if it gets fed a NaN
@@ -1730,14 +1719,9 @@
         if (p.depth < T.min || p.depth >= T.max) continue;
         if (p.sx < -2 || p.sy < -2 || p.sx > W + 2 || p.sy > H + 2) continue;
         const am = p.alphaMul != null ? p.alphaMul : p.lifeFade;
-        // Deterministic threshold — particle is visible iff its stable
-        // phase is below current alpha. Smooth fade-in, no flicker.
         if (am < 1 && (p.alphaPhase || 0) > am) continue;
-        // Pushed particles swell slightly — gives the field weight as the
-        // cursor moves through it.
         let sz = baseSz;
         if (p.repelFalloff > 0) sz *= 1 + p.repelFalloff * REPEL_SIZE_BOOST;
-        // Fat particles bulk up while heavily committed to a letter.
         if (p.fat && (p.morphCommit || 0) > 0.5) sz *= 1.7;
         ctx.fillRect((p.sx - sz / 2) | 0, (p.sy - sz / 2) | 0, Math.max(1, sz), Math.max(1, sz));
       }
