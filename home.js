@@ -1319,19 +1319,29 @@
     morph.greet = true;
   }
 
-  // ----- Scroll-driven "projects" morph ----------------------------
-  // Scrolling reveals the swarm's "projects" word, which is also a
-  // clickable link to the index page. Builds smoothly with scroll
-  // progress; releases on scroll-up.
-  const PROJECTS_WORD = 'projects';
+  // ----- Scroll-driven word phases ---------------------------------
+  // As the user scrolls down on the cover, the swarm assembles into
+  // successive words ("projects", then "about"), each clickable to
+  // their respective page. Each phase has a trapezoidal envelope:
+  // ramp in → hold → ramp out. After all phases, more scroll releases
+  // the sticky cover so the footer comes into view.
+  const SCROLL_PHASES = [
+    { word: 'projects', href: 'grid.html',  start: 0.00, end: 0.50 },
+    { word: 'about',    href: 'about.html', start: 0.50, end: 1.00 },
+  ];
+  // Word IDs that this scroll-morph system owns (so we don't fight
+  // each other when switching between phase words).
+  const PHASE_WORDS = new Set(SCROLL_PHASES.map(p => p.word));
+
   let scrollMorphActive = false;
-  let scrollProgress = 0;       // 0..1 across the runway
+  let scrollProgress = 0;       // 0..1 across all phases
+  let activePhase = null;
   let projectsClickable = false;
   function recomputeScrollProgress() {
-    // Cover is sticky for the full 50dvh runway. Word formation
-    // maps to the first ~25dvh; remaining 25dvh is dwell time so the
-    // user can read + click before the cover unsticks.
-    const dist = window.innerHeight * 0.25;
+    // The full word activity zone covers 100dvh of scroll. Sticky cover
+    // budget (cover-wrap height − 100dvh) is 120dvh, so after the
+    // word zone the user has ~20dvh of empty cover before unstick.
+    const dist = window.innerHeight * 1.0;
     scrollProgress = Math.max(0, Math.min(1, window.scrollY / dist));
   }
   if (typeof window !== 'undefined') {
@@ -1339,71 +1349,85 @@
     window.addEventListener('resize', recomputeScrollProgress, { passive: true });
     recomputeScrollProgress();
   }
+  // Trapezoidal envelope: 0..1 over first 30%, hold at 1 for middle
+  // 40%, then 1..0 over last 30%. Within-phase parameter t ∈ [0,1].
+  function phaseEnvelope(t) {
+    if (t <= 0) return 0;
+    if (t >= 1) return 0;
+    if (t < 0.30) return t / 0.30;
+    if (t < 0.70) return 1;
+    return (1 - t) / 0.30;
+  }
+  function pickPhase(p) {
+    for (let i = 0; i < SCROLL_PHASES.length; i++) {
+      if (p >= SCROLL_PHASES[i].start && p < SCROLL_PHASES[i].end) {
+        return SCROLL_PHASES[i];
+      }
+    }
+    return null;
+  }
   function updateScrollMorph() {
-    // While actively sculpting / right-dragging / hovering nav / typing —
-    // defer. We do NOT block on isDragging alone (mouse-button-down for
-    // a click) — that would tear the projects morph down between
-    // pointerdown and the click event firing, killing the navigation.
-    // Real drags surface as sculptAnchors anyway, which IS blocked.
-    const userOwnsMorph = morph.text && morph.text !== PROJECTS_WORD && !greetActive;
+    // Defer if user is interacting with another morph source.
+    const userOwnsMorph = morph.text && !PHASE_WORDS.has(morph.text) && !greetActive;
     const blocked = sculptAnchors.length || rightDragging ||
                     (typed && typed.length) || userOwnsMorph;
 
-    if (blocked || scrollProgress < 0.02) {
+    if (blocked || scrollProgress < 0.005) {
       if (scrollMorphActive) {
         scrollMorphActive = false;
+        activePhase = null;
         projectsClickable = false;
         if (canvas) canvas.style.cursor = '';
-        // Don't go through setMorphTarget(null) — that bakes in a
-        // 220ms leaveTimer wait that creates a visible pause-then-
-        // snap. Set targetProgress directly so the global lerp can
-        // glide commit down smoothly. morph.text + morph.scroll are
-        // cleared in the drop block once progress reaches ~0.
-        if (morph.text === PROJECTS_WORD) {
-          morph.targetProgress = 0;
-        }
+        // Glide commit down via direct targetProgress (avoid leaveTimer
+        // pause-then-snap). morph.text/.scroll cleared in drop block.
+        if (morph.text && PHASE_WORDS.has(morph.text)) morph.targetProgress = 0;
       }
       return;
     }
 
-    if (!scrollMorphActive) {
-      // If a greeting is currently mounted, abandon ownership of it
-      // so the new projects morph cleanly takes over.
-      if (greetActive) {
-        greetActive = false;
-        greetKey = null;
+    const phase = pickPhase(scrollProgress);
+    if (!phase) {
+      // Past all phases — let the morph release.
+      if (scrollMorphActive && morph.text && PHASE_WORDS.has(morph.text)) {
+        morph.targetProgress = 0;
       }
-      scrollMorphActive = true;
-      setMorphTarget(PROJECTS_WORD);
-      morph.greet = false;   // not a self-fading attractor
-      morph.scroll = true;   // commit follows scroll position
+      return;
     }
-    // Map scroll → commit. Linear so the further you scroll, the more
-    // committed the cloud is to the word — and the inverse on scroll
-    // up. Reaches full attraction (1.0) at the top of the scroll budget.
-    morph.targetProgress = Math.min(1, scrollProgress);
+    const phaseT = (scrollProgress - phase.start) / (phase.end - phase.start);
+    const commit = phaseEnvelope(phaseT);
+
+    // Activate / switch words at phase boundaries.
+    const needsSwitch = !scrollMorphActive || morph.text !== phase.word;
+    if (needsSwitch) {
+      if (greetActive) { greetActive = false; greetKey = null; }
+      scrollMorphActive = true;
+      activePhase = phase;
+      setMorphTarget(phase.word);
+      morph.greet = false;
+      morph.scroll = true;
+    }
+    morph.targetProgress = commit;
+
     const wasClickable = projectsClickable;
-    // Clickable as soon as there's any noticeable scroll.
-    projectsClickable = scrollProgress > 0.05;
+    projectsClickable = commit > 0.4;
     if (projectsClickable !== wasClickable && canvas) {
       canvas.style.cursor = projectsClickable ? 'pointer' : '';
     }
   }
-  // Capture-phase click on document so navigation isn't intercepted.
-  // Only triggers when the projects morph is mounted + clickable.
+  // Capture-phase click → navigate to the active phase's href.
   document.addEventListener('click', (e) => {
-    if (!projectsClickable || !scrollMorphActive) return;
-    // Don't hijack clicks on real interactive elements.
+    if (!projectsClickable || !scrollMorphActive || !activePhase) return;
     let el = e.target;
     while (el && el !== document) {
       const t = el.tagName;
       if (t === 'A' || t === 'BUTTON' || t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT') return;
       el = el.parentNode;
     }
+    const href = activePhase.href;
     e.preventDefault();
     e.stopPropagation();
-    if (typeof console !== 'undefined') console.log('[cover] projects clicked → grid.html');
-    window.location.assign('grid.html');
+    if (typeof console !== 'undefined') console.log(`[cover] ${activePhase.word} clicked → ${href}`);
+    window.location.assign(href);
   }, true);
 
   // ----- Typewriter ---------------------------------------------------
