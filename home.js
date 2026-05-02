@@ -862,13 +862,16 @@
   function pushTyped() {
     if (idleTimer) clearTimeout(idleTimer);
     if (typed) {
+      morph.fast = true; // straight lerp + short swap window
       setMorphTarget(typed);
       idleTimer = setTimeout(() => {
         typed = '';
+        morph.fast = false;
         setMorphTarget(null);
         idleTimer = null;
       }, 3500);
     } else {
+      morph.fast = false;
       setMorphTarget(null);
     }
   }
@@ -1010,8 +1013,11 @@
     const easeRate = morph.targetProgress > morph.progress ? 0.08 : 0.04;
     morph.progress += (morph.targetProgress - morph.progress) * easeRate;
     if (morph.swap < 1) {
-      // Slow global swap so per-particle stagger + arcs read clearly.
-      morph.swap = Math.min(1, morph.swap + dt * 0.65); // ~1.55s swap
+      // Fast swap when the user is typing (so adjacent letters don't
+      // visually overlap), normal slower swap for hover transitions where
+      // the bezier paths + arcs should be readable.
+      const swapRate = morph.fast ? 3.0 : 0.65;
+      morph.swap = Math.min(1, morph.swap + dt * swapRate);
       if (morph.swap >= 1) morph.prevPoints = null;
     }
 
@@ -1150,12 +1156,15 @@
           const cx0 = (px + nx) * 0.5;
           const cy0 = (py + ny) * 0.5;
           const cz0 = (pz + nz) * 0.5;
-          // Mix a perpendicular bend (rotated direction) with a free random
-          // offset — combination keeps paths organic rather than uniform.
-          const perpScale = (p.swapCtrlX || 0);
-          const ctrlX = cx0 + (-dy) * perpScale + (p.swapCtrlX || 0) * 0.25;
-          const ctrlY = cy0 + ( dx) * perpScale + (p.swapCtrlY || 0) * 0.25;
-          const ctrlZ = cz0 + (p.swapCtrlZ || 0) * 0.5;
+          // In fast (typewriter) mode skip all the curve / spin / burst
+          // theatrics — straight lerp from prev to new so consecutive
+          // letters don't overlap into chaos.
+          const fastSwap = !!morph.fast;
+          const dynScale = fastSwap ? 0 : 1;
+          const perpScale = (p.swapCtrlX || 0) * dynScale;
+          const ctrlX = cx0 + (-dy) * perpScale + (p.swapCtrlX || 0) * 0.25 * dynScale;
+          const ctrlY = cy0 + ( dx) * perpScale + (p.swapCtrlY || 0) * 0.25 * dynScale;
+          const ctrlZ = cz0 + (p.swapCtrlZ || 0) * 0.5 * dynScale;
 
           // Quadratic Bezier evaluation in 3D
           const u = 1 - eio;
@@ -1165,7 +1174,7 @@
 
           // Mid-transition spin around the path midpoint — adds rotational
           // dynamism so paths twist around each other.
-          const ang = bell * (p.swapSpin || 0);
+          const ang = bell * (p.swapSpin || 0) * dynScale;
           if (ang !== 0) {
             const cs = Math.cos(ang), sn = Math.sin(ang);
             const ox = bx - cx0, oy = by - cy0;
@@ -1175,7 +1184,7 @@
 
           // Outward radial puff from origin — swarm bulges then converges.
           const mLen = Math.hypot(cx0, cy0) + 1e-6;
-          const burst = bell * (p.swapBurst || 0);
+          const burst = bell * (p.swapBurst || 0) * dynScale;
           tx = bx + (cx0 / mLen) * burst;
           ty = by + (cy0 / mLen) * burst;
           tz = bz;
