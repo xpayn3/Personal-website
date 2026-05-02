@@ -638,7 +638,8 @@
   };
 
   // Rasterize a word into a sample of {x,y} points in [-1, 1] range.
-  function rasterizeWord(word) {
+  function rasterizeWord(word, scale) {
+    if (!scale) scale = 1.0;
     const off = document.createElement('canvas');
     const W2 = 1100, H2 = 280;
     off.width = W2; off.height = H2;
@@ -693,8 +694,8 @@
           // Canvas y grows down; in our world, positive Y also reads as
           // down (after the pitch transform). Don't flip — straight map.
           pts.push(
-            (x / W2 - 0.5) * 2 * 1.05 + (Math.random() - 0.5) * 0.01,
-            (y / H2 - 0.5) * 2 * 0.52 + (Math.random() - 0.5) * 0.01
+            ((x / W2 - 0.5) * 2 * 1.05 * scale) + (Math.random() - 0.5) * 0.01,
+            ((y / H2 - 0.5) * 2 * 0.52 * scale) + (Math.random() - 0.5) * 0.01
           );
         }
       }
@@ -1155,6 +1156,9 @@
     let flat = null;
     if (spec && typeof spec === 'object' && spec.shape === 'tree') {
       flat = generateTreePoints();
+    } else if (spec && typeof spec === 'object' && spec.word) {
+      // Word object form: { word, scale } — used by greetings to render bigger.
+      flat = rasterizeWord(spec.word, spec.scale || 1.0);
     } else if (typeof spec === 'string' && spec.length) {
       flat = rasterizeWord(spec);
     }
@@ -1178,7 +1182,11 @@
 
   // Spec can be: a string (word), null (release), or { shape: 'tree' }.
   function setMorphTarget(spec) {
-    const key = !spec ? null : (typeof spec === 'string' ? spec : `__shape:${spec.shape}`);
+    const key = !spec
+      ? null
+      : (typeof spec === 'string'
+          ? spec
+          : (spec.word ? spec.word : `__shape:${spec.shape}`));
     if (morph.text === key) return;
 
     // Cancel any pending unhover — moving from one link directly to another
@@ -1270,7 +1278,12 @@
         // Keep morph.greet on through the slow fade-out; cleared once
         // progress reaches ~0 in the morph drop block.
         nextGreetAt = now + 12000 + Math.random() * 18000; // 12 – 30 s
+        return;
       }
+      // Magic-ball shimmer — gently breathe the commit value while the
+      // word is being held so the form pulses through the swirl rather
+      // than sitting frozen.
+      morph.targetProgress = 0.65 + Math.sin(now * 0.0012) * 0.06;
       return;
     }
     if (morph.text) return; // some other morph is already mounted
@@ -1280,10 +1293,10 @@
     greetKey = word;
     greetActive = true;
     greetUntil = now + 13000 + Math.random() * 5000; // 13 – 18 s hold
-    setMorphTarget(word);
-    // Higher commit cap so the word reads bigger / more present, but
-    // still soft enough to feel like an attractor rather than a snap.
-    morph.targetProgress = 0.55;
+    // Render greeting at 1.7× world scale — much bigger than the
+    // 1.0× default used for projects/about scroll words.
+    setMorphTarget({ word: word, scale: 1.7 });
+    morph.targetProgress = 0.65;
     morph.greet = true;
   }
 
