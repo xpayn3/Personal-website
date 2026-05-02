@@ -198,18 +198,17 @@
       // has a "fuzzy halo" of free particles drifting around the edges.
       // ~10% partially commit (drift around the edges as a fuzzy halo);
       // the rest snap fully to the letter shape.
-      p.commit = Math.random() < 0.10 ? 0.3 + Math.random() * 0.4 : 1;
-      // ~5% of particles act as letter emitters: commit periodically dips,
-      // releasing them into the flow then re-locking. Lower count = letters
-      // stay readable while the form still breathes.
-      p.emitter = Math.random() < 0.05;
+      p.commit = Math.random() < 0.05 ? 0.55 + Math.random() * 0.30 : 1;
+      // ~3% of particles act as letter emitters: commit periodically dips,
+      // releasing them into the flow then re-locking. Smaller share keeps
+      // the letter form crisp.
+      p.emitter = Math.random() < 0.03;
       p.emitterPhase = Math.random() * Math.PI * 2;
       p.emitterFreq = 0.35 + Math.random() * 0.45;
-      // Tiny per-particle flutter so anchored particles drift slightly
-      // around their letter position. Small amplitude keeps glyphs sharp.
+      // Very small per-particle flutter — letters read sharp.
       p.fluttFreq = 0.6 + Math.random() * 1.2;
       p.fluttSeed = Math.random() * Math.PI * 2;
-      p.fluttAmp = 0.002 + Math.random() * 0.004;
+      p.fluttAmp = 0.0008 + Math.random() * 0.0018;
       // ~22% of particles are "fat" — drawn slightly bigger when locked
       // into a letter, so glyph strokes pop a touch over the field.
       p.fat = Math.random() < 0.22;
@@ -1214,8 +1213,9 @@
         // Cap committed particles at <1 so the live flow always bleeds
         // through. Particles never fully freeze — they breathe along the
         // curl flow at their target position, while still reading as text.
-        // Slightly under 1 so letters keep a hint of motion.
-        const COMMIT_CAP = 0.95;
+        // Higher cap = particles lock tighter onto letters with only a
+        // hint of flow shimmer.
+        const COMMIT_CAP = 0.98;
         const personalCommit = p.commit != null ? p.commit : 1;
         // Emitter cycle — periodically drops this particle's commit to 0
         // so it drifts off into the flow then snaps back to its anchor.
