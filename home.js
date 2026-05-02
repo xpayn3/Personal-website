@@ -1319,6 +1319,68 @@
     morph.greet = true;
   }
 
+  // ----- Scroll-driven "projects" morph ----------------------------
+  // Scrolling reveals the swarm's "projects" word, which is also a
+  // clickable link to the index page. Builds smoothly with scroll
+  // progress; releases on scroll-up.
+  const PROJECTS_WORD = 'projects';
+  let scrollMorphActive = false;
+  let scrollProgress = 0;       // 0..1 across the runway
+  let projectsClickable = false;
+  function recomputeScrollProgress() {
+    const dist = window.innerHeight * 0.35;
+    scrollProgress = Math.max(0, Math.min(1, window.scrollY / dist));
+  }
+  if (typeof window !== 'undefined') {
+    window.addEventListener('scroll', recomputeScrollProgress, { passive: true });
+    window.addEventListener('resize', recomputeScrollProgress, { passive: true });
+    recomputeScrollProgress();
+  }
+  function updateScrollMorph() {
+    // While dragging / sculpting / hovering nav / typing — defer.
+    const userOwnsMorph = morph.text && morph.text !== PROJECTS_WORD && !greetActive;
+    const blocked = sculptAnchors.length || rightDragging || isDragging ||
+                    (typed && typed.length) || userOwnsMorph;
+
+    if (blocked || scrollProgress < 0.04) {
+      if (scrollMorphActive) {
+        scrollMorphActive = false;
+        projectsClickable = false;
+        if (canvas) canvas.style.cursor = '';
+        if (morph.text === PROJECTS_WORD) setMorphTarget(null);
+      }
+      return;
+    }
+
+    if (!scrollMorphActive) {
+      // If a greeting is currently mounted, abandon ownership of it
+      // so the new projects morph cleanly takes over.
+      if (greetActive) {
+        greetActive = false;
+        greetKey = null;
+      }
+      scrollMorphActive = true;
+      setMorphTarget(PROJECTS_WORD);
+      morph.greet = true; // reuse the slow-attractor lerp
+    }
+    // Map scroll → commit. Cap at 0.9 so the cloud never fully freezes.
+    morph.targetProgress = Math.min(0.9, scrollProgress * 1.4);
+    const wasClickable = projectsClickable;
+    projectsClickable = scrollProgress > 0.25;
+    if (projectsClickable !== wasClickable && canvas) {
+      canvas.style.cursor = projectsClickable ? 'pointer' : '';
+    }
+  }
+  if (canvas) {
+    canvas.addEventListener('click', (e) => {
+      if (!projectsClickable || !scrollMorphActive) return;
+      // Suppress the click only for the projects-navigation case.
+      e.preventDefault();
+      e.stopPropagation();
+      window.location.href = 'grid.html';
+    });
+  }
+
   // ----- Typewriter ---------------------------------------------------
   // Type any letters / digits / punctuation on the keyboard and the
   // particles spell out the word in real time. Backspace deletes the
@@ -1565,6 +1627,7 @@
     const dt = Math.min(now - last, 50) / 1000; // seconds
     recordFps(dt);
     maybeGreet(now);
+    updateScrollMorph();
     last = now;
     const elapsed = (now - startTime) / 1000;
 
