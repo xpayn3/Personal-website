@@ -6,13 +6,12 @@ html, body {
   font-family: var(--font-body);
 }
 
-html {
-  /* Firefox + Chrome 121+ standard thin scrollbar (auto-hide). */
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
-}
-/* Chrome / Safari fallback for older versions: transparent track so the
-   page background shows through, no opaque grey gutter. */
+/* Chrome / Safari custom thin scrollbar.
+   We DON'T set `scrollbar-width: thin` on html: in Chrome 121+ the
+   standard property silently disables the ::-webkit-scrollbar pseudos,
+   which is why "the scrollbar style only worked in Firefox". With the
+   standard property scoped to Firefox via @supports below, Chrome
+   reads our pseudo rules instead. */
 html::-webkit-scrollbar { width: 8px; height: 8px; background: transparent; }
 html::-webkit-scrollbar-track { background: transparent; }
 html::-webkit-scrollbar-thumb {
@@ -21,6 +20,14 @@ html::-webkit-scrollbar-thumb {
 }
 html::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.45); }
 html::-webkit-scrollbar-corner { background: transparent; }
+
+/* Firefox only — uses standard scrollbar-* props. */
+@supports (-moz-appearance: none) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+  }
+}
 
 img, video {
   -webkit-user-select: none;
