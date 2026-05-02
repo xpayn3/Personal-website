@@ -229,8 +229,11 @@ img, video {
   flex-direction: column;
 }
 .services-item {
+  /* Match the Luka Grčar wordmark + description — display font. */
+  font-family: var(--font-display, Geist, system-ui, sans-serif);
   font-size: 0.95rem;
-  letter-spacing: 0.04em;
+  font-weight: 500;
+  letter-spacing: -0.01em;
   color: #fff;
   padding: 7px 12px;
   text-align: right;
