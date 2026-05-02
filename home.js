@@ -1817,19 +1817,6 @@
     const morphActiveSwap = morphPrev && swap < 1
       && morphPts && morphPrev.length === morphPts.length;
     const releasing = morph.targetProgress === 0;
-    // Marvel-style disintegration: during greet/scroll releases each
-    // particle's WORLD position drifts outward along its own direction
-    // seed. Because flow coords drift, the particle ends up at a
-    // displaced position when commit reaches 0 — no snap back to
-    // original flow position.
-    const peakMp = morph.peakMp;
-    const disintegrating = releasing && peakMp > 0.05 && (morph.greet || morph.scroll);
-    const releaseT = disintegrating ? Math.min(1, 1 - mp / peakMp) : 0;
-    // Per-frame world-coord outward kick during disintegration. Total
-    // integrated displacement over a full release is now significant
-    // (~1.2 world units ≈ 600 screen px at 1080p), so particles
-    // visibly fly outward instead of just gliding to flow.
-    const kickRate = releaseT * 0.007;
     const sculptN = sculptAnchors.length;
 
     for (let i = 0; i < activeCount; i++) {
@@ -1859,17 +1846,6 @@
       if (WIND_X !== 0 || WIND_Y !== 0) {
         px_ += WIND_X * dt;
         py_ += WIND_Y * dt;
-      }
-      // Disintegration: nudge world position outward along this
-      // particle's direction seed so it permanently drifts away from
-      // the word as commit fades. After release ends, particle stays
-      // at its displaced flow position — no snap.
-      if (kickRate !== 0) {
-        const dxSeed = pSwpCX[i];
-        const dySeed = pSwpCY[i];
-        const dirLen = Math.sqrt(dxSeed * dxSeed + dySeed * dySeed) + 1e-6;
-        px_ += (dxSeed / dirLen) * kickRate;
-        py_ += (dySeed / dirLen) * kickRate;
       }
 
       // Lifetime + recycle.
