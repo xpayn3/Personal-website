@@ -880,6 +880,9 @@
     if (e.repeat) return;
     if (isFormFocus()) return;
     if (e.ctrlKey || e.metaKey || e.altKey) return;
+    // Space normally scrolls the page — block that so the user can type
+    // a space into the buffer without scrolling to the footer.
+    if (e.key === ' ' || e.code === 'Space') e.preventDefault();
     if (e.key === 'Escape' || e.key === 'Enter') {
       typed = '';
       pushTyped();
