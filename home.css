@@ -16,12 +16,9 @@ img, video {
   -webkit-touch-callout: none;
 }
 
-/* ========== COVER ==========
-   sticky so it pins to the top of the viewport while the user scrolls past
-   the runway below it. */
+/* ========== COVER ========== */
 .cover {
-  position: sticky;
-  top: 0;
+  position: relative;
   height: 100vh;
   height: 100dvh;
   width: 100%;
@@ -439,11 +436,6 @@ img, video {
   transform: translateY(0);
   filter: blur(0);
 }
-body.footer-visible .cover-desc {
-  opacity: 0;
-  pointer-events: none;
-}
-
 /* Bottom-center scroll hint */
 .cover-hint {
   position: absolute;
@@ -694,11 +686,6 @@ body.footer-visible .cover-desc {
 }
 
 
-body.footer-visible .recent-card {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
 
 @media (max-width: 600px) {
   .recent-card {
@@ -717,37 +704,7 @@ body.footer-visible .recent-card {
 /* ========== SCROLL RUNWAY ==========
    In-flow spacer that gives the footer 100dvh of scroll distance to slide
    in over the sticky cover. */
-.scroll-runway {
-  /* Provides scroll distance for the footer to slide over. CSS transition
-     on .site-footer handles the actual slide animation. */
-  height: 100vh;
-  height: 100dvh;
-  width: 100%;
-  position: relative;
-  z-index: 0;
-  pointer-events: none;
-}
 
-/* ========== FOOTER ==========
-   Fixed at the bottom of the viewport, slid into view via a CSS transition
-   when body has .footer-visible (toggled by a single scroll-position check
-   in home.js — no per-frame transform updates). */
-.site-footer {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 100vh;
-  height: 100dvh;
-  z-index: 2;
-  transform: translate3d(0, 100%, 0);
-  will-change: transform;
-  transition: transform 0.55s cubic-bezier(0.7, 0, 0.25, 1);
-}
-body.footer-visible .site-footer {
-  transform: translate3d(0, 0, 0);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .site-footer { transition: none; }
-}
+/* Footer sits naturally after the cover in document flow — scroll lands
+   on it directly. No fixed positioning, no transitions. */
+.site-footer { z-index: 2; }

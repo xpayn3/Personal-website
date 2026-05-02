@@ -1242,19 +1242,14 @@
   start();
 })();
 
-// ========== FOOTER SLIDE-IN ==========
-// CSS transition handles the slide; JS just toggles the class so the
-// transform animates cleanly in both directions without per-frame work.
+// Cover is just 100vh, footer follows in normal flow — no scroll JS needed.
+// IntersectionObserver toggles `body.footer-visible` so footer.css can fire
+// its content fade-in when the user actually reaches the footer.
 (function () {
   const footerEl = document.querySelector('.site-footer');
-  if (!footerEl) return;
-  function update() {
-    // Visible once the user is more than half-way through the runway —
-    // scroll-snap commits the snap quickly so the threshold flips fast.
-    const visible = window.scrollY > window.innerHeight * 0.25;
-    document.body.classList.toggle('footer-visible', visible);
-  }
-  window.addEventListener('scroll', update, { passive: true });
-  window.addEventListener('resize', update, { passive: true });
-  update();
+  if (!footerEl || !('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver((entries) => {
+    document.body.classList.toggle('footer-visible', entries[0].isIntersecting);
+  }, { threshold: 0.05 });
+  io.observe(footerEl);
 })();
