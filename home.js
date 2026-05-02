@@ -1734,10 +1734,23 @@
     //   default (nav-text/shapes) — original snappy lerp
     const greetMode = !!morph.greet;
     const scrollMode = !!morph.scroll;
-    const easeRate = morph.targetProgress > morph.progress
-      ? (scrollMode ? 0.18 : (greetMode ? 0.022 : 0.08))
-      : (scrollMode ? 0.05 : (greetMode ? 0.014 : 0.04));
-    morph.progress += (morph.targetProgress - morph.progress) * easeRate;
+    if (morph.targetProgress > morph.progress) {
+      // Going UP: lerp (greet=slow attractor, scroll=responsive, default=snappy).
+      const upRate = scrollMode ? 0.18 : (greetMode ? 0.022 : 0.08);
+      morph.progress += (morph.targetProgress - morph.progress) * upRate;
+    } else {
+      // Going DOWN. Greet/scroll use LINEAR decay so the disintegration
+      // reads as uniform motion rather than the exponential 'fast then
+      // long tail' that feels like a snap to noise. Default releases
+      // (nav-text/shape) keep the original exponential lerp.
+      if (greetMode || scrollMode) {
+        const span = morph.peakMp || 0.5;
+        const downSecs = scrollMode ? 1.4 : 4.5;     // linear release time
+        morph.progress = Math.max(0, morph.progress - (span / downSecs) * dt);
+      } else {
+        morph.progress += (morph.targetProgress - morph.progress) * 0.04;
+      }
+    }
     // Track peak commit so the disintegration drift below knows where
     // the release "started from".
     if (morph.progress > morph.peakMp) morph.peakMp = morph.progress;
@@ -1812,12 +1825,11 @@
     const peakMp = morph.peakMp;
     const disintegrating = releasing && peakMp > 0.05 && (morph.greet || morph.scroll);
     const releaseT = disintegrating ? Math.min(1, 1 - mp / peakMp) : 0;
-    // Per-frame world-coord kick during disintegration. Tuned so the
-    // total integrated displacement over a full release is ~0.5 world
-    // units (≈ 250 screen px at 1080p). Multiplies releaseT so the
-    // kick GROWS as the release progresses, then stops when peakMp
-    // resets (after morph fully ends).
-    const kickRate = releaseT * 0.0018;
+    // Per-frame world-coord outward kick during disintegration. Total
+    // integrated displacement over a full release is now significant
+    // (~1.2 world units ≈ 600 screen px at 1080p), so particles
+    // visibly fly outward instead of just gliding to flow.
+    const kickRate = releaseT * 0.007;
     const sculptN = sculptAnchors.length;
 
     for (let i = 0; i < activeCount; i++) {
