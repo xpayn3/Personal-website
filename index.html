@@ -265,17 +265,6 @@
           </div>
 
           <div class="info-block">
-            <div class="info-label">// LIVE ESTIMATE</div>
-            <ul class="info-list">
-              <li><span>Scope</span><span class="info-val" id="infoScope">—</span></li>
-              <li><span>Budget</span><span class="info-val" id="infoBudget">—</span></li>
-              <li><span>Timeline</span><span class="info-val" id="infoTimeline">—</span></li>
-              <li><span>Complexity</span><span class="info-val" id="infoComplexity">—</span></li>
-              <li><span>Fit</span><span class="info-val" id="infoFit">PENDING</span></li>
-            </ul>
-          </div>
-
-          <div class="info-block">
             <div class="info-label">// QUICK ACTIONS</div>
             <button type="button" class="info-action" id="copyEmailBtn">
               <span>Copy email</span><span>luka.grcar@me.com</span>
@@ -365,11 +354,6 @@
       const clockEl = document.getElementById('contactClock');
       const localTimeEl = document.getElementById('infoLocalTime');
       const tzEl = document.getElementById('infoTz');
-      const infoScope = document.getElementById('infoScope');
-      const infoBudget = document.getElementById('infoBudget');
-      const infoTimeline = document.getElementById('infoTimeline');
-      const infoComplexity = document.getElementById('infoComplexity');
-      const infoFit = document.getElementById('infoFit');
       const copyBtn = document.getElementById('copyEmailBtn');
       const clearBtn = document.getElementById('clearDraftBtn');
 
@@ -380,7 +364,6 @@
         overlay.classList.add('open');
         restoreDraft();
         updateCounter();
-        updateEstimate();
         setTimeout(() => { const f = form.elements['name']; if (f && !f.value) f.focus(); }, 200);
       }
       function dismiss() { overlay.classList.remove('open'); }
@@ -408,44 +391,6 @@
         counter.classList.toggle('is-near', v.length > 1000);
       }
 
-      // ----- Live estimate panel ----------------------------------------
-      function updateEstimate() {
-        if (!infoScope) return;
-        const types = Array.from(form.querySelectorAll('input[name="type"]:checked')).map(i => i.value);
-        const budget = (form.querySelector('input[name="budget"]:checked') || {}).value || '';
-        const timeline = (form.querySelector('input[name="timeline"]:checked') || {}).value || '';
-
-        infoScope.textContent = types.length ? `${types.length} ITEM${types.length > 1 ? 'S' : ''}` : '—';
-        infoBudget.textContent = budget ? budget.toUpperCase() : '—';
-        infoTimeline.textContent = timeline ? timeline.toUpperCase() : '—';
-
-        // Complexity = count of selected types + budget tier
-        const tierMap = { '< €1k': 1, '€1k - €5k': 2, '€5k - €15k': 3, '€15k+': 4, 'Not sure': 2 };
-        const complexityScore = types.length + (tierMap[budget] || 0);
-        let complexity = '—';
-        if (complexityScore > 0) {
-          if (complexityScore <= 2) complexity = 'LIGHT';
-          else if (complexityScore <= 5) complexity = 'MEDIUM';
-          else if (complexityScore <= 8) complexity = 'HEAVY';
-          else complexity = 'FLAGSHIP';
-        }
-        infoComplexity.textContent = complexity;
-
-        // Fit calculation
-        let fit = 'PENDING';
-        let fitClass = '';
-        if (timeline && budget) {
-          const tightTimeline = (timeline === 'ASAP' || timeline === '1-2 weeks');
-          const tightBudget = (budget === '< €1k');
-          if (tightTimeline && tightBudget) { fit = 'TIGHT'; fitClass = 'is-bad'; }
-          else if (timeline === 'Flexible' || timeline === '2-3 months') { fit = 'IDEAL'; fitClass = 'is-good'; }
-          else if (tightTimeline) { fit = 'NEEDS REVIEW'; fitClass = 'is-warn'; }
-          else { fit = 'GOOD'; fitClass = 'is-good'; }
-        }
-        infoFit.textContent = fit;
-        infoFit.classList.remove('is-good', 'is-warn', 'is-bad');
-        if (fitClass) infoFit.classList.add(fitClass);
-      }
 
       // ----- Autosave / restore -----------------------------------------
       function saveDraft() {
@@ -479,12 +424,11 @@
         try { localStorage.removeItem(STORAGE_KEY); } catch {}
         form.reset();
         updateCounter();
-        updateEstimate();
         if (note) note.textContent = '';
       }
 
-      form.addEventListener('input', () => { saveDraft(); updateCounter(); updateEstimate(); });
-      form.addEventListener('change', () => { saveDraft(); updateEstimate(); });
+      form.addEventListener('input', () => { saveDraft(); updateCounter(); });
+      form.addEventListener('change', saveDraft);
 
       // ----- Copy email / clear draft -----------------------------------
       if (copyBtn) {
