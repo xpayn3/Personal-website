@@ -57,7 +57,9 @@ img, video {
   width: 100%;
   overflow: hidden;
   background: #000;
-  z-index: 800;
+  /* Above footer (500), BELOW floating-name/floating-nav (600) and
+     services (bumped to 650) so the cover doesn't hide the cover-UI. */
+  z-index: 550;
 }
 /* Runway: legacy no-op; layout space is now owned by .cover-wrap. */
 .scroll-runway { height: 0; width: 100%; pointer-events: none; }
@@ -145,7 +147,8 @@ img, video {
   position: fixed;
   top: clamp(20px, 3vh, 32px);
   right: clamp(20px, 3vw, 32px);
-  z-index: 250; /* above the footer (z 2) so it stays on top while scrolling */
+  /* Above the cover (550) so the pin stays visible during sticky. */
+  z-index: 650;
   font-family: ui-monospace, Menlo, monospace;
   color: #f0f0f0;
 }
