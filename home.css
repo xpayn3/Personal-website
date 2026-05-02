@@ -49,11 +49,11 @@ img, video {
   z-index: 1;
 }
 
-/* Scroll runway — gives the body real scroll distance so the footer
-   has something to translate against. */
+/* Scroll runway — short distance so the footer slides in quickly with
+   a small scroll instead of forcing a full viewport's worth. */
 .scroll-runway {
-  height: 100vh;
-  height: 100dvh;
+  height: 35vh;
+  height: 35dvh;
   width: 100%;
   pointer-events: none;
 }

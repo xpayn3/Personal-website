@@ -1357,7 +1357,9 @@
   let pending = false;
   function apply() {
     pending = false;
-    const dist = window.innerHeight;
+    // Match the .scroll-runway height (35dvh). Smaller distance =
+    // footer reaches its fully-revealed state with a short scroll.
+    const dist = window.innerHeight * 0.35;
     const p = Math.max(0, Math.min(1, window.scrollY / dist));
     footerEl.style.transform = `translate3d(0, ${(1 - p) * 100}%, 0)`;
     document.body.classList.toggle('footer-visible', p > 0.6);
