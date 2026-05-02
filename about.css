@@ -61,9 +61,12 @@ body {
 /* ========== SPLIT LAYOUT: GB fixed left, content scrolls right ========== */
 .hero-split {
   display: flex;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
+  width: 100%;
 }
+/* Belt-and-suspenders: clip any horizontal overflow on this page so we
+   never get a system horizontal scrollbar (Chrome 100vw > viewport when
+   the vertical scrollbar is present). */
+html, body { overflow-x: hidden; }
 .hero-split-left {
   width: 50%;
   height: 100vh;
