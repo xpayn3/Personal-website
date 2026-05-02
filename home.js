@@ -1274,7 +1274,9 @@
   // partial commit so it reads as a soft suggestion rather than text.
   // Defers if the user is hovering a link, typing, dragging, or sculpting.
   const GREETINGS = ['hello', 'hej', 'ahoj', 'bok', 'ciao', 'moin', 'aloha', 'salut', 'howdy', 'welcome', 'hi'];
-  let nextGreetAt = performance.now() + 18000 + Math.random() * 18000;
+  // First greeting fires ~5s after page load (welcomes the visitor),
+  // then subsequent ones space out to 25-70s.
+  let nextGreetAt = performance.now() + 5000;
   let greetUntil = 0;
   let greetActive = false;
   let greetKey = null;
