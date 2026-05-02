@@ -40,13 +40,13 @@ img, video {
    its height === how far the user scrolls before the cover releases
    and the footer slides into view. */
 /* Wrap height = cover height (100dvh) + desired locked-scroll budget.
-   Sticky window = (wrap height − cover height), so 130dvh wrap gives
-   ~30dvh of cover-locked scroll before the cover unsticks and the
+   Sticky window = (wrap height − cover height), so 220dvh wrap gives
+   ~120dvh of cover-locked scroll before the cover unsticks and the
    footer comes into view. */
 .cover-wrap {
   position: relative;
-  height: 130vh;
-  height: 130dvh;
+  height: 220vh;
+  height: 220dvh;
   width: 100%;
 }
 .cover {
