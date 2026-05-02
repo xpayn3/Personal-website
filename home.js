@@ -399,72 +399,173 @@
     return pts;
   }
 
-  // ----- Generic 3D head / portrait shape --------------------------------
-  // Procedurally builds a stylized 3D head: ellipsoid skull + denser
-  // clusters for eyes, nose ridge and mouth. No image dependency.
-  const portraitPoints = (function buildHead() {
+  // ----- 3D skull point cloud ---------------------------------------------
+  // Tries to load a real skull GLB from a CDN, parsing vertex positions
+  // out of the binary glTF. Falls back to a procedural skull silhouette
+  // (cranium + eye sockets + nasal cavity + jaw + tooth row) if the
+  // network refuses or the parse fails — no Three.js dependency required.
+  let portraitPoints = procSkull();
+
+  function procSkull() {
     const pts = [];
-    // Skull — ellipsoid surface
-    const A = 0.42, B = 0.55, C = 0.40;
-    const SKULL_N = 2400;
-    for (let i = 0; i < SKULL_N; i++) {
+    // Cranium — slightly back-elongated ellipsoid
+    const A = 0.40, B = 0.46, C = 0.44;
+    for (let i = 0; i < 1800; i++) {
       const u = Math.random(), v = Math.random();
       const theta = 2 * Math.PI * u;
       const phi = Math.acos(2 * v - 1);
       const x = A * Math.sin(phi) * Math.cos(theta);
-      const y = B * Math.cos(phi);
+      const y = B * Math.cos(phi) - 0.10; // shift up
       const z = C * Math.sin(phi) * Math.sin(theta);
+      // Skip the "front face" cap — that area is replaced with explicit
+      // sockets / nasal / mandible features below for a real skull look.
+      if (z > 0.18 && y > -0.12 && y < 0.14 && Math.abs(x) < 0.32) continue;
       pts.push(x, y, z);
     }
-    // Eyes — dense disks slightly inset from the front
-    const EYE_X = 0.15, EYE_Y = -0.12, EYE_Z = 0.32, EYE_R = 0.052;
+    // Brow ridge — thick horizontal bar across the forehead
+    for (let i = 0; i < 240; i++) {
+      const t = Math.random() * 2 - 1;
+      pts.push(t * 0.34, -0.20 + Math.abs(t) * 0.03, 0.36);
+    }
+    // Eye-socket rims — large oval rings
+    const EYE_X = 0.16, EYE_Y = -0.10, EYE_Z = 0.34, ER = 0.10;
     for (let side = -1; side <= 1; side += 2) {
-      for (let i = 0; i < 280; i++) {
+      for (let i = 0; i < 320; i++) {
         const a = Math.random() * Math.PI * 2;
-        const r = Math.sqrt(Math.random()) * EYE_R;
+        // Ring (annulus) — sample on rim
         pts.push(
-          side * EYE_X + Math.cos(a) * r * 0.85,
-          EYE_Y + Math.sin(a) * r * 0.55,
-          EYE_Z + (Math.random() - 0.5) * 0.03
+          side * EYE_X + Math.cos(a) * ER * 0.95,
+          EYE_Y + Math.sin(a) * ER * 0.85,
+          EYE_Z + (Math.random() - 0.5) * 0.04
         );
       }
     }
-    // Brow ridges — thin horizontal arcs above each eye
+    // Cheekbones — diagonal ridges below the eyes
     for (let side = -1; side <= 1; side += 2) {
-      for (let i = 0; i < 90; i++) {
-        const t = Math.random() - 0.5;
+      for (let i = 0; i < 160; i++) {
+        const t = Math.random();
         pts.push(
-          side * EYE_X + t * EYE_R * 1.7,
-          EYE_Y - 0.06 - Math.abs(t) * 0.02,
-          EYE_Z - 0.005
+          side * (0.20 + t * 0.10),
+          0.02 + t * 0.06,
+          0.30 - t * 0.08
         );
       }
     }
-    // Nose ridge — vertical line popping forward
-    for (let i = 0; i < 280; i++) {
+    // Nasal cavity — inverted teardrop hole, sample the rim
+    for (let i = 0; i < 260; i++) {
       const t = Math.random();
-      const yy = -0.06 + t * 0.18;
-      const zz = 0.40 - t * 0.04; // tip slightly forward
-      pts.push((Math.random() - 0.5) * 0.045, yy, zz);
+      const yy = 0.02 + t * 0.18;
+      const half = (1 - t) * 0.06 + 0.01;
+      const x = (Math.random() < 0.5 ? -1 : 1) * (half + (Math.random() - 0.5) * 0.01);
+      pts.push(x, yy, 0.38 - t * 0.04);
     }
-    // Mouth — small horizontal cluster
-    for (let i = 0; i < 220; i++) {
-      const t = Math.random();
-      const xx = -0.07 + t * 0.14;
-      const yy = 0.22 + (Math.random() - 0.5) * 0.022;
-      const zz = 0.34;
-      pts.push(xx, yy, zz);
+    // Maxilla (upper teeth row) — small dense bumps
+    for (let i = 0; i < 180; i++) {
+      const idx = (Math.random() * 8) | 0;
+      const xx = -0.13 + (idx + 0.5) * (0.26 / 8) + (Math.random() - 0.5) * 0.012;
+      pts.push(xx, 0.24, 0.30);
     }
-    // Jawline — gentle U curve below the mouth
-    for (let i = 0; i < 220; i++) {
-      const t = Math.random() * 2 - 1; // -1..1
+    // Mandible (jaw) — wide U
+    for (let i = 0; i < 380; i++) {
+      const t = Math.random() * 2 - 1;
       const xx = t * 0.30;
-      const yy = 0.36 + Math.abs(t) * 0.10;
-      const zz = 0.18 - t * t * 0.05;
+      const yy = 0.32 + t * t * 0.13;
+      const zz = 0.26 - t * t * 0.10;
       pts.push(xx, yy, zz);
+    }
+    // Lower teeth row
+    for (let i = 0; i < 160; i++) {
+      const idx = (Math.random() * 8) | 0;
+      const xx = -0.13 + (idx + 0.5) * (0.26 / 8) + (Math.random() - 0.5) * 0.012;
+      pts.push(xx, 0.32, 0.27);
     }
     return pts;
+  }
+
+  // Try to load a real skull GLB from a public CDN (CC-licensed). If it
+  // succeeds, swap in the real geometry. Failure leaves the procedural
+  // skull untouched.
+  (function tryLoadSkullGlb() {
+    const URL = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Skull/glTF-Binary/Skull.glb';
+    fetch(URL).then((r) => r.ok ? r.arrayBuffer() : null).then((buf) => {
+      if (!buf) return;
+      const verts = parseGlbVertices(buf);
+      if (!verts || verts.length < 300) return;
+      // Normalize the mesh to fit roughly within ±0.55 in each axis.
+      let minX = Infinity, minY = Infinity, minZ = Infinity;
+      let maxX = -Infinity, maxY = -Infinity, maxZ = -Infinity;
+      for (let i = 0; i < verts.length; i += 3) {
+        if (verts[i]   < minX) minX = verts[i];
+        if (verts[i+1] < minY) minY = verts[i+1];
+        if (verts[i+2] < minZ) minZ = verts[i+2];
+        if (verts[i]   > maxX) maxX = verts[i];
+        if (verts[i+1] > maxY) maxY = verts[i+1];
+        if (verts[i+2] > maxZ) maxZ = verts[i+2];
+      }
+      const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2, cz = (minZ + maxZ) / 2;
+      const span = Math.max(maxX - minX, maxY - minY, maxZ - minZ);
+      const scale = (span > 0 ? 1.0 / span : 1) * 0.95;
+      const out = new Array(verts.length);
+      for (let i = 0; i < verts.length; i += 3) {
+        out[i]   = (verts[i]   - cx) * scale;
+        // Flip Y so the skull is upright in our coord system
+        out[i+1] = -(verts[i+1] - cy) * scale;
+        out[i+2] = (verts[i+2] - cz) * scale;
+      }
+      portraitPoints = out;
+    }).catch(() => { /* keep procedural skull */ });
   })();
+
+  // Minimal GLB → vertex-positions parser. Reads the JSON chunk to find
+  // the first POSITION accessor, then extracts that range from the
+  // following BIN chunk. Just enough to feed our point cloud.
+  function parseGlbVertices(buf) {
+    try {
+      const dv = new DataView(buf);
+      if (dv.getUint32(0, true) !== 0x46546C67) return null; // 'glTF'
+      const totalLen = dv.getUint32(8, true);
+      if (totalLen > buf.byteLength) return null;
+      // Chunk 0 — JSON
+      const jsonLen = dv.getUint32(12, true);
+      const jsonType = dv.getUint32(16, true);
+      if (jsonType !== 0x4E4F534A) return null; // 'JSON'
+      const jsonBytes = new Uint8Array(buf, 20, jsonLen);
+      const json = JSON.parse(new TextDecoder('utf-8').decode(jsonBytes));
+      // Chunk 1 — BIN
+      const binStart = 20 + jsonLen;
+      const binLen = dv.getUint32(binStart, true);
+      const binType = dv.getUint32(binStart + 4, true);
+      if (binType !== 0x004E4942) return null; // 'BIN '
+      const binData = new Uint8Array(buf, binStart + 8, binLen);
+      // Find any POSITION accessor on any primitive
+      let accIdx = -1;
+      const meshes = json.meshes || [];
+      for (const m of meshes) {
+        for (const prim of (m.primitives || [])) {
+          if (prim.attributes && prim.attributes.POSITION != null) {
+            accIdx = prim.attributes.POSITION;
+            break;
+          }
+        }
+        if (accIdx >= 0) break;
+      }
+      if (accIdx < 0) return null;
+      const acc = json.accessors[accIdx];
+      const bv = json.bufferViews[acc.bufferView];
+      const offset = (bv.byteOffset || 0) + (acc.byteOffset || 0);
+      const count = acc.count;
+      const stride = bv.byteStride || 12;
+      const out = new Float32Array(count * 3);
+      const view = new DataView(binData.buffer, binData.byteOffset, binData.byteLength);
+      for (let i = 0; i < count; i++) {
+        const o = offset + i * stride;
+        out[i * 3 + 0] = view.getFloat32(o, true);
+        out[i * 3 + 1] = view.getFloat32(o + 4, true);
+        out[i * 3 + 2] = view.getFloat32(o + 8, true);
+      }
+      return out;
+    } catch { return null; }
+  }
 
   // Procedural fractal tree — recursive branching, leaf clusters at tips.
   // Returns flat [x,y, x,y, ...] in [-1, 1] world units. Trunk at bottom
