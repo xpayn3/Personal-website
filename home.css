@@ -36,12 +36,11 @@ img, video {
 }
 
 /* ========== COVER ==========
-   Sticky to the viewport: pinned at the top while the user scrolls
-   through the runway, then releases and scrolls up out of view —
-   revealing the footer in normal block flow below. */
+   Normal block flow, one viewport tall. Footer is the next block in
+   flow below — user scrolls the cover off the top to reach it.
+   No sticky / no fixed / no slide-in. */
 .cover {
-  position: sticky;
-  top: 0;
+  position: relative;
   height: 100vh;
   height: 100dvh;
   width: 100%;
@@ -50,12 +49,11 @@ img, video {
   z-index: 1;
 }
 
-/* Scroll runway — extra layout space below the (sticky) cover. The
-   first portion drives the 'projects' word morph; once the runway is
-   fully scrolled the cover releases and the footer comes up in flow. */
+/* Runway no longer needed — the cover IS the layout spacer. Kept the
+   class as a no-op so existing markup doesn't error if it's still in
+   the HTML. */
 .scroll-runway {
-  height: 25vh;
-  height: 25dvh;
+  height: 0;
   width: 100%;
   pointer-events: none;
 }

@@ -1328,10 +1328,11 @@
   let scrollProgress = 0;       // 0..1 across the runway
   let projectsClickable = false;
   function recomputeScrollProgress() {
-    // Word forms across the FIRST 25dvh of scroll — same budget the
-    // footer-slide handler subtracts before it starts moving. Keeps
-    // word formation cleanly separated from footer reveal.
-    const dist = window.innerHeight * 0.25;
+    // Cover is ~100dvh tall in flow; user must scroll up to ~50dvh
+    // before half the cover is gone. Map word formation to the first
+    // 30dvh so it's strongly present while still well within the
+    // visible cover region.
+    const dist = window.innerHeight * 0.3;
     scrollProgress = Math.max(0, Math.min(1, window.scrollY / dist));
   }
   if (typeof window !== 'undefined') {
