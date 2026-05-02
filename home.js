@@ -342,11 +342,15 @@
     c.fillStyle = '#000';
     c.fillRect(0, 0, W2, H2);
     c.fillStyle = '#fff';
-    let fontSize = 240;
+    let fontSize = 220;
     c.textBaseline = 'middle';
     c.textAlign = 'center';
+    // Wider tracking + medium-bold weight = less condensed glyphs with
+    // room between them. Canvas letterSpacing is supported in modern
+    // browsers and falls back gracefully where it isn't.
+    if ('letterSpacing' in c) c.letterSpacing = '6px';
     do {
-      c.font = `900 ${fontSize}px Geist, system-ui, sans-serif`;
+      c.font = `700 ${fontSize}px Geist, "Helvetica Neue", Arial, sans-serif`;
       if (c.measureText(word).width <= W2 * 0.92) break;
       fontSize -= 8;
     } while (fontSize > 40);
