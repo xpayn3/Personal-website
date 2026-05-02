@@ -1349,14 +1349,15 @@
     window.addEventListener('resize', recomputeScrollProgress, { passive: true });
     recomputeScrollProgress();
   }
-  // Trapezoidal envelope: 0..1 over first 30%, hold at 1 for middle
-  // 40%, then 1..0 over last 30%. Within-phase parameter t ∈ [0,1].
-  function phaseEnvelope(t) {
-    if (t <= 0) return 0;
-    if (t >= 1) return 0;
-    if (t < 0.30) return t / 0.30;
-    if (t < 0.70) return 1;
-    return (1 - t) / 0.30;
+  // Global commit envelope: ramp from 0..1 over the first ~15% of
+  // scroll, then HOLD AT FULL until the user scrolls back. Word
+  // switches at phase boundaries are handled by the morph system's
+  // snapshot blend — commit stays high so the cloud morphs directly
+  // from one word to the next without dipping back to noise.
+  function commitFromScroll(p) {
+    if (p <= 0) return 0;
+    if (p < 0.15) return p / 0.15;
+    return 1;
   }
   function pickPhase(p) {
     for (let i = 0; i < SCROLL_PHASES.length; i++) {
@@ -1364,7 +1365,8 @@
         return SCROLL_PHASES[i];
       }
     }
-    return null;
+    // At or past the last phase end — stay on the last word.
+    return SCROLL_PHASES[SCROLL_PHASES.length - 1];
   }
   function updateScrollMorph() {
     // Defer if user is interacting with another morph source.
@@ -1386,17 +1388,11 @@
     }
 
     const phase = pickPhase(scrollProgress);
-    if (!phase) {
-      // Past all phases — let the morph release.
-      if (scrollMorphActive && morph.text && PHASE_WORDS.has(morph.text)) {
-        morph.targetProgress = 0;
-      }
-      return;
-    }
-    const phaseT = (scrollProgress - phase.start) / (phase.end - phase.start);
-    const commit = phaseEnvelope(phaseT);
+    const commit = commitFromScroll(scrollProgress);
 
-    // Activate / switch words at phase boundaries.
+    // Activate / switch words at phase boundaries. The morph system's
+    // snapshot blend handles the visual word-to-word transition; commit
+    // stays high so the cloud doesn't visit "free flow" between words.
     const needsSwitch = !scrollMorphActive || morph.text !== phase.word;
     if (needsSwitch) {
       if (greetActive) { greetActive = false; greetKey = null; }
