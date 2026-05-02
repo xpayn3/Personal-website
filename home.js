@@ -1340,9 +1340,13 @@
     recomputeScrollProgress();
   }
   function updateScrollMorph() {
-    // While dragging / sculpting / hovering nav / typing — defer.
+    // While actively sculpting / right-dragging / hovering nav / typing —
+    // defer. We do NOT block on isDragging alone (mouse-button-down for
+    // a click) — that would tear the projects morph down between
+    // pointerdown and the click event firing, killing the navigation.
+    // Real drags surface as sculptAnchors anyway, which IS blocked.
     const userOwnsMorph = morph.text && morph.text !== PROJECTS_WORD && !greetActive;
-    const blocked = sculptAnchors.length || rightDragging || isDragging ||
+    const blocked = sculptAnchors.length || rightDragging ||
                     (typed && typed.length) || userOwnsMorph;
 
     if (blocked || scrollProgress < 0.04) {
