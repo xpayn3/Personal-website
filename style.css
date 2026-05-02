@@ -20,7 +20,7 @@ html {
 }
 
 body {
-  background: #000;
+  background: #ededed;
   color: var(--text);
   font-family: var(--font-body);
   min-height: 100vh;
@@ -30,7 +30,7 @@ body {
 
 html {
   overflow-x: hidden;
-  background: #000;
+  background: #ededed;
   touch-action: manipulation;
   -ms-touch-action: manipulation;
 }
@@ -165,7 +165,7 @@ body.scroll-locked .site-footer {
 }
 
 .grid-item:hover {
-  background: #f6f6f6;
+  background: #dcdcdc;
 }
 
 .grid-item:hover .item-label {
