@@ -1370,19 +1370,17 @@
     // legible early in the scroll instead of forming late.
     morph.targetProgress = Math.min(0.92, scrollProgress * 2.4);
     const wasClickable = projectsClickable;
-    // Activate clickability as soon as the word has any meaningful
-    // presence — first ~15% of the scroll budget.
-    projectsClickable = scrollProgress > 0.12;
+    // Clickable as soon as there's any noticeable scroll.
+    projectsClickable = scrollProgress > 0.05;
     if (projectsClickable !== wasClickable && canvas) {
       canvas.style.cursor = projectsClickable ? 'pointer' : '';
     }
   }
-  // Document-level click capture so the navigation works even if some
-  // overlay (footer, etc.) ends up over the canvas. We only navigate
-  // when the projects morph is actively clickable.
+  // Capture-phase click on document so navigation isn't intercepted.
+  // Only triggers when the projects morph is mounted + clickable.
   document.addEventListener('click', (e) => {
     if (!projectsClickable || !scrollMorphActive) return;
-    // Skip clicks on real interactive elements (links, buttons, etc).
+    // Don't hijack clicks on real interactive elements.
     let el = e.target;
     while (el && el !== document) {
       const t = el.tagName;
@@ -1391,7 +1389,8 @@
     }
     e.preventDefault();
     e.stopPropagation();
-    window.location.href = 'grid.html';
+    if (typeof console !== 'undefined') console.log('[cover] projects clicked → grid.html');
+    window.location.assign('grid.html');
   }, true);
 
   // ----- Typewriter ---------------------------------------------------

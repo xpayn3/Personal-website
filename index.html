@@ -61,14 +61,20 @@
 </script>
 </head>
 <body class="page-home">
-  <!-- ===== COVER ===== -->
-  <section class="cover" id="cover">
-    <canvas class="cover-media" id="coverCanvas"></canvas>
-    <a class="recent-card" id="recentCard" href="grid.html#project=grounded2025">
-      <div class="recent-card-track" id="recentCardTrack"></div>
-      <span class="recent-card-cta">View ↗</span>
-    </a>
-  </section>
+  <!-- ===== COVER =====
+       cover-wrap controls how much scroll the cover stays sticky for
+       (its height = scroll budget). The cover itself is sticky and
+       fills 100dvh visually. When the wrap is fully scrolled past,
+       sticky releases and the footer below comes into view. -->
+  <div class="cover-wrap">
+    <section class="cover" id="cover">
+      <canvas class="cover-media" id="coverCanvas"></canvas>
+      <a class="recent-card" id="recentCard" href="grid.html#project=grounded2025">
+        <div class="recent-card-track" id="recentCardTrack"></div>
+        <span class="recent-card-cta">View ↗</span>
+      </a>
+    </section>
+  </div>
 
   <!-- Floating top-left nav (shared component) -->
   <a href="index.html" class="floating-name">Luka Grčar</a>
