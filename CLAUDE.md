@@ -71,31 +71,152 @@ Both home and grid open the same native slide-up overlay (was an iframe earlier 
 
 ## Key architecture per page
 
-### Home (`home.js`)
-- **Hero carousel** — 3 hardcoded Grounded videos (`IG_story_02`, `Grounded_2023_01`, `card_holo`), NOT derived from shared projects. Each slide preloaded (`preload="auto"`), autoplay muted loop. Live finger-following drag with axis lock (h/v), velocity snap, rubber-band at edges. Auto-advance 7s. Pauses on tab background (`visibilitychange`).
-- **Local `projects` array** — 12 projects with hand-picked `hero` + `floats` per project. Do NOT regenerate from `window.projects`; the custom selections are intentional (e.g. `gr2025cover.webp` hero, `IG_story_01.webm`/`IG_story_03.webm` floats for Grounded 2025). Sort by year, splice(5) = top 5 most recent shown.
-- **Scroll showcase** — each project block = sticky `.title-layer` (big name) + `.image-layer` with sticky `.hero-scatter` + flowing `.side-scatter` images.
-- **Info pill** (`.hero-info-tag`) — absolute bottom-left of hero. Contains square thumb + year + project name + "View project →". Thumb height = text column height via `syncInfoTagThumbs` + fontsReady + resize listener. Fades in when `titleProgress > 0.6` (title mostly covered).
-- **Hero scale-on-scroll** — hero scatter scales `0.82 → 1.0` across block travel (desktop only; mobile path skips `updateParallax`).
-- **Floats capped at 3** — `proj.floats.slice(0, 3)`. Taller media gets `.side-scatter-tall` via JS on load (aspect-ratio check), CSS crops to 1:1.
-- **Image layer** — `padding: 40vh 24px 0; background: transparent` — gives big title breathing room and lets sticky title show through gaps.
-- **Bottom bar** hides below 30px scroll (`onCarousel`), slides up from 180% translateY.
-- **Click handler** — `imageLayer.addEventListener('click', () => window.openProject(proj.id))`. Uses shared overlay.
-- **Smooth scroll physics** (desktop) — RAF loop with FRICTION 0.92, LERP 0.08, self-stops when idle.
-- **Watermark letters** rotate on scroll delta via shared `rotateWatermarkLetters` helper (desktop + mobile paths).
+### Home (`home.js`) — particle cover
+The home page was rebuilt around a single full-viewport particle field.
+The old "hero carousel + scroll showcase" architecture is gone; don't
+reintroduce it.
 
-### Grid (`script.js`)
-- 225 `gridItems` (built from `window.projects`), shuffled on load.
+**Layout**
+- `<div.cover-wrap>` (`position: relative`, height 220dvh) wraps a
+  `<section.cover>` that's `position: sticky; top:0; height:100dvh; z-index:550`.
+  The wrap height minus the cover height = locked-scroll budget. Sticky
+  releases automatically once the wrap is fully scrolled past, then the
+  footer comes into view in normal block flow below.
+- Cover z-index 550 sits ABOVE the footer (z 500) so the footer can't
+  paint over the cover during the sticky window. Floating-nav (z 600)
+  and Services pin (z 650) stay above the cover.
+- Footer is a regular relative block (no slide-in animation, no
+  `position: fixed`). Same markup across home / grid / lab.
+
+**Renderer** — WebGL2 with Canvas2D fallback
+- Probe `WEBGL_debug_renderer_info` at startup. If the unmasked renderer
+  is software-rasterized (SwiftShader / llvmpipe / Microsoft Basic /
+  ANGLE Software / Apple Software), bail to the 2D path — software
+  WebGL is *slower* than the optimised SoA Canvas2D loop.
+- WebGL mode adds a sibling `<canvas.cover-media-overlay>` for
+  constellation lines, coordinate labels, and service tags (still 2D
+  for crisp text).
+- Single VBO with interleaved `{x, y, size, alpha}` per particle.
+  Vertex shader maps screen-px → clip space + `gl_PointSize`. Fragment
+  shader writes solid white × alpha. Standard alpha blending.
+- Invisible particles get `size = 0` so the GPU early-discards them.
+- `desynchronized: true` is OFF — caused stutter on Windows ANGLE / G-Sync setups.
+- `localStorage.setItem('cover-no-webgl', '1')` forces the 2D path for debugging.
+
+**Particle storage** — full SoA (Struct-of-Arrays)
+- 38 typed arrays (Float32 + Uint8) for every per-particle field:
+  `pX/Y/Z, pSx/Sy/Depth, pLife/MaxLife/FadeRate/TravelR, pLifeFade/AlphaMul/AlphaPh, pPushSx/Sy/VX/VY, pStiff, pCommit, pEmitter/EmitPh/EmitFq, pFluttFq/Sd/Am, pSwpDel/Dur/CX/CY/CZ/Bur/Spn, pRelDel/Dur, pJigSd/Am, pMorphCm, pRepelF, pFat`.
+- `COUNT = IS_MOBILE ? 2000 : 38000` (hard cap). Hot loops iterate
+  `activeCount ≤ COUNT` so the FPS throttle below can shrink the
+  effective swarm without re-allocating.
+- `particles = { length: COUNT }` is a stub kept only so legacy
+  `particles.length` reads still resolve.
+
+**Auto FPS throttle**
+- 60-frame rolling FPS window. If avg < 45fps for 2s, halves
+  `activeCount` (logged to console). Floor matches the prior build's
+  count (11k desktop / 1.5k mobile) so worst-case behaviour matches the
+  pre-bump baseline. Once-only — never grows back.
+
+**Hot loop** — runs every frame on `activeCount` particles
+1. Curl-noise sample at `(pX, pY, pZ) * NOISE_SCALE`. `curl()` writes
+   into a shared `Float32Array(3)` `_curlOut` instead of allocating
+   per call (saves ~420k allocations/sec at 38k×60fps).
+2. Optional preset forces (swirl, radial, jitter, wind, ambient
+   wind/swirl breath when no preset wind is set).
+3. Lifetime + recycle (calls `spawnInside(i)` if dist² > travelR² OR life ≥ maxLife).
+4. Fade-in (life-based) + age fade (last 30% of maxLife).
+5. Camera transform → flow screen position (`flowSx/Sy`, perspective `fpersp`).
+6. Morph blend (see Morph system below).
+7. Spring-physics mouse repulsion + sculpt anchor force (AABB-culled).
+8. NaN guard, write final `pSx/Sy/Depth`.
+
+**Constellation links**
+- 250 anchor particles (80 on mobile) get faint 1px white lines (alpha 0.07) to nearest 2 in-range neighbors.
+- Spatial hash uses **typed-array counting-sort bins** (`_binCount`,
+  `_binStart`, `_binData`, `_anchorCells`) — zero per-frame allocations.
+- Skipped while `mp ≥ 0.4` (a morph is strongly committed) — lines
+  would tangle between word particles.
+
+**Morph system**
+- `setMorphTarget(spec)` accepts:
+  - `string` — a word, rasterised via `rasterizeWord(word, scale=1)` (UnifrakturMaguntia black-letter).
+  - `{ word, scale }` — same as above with custom scale (greetings use 1.7×).
+  - `{ shape: 'tree' | 'room' | 'torus' | 'portrait' }` — procedural shape generators (cube/portrait branches still in code; cube is reachable via `__coverShape('cube')` but no current caller).
+  - `null` — release.
+- `morph` state: `progress`, `targetProgress`, `points`, `prevPoints`,
+  `swap`, `text`, `peakMp`, `rotating`, `basePoints3D`, `rotateMode`
+  ('tumble' or 'yaw' for room), `colorStrings` (legacy unused), and
+  flags `fast` (typewriter), `straight` (text/scroll/greet — straight lerp), `greet`, `scroll`.
+- Per-particle bezier swap path (with control point + spin + radial puff) only fires for `!fastSwap` (i.e. shape morphs). For text/greet/scroll morphs the bezier is replaced by a linear lerp in the inner loop — saves ~25 multiplies plus sin/cos/sqrt per particle in the dominant path.
+- `rasterizeWord` uses font stack `"UnifrakturMaguntia", "Times New Roman", serif` at 230px (auto-shrinks to fit) with 8% letter-tracking. Output samples scale to world coords `(±1.05 × scale, ±0.52 × scale)`.
+
+**Idle greetings** (`maybeGreet`)
+- Pool: `['hello','hej','ahoj','bok','ciao','moin','aloha','salut','howdy','welcome','hi']`.
+- First fires ~5s after load; subsequent 12-30s apart. 4s hold per word.
+- Rendered at 1.7× world scale via `setMorphTarget({word, scale:1.7})`.
+- Slow Lissajous float on screen target while held (~42px X / ~26px Y, periods 16s & 22s, constant amplitude — NOT scaled by progress so the word doesn't visibly shrink as it fades).
+- Commit holds flat at 0.65 (no shimmer / oscillation).
+- Greet release uses LINEAR commit decay over 4.5s (not exponential lerp) so disintegration reads as uniform glide, not "fast then drag".
+- Per-particle release window + sinusoidal jiggle skipped for greet/scroll modes (those used to snap on partial-peak releases).
+
+**Scroll-driven word phases**
+- `SCROLL_PHASES = [{word:'projects', href:'grid.html', start:0, end:0.5}, {word:'about', href:'about.html', start:0.5, end:1}]`.
+- Word activity zone covers 200dvh of scroll (`recomputeScrollProgress` divides by `2 × innerHeight`). Sticky budget of 220dvh in CSS leaves a 20dvh tail of empty cover before unstick.
+- `commitFromScroll(p)`: ramps 0→1 over the first 15% of scroll, then HOLDS at 1. Word switches at the 50% boundary use the morph snapshot blend; commit stays at 1 across the boundary so no dip back to noise.
+- Scroll-mode lerp: 0.18 going up (commit tracks scroll responsively), 0.05 going down (slow glide back to noise). Linear decay on full release.
+- Click anywhere on cover when `commit > 0.4` navigates to the active phase's `href` (capture-phase document listener; skips real `<a>/<button>/<input>` targets).
+
+**Sculpt-with-decay** (left-drag)
+- Each ≥14px of cursor travel emits a sculpt SEGMENT `{x1,y1,x2,y2,minX,maxX,minY,maxY,life,maxLife}`. AABB cached at creation.
+- Each segment pulls particles toward the closest point on its line with a soft-quad falloff. Life ticks down over 6s; once ≤0 the segment is swap-popped from `sculptAnchors`.
+- Hard cap of 80 active segments. AABB pre-check rejects 90%+ of inner work.
+- Plain click (no movement) leaves no anchor. The old shockwave-on-click is gone.
+
+**Mobile gyroscope**
+- `deviceorientation` events drive `cam.gyroYaw/Pitch`. iOS 13+ permission gate fires on first `touchend`. First reading captured as rest pose; deltas clamped + lerped each frame. Auto-orbit suspends when gyro is active.
+
+**Right-mouse drag**
+- Rotates any active 3D shape (torus / room / portrait / tree) on both axes. Auto-rotation pauses while held; manual offsets stack so the swarm never snaps. `contextmenu` event suppressed over the canvas while a shape is mounted.
+
+**Recent-card** (bottom-right)
+- Slide-track of 4 swappable project cards, ~7s auto-cycle. Hover (or first tap on touch) expands to full preview with body video; second tap on touch opens the project overlay. Hides via `body.footer-visible`.
+
+**Floating nav** (top-left, top-right Services)
+- Wordmark + 5 nav links + Services pin. All `position:fixed`, z-index 600+ so they stay above the sticky cover (550) and footer (500).
+- Services pin opens a click-toggle dropdown (NOT hover anymore). Dropdown content right-aligned, with terminal-style typewriter header, item cascade, and per-service inline color swatches. Hovering an item triggers a flow preset OR a 3D shape morph + animates the cover swarm. Selecting a service opens a side panel listing the related project archive (typewriter cascade).
+
+### Grid / Index (`grid.html`, `script.js`, `style.css`)
+- 225 `gridItems` (built from `window.projects`), shuffled on load. Black background.
 - Lazy-loaded via IntersectionObserver, `data-src` pattern.
 - Hover videos — load `preload=metadata`, play on hover, pause on leave. Wrapped in `.hover-video-wrap` for rounded corners.
 - Lab items: letter-case scramble on hover (setInterval 250ms, cleared on leave).
-- Filters: project / color / category / year. Reset button. URL-independent state.
-- Floating title pill with SVG stroke-dashoffset scroll progress ring when scrolling past header.
 - `#project=X` URL hash auto-opens that project on load.
 - List view vs grid view — `.grid-item.hidden { display: none !important }` (specificity workaround for `display: grid` on list-view parent).
 
-### About (`gameboy.js`) — biggest piece
-IIFE wrapping everything, exposes `window.gbSelectCartridge` and `window.gbEjectCartridge`.
+**Control panel** (`<aside.control-panel>` top-right, replaces the old bottom bar + mobile slider + floating layout-toggle)
+- Single fixed mono-styled panel with corner ticks, green pulse status dot, dashed dividers.
+- Sections (top → bottom): LAYOUT (grid / list icon toggle), COLS (slider with 8 tick dots, auto-hides in list view), FILTERS (Project / Color / Type / Year — Color is **inline swatches**, the others open dropdowns BELOW the trigger button right-aligned), SORT (Newest / Oldest / Random), SEARCH (mono input, `>` prompt, blinking cursor, ✕ clear).
+- `data-menu` attributes mirror the legacy bar IDs (`menu-project`, `menu-color`, `menu-category`, `menu-year`) so existing `applyFilters()` wiring still works.
+- Color filter has both an inline `#cpSwatches` swatch row AND a hidden `#menu-color` dropdown twin — the twin's buttons are the active-state tracker that `applyFilters` already iterates.
+- Search shortcut: `/` or `Ctrl/Cmd-K` focuses the input. Debounced 80ms.
+- Sort reorders `gridEl` children in place (DocumentFragment swap).
+- `is-collapsed` morphs the panel down into the top-right corner via `clip-path: inset(...)` + scale, with a `.cp-handle` "CTRL" pill that scales/fades in from the same corner. Reverse on expand.
+- The bottom bar / mobile slider / floating layout-toggle markup is GONE; their CSS lingers in `bar.css` + `style.css` as no-ops since elements don't exist.
+- `bar.css` is no longer loaded on grid.html.
+
+### About (`about.html`, `gameboy.js`, `about.css`) — biggest piece
+
+**Boot loader** (`<div.boot-loader>`, top of `<body>`)
+- Full-screen techy splash that hides the page until the GameBoy 3D
+  model + textures finish loading. No card chrome (transparent
+  background): mono terminal-style rows centered over the dark page.
+- Rows: pulse dot + `SYS_INIT · v0.4` header with hex `0×NNNN` scrubber, animated step text (`> bootstrapping…` etc), white progress bar with 10 tick marks, `nnn / 100 PCT_LOADED` meter, 6-row task list (`cart_data, ram_alloc, model.glb, textures, audio.opus, boot_ok`) cycling `[ ]` → `[~]` → `[x]`.
+- Driver script (inline at the bottom of `about.html`) eases progress smoothly toward a 90% soft cap; jumps to 100% on the `gameboyready` window event (or after a 9s safety timeout).
+- `gameboy.js` dispatches `window.dispatchEvent(new CustomEvent('gameboyready'))` the moment the model + every body texture resolves and `model.visible` flips on (right after the texture `Promise.all`).
+- On finish: loader gets `is-done` (fade), `body.is-booted` is set (so `.about-page` fades in via CSS), then loader is removed from DOM after the fade transition.
+
+**GameBoy 3D scene** — the rest of about.html (everything below) is unchanged from the previous build. IIFE wrapping everything, exposes `window.gbSelectCartridge` and `window.gbEjectCartridge`.
 
 **Cartridges (4)** — each has `label`, `header`, `menuItems`, `autoStart`:
 - **Portfolio** — menu: ABOUT ME, STATS, LOADOUT, ALLIES, TROPHIES, PING ME, QUESTS, **OPTIONS**
@@ -230,14 +351,43 @@ IIFE wrapping everything, exposes `window.gbSelectCartridge` and `window.gbEject
 - [ ] Send test message through contact form → confirm Web3Forms delivery
 
 ## Recent architectural changes (latest session)
-- **Extracted shared modules** — `projects.js` + `overlay.js` + `overlay.css`. Iframe overlay on home is GONE; home and grid share the same native slide-up overlay.
-- **GameBoy OPTIONS submenu** — 9 system options under Portfolio cart; game-specific options (HIGH SCORES, SOUND TEST, CHEATS, ERASE SAVE) moved to each game cart's post-boot menu.
-- **N64 click samples** — `clicks.ogg`, random slice per raycast button press, pitch-varied. Keyboard/scroll/HTML-panel navigation is silent.
-- **Translucent LED** — MeshPhysicalMaterial with `transmission: 1.0`, slow Nintendo-style dim over idle, faint red tint when off.
-- **CRT photo portfolio boot** — Luka's photo scan-reveals with TFT RGB subpixel overlay.
-- **Scary snake boot** — pit-viper head with fangs + tongue + red strike.
-- **Home info pill + hero scale-on-scroll + side-scatter-tall crop + 40vh breathing room** — see Home section.
-- **Texture preloading** — gameboy model hidden until all textures resolve.
-- **Portfolio button pulse hint** on first load of about page, cleared on first interaction.
-- **Hero carousel** — 3 hardcoded Grounded videos (was 5 derived), drag follows finger live, 100dvh carousel.
+**Home cover — particle field rebuild**
+- Old hero-carousel + scroll-showcase architecture is GONE. Home is a
+  full-viewport WebGL2 particle field driven by SoA typed arrays.
+  See `Home (home.js)` section above for the full architecture.
+- Big systems: WebGL2 renderer with SwiftShader-aware fallback, FPS
+  auto-throttle, curl-noise flow with optional preset forces (swirl /
+  radial / wind / jitter), constellation lines via typed-array spatial
+  hash, sculpt-with-decay segments, mobile gyroscope, right-mouse
+  shape rotation, idle blackletter greetings, scroll-driven
+  `projects → about → footer` word phases with click-to-navigate.
+- Cover layout: `cover-wrap` 220dvh wraps a sticky 100dvh `cover` so
+  the user has 120dvh of locked scroll for word morphs before the
+  cover unsticks and the footer comes up in normal flow. Footer is
+  no longer fixed/translated — it's a regular block.
+- Font for word morphs: `UnifrakturMaguntia` (medieval blackletter).
+  Greetings render at 1.7× scale; scroll/text morphs at 1.0×.
+- Per-frame budget: SoA + bezier-fast-path + counting-sort
+  constellation + zero-alloc curl noise = the whole hot loop is
+  allocation-free.
+
+**Index control panel rebuild**
+- Bottom bar / mobile slider / floating layout-toggle removed.
+  Replaced with a single fixed `<aside.control-panel>` top-right with
+  layout toggle, columns slider, filters (Project/Color/Type/Year),
+  sort (Newest/Oldest/Random), search (`/` and `Ctrl-K` shortcuts),
+  inline color swatches, and a `clip-path` collapse-to-handle morph.
+
+**About boot loader**
+- Full-screen techy splash with progress bar + task list + hex
+  scrubber. Hides the page until `gameboyready` fires (or 9s timeout).
+
+**Other**
+- `floating-nav.css` — fixed duplicate z-index on `.floating-nav`
+  (was 600 then 100, second won → nav was hidden under the cover).
+- `home.js` particle audit: removed dead `generateCubePoints` / cube
+  branch + the GLB skull loader; lazily build `portraitPoints`; inline
+  linear-lerp for fastSwap morphs; skip constellation while morph
+  commit is high; AABB cull on sculpt segments; `Math.hypot` →
+  inline `sqrt(x²+y²)`.
 - **JSON-LD WebSite + SearchAction** for Google sitelinks.
