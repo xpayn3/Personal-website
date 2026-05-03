@@ -31,11 +31,12 @@
   position: fixed;
   top: calc(clamp(20px, 3vh, 32px) + clamp(1rem, 1.4vw, 1.25rem) + 18px);
   left: clamp(20px, 3vw, 32px);
-  z-index: 600; /* above the footer (500) — left nav stays on top */
+  /* Above cover (550) and footer (500) so the nav stays on top
+     across scroll states. */
+  z-index: 600;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  z-index: 100;
   /* Only the link text catches pointer events */
   pointer-events: none;
 }
