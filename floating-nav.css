@@ -149,14 +149,109 @@ body.page-home .services {
 /* ---------- Responsive ---------- */
 @media (max-width: 760px) {
   :root { --nav-h: 58px; }
-  .site-nav { grid-template-columns: 1fr auto; padding: 0 18px; }
-  /* Collapse the centered links on small screens; brand + CTA remain.
-     Full navigation is also available in each page footer. */
+  /* Flex bar: [burger  wordmark] .......... [Start a project].
+     Centered links collapse into the hamburger's fullscreen menu. */
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+  }
   .site-nav .floating-nav { display: none; }
-  .site-nav-actions { grid-column: 2; }
-  .site-nav-cta { font-size: 0.82rem; padding: 8px 14px; }
+  .site-nav .floating-name { margin: 0 auto 0 0; }  /* push the CTA to the right */
+  .site-nav-cta { font-size: 0.8rem; padding: 8px 14px; }
+  .nav-burger { display: inline-flex; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .site-nav-cta { transition: none; }
+}
+
+/* ---------- Mobile hamburger (injected by floating-nav.js) ---------- */
+.nav-burger {
+  display: none;               /* shown only ≤760px */
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 9px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.nav-burger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--nav-fg);
+  transition: transform 0.28s cubic-bezier(0.16,1,0.3,1), opacity 0.18s ease;
+}
+.nav-burger.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-burger.is-open span:nth-child(2) { opacity: 0; }
+.nav-burger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ---------- Fullscreen mobile menu (injected by floating-nav.js) ---------- */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 700;              /* above the nav bar (600) */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;   /* vertical centering */
+  align-items: center;       /* horizontal centering */
+  text-align: center;
+  gap: clamp(14px, 3vh, 26px);
+  padding: 96px clamp(28px, 8vw, 56px) 48px;
+  background: #121214;
+  color: #f4f4f0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: opacity 0.32s ease, transform 0.32s cubic-bezier(0.16,1,0.3,1), visibility 0s 0.32s;
+}
+body.nav-light .mobile-menu { background: #ececea; color: #16150f; }
+.mobile-menu.open {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 0.32s ease, transform 0.32s cubic-bezier(0.16,1,0.3,1);
+}
+.mobile-menu-close {
+  position: absolute;
+  top: 18px; right: 22px;
+  width: 40px; height: 40px;
+  background: none; border: none;
+  color: inherit;
+  font-size: 2rem; line-height: 1;
+  cursor: pointer;
+}
+.mobile-menu-links { display: flex; flex-direction: column; gap: clamp(12px, 3vh, 22px); }
+.mobile-menu-link {
+  font-family: var(--font-display, 'IBM Plex Sans', sans-serif);
+  font-size: clamp(2rem, 9vw, 3.2rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  color: inherit;
+  text-decoration: none;
+  opacity: 0.78;
+  transition: opacity 0.2s ease;
+}
+.mobile-menu-link.is-active { opacity: 1; }
+.mobile-menu-cta {
+  margin-top: clamp(28px, 5vh, 52px);
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 15px 26px;
+  border-radius: var(--radius-pill, 999px);
+  background: var(--nav-cta-bg);
+  color: var(--nav-cta-fg);
+  font-family: var(--font-body, sans-serif);
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
 }

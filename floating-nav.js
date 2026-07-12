@@ -107,3 +107,80 @@
     el.addEventListener('mouseleave', () => stop(el));
   });
 })();
+
+// Mobile menu — inject a hamburger + fullscreen menu built from the nav's own
+// links, so every page gets it without markup changes. The wordmark also opens
+// the menu on small screens.
+(function initMobileMenu() {
+  const nav = document.querySelector('.site-nav');
+  if (!nav || document.querySelector('.nav-burger')) return;
+  const brand = nav.querySelector('.floating-name');
+  const links = Array.prototype.slice.call(
+    nav.querySelectorAll('.floating-nav .floating-nav-link')
+  );
+  const cta = nav.querySelector('.site-nav-cta');
+
+  // Hamburger button (lives in the bar, shown only on mobile via CSS).
+  const burger = document.createElement('button');
+  burger.type = 'button';
+  burger.className = 'nav-burger';
+  burger.setAttribute('aria-label', 'Open menu');
+  burger.setAttribute('aria-expanded', 'false');
+  burger.innerHTML = '<span></span><span></span><span></span>';
+  // Far left, before the wordmark.
+  if (brand && brand.parentNode) brand.parentNode.insertBefore(burger, brand);
+  else nav.appendChild(burger);
+
+  // Fullscreen menu overlay.
+  const menu = document.createElement('div');
+  menu.className = 'mobile-menu';
+  menu.setAttribute('aria-hidden', 'true');
+  let html = '<button type="button" class="mobile-menu-close" aria-label="Close menu">×</button>';
+  html += '<nav class="mobile-menu-links" aria-label="Menu">';
+  links.forEach((a) => {
+    const active = a.classList.contains('is-active') ? ' is-active' : '';
+    html += '<a href="' + a.getAttribute('href') + '" class="mobile-menu-link' + active + '">' + a.textContent + '</a>';
+  });
+  html += '</nav>';
+  if (cta) {
+    html += '<a href="' + cta.getAttribute('href') + '" class="mobile-menu-cta">' + cta.textContent.trim() + '</a>';
+  }
+  menu.innerHTML = html;
+  document.body.appendChild(menu);
+
+  function open() {
+    menu.classList.add('open');
+    menu.setAttribute('aria-hidden', 'false');
+    burger.classList.add('is-open');
+    burger.setAttribute('aria-expanded', 'true');
+    burger.setAttribute('aria-label', 'Close menu');
+    document.body.style.overflow = 'hidden';
+  }
+  function close() {
+    menu.classList.remove('open');
+    menu.setAttribute('aria-hidden', 'true');
+    burger.classList.remove('is-open');
+    burger.setAttribute('aria-expanded', 'false');
+    burger.setAttribute('aria-label', 'Open menu');
+    document.body.style.overflow = '';
+  }
+  function toggle() { menu.classList.contains('open') ? close() : open(); }
+
+  burger.addEventListener('click', toggle);
+  menu.querySelector('.mobile-menu-close').addEventListener('click', close);
+  menu.addEventListener('click', (e) => { if (e.target === menu) close(); });
+  menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menu.classList.contains('open')) close();
+  });
+
+  // Wordmark opens the menu on mobile; stays a normal home link on desktop.
+  if (brand) {
+    brand.addEventListener('click', (e) => {
+      if (window.matchMedia('(max-width: 760px)').matches) {
+        e.preventDefault();
+        toggle();
+      }
+    });
+  }
+})();
