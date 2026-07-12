@@ -154,7 +154,7 @@ body.page-home .services {
   .site-nav {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 3px;
     padding: 0 14px;
   }
   .site-nav .floating-nav { display: none; }
@@ -173,9 +173,9 @@ body.page-home .services {
   flex-direction: column;
   justify-content: center;
   gap: 5px;
-  width: 40px;
+  width: 34px;
   height: 40px;
-  padding: 9px;
+  padding: 9px 6px;
   background: none;
   border: none;
   cursor: pointer;
@@ -254,4 +254,10 @@ body.nav-light .mobile-menu { background: #ececea; color: #16150f; }
   font-size: 1rem;
   font-weight: 600;
   text-decoration: none;
+}
+
+/* Show the hamburger on mobile. Declared LAST so it wins over the base
+   `.nav-burger { display: none }` above (equal specificity → later wins). */
+@media (max-width: 760px) {
+  .nav-burger { display: inline-flex; }
 }

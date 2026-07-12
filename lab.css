@@ -27,16 +27,6 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Thin HUD frame around the whole page — subtle tech chrome */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 12px;
-  pointer-events: none;
-  border: 1px solid var(--lab-line);
-  z-index: 200;
-}
-
 /* ========== HERO ========== */
 .lab-hero {
   position: relative;
