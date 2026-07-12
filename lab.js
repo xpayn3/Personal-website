@@ -168,7 +168,7 @@
 
   // Stats
   if (countEl) countEl.textContent = String(ordered.length);
-  if (yearsEl) yearsEl.textContent = '5+';
+  if (yearsEl) yearsEl.textContent = '14+';
   if (barCounter) barCounter.textContent = `${ordered.length}`;
 
   // Fade-in on scroll

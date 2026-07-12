@@ -154,9 +154,10 @@ html:has(body.scroll-locked) {
 /* Floating project title pill */
 .proj-floating-pill {
   position: fixed;
-  top: 20px;
+  bottom: 24px;
+  top: auto;
   left: 50%;
-  transform: translateX(-50%) translateY(-60px);
+  transform: translateX(-50%) translateY(60px);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -282,6 +283,13 @@ html:has(body.scroll-locked) {
   object-fit: cover;
   object-position: center center;
   display: block;
+  /* Promote to its own GPU layer so a playing video cover doesn't flicker /
+     glitch while the overlay slides up (transform) or during smooth scroll. */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform;
 }
 
 @media (max-width: 768px) {

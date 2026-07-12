@@ -367,6 +367,33 @@ const projects = {
       { cols: 1, imgs: [6] },
     ]
   },
+  grounded2026: {
+    color: 'black',
+    category: ['Motion', '3D'],
+    name: 'Festival Grounded 2026',
+    year: 2026,
+    client: 'Pritličje',
+    desc: ['Visual identity and motion design for the Grounded festival 2026 edition.'],
+    brief: 'Visual identity and motion design for the 2026 festival edition.',
+    tools: ['Cinema 4D', 'Redshift', 'AfterEffects'],
+    images: [
+      `${IMG}/Grounded_2026/Render_still_01_CC.webp`,   // hero — wide landscape render
+      `${IMG}/Grounded_2026/Grounded_2026_anim.webm`,
+      `${IMG}/Grounded_2026/Render_closeup_CC.webp`,
+      `${IMG}/Grounded_2026/Render_still_02_CC.webp`,
+      `${IMG}/Grounded_2026/img.webp`,
+      `${IMG}/Grounded_2026/img-1.webp`,
+      `${IMG}/Grounded_2026/img-2.webp`,
+      `${IMG}/Grounded_2026/img-3.webp`,
+    ],
+    layout: [
+      { cols: 1, imgs: [0] },
+      { cols: 2, imgs: [1, 2] },
+      { cols: 2, imgs: [3, 4] },
+      { cols: 2, imgs: [5, 6] },
+      { cols: 1, imgs: [7] },
+    ]
+  },
   grounded2025: {
     color: 'black',
     category: ['Motion', '3D'],
@@ -426,7 +453,7 @@ const projects = {
     color: 'orange',
     category: ['Motion'],
     name: 'Radenci — Prostorska Projekcija',
-    year: 2022,
+    year: 2026,
     desc: ['An immersive projection mapping installation in Radenci — transforming architectural surfaces into living canvases. We designed and rendered every visual sequence, syncing light, motion, and space into a single experience.'],
     brief: 'Transform architectural surfaces into a living projection experience.',
     tools: ['Cinema 4D', 'AfterEffects'],

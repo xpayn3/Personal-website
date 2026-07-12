@@ -2,3 +2,12 @@
 *.gif
 .claude/
 *.m4v
+
+# Local backup of the removed GameBoy/Nintendo feature (not deployed)
+gameboy_backup/
+
+# Local backup of the removed particle-cover home (not deployed)
+home_cover_backup/
+
+# Grounded 2026 source renders — only the optimized .webp/.webm ship
+Images/Grounded_2026/*.png

@@ -14,6 +14,8 @@ const gridEl = document.getElementById('grid');
 function renderGrid() {
   const frag = document.createDocumentFragment();
   for (const item of gridItems) {
+    // Lab experiments live on the Lab page — keep them out of the Work grid.
+    if (item.project === 'lab') continue;
     const div = document.createElement('div');
     const isVideo = item.src.endsWith('.webm') || item.src.endsWith('.mp4');
     const isAnim = item.src.includes('anim') || item.src.includes('Anim');

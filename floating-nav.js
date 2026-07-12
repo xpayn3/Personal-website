@@ -45,56 +45,6 @@
   });
 })();
 
-// Terminal-style scramble decode for the floating nav links.
-// Each link's letters cycle through random glyphs before settling on the
-// real text — pairs with the CSS blur-in stagger for a tech feel.
-(function () {
-  const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%@!*<>/';
-  const links = document.querySelectorAll('.floating-nav-link');
-  if (!links.length) return;
-
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduceMotion) return;
-
-  links.forEach((link, i) => {
-    const finalText = link.textContent;
-    link.dataset.label = finalText;
-    const len = finalText.length;
-    const startDelay = 350 + i * 80; // matches the CSS blur-in stagger
-    const duration = 380 + len * 18;
-
-    // Show random glyphs immediately so there's no flash of final text
-    // between page paint and animation start.
-    let init = '';
-    for (let j = 0; j < len; j++) {
-      init += finalText[j] === ' ' ? ' ' : CHARS[(Math.random() * CHARS.length) | 0];
-    }
-    link.textContent = init;
-
-    setTimeout(() => {
-      const t0 = performance.now();
-      const tick = (now) => {
-        const t = now - t0;
-        const progress = Math.min(1, t / duration);
-        // Reveal letters left-to-right; un-revealed slots scramble each frame.
-        const revealCount = Math.floor(progress * len);
-        let out = '';
-        for (let j = 0; j < len; j++) {
-          if (j < revealCount || finalText[j] === ' ') {
-            out += finalText[j];
-          } else {
-            out += CHARS[(Math.random() * CHARS.length) | 0];
-          }
-        }
-        link.textContent = out;
-        if (progress < 1) requestAnimationFrame(tick);
-        else link.textContent = finalText;
-      };
-      requestAnimationFrame(tick);
-    }, startDelay);
-  });
-})();
-
 // Subtle on-hover letter scramble — shared across pages for the floating
 // nav, wordmark, and footer links/titles.
 (function () {

@@ -72,11 +72,16 @@
       const thumb = src.replace(/\.(webm|mp4)$/, '_thumb.webp');
       return `<video data-src="${src}" poster="${thumb}" muted loop playsinline preload="none"></video>`;
     }
+    // NOTE: no loading="lazy" here. The overlay is a fixed container that
+    // starts off-screen (top:100%) and slides up with its own Lenis scroll —
+    // native lazy-loading misjudges visibility there, so below-the-fold images
+    // never load on first open (they only appeared after a lightbox reflow).
+    // These <img>s are created only when a project opens, so eager is fine.
     if (isMobile && !fullRes) {
       const mobileSrc = src.replace('Images/', 'Images/mobile/');
-      return `<img src="${mobileSrc}" alt="${alt || ''}" loading="lazy" decoding="async" />`;
+      return `<img src="${mobileSrc}" alt="${alt || ''}" decoding="async" />`;
     }
-    return `<img src="${src}" alt="${alt || ''}" loading="lazy" decoding="async" />`;
+    return `<img src="${src}" alt="${alt || ''}" decoding="async" />`;
   }
 
   // ---- Scroll lock ---------------------------------------------------------

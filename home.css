@@ -1,886 +1,381 @@
+/* ===================================================================
+   Home — bymonolog-style: dark full-screen hero, then a light
+   "Selected Work" list (sticky label · big image · meta + stat).
+   =================================================================== */
+
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-html, body {
-  background: #000;
-  color: var(--color-text);
-  font-family: var(--font-body);
+html { scroll-behavior: smooth; }
+
+body.page-home {
+  background: #ececea;
+  color: #16150f;
+  font-family: var(--font-body, 'IBM Plex Sans', system-ui, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
-/* Chrome / Safari custom thin scrollbar.
-   We DON'T set `scrollbar-width: thin` on html: in Chrome 121+ the
-   standard property silently disables the ::-webkit-scrollbar pseudos,
-   which is why "the scrollbar style only worked in Firefox". With the
-   standard property scoped to Firefox via @supports below, Chrome
-   reads our pseudo rules instead. */
-html::-webkit-scrollbar { width: 8px; height: 8px; background: transparent; }
-html::-webkit-scrollbar-track { background: transparent; }
-html::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 4px;
-}
-html::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.45); }
-html::-webkit-scrollbar-corner { background: transparent; }
-
-/* Firefox only — uses standard scrollbar-* props. */
-@supports (-moz-appearance: none) {
-  html {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
-  }
-}
-
-img, video {
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
-}
-
-/* ========== COVER ==========
-   The wrap controls how much scroll budget the cover stays sticky for —
-   its height === how far the user scrolls before the cover releases
-   and the footer slides into view. */
-/* Wrap height = cover height (100dvh) + locked-scroll budget. The
-   word activity zone is 200dvh, plus a 20dvh tail of empty cover so
-   the second word holds before the cover releases. */
-.cover-wrap {
+/* ---------------- COVER — scrolling wordmark marquee ---------------- */
+.home-cover {
   position: relative;
-  height: 320vh;
-  height: 320dvh;
-  width: 100%;
-}
-.cover {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  height: 100dvh;
-  width: 100%;
-  overflow: hidden;
-  background: #000;
-  /* Above footer (500), BELOW floating-name/floating-nav (600) and
-     services (bumped to 650) so the cover doesn't hide the cover-UI. */
-  z-index: 550;
-}
-/* Runway: legacy no-op; layout space is now owned by .cover-wrap. */
-.scroll-runway { height: 0; width: 100%; pointer-events: none; }
-
-.cover-media {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-/* Name in the top-left */
-.cover-name {
-  position: absolute;
-  top: clamp(20px, 3vh, 32px);
-  left: clamp(20px, 3vw, 32px);
-  font-family: var(--font-display);
-  font-size: clamp(1rem, 1.4vw, 1.25rem);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: #fff;
-  text-decoration: none;
-  z-index: 5;
-  mix-blend-mode: difference;
-}
-
-/* Vertical page list under the name */
-.cover-nav {
-  position: absolute;
-  top: calc(clamp(20px, 3vh, 32px) + clamp(1rem, 1.4vw, 1.25rem) + 18px);
-  left: clamp(20px, 3vw, 32px);
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  z-index: 5;
+  justify-content: center;
+  background: #ececea;
+  color: #111;
+  overflow: hidden;
+  padding: 100px 0 0;
 }
 
-.cover-nav-link {
-  font-family: var(--font-body);
-  font-size: 0.78rem;
-  font-weight: 500;
-  letter-spacing: 0.18em;
+/* Role (top-left) + contact (top-right), sitting just above the marquee. */
+.cover-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 0 clamp(20px, 3vw, 44px);
+  margin-bottom: clamp(14px, 2vw, 28px);
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: clamp(0.66rem, 0.9vw, 0.82rem);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #fff;
-  mix-blend-mode: difference;
+  color: #333;
+}
+.cover-contact {
+  color: #111;
   text-decoration: none;
-  line-height: 1.7;
-  opacity: 0.7;
+  border-bottom: 1px solid #111;
+  padding-bottom: 1px;
+  white-space: nowrap;
   transition: opacity 0.2s ease;
 }
-.cover-nav-link:hover,
-.cover-nav-link.is-active {
-  opacity: 1;
-}
+.cover-contact:hover { opacity: 0.55; }
 
-/* Contact pill, top-right */
-.cover-contact {
-  position: absolute;
-  top: clamp(20px, 3vh, 32px);
-  right: clamp(20px, 3vw, 32px);
-  z-index: 5;
-  padding: 8px 18px;
-  background: rgba(255,255,255,0.12);
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
-  border: 1px solid rgba(255,255,255,0.25);
-  border-radius: 999px;
-  color: #fff;
-  font-family: var(--font-body);
-  font-size: 0.82rem;
-  font-weight: 500;
-  text-decoration: none;
-  mix-blend-mode: difference;
-  transition: background 0.25s ease, border-color 0.25s ease;
+/* Marquee */
+.cover-marquee {
+  width: 100%;
+  overflow: hidden;
+  -webkit-mask-image: none;
 }
-.cover-contact:hover {
-  background: rgba(255,255,255,0.22);
-  border-color: rgba(255,255,255,0.4);
+.cover-marquee-track {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  animation: coverMarquee 34s linear infinite;
+  will-change: transform;
 }
-
-/* ===== SERVICES PIN — top-right hover dropdown ===== */
-.services {
-  position: fixed;
-  top: clamp(20px, 3vh, 32px);
-  right: clamp(20px, 3vw, 32px);
-  /* Above the cover (550) so the pin stays visible during sticky. */
-  z-index: 650;
-  font-family: ui-monospace, Menlo, monospace;
-  color: #f0f0f0;
+.cover-marquee:hover .cover-marquee-track { animation-play-state: paused; }
+.cm-group {
+  display: flex;
+  align-items: center;
+  flex: none;
 }
-.services-label {
+.cm-word {
+  font-family: var(--font-display, 'IBM Plex Sans', sans-serif);
+  font-size: clamp(3.6rem, 13vw, 12rem);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #2a2a27;
+}
+.cm-mark {
+  flex: none;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  /* Match the top-left "Luka Grčar" wordmark (.floating-name). */
-  font-family: var(--font-display, "IBM Plex Sans", system-ui, sans-serif);
-  font-size: clamp(1rem, 1.4vw, 1.25rem);
+  justify-content: center;
+  width: clamp(2.8rem, 7vw, 6rem);
+  height: clamp(2.8rem, 7vw, 6rem);
+  margin: 0 clamp(1.4rem, 3.4vw, 3.4rem);
+  border: 2px solid #2a2a27;
+  border-radius: 50%;
+  color: #2a2a27;
+  font-family: var(--font-display, sans-serif);
+  font-size: clamp(1.55rem, 3.7vw, 3.2rem);
   font-weight: 600;
-  letter-spacing: -0.02em;
-  text-transform: none;
-  color: var(--floating-nav-fg, #fff);
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-.services-arrow {
-  font-size: 0.8rem;
-  display: inline-block;
-  transition: transform 0.25s var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
-}
-.services:hover .services-label,
-.services.is-open .services-label {
-  color: #fff;
-}
-.services:hover .services-arrow,
-.services.is-open .services-arrow {
-  transform: translate(2px, 2px) rotate(0deg);
-}
-
-/* Dropdown panel — sits flush against the label (no gap) so the cursor
-   never leaves `.services` when traveling from label to content. No box,
-   no stroke, no backdrop — content reads directly on the cover. */
-.services-panel {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 0;
-  width: clamp(280px, 28vw, 360px);
-  padding: 14px 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  opacity: 0;
-  visibility: hidden;
-  clip-path: inset(0 0 100% 0);
-  transform: translateY(-2px);
-  transition: clip-path 0.18s cubic-bezier(0.7,0,0.3,1),
-              opacity 0.14s ease,
-              transform 0.18s ease,
-              visibility 0s 0.18s;
-  pointer-events: none;
-}
-.services.is-open .services-panel {
-  opacity: 1;
-  visibility: visible;
-  clip-path: inset(0 0 0 0);
-  transform: translateY(0);
-  transition: clip-path 0.2s cubic-bezier(0.7,0,0.3,1),
-              opacity 0.1s ease,
-              transform 0.14s ease,
-              visibility 0s;
-  pointer-events: auto;
-}
-
-/* Force-close after a service is committed by click. Stays closed until
-   re-opened. */
-.services.is-locked .services-panel {
-  opacity: 0 !important;
-  visibility: hidden !important;
-  clip-path: inset(0 0 100% 0) !important;
-  transform: translateY(-2px) !important;
-  pointer-events: none !important;
-}
-
-/* Header — old-terminal green bar with black text + typewriter reveal */
-.services-head {
-  font-family: ui-monospace, Menlo, monospace;
-  font-size: 0.78rem;
-  letter-spacing: 0.14em;
+  letter-spacing: -0.03em;
+  line-height: 1;
   text-transform: uppercase;
-  font-weight: 700;
-  color: #000;
-  background: #4ade80;
-  display: inline-block;
-  align-self: flex-end;
-  text-align: right;
-  overflow: hidden;
-  white-space: nowrap;
-  max-width: 0;
-  padding: 3px 0;
-  box-shadow: 0 0 12px rgba(74, 222, 128, 0.35);
-  border-right: 6px solid #000;
-  transition: max-width 0.3s steps(20, end) 0.05s,
-              padding 0.2s ease;
 }
-.services.is-open .services-head {
-  max-width: 32ch;
-  padding: 3px 8px;
-  transition: max-width 0.32s steps(24, end) 0.05s,
-              padding 0.16s ease 0.05s;
-  animation: servicesCaret 0.7s step-end infinite 0.4s;
+@keyframes coverMarquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
-@keyframes servicesCaret {
-  50% { border-right-color: transparent; }
+@media (prefers-reduced-motion: reduce) {
+  .cover-marquee-track { animation-duration: 90s; }
 }
 
-.services-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-}
-.services-item {
-  /* Match the Luka Grčar wordmark + description — display font. */
-  font-family: var(--font-display, "IBM Plex Sans", system-ui, sans-serif);
-  font-size: 0.95rem;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  color: #fff;
-  padding: 7px 12px;
-  text-align: right;
-  border-right: 2px solid transparent;
-  cursor: pointer;
-  opacity: 0;
-  transform: translateX(10px);
-  transition: opacity 0.16s ease,
-              transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.services.is-open .services-item {
-  opacity: 1;
-  transform: translateX(0);
-}
-.services.is-open .services-item:nth-child(1) { transition-delay: 0.04s; }
-.services.is-open .services-item:nth-child(2) { transition-delay: 0.07s; }
-.services.is-open .services-item:nth-child(3) { transition-delay: 0.10s; }
-.services.is-open .services-item:nth-child(4) { transition-delay: 0.13s; }
-.services.is-open .services-item:nth-child(5) { transition-delay: 0.16s; }
-.services.is-open .services-item:nth-child(6) { transition-delay: 0.19s; }
-.services.is-open .services-item:nth-child(7) { transition-delay: 0.22s; }
-.services.is-open .services-item:nth-child(8) { transition-delay: 0.25s; }
-.services-item:hover,
-.services-item.is-active {
-  color: #fff;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-right-color: #fff;
-}
-
-/* Detail card beneath the list — small project preview + description
-   inside a translucent grey panel so it reads as a self-contained tile. */
-.services-detail {
-  display: grid;
-  grid-template-columns: 1fr 88px;
-  grid-template-areas: "text thumb";
-  gap: 14px;
-  align-items: stretch;
-  margin-top: 12px;
-  padding: 12px;
-  background: #4a4a4a;
-  border: none;
-  border-radius: 6px;
-  min-height: 88px;
-  opacity: 0;
-  transform: translateY(8px);
-  pointer-events: none;
-  transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.16,1,0.3,1);
-}
-.services-panel:has(.services-item:hover) .services-detail,
-.services-panel:has(.services-item.is-active) .services-detail {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-.services-foot {
-  opacity: 0;
-  transform: translateY(4px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
-}
-.services.is-open .services-foot {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.32s;
-}
-.services-detail-thumb {
-  grid-area: thumb;
-  position: relative;
-  display: block;
-  width: 88px;
-  height: 88px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 3px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.03);
-  text-decoration: none;
-  flex-shrink: 0;
-  pointer-events: auto;
-  transition: border-color 0.2s ease, transform 0.25s var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
-}
-.services-detail-thumb:hover {
-  border-color: rgba(255, 255, 255, 0.4);
-  transform: translateY(-1px);
-}
-.services-detail-img,
-.services-detail-vid {
+/* Intro paragraph, bottom-left, justified (like the reference). */
+.cover-intro {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.services-detail-vid {
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.services-detail-thumb:hover .services-detail-vid,
-.services-item:hover ~ .services-detail .services-detail-thumb .services-detail-vid {
-  opacity: 1;
-}
-
-.services-detail-text {
-  grid-area: text;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 6px;
-  min-width: 0;
-  text-align: right;
-}
-.services-desc {
-  /* Same font as the Luka Grčar wordmark — readable, not techy. */
-  font-family: var(--font-display, "IBM Plex Sans", system-ui, sans-serif);
-  font-size: 0.86rem;
+  left: clamp(20px, 3vw, 44px);
+  bottom: clamp(20px, 3vw, 40px);
+  max-width: 38ch;
+  font-size: clamp(0.86rem, 1vw, 0.98rem);
   line-height: 1.5;
-  letter-spacing: -0.01em;
+  text-align: justify;
+  color: #333;
+}
+
+@media (max-width: 600px) {
+  .cover-top { flex-direction: column; gap: 6px; }
+  .cover-intro { max-width: 30ch; text-align: left; }
+}
+
+/* ---------------- SELECTED WORK ("Success Stories") ---------------- */
+.home-stories {
+  background: #ececea;
+  color: #16150f;
+  padding: clamp(56px, 7vw, 120px) 0 clamp(72px, 9vw, 140px);
+}
+.stories-wrap {
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 0 clamp(24px, 4vw, 72px);
+  display: grid;
+  grid-template-columns: clamp(160px, 18vw, 280px) minmax(0, 1fr);
+  gap: clamp(24px, 3vw, 56px);
+}
+.stories-label {
+  position: sticky;
+  top: 96px;
+  align-self: start;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-family: var(--font-body, 'IBM Plex Sans', sans-serif);
+  font-size: 1.02rem;
   font-weight: 500;
-  color: #fff;
-  min-height: 3em;
-  text-align: right;
+  letter-spacing: 0;
+  color: #16150f;
 }
-.services-proj-name {
-  font-size: 0.78rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: #fff;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: right;
+.stories-label::before {
+  content: '';
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: #8f8f88;
+  flex-shrink: 0;
 }
-.services-proj-name a {
+
+.stories-list { display: flex; flex-direction: column; }
+
+.story {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: clamp(20px, 2.2vw, 40px);
+  padding: clamp(40px, 5vw, 80px) 0;
+  border-top: 1px solid #d3d3cc;
+  align-items: start;
   color: inherit;
   text-decoration: none;
 }
-.services-proj-name a:hover {
-  color: #fff;
-}
+.stories-list .story:first-child { border-top: none; padding-top: 0; }
 
-.services-foot {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  padding-top: 6px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 0.74rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
-}
-.services-pulse {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #4ade80;
-  box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
-  animation: servicesPulse 1.6s ease-in-out infinite;
-}
-@keyframes servicesPulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.45; transform: scale(0.85); }
-}
-
-/* Services pin stays visible across scroll states. */
-
-@media (max-width: 600px) {
-  .services-panel {
-    width: min(320px, calc(100vw - 32px));
-  }
-  .services-item { font-size: 0.88rem; }
-  .services-head { font-size: 0.72rem; }
-  .services-desc { font-size: 0.78rem; }
-  .services-proj-name { font-size: 0.7rem; }
-}
-
-/* Hover description, bottom-left of cover. Updated by floating-nav.js
-   when the user hovers a nav link. Small mono / techy. */
-.cover-desc {
-  position: absolute;
-  bottom: clamp(20px, 3vh, 28px);
-  left: clamp(20px, 3vw, 32px);
-  z-index: 5;
-  max-width: min(440px, 60vw);
-  font-family: ui-monospace, Menlo, monospace;
-  font-size: 0.68rem;
-  line-height: 1.55;
-  letter-spacing: 0.04em;
-  color: rgba(255,255,255,0.7);
-  text-transform: uppercase;
-  opacity: 0;
-  transform: translateY(4px);
-  filter: blur(4px);
-  pointer-events: none;
-  transition: opacity 0.28s ease, transform 0.28s ease, filter 0.28s ease;
-}
-.cover-desc.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-  filter: blur(0);
-}
-/* ===== Service projects side panel — opens after a service is clicked.
-       Right edge, vertically centered, small mono list view. */
-.service-projects {
-  position: fixed;
-  right: clamp(20px, 3vw, 32px);
-  top: calc(clamp(20px, 3vh, 32px) + clamp(1rem, 1.4vw, 1.25rem) + 18px);
-  transform: translateY(-4px);
-  z-index: 240;
-  width: clamp(220px, 22vw, 280px);
-  max-height: 70vh;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 0;
-  background: transparent;
-  border: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  font-family: ui-monospace, Menlo, monospace;
-  color: #fff;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 0.18s ease,
-              transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-              visibility 0s 0.18s;
-}
-.service-projects.is-open {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-  pointer-events: auto;
-  transition: opacity 0.2s ease,
-              transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-              visibility 0s;
-}
-.service-projects-head {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
-}
-.service-projects-eyebrow {
-  font-size: 0.6rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
-}
-.service-projects-title {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: #fff;
-  flex: 1;
-  min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.service-projects-close {
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 1.1rem;
-  line-height: 1;
-  padding: 0 4px;
-  cursor: pointer;
-  transition: color 0.15s ease;
-}
-.service-projects-close:hover { color: #fff; }
-.service-projects-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  scrollbar-width: thin;
-}
-.service-projects-list::-webkit-scrollbar { width: 6px; }
-.service-projects-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
-.service-projects-item {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  padding: 6px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-.service-projects-item:last-child { border-bottom: none; }
-.service-projects-num {
-  font-size: 0.62rem;
-  font-weight: 700;
-  color: #4ade80;
-  letter-spacing: 0.12em;
-  min-width: 2ch;
-}
-.service-projects-link {
-  flex: 1;
-  min-width: 0;
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.85);
-  text-decoration: none;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: color 0.12s ease, transform 0.18s ease;
-}
-.service-projects-link:hover { color: #fff; transform: translateX(-2px); }
-.service-projects-year {
-  font-size: 0.6rem;
-  color: rgba(255, 255, 255, 0.45);
-  letter-spacing: 0.06em;
-}
-body.footer-visible .service-projects {
-  opacity: 0;
-  pointer-events: none;
-}
-@media (max-width: 600px) {
-  .service-projects {
-    right: 12px;
-    width: calc(100vw - 24px);
-    max-width: 320px;
-  }
-}
-
-/* Bottom-center scroll hint */
-.cover-hint {
-  position: absolute;
-  bottom: clamp(20px, 3vh, 28px);
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: var(--font-body);
-  font-size: 0.72rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: #fff;
-  mix-blend-mode: difference;
-  z-index: 5;
-}
-
-/* Recent-project floating card, bottom-right of cover.
-   Techy panel: sharp corners, mono label, dark translucent base.
-   Hover: card grows to a 1:1 square, video fades in and plays, text
-   slides into a bottom overlay with a gradient. */
-.recent-card {
-  --card-w: 320px;
-  --card-h: 92px;
-  --card-w-hover: 340px;
-  --card-h-hover: 340px;
-  /* One curve / duration for every animatable property on the card so
-     geometry, opacity, and layout shifts stay in sync — kills the
-     janky out-of-phase motion when expanding / collapsing. */
-  --card-dur: 0.5s;
-  --card-ease: cubic-bezier(0.7, 0, 0.25, 1);
-
-  position: absolute;
-  bottom: clamp(20px, 3vh, 28px);
-  right: clamp(20px, 3vw, 32px);
-  z-index: 5;
-  width: var(--card-w);
-  height: var(--card-h);
-  overflow: hidden;
-  background: rgba(0, 0, 0, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 2px;
-  text-decoration: none;
-  color: #f0f0f0;
-  font-family: ui-monospace, Menlo, monospace;
-  backdrop-filter: blur(8px) saturate(1.2);
-  -webkit-backdrop-filter: blur(8px) saturate(1.2);
-  will-change: width, height;
-  transform: translateZ(0); /* GPU layer */
-  transition:
-    width  var(--card-dur) var(--card-ease),
-    height var(--card-dur) var(--card-ease),
-    background var(--card-dur) var(--card-ease);
-}
-.recent-card:hover,
-.recent-card.is-expanded {
-  width: var(--card-w-hover);
-  height: var(--card-h-hover);
-  background: rgba(0, 0, 0, 0.7);
-}
-
-/* Slide-track + frames: each project lives in its own frame. On swap a
-   new frame slides in while the old one slides out the opposite way.
-   Vertical (up/down) carousel motion. */
-.recent-card-track {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-.recent-card-frame {
-  position: absolute;
-  inset: 0;
-  transform: translate3d(0, 0, 0);
-  opacity: 1;
-  will-change: transform, opacity;
-}
-
-/* Keyframe-based slides — always fire when the class is added, no
-   rAF/transition timing dance needed. */
-@keyframes recentSlideUpIn {
-  from { transform: translate3d(0, 100%, 0); opacity: 0; }
-  to   { transform: translate3d(0, 0, 0); opacity: 1; }
-}
-@keyframes recentSlideUpOut {
-  from { transform: translate3d(0, 0, 0); opacity: 1; }
-  to   { transform: translate3d(0, -100%, 0); opacity: 0; }
-}
-@keyframes recentSlideDownIn {
-  from { transform: translate3d(0, -100%, 0); opacity: 0; }
-  to   { transform: translate3d(0, 0, 0); opacity: 1; }
-}
-@keyframes recentSlideDownOut {
-  from { transform: translate3d(0, 0, 0); opacity: 1; }
-  to   { transform: translate3d(0, 100%, 0); opacity: 0; }
-}
-.recent-card-frame.is-enter-up   { animation: recentSlideUpIn  0.5s cubic-bezier(0.7,0,0.25,1) forwards; }
-.recent-card-frame.is-leave-up   { animation: recentSlideUpOut 0.5s cubic-bezier(0.7,0,0.25,1) forwards; }
-.recent-card-frame.is-enter-down { animation: recentSlideDownIn  0.5s cubic-bezier(0.7,0,0.25,1) forwards; }
-.recent-card-frame.is-leave-down { animation: recentSlideDownOut 0.5s cubic-bezier(0.7,0,0.25,1) forwards; }
-
-/* Animated thumbnail — small, top-left, only in collapsed state. */
-.recent-card-thumb {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  width: 64px;
-  height: 64px;
-  object-fit: cover;
+.story-media {
   display: block;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  filter: contrast(1.05);
-  transition: opacity var(--card-dur) var(--card-ease);
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #dcdcd5;
 }
-.recent-card:hover .recent-card-thumb,
-.recent-card.is-expanded .recent-card-thumb {
-  opacity: 0;
-}
-
-/* Static cover image — fills the card in expanded (hover) state. */
-.recent-card-cover {
-  position: absolute;
-  inset: 0;
+.story-media img,
+.story-media video {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--card-dur) var(--card-ease);
-}
-.recent-card:hover .recent-card-cover,
-.recent-card.is-expanded .recent-card-cover {
-  opacity: 1;
+  /* Base zoom gives overflow room; `translate` is driven by scroll (parallax),
+     `scale` eases on hover. Using the individual transform properties so the
+     two never overwrite each other. */
+  scale: 1.16;               /* base zoom = overflow room for the scroll parallax */
+  translate: 0 var(--py, 0%);
+  will-change: transform;
 }
 
-/* Body text — collapsed: right of thumb. Hover: full-width bottom overlay. */
-.recent-card-body {
-  position: absolute;
-  top: 14px;
-  left: 90px;
-  right: 56px;
-  bottom: 14px;
+.story-meta {
   display: flex;
   flex-direction: column;
-  /* flex-end in BOTH states — `justify-content` is not animatable, so
-     keeping it constant prevents the mid-transition jump where text
-     snapped to center before the card had finished collapsing. */
-  justify-content: flex-end;
-  gap: 4px;
-  min-width: 0;
-  line-height: 1.35;
-  /* Same gradient definition as the hover state but fully transparent —
-     having a gradient (not `none`) on both sides of the transition lets
-     the colors interpolate, so the gradient fades in/out smoothly. */
-  background: linear-gradient(to top,
-    rgba(0,0,0,0) 0%,
-    rgba(0,0,0,0) 18%,
-    rgba(0,0,0,0) 45%);
-  will-change: top, left, right, bottom, padding;
-  transition:
-    top    var(--card-dur) var(--card-ease),
-    left   var(--card-dur) var(--card-ease),
-    right  var(--card-dur) var(--card-ease),
-    bottom var(--card-dur) var(--card-ease),
-    padding var(--card-dur) var(--card-ease),
-    background var(--card-dur) var(--card-ease);
-}
-.recent-card:hover .recent-card-body,
-.recent-card.is-expanded .recent-card-body {
-  /* Use a numeric `top` (not `auto`) so every property is
-     interpolatable — `auto → 14px` was snapping during collapse. */
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 14px;
-  /* Gradient only over the bottom ~45% so the static cover image stays
-     visible across most of the card. */
-  background: linear-gradient(to top,
-    rgba(0,0,0,0.88) 0%,
-    rgba(0,0,0,0.55) 18%,
-    rgba(0,0,0,0.0) 45%);
+  align-items: flex-start;
+  padding-top: 2px;
 }
 
-.recent-card-label {
-  font-size: 0.6rem;
+/* Year — small text on top */
+.story-year {
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.78rem;
   font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.06em;
+  color: #9a9a92;
+  margin-bottom: clamp(16px, 2vw, 24px);
 }
-.recent-card-name {
-  font-family: var(--font-display, ui-monospace, Menlo, monospace);
-  font-size: 0.92rem;
-  font-weight: 600;
-  letter-spacing: -0.005em;
-  color: #fff;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+
+.story-title {
+  font-size: clamp(1.55rem, 2vw, 2.05rem);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  margin-bottom: 14px;
 }
-.recent-card-meta {
-  font-size: 0.62rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.story-desc {
+  font-size: clamp(1rem, 1.1vw, 1.15rem);
+  font-weight: 500;
+  line-height: 1.42;
+  color: #6f6f67;
+  max-width: 42ch;
+  margin-bottom: clamp(18px, 2vw, 26px);
 }
-/* Description hidden when collapsed (no room), revealed on hover. */
-.recent-card-desc {
-  font-size: 0.66rem;
+.story-tags {
+  font-size: clamp(0.85rem, 0.95vw, 0.95rem);
+  font-weight: 500;
   letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.55);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  opacity: 0;
-  max-height: 0;
-  transition: opacity var(--card-dur) var(--card-ease),
-              max-height var(--card-dur) var(--card-ease);
-}
-.recent-card:hover .recent-card-desc,
-.recent-card.is-expanded .recent-card-desc {
-  opacity: 1;
-  max-height: 3em;
+  color: #8a8a82;
 }
 
-/* CTA — hidden when card is collapsed; appears on hover. */
-.recent-card-cta {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  font-size: 0.6rem;
+/* ---------------- STATEMENT — scroll-driven word reveal ---------------- */
+.home-statement {
+  background: #ececea;
+  padding: clamp(140px, 34vh, 380px) 0;
+}
+.statement-wrap {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 clamp(24px, 4vw, 72px);
+}
+.reveal-text p {
+  font-family: var(--font-display, 'IBM Plex Sans', sans-serif);
+  font-size: clamp(1.3rem, 2.3vw, 2.1rem);
   font-weight: 700;
-  letter-spacing: 0.2em;
+  line-height: 1.34;
+  letter-spacing: -0.01em;
+  color: #cbcac4;                 /* fallback before JS splits words */
+}
+.reveal-text p + p { margin-top: 1.1em; }
+.reveal-word {
+  color: #cbcac4;
+  transition: color 0.35s ease;
+}
+.reveal-word.lit { color: #1b1b18; }
+
+.statement-resume {
+  display: inline-block;
+  margin-top: clamp(28px, 4vw, 48px);
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #fff;
-  padding: 4px 8px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  white-space: nowrap;
+  color: #1b1b18;
+  text-decoration: none;
+  border-bottom: 1px solid #1b1b18;
+  padding-bottom: 2px;
+  transition: opacity 0.2s ease;
+}
+.statement-resume:hover { opacity: 0.55; }
+
+/* ---------------- CONTACT POPUP ---------------- */
+.hc-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(18, 18, 16, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   opacity: 0;
-  pointer-events: none;
-  transform: translateY(-2px);
-  transition: opacity var(--card-dur) var(--card-ease),
-              transform var(--card-dur) var(--card-ease);
+  visibility: hidden;
+  transition: opacity 0.28s ease, visibility 0s 0.28s;
 }
-.recent-card:hover .recent-card-cta,
-.recent-card.is-expanded .recent-card-cta {
+.hc-overlay.open {
   opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
+  visibility: visible;
+  transition: opacity 0.28s ease;
 }
-
-
-
-@media (max-width: 600px) {
-  .recent-card {
-    --card-w: calc(100vw - 32px);
-    --card-h: 80px;
-    --card-w-hover: calc(100vw - 32px);
-    --card-h-hover: calc(100vw - 32px);
-  }
-  .recent-card-thumb { width: 52px; height: 52px; top: 12px; left: 12px; }
-  .recent-card-body { left: 76px; }
-  .recent-card-name { font-size: 0.84rem; }
-  .recent-card-label { font-size: 0.56rem; }
-  .recent-card-desc { font-size: 0.62rem; }
-}
-
-/* ========== SCROLL RUNWAY ==========
-   In-flow spacer that gives the footer 100dvh of scroll distance to slide
-   in over the sticky cover. */
-
-/* Footer in normal block flow below the (sticky) cover — no slide-in,
-   the user scrolls down to it like any regular page section. */
-.site-footer {
+.hc-modal {
   position: relative;
   width: 100%;
-  z-index: 2;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 16px;
+  padding: clamp(28px, 4vw, 44px);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+  transform: translateY(16px) scale(0.98);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hc-overlay.open .hc-modal { transform: none; }
+.hc-close {
+  position: absolute;
+  top: 14px; right: 18px;
+  background: none; border: none;
+  font-size: 1.7rem; line-height: 1;
+  color: #aaa; cursor: pointer;
+  transition: color 0.2s;
+}
+.hc-close:hover { color: #111; }
+.hc-title {
+  font-family: var(--font-display, sans-serif);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #111;
+  margin-bottom: 6px;
+}
+.hc-sub { font-size: 0.95rem; color: #777; margin-bottom: 24px; }
+.hc-form { display: flex; flex-direction: column; gap: 12px; }
+.hc-row { display: flex; gap: 12px; }
+.hc-form input,
+.hc-form textarea {
+  width: 100%;
+  background: #f4f4f2;
+  border: 1px solid #e2e2de;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.92rem;
+  color: #111;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.hc-form input:focus,
+.hc-form textarea:focus { border-color: #111; background: #fff; }
+.hc-form input::placeholder,
+.hc-form textarea::placeholder { color: #aaa; }
+.hc-form textarea { resize: vertical; min-height: 110px; line-height: 1.5; }
+.hc-submit {
+  margin-top: 6px;
+  background: #111; color: #fff;
+  border: none; border-radius: 999px;
+  padding: 14px;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.92rem; font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.hc-submit:hover { background: #000; transform: translateY(-1px); }
+.hc-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.hc-note { font-size: 0.85rem; text-align: center; min-height: 1.2em; margin-top: 4px; }
+@media (max-width: 520px) { .hc-row { flex-direction: column; } }
+
+/* ---------------- RESPONSIVE ---------------- */
+@media (max-width: 900px) {
+  .stories-wrap { grid-template-columns: 1fr; gap: 0; }
+  .stories-label { position: static; margin-bottom: 28px; }
+}
+@media (max-width: 680px) {
+  .home-hero { min-height: 92vh; padding: 100px 22px; }
+  .story {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 36px 0;
+  }
+  .story-media { aspect-ratio: 3 / 2; }
+  .story-desc { margin-bottom: 28px; }
 }

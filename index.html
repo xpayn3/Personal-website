@@ -8,22 +8,21 @@
   <link rel="icon" type="image/png" href="favicon.png" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="color-scheme" content="light" />
-  <meta name="description" content="Portfolio of Luka Grčar — 3D generalist & motion designer based in Ljubljana, Slovenia." />
+  <meta name="description" content="Portfolio of Luka Grčar — interaction & product designer based in Ljubljana, Slovenia." />
   <link rel="canonical" href="https://lukagrcar.com/" />
-  <meta property="og:title" content="Luka Grčar — 3D & Motion Design" />
-  <meta property="og:description" content="3D generalist & motion designer based in Ljubljana, Slovenia." />
+  <meta property="og:title" content="Luka Grčar — Interaction & Product Design" />
+  <meta property="og:description" content="interaction & product designer based in Ljubljana, Slovenia." />
   <meta property="og:image" content="https://lukagrcar.com/og-image.png" />
   <meta property="og:url" content="https://lukagrcar.com/" />
   <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=UnifrakturMaguntia&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="tokens.css" />
-  <link rel="stylesheet" href="home.css" />
-  <link rel="stylesheet" href="floating-nav.css" />
+  <link rel="stylesheet" href="home.css?v=15" />
+  <link rel="stylesheet" href="floating-nav.css?v=8" />
   <link rel="stylesheet" href="footer.css" />
-  <link rel="stylesheet" href="contact.css" />
-  <link rel="stylesheet" href="overlay.css" />
+  <link rel="stylesheet" href="overlay.css?v=2" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 <script type="application/ld+json">
@@ -35,7 +34,7 @@
       "@id": "https://lukagrcar.com/#website",
       "name": "Luka Grčar",
       "url": "https://lukagrcar.com/",
-      "description": "Portfolio of Luka Grčar — 3D generalist & motion designer based in Ljubljana, Slovenia.",
+      "description": "Portfolio of Luka Grčar — interaction & product designer based in Ljubljana, Slovenia.",
       "inLanguage": "en",
       "publisher": { "@id": "https://lukagrcar.com/#person" }
     },
@@ -44,7 +43,7 @@
       "@id": "https://lukagrcar.com/#person",
       "name": "Luka Grčar",
       "url": "https://lukagrcar.com/",
-      "jobTitle": "3D Generalist & Motion Designer",
+      "jobTitle": "Interaction & Product Designer",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Ljubljana",
@@ -60,270 +59,75 @@
 }
 </script>
 </head>
-<body class="page-home">
-  <!-- ===== COVER =====
-       cover-wrap controls how much scroll the cover stays sticky for
-       (its height = scroll budget). The cover itself is sticky and
-       fills 100dvh visually. When the wrap is fully scrolled past,
-       sticky releases and the footer below comes into view. -->
-  <div class="cover-wrap">
-    <section class="cover" id="cover">
-      <canvas class="cover-media" id="coverCanvas"></canvas>
-      <a class="recent-card" id="recentCard" href="grid.html#project=grounded2025">
-        <div class="recent-card-track" id="recentCardTrack"></div>
-        <span class="recent-card-cta">View ↗</span>
-      </a>
-    </section>
-  </div>
+<body class="page-home nav-light">
 
-  <!-- Floating top-left nav (shared component) -->
-  <a href="index.html" class="floating-name">Luka Grčar</a>
-  <nav class="floating-nav" aria-label="Sections">
-    <a href="grid.html"   class="floating-nav-link" data-cover-text="All projects" data-cover-desc="// project archive · 21 projects · 225 frames · filter by year / color / type">Index</a>
-    <a href="lab.html"    class="floating-nav-link" data-cover-text="Experiments"  data-cover-desc="// workshop · sketches, half-baked renders, weird stuff in progress">Lab</a>
-    <a href="tree.html"   class="floating-nav-link" data-cover-shape="tree" data-cover-desc="// webgpu foliage studio · 35 species · gravity sag · gpu-instanced">Tree</a>
-    <a href="about.html"  class="floating-nav-link" data-cover-shape="portrait" data-cover-desc="// bio · skills · clients · awards · a working 3d gameboy">About</a>
-    <a href="#contact"    class="floating-nav-link" id="homeContactLink" data-cover-text="Get in touch" data-cover-desc="// fullscreen brief form · autosave · live estimate · &lt; 24h response">Contact</a>
-  </nav>
+  <!-- Site top nav (shared component) -->
+  <header class="site-nav">
+    <a href="index.html" class="floating-name">Luka Grčar</a>
+    <nav class="floating-nav" aria-label="Sections">
+      <a href="index.html" class="floating-nav-link is-active">Home</a>
+      <a href="grid.html" class="floating-nav-link">Work</a>
+      <a href="lab.html" class="floating-nav-link">Lab</a>
+      <a href="about.html" class="floating-nav-link">About</a>
+    </nav>
+    <div class="site-nav-actions">
+      <a href="about.html#contact" class="site-nav-cta">Start a project <span class="site-nav-cta-arrow">↗</span></a>
+    </div>
+  </header>
 
-  <!-- Hover description, bottom-left of cover -->
-  <div class="cover-desc" id="coverDesc" aria-hidden="true"></div>
+  <main class="home-content">
 
-  <!-- Side project list — opens after committing a service. Lists all
-       projects under that service in a small mono list view. -->
-  <aside class="service-projects" id="serviceProjects" aria-hidden="true">
-    <header class="service-projects-head">
-      <span class="service-projects-eyebrow">// Projects</span>
-      <span class="service-projects-title" id="serviceProjectsTitle"></span>
-      <button class="service-projects-close" id="serviceProjectsClose" type="button" aria-label="Close">×</button>
-    </header>
-    <ol class="service-projects-list" id="serviceProjectsList"></ol>
-  </aside>
-
-  <!-- Services pin, top-right of cover -->
-  <div class="services" id="servicesPin">
-    <span class="services-label">Services</span>
-    <div class="services-panel" role="menu" aria-label="Services">
-      <div class="services-head">// Available · accepting briefs</div>
-      <ul class="services-list">
-        <li class="services-item"
-            data-cover-shape="torus"
-            data-tags="C4D|Houdini|Redshift|FUI|Loops"
-            data-projects="cestel|grounded2025|grounded2024|grounded2023|grounded2022|grounded2021|grounded2020|grounded2018|taf|halloween|blackfriday|ment"
-            data-desc="Cinema 4D · Houdini · Redshift — narrative loops, product films, simulations, FUI / HUD, abstract motion."
-            data-proj="cestel"
-            data-proj-name="CESTEL"
-            data-proj-thumb="Images/Cestel_project/cover_still.webp"
-            data-proj-video="Images/Cestel_project/cestel_anim_02.webp">3D Animation</li>
-        <li class="services-item"
-            data-flow="kinetic"
-            data-tags="AE|Expressions|Stings|Type|Broadcast"
-            data-projects="grounded2025|grounded2024|grounded2023|grounded2022|grounded2021|grounded2020|cestel|ment|taf|halloween|blackfriday|accbox"
-            data-desc="After Effects · expressions — brand stings, kinetic type, broadcast packages, motion identity systems."
-            data-proj="grounded2023"
-            data-proj-name="Grounded 2023"
-            data-proj-thumb="Images/Grounded_2023/Grounded_2023_01_thumb.webp"
-            data-proj-video="Images/Grounded_2023/Grounded_2023_01.webm">Motion Design</li>
-        <li class="services-item"
-            data-flow="structural"
-            data-tags="Logos|Color|Type|Brand books|Guidelines"
-            data-projects="grounded2025|grounded2024|grounded2023|grounded2022|grounded2021|grounded2020|grounded2018|tamtam|largavida|newedge|kersnikova|natureta|accbox"
-            data-desc="Logo systems, color, type, brand books — built motion-first. Guideline doc + asset kit included."
-            data-proj="grounded2025"
-            data-proj-name="Grounded 2025"
-            data-proj-thumb="Images/Grounded 2025/gr2025cover.webp"
-            data-proj-video="Images/Grounded 2025/Grounded_2025_web.webm">Visual Identity</li>
-        <li class="services-item"
-            data-flow="pixelated"
-            data-tags="Figma|Flows|Prototypes|Systems|Handoff"
-            data-projects="accbox"
-            data-desc="Figma flows, prototypes, design systems, dev handoff — user-tested and engineering-ready."
-            data-proj="accbox"
-            data-proj-name="AccountingBox"
-            data-proj-thumb="Images/AccountingBox/Podjetja_cover.webp"
-            data-proj-video="Images/AccountingBox/intro.webm">UI / UX Design</li>
-        <li class="services-item"
-            data-flow="implode"
-            data-tags="Renders|4K|Alpha|Configurators|Exploded"
-            data-projects="natureta_renders|natureta|kersnikova"
-            data-desc="Photoreal renders, exploded views, configurator scenes — 4K + alpha + masks delivered."
-            data-proj="natureta_renders"
-            data-proj-name="Natureta product renders"
-            data-proj-thumb="Images/Natureta product renders/Kozarec_eta0001.webp"
-            data-proj-video="">Product Visualization</li>
-        <li class="services-item"
-            data-cover-shape="room"
-            data-cover-labels="true"
-            data-tags="Shaders|MadMapper|TouchDesigner|Mapping|Live"
-            data-projects="radenci"
-            data-desc="Custom shaders, multi-projector blends, MadMapper / TouchDesigner — live event control."
-            data-proj="radenci"
-            data-proj-name="Radenci spatial projection"
-            data-proj-thumb="Images/Radenci_prostorska_projekcija/IMG_4065.webp"
-            data-proj-video="">Projection Mapping</li>
-        <li class="services-item"
-            data-flow="swirl"
-            data-tags="Three.js|WebGPU|TSL|Next.js|Webflow"
-            data-projects=""
-            data-desc="Three.js · WebGPU · TSL · Next.js · Webflow — marketing sites, real-time 3D web, configurators."
-            data-proj-name="Webtree — webgpu foliage studio"
-            data-proj-thumb="Images/tree_thumb.svg"
-            data-proj-video=""
-            data-proj-href="tree.html">Web Development</li>
-        <li class="services-item"
-            data-flow="drift"
-            data-tags="Concept|Mood|Art direction|Brief|Delivery"
-            data-projects="cestel|grounded2025|grounded2024|grounded2023|taf|halloween|blackfriday"
-            data-desc="Concept, mood, art direction across teams — from brief to delivery, single point of contact."
-            data-proj="halloween"
-            data-proj-name="TAF Halloween"
-            data-proj-thumb="Images/Athletesfoot_halloween/Athletesfoot_halloween_01.webp"
-            data-proj-video="">Creative Direction</li>
-      </ul>
-
-      <div class="services-detail">
-        <a class="services-detail-thumb" id="servicesProjLink" href="#" tabindex="-1" aria-hidden="true">
-          <img class="services-detail-img" id="servicesProjImg" alt="" />
-          <video class="services-detail-vid" id="servicesProjVid" muted loop playsinline preload="metadata"></video>
-        </a>
-        <div class="services-detail-text">
-          <div class="services-desc" id="servicesDesc">Hover a service for what I deliver →</div>
-          <div class="services-proj-name" id="servicesProjName"></div>
+    <!-- ===== COVER — scrolling wordmark marquee ===== -->
+    <section class="home-cover">
+      <div class="cover-top">
+        <span class="cover-role"><span data-role>Interaction &amp; Product Designer</span> — Screen &amp; Space</span>
+        <a class="cover-contact" href="about.html#contact">Get in touch ↗</a>
+      </div>
+      <div class="cover-marquee" aria-hidden="true">
+        <div class="cover-marquee-track">
+          <div class="cm-group">
+            <span class="cm-word">Luka Grčar</span><span class="cm-mark">LG</span>
+            <span class="cm-word">Luka Grčar</span><span class="cm-mark">LG</span>
+            <span class="cm-word">Luka Grčar</span><span class="cm-mark">LG</span>
+            <span class="cm-word">Luka Grčar</span><span class="cm-mark">LG</span>
+          </div>
+          <div class="cm-group">
+            <span class="cm-word">Luka Grčar</span><span class="cm-mark">LG</span>
+            <span class="cm-word">Luka Grčar</span><span class="cm-mark">LG</span>
+            <span class="cm-word">Luka Grčar</span><span class="cm-mark">LG</span>
+            <span class="cm-word">Luka Grčar</span><span class="cm-mark">LG</span>
+          </div>
         </div>
       </div>
-      <div class="services-foot">
-        <span class="services-pulse" aria-hidden="true"></span>
-        <span>1 slot open · Q1 2026</span>
+      <p class="cover-intro">Based in Ljubljana, working globally — I work across interaction, motion, and 3D to make complex systems legible: designing how something communicates its state, earns trust, and feels intuitive — on screen and in the space around it.</p>
+    </section>
+
+    <!-- ===== SELECTED WORK ("Success Stories" style) ===== -->
+    <section class="home-stories">
+      <div class="stories-wrap">
+        <div class="stories-label">Selected Work</div>
+        <div class="stories-list" id="workList"></div>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Contact: fullscreen terminal-style form (home only) -->
-  <div class="contact-overlay" id="contactOverlay" role="dialog" aria-modal="true" aria-labelledby="contactPaneTitle">
-    <div class="contact-pane">
-
-      <header class="contact-head">
-        <span class="contact-head-mark" id="contactPaneTitle">// CONTACT_LUKA</span>
-        <span class="contact-head-status"><i class="contact-pulse" aria-hidden="true"></i> ONLINE</span>
-        <span class="contact-head-time" id="contactClock">--:--:--</span>
-        <button class="contact-close" id="contactClose" aria-label="Close">[ESC] CLOSE</button>
-      </header>
-
-      <div class="contact-grid">
-
-        <form class="contact-form" id="contactFormEl" action="https://api.web3forms.com/submit" method="POST">
-          <input type="hidden" name="access_key" value="d40b8189-988b-4e6f-83db-6c8b8b386e8e" />
-
-          <div class="contact-section">
-            <div class="contact-section-label"><span>[01] CLIENT</span></div>
-            <div class="contact-row">
-              <input type="text" name="name" placeholder="Name *" required autocomplete="name" />
-              <input type="email" name="email" placeholder="Email *" required autocomplete="email" />
-            </div>
-            <div class="contact-row">
-              <input type="text" name="company" placeholder="Company / Brand" autocomplete="organization" />
-              <input type="text" name="website" placeholder="Website / Portfolio URL" autocomplete="url" />
-            </div>
-          </div>
-
-          <div class="contact-section">
-            <div class="contact-section-label"><span>[02] SCOPE</span></div>
-            <div class="contact-chips">
-              <label class="contact-chip"><input type="checkbox" name="type" value="3D Animation" /><span>3D Animation</span></label>
-              <label class="contact-chip"><input type="checkbox" name="type" value="Motion Graphics" /><span>Motion Graphics</span></label>
-              <label class="contact-chip"><input type="checkbox" name="type" value="Product Viz" /><span>Product Viz</span></label>
-              <label class="contact-chip"><input type="checkbox" name="type" value="Visual Identity" /><span>Visual Identity</span></label>
-              <label class="contact-chip"><input type="checkbox" name="type" value="UX/UI Design" /><span>UX/UI Design</span></label>
-              <label class="contact-chip"><input type="checkbox" name="type" value="Web Development" /><span>Web Development</span></label>
-              <label class="contact-chip"><input type="checkbox" name="type" value="Projection Mapping" /><span>Projection Mapping</span></label>
-              <label class="contact-chip"><input type="checkbox" name="type" value="Other" /><span>Other</span></label>
-            </div>
-          </div>
-
-          <div class="contact-section">
-            <div class="contact-section-label"><span>[03] BUDGET</span></div>
-            <div class="contact-chips">
-              <label class="contact-chip"><input type="radio" name="budget" value="< €1k" /><span>&lt; €1k</span></label>
-              <label class="contact-chip"><input type="radio" name="budget" value="€1k - €5k" /><span>€1k – €5k</span></label>
-              <label class="contact-chip"><input type="radio" name="budget" value="€5k - €15k" /><span>€5k – €15k</span></label>
-              <label class="contact-chip"><input type="radio" name="budget" value="€15k+" /><span>€15k+</span></label>
-              <label class="contact-chip"><input type="radio" name="budget" value="Not sure" /><span>Not sure</span></label>
-            </div>
-          </div>
-
-          <div class="contact-section">
-            <div class="contact-section-label"><span>[04] TIMELINE</span></div>
-            <div class="contact-chips">
-              <label class="contact-chip"><input type="radio" name="timeline" value="ASAP" /><span>ASAP</span></label>
-              <label class="contact-chip"><input type="radio" name="timeline" value="1-2 weeks" /><span>1–2 weeks</span></label>
-              <label class="contact-chip"><input type="radio" name="timeline" value="1 month" /><span>1 month</span></label>
-              <label class="contact-chip"><input type="radio" name="timeline" value="2-3 months" /><span>2–3 months</span></label>
-              <label class="contact-chip"><input type="radio" name="timeline" value="Flexible" /><span>Flexible</span></label>
-            </div>
-          </div>
-
-          <div class="contact-section">
-            <div class="contact-section-label">
-              <span>[05] BRIEF</span>
-              <span class="contact-counter" id="contactCounter">0 / 1200</span>
-            </div>
-            <textarea name="message" maxlength="1200" rows="5" placeholder="Project goals, deliverables, references, anything that helps me understand the scope..." required></textarea>
-          </div>
-
-          <div class="contact-actions">
-            <button type="submit" class="contact-submit">Transmit ↗</button>
-            <span class="contact-hint">Press <kbd>⌘</kbd> + <kbd>↵</kbd> to send · draft saved locally</span>
-          </div>
-          <p class="contact-note" id="contactNote"></p>
-        </form>
-
-        <aside class="contact-info">
-          <div class="info-block">
-            <div class="info-label">// STATUS</div>
-            <ul class="info-list">
-              <li><span>Availability</span><span class="info-val is-good" id="infoAvailability">OPEN</span></li>
-              <li><span>Response</span><span class="info-val">&lt; 24H</span></li>
-              <li><span>Timezone</span><span class="info-val" id="infoTz">CET</span></li>
-              <li><span>Local time</span><span class="info-val" id="infoLocalTime">--:--</span></li>
-              <li><span>Based in</span><span class="info-val">LJUBLJANA, SI</span></li>
-            </ul>
-          </div>
-
-          <div class="info-block">
-            <div class="info-label">// QUICK ACTIONS</div>
-            <button type="button" class="info-action" id="copyEmailBtn">
-              <span>Copy email</span><span>luka.grcar@me.com</span>
-            </button>
-            <a class="info-action" href="https://cal.com/lukagrcar" target="_blank" rel="noopener noreferrer">
-              <span>Schedule call</span><span>cal.com ↗</span>
-            </a>
-            <button type="button" class="info-action" id="clearDraftBtn">
-              <span>Clear draft</span><span>reset form</span>
-            </button>
-          </div>
-
-          <div class="info-block">
-            <div class="info-label">// TRANSMISSION</div>
-            <div class="info-secure">
-              <span class="info-dot" aria-hidden="true"></span>
-              <span>Encrypted via Web3Forms</span>
-            </div>
-          </div>
-        </aside>
-
+    <!-- ===== STATEMENT — scroll-driven word reveal ===== -->
+    <section class="home-statement">
+      <div class="statement-wrap">
+        <div class="reveal-text">
+          <p>Whether it's an interactive 3D showcase, a visualization that makes a complex process legible, or an experience that spans screen and physical space, I bring ideas to life in ways that feel intuitive and earn trust.</p>
+        </div>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Scroll runway: gives the body height so the footer can slide in. -->
-  <div class="scroll-runway" aria-hidden="true"></div>
+  </main>
 
+  <!-- ===== FOOTER ===== -->
   <footer class="site-footer">
     <div class="footer-top">
       <span aria-hidden="true"></span>
       <span aria-hidden="true"></span>
       <div class="footer-tagline">
-        <p>3D Generalist &amp; UX Designer</p>
+        <p data-role>Interaction &amp; Product Designer</p>
         <p>Based in Ljubljana, Slovenia</p>
       </div>
     </div>
@@ -332,7 +136,7 @@
       <div class="footer-col">
         <h4 class="footer-col-title">Site Index</h4>
         <a href="index.html" class="footer-col-link">Home</a>
-        <a href="grid.html" class="footer-col-link">Index</a>
+        <a href="grid.html" class="footer-col-link">Work</a>
         <a href="about.html" class="footer-col-link">About</a>
         <a href="about.html#contact" class="footer-col-link">Contact me</a>
       </div>
@@ -359,719 +163,260 @@
     </div>
   </footer>
 
-<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
+  <!-- Contact popup -->
+  <div class="hc-overlay" id="contactOverlay" aria-hidden="true">
+    <div class="hc-modal" role="dialog" aria-modal="true" aria-label="Get in touch">
+      <button class="hc-close" id="contactClose" aria-label="Close">&times;</button>
+      <h2 class="hc-title">Get in touch</h2>
+      <p class="hc-sub">Have a project in mind? Let's talk.</p>
+      <form class="hc-form" id="contactFormEl" action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value="d40b8189-988b-4e6f-83db-6c8b8b386e8e" />
+        <div class="hc-row">
+          <input type="text" name="name" placeholder="Your name *" required />
+          <input type="email" name="email" placeholder="Your email *" required />
+        </div>
+        <input type="text" name="company" placeholder="Company / Brand" />
+        <textarea name="message" placeholder="Tell me about your project… *" rows="4" required></textarea>
+        <button type="submit" class="hc-submit">Send message</button>
+        <p class="hc-note" id="contactNote"></p>
+      </form>
+    </div>
+  </div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
-  <script src="projects.js" defer></script>
-  <script src="overlay.js?v=2" defer></script>
-  <script src="home.js" defer></script>
-  <script src="floating-nav.js" defer></script>
+  <script defer src="projects.js?v=4"></script>
+  <script defer src="overlay.js?v=3"></script>
+  <script src="floating-nav.js?v=5" defer></script>
+  <script src="brand.js" defer></script>
+
+  <!-- Render the selected-work list from the shared project data. -->
   <script>
-    // Contact: fullscreen techy form wiring
-    (function () {
-      const overlay = document.getElementById('contactOverlay');
-      if (!overlay) return;
-      const link = document.getElementById('homeContactLink');
-      const close = document.getElementById('contactClose');
-      const form = document.getElementById('contactFormEl');
-      const note = document.getElementById('contactNote');
-      const counter = document.getElementById('contactCounter');
-      const clockEl = document.getElementById('contactClock');
-      const localTimeEl = document.getElementById('infoLocalTime');
-      const tzEl = document.getElementById('infoTz');
-      const copyBtn = document.getElementById('copyEmailBtn');
-      const clearBtn = document.getElementById('clearDraftBtn');
+  (function () {
+    // Curated featured projects, in order. Falls back gracefully if an id
+    // is missing from window.projects.
+    const FEATURED = ['cestel', 'grounded2026', 'taf'];
 
-      const STORAGE_KEY = 'lg_contact_draft_v2';
+    // These projects keep a STATIC image cover instead of the animated one.
+    const STATIC_COVER = ['grounded2026'];
+    // Per-project cover-clip override (e.g. TAF's default clip glitches).
+    const VIDEO_OVERRIDE = { taf: 'Images/Athletesfoot/taf_landscape.webm' };
 
-      function openOverlay(e) {
-        if (e) e.preventDefault();
-        overlay.classList.add('open');
-        restoreDraft();
-        updateCounter();
-        setTimeout(() => { const f = form.elements['name']; if (f && !f.value) f.focus(); }, 200);
-      }
-      function dismiss() { overlay.classList.remove('open'); }
+    function pickCover(imgs) {
+      if (!imgs || !imgs.length) return null;
+      return imgs.find(s => /cover/i.test(s) && /\.webp$/i.test(s))
+          || imgs.find(s => /\.webp$/i.test(s))
+          || imgs.find(s => /\.(jpg|jpeg|png)$/i.test(s))
+          || imgs[0];
+    }
+    function pickVideo(imgs) {
+      if (!imgs) return null;
+      return imgs.find(s => /\.(webm|mp4)$/i.test(s)) || null;
+    }
 
-      // ----- Live clock + timezone --------------------------------------
-      function tick() {
-        const now = new Date();
-        const hms = now.toLocaleTimeString('en-GB', { hour12: false });
-        if (clockEl) clockEl.textContent = hms;
-        if (localTimeEl) localTimeEl.textContent = hms.slice(0, 5);
-        if (tzEl) {
-          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'CET';
-          const short = tz.split('/').pop().replace(/_/g, ' ').toUpperCase();
-          tzEl.textContent = short;
-        }
-      }
-      tick();
-      setInterval(tick, 1000);
+    function build() {
+      const P = window.projects || {};
+      const wrap = document.getElementById('workList');
+      if (!wrap) return;
+      const ids = FEATURED.filter(id => P[id]);
+      // If none of the curated ids exist, fall back to first 6 available.
+      const list = ids.length ? ids : Object.keys(P).filter(k => k !== 'lab').slice(0, 6);
 
-      // ----- Char counter -----------------------------------------------
-      function updateCounter() {
-        if (!counter) return;
-        const v = (form.elements['message'] && form.elements['message'].value) || '';
-        counter.textContent = `${v.length} / 1200`;
-        counter.classList.toggle('is-near', v.length > 1000);
-      }
+      wrap.innerHTML = '';
+      const total = String(list.length).padStart(2, '0');
+      list.forEach((id, i) => {
+        const p = P[id];
+        const cover = pickCover(p.images);
+        if (!cover) return;
+        let brief = p.brief || (p.desc && p.desc[0]) || '';
+        if (brief.length > 150) brief = brief.slice(0, 148).trim() + '…';
+        const cat = (p.category || []).join(' · ');
 
+        // Animated (video) cover by default; static image for STATIC_COVER ids.
+        const video = STATIC_COVER.indexOf(id) === -1
+          ? (VIDEO_OVERRIDE[id] || pickVideo(p.images))
+          : null;
+        const mediaHtml = video
+          ? '<video autoplay muted loop playsinline preload="metadata" poster="' + cover + '"><source src="' + video + '" type="video/webm"></video>'
+          : '<img loading="lazy" src="' + cover + '" alt="' + (p.name || '') + '">';
 
-      // ----- Autosave / restore -----------------------------------------
-      function saveDraft() {
-        const data = {};
-        new FormData(form).forEach((v, k) => {
-          if (k === 'access_key') return;
-          if (data[k] === undefined) data[k] = v;
-          else if (Array.isArray(data[k])) data[k].push(v);
-          else data[k] = [data[k], v];
-        });
-        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {}
-      }
-      function restoreDraft() {
-        let data;
-        try { data = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch {}
-        if (!data) return;
-        Object.entries(data).forEach(([k, v]) => {
-          const values = Array.isArray(v) ? v : [v];
-          values.forEach(val => {
-            const input = form.querySelector(`[name="${k}"][value="${CSS.escape(val)}"]`);
-            if (input && (input.type === 'checkbox' || input.type === 'radio')) {
-              input.checked = true;
-            } else {
-              const single = form.querySelector(`[name="${k}"]:not([type="checkbox"]):not([type="radio"])`);
-              if (single) single.value = val;
-            }
-          });
-        });
-      }
-      function clearDraft() {
-        try { localStorage.removeItem(STORAGE_KEY); } catch {}
-        form.reset();
-        updateCounter();
-        if (note) note.textContent = '';
-      }
-
-      form.addEventListener('input', () => { saveDraft(); updateCounter(); });
-      form.addEventListener('change', saveDraft);
-
-      // ----- Copy email / clear draft -----------------------------------
-      if (copyBtn) {
-        copyBtn.addEventListener('click', async () => {
-          try {
-            await navigator.clipboard.writeText('luka.grcar@me.com');
-            const labels = copyBtn.querySelectorAll('span');
-            const orig = labels[0].textContent;
-            labels[0].textContent = 'Copied ✓';
-            copyBtn.style.borderColor = '#4ade80';
-            setTimeout(() => {
-              labels[0].textContent = orig;
-              copyBtn.style.borderColor = '';
-            }, 1400);
-          } catch {}
-        });
-      }
-      if (clearBtn) clearBtn.addEventListener('click', clearDraft);
-
-      // ----- Open / close -----------------------------------------------
-      if (link) link.addEventListener('click', openOverlay);
-      if (close) close.addEventListener('click', dismiss);
-      document.addEventListener('keydown', (e) => {
-        if (!overlay.classList.contains('open')) return;
-        if (e.key === 'Escape') { dismiss(); return; }
-        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-          e.preventDefault();
-          if (typeof form.requestSubmit === 'function') form.requestSubmit();
-          else form.dispatchEvent(new Event('submit', { cancelable: true }));
-        }
-      });
-
-      // ----- Submit -----------------------------------------------------
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = form.querySelector('.contact-submit');
-        const origLabel = btn.textContent;
-        btn.textContent = 'Transmitting…';
-        btn.disabled = true;
-        try {
-          const res = await fetch(form.action, {
-            method: 'POST',
-            body: new FormData(form),
-            headers: { 'Accept': 'application/json' },
-          });
-          if (res.ok) {
-            note.textContent = '✓ Message transmitted. I\'ll reply within 24 hours.';
-            note.style.color = '#4ade80';
-            clearDraft();
-          } else {
-            note.textContent = '✗ Transmission failed. Try again.';
-            note.style.color = '#fb7185';
-          }
-        } catch {
-          note.textContent = '✗ Network error. Try again.';
-          note.style.color = '#fb7185';
-        }
-        btn.textContent = origLabel;
-        btn.disabled = false;
-      });
-    })();
-
-    // Recent-project card: auto-cycles 3 projects, plays preview on hover.
-    // Each project renders into a `.recent-card-frame`; swaps slide a new
-    // frame in while the old one slides out the opposite direction.
-    (function () {
-      const card = document.getElementById('recentCard');
-      const track = document.getElementById('recentCardTrack');
-      if (!card || !track) return;
-
-      const PROJECTS = [
-        {
-          id: 'grounded2025',
-          name: 'Festival Grounded 2025',
-          meta: '2025 · Pritličje · Visual identity & motion',
-          desc: 'Cinema 4D / Redshift / AE — full festival identity, motion, and stage visuals.',
-          thumb: 'Images/Grounded 2025/gr2025cover.webp',
-          video: 'Images/Grounded 2025/Grounded_2025_web.webm',
-        },
-        {
-          id: 'cestel',
-          name: 'CESTEL',
-          meta: '2023 · Cinema 4D · Product visualization',
-          desc: 'Industrial product film for CESTEL — material work, animation, and post.',
-          // Animated WebP — loops naturally inside <img>; no <video> needed.
-          thumb: 'Images/Cestel_project/cestel_anim_02.webp',
-          video: '',
-        },
-        {
-          id: 'accbox',
-          name: 'AccountingBox',
-          meta: '2024 · Brand · UI motion',
-          desc: 'Identity, motion, and product UI for an accounting platform — concept to delivery.',
-          thumb: 'Images/AccountingBox/Podjetja_cover.webp',
-          video: 'Images/AccountingBox/intro.webm',
-        },
-      ];
-
-      const CYCLE_MS = 5500;
-      const SLIDE_MS = 500;
-      let idx = 0;
-      let cycleTimer = null;
-      let hovered = false;
-      let activeFrame = null;
-      let activeVideo = null;
-      let isSwapping = false;
-
-      function isVideoSrc(s) { return /\.(webm|mp4|mov)$/i.test(s || ''); }
-
-      function buildFrame(p) {
-        const frame = document.createElement('div');
-        frame.className = 'recent-card-frame';
-        frame.dataset.projId = p.id;
-
-        // Two media elements:
-        //   .recent-card-thumb — animated; small, top-left (collapsed)
-        //   .recent-card-cover — static still; full-card (expanded)
-        // Hover crossfades: thumb fades out, static cover fades in.
-        let thumb;
-        if (isVideoSrc(p.video)) {
-          thumb = document.createElement('video');
-          thumb.muted = true; thumb.loop = true; thumb.playsInline = true;
-          thumb.preload = 'metadata';
-          thumb.autoplay = true;
-          thumb.src = p.video;
-          thumb.setAttribute('aria-hidden', 'true');
-        } else if (p.video) {
-          // Animated WebP fed via the `video` slot
-          thumb = document.createElement('img');
-          thumb.src = p.video;
-          thumb.alt = p.name;
-        } else {
-          // No animation — fall back to the static thumb
-          thumb = document.createElement('img');
-          thumb.src = p.thumb;
-          thumb.alt = p.name;
-        }
-        thumb.className = 'recent-card-thumb';
-        frame.appendChild(thumb);
-
-        // Static cover image — visible only in expanded (hover) state.
-        const cover = document.createElement('img');
-        cover.className = 'recent-card-cover';
-        cover.src = p.thumb;
-        cover.alt = p.name;
-        frame.appendChild(cover);
-
-        const body = document.createElement('div');
-        body.className = 'recent-card-body';
-        body.innerHTML = `
-          <span class="recent-card-label">// Recent work</span>
-          <span class="recent-card-name"></span>
-          <span class="recent-card-meta"></span>
-          <span class="recent-card-desc"></span>
-        `;
-        body.querySelector('.recent-card-name').textContent = p.name;
-        body.querySelector('.recent-card-meta').textContent = p.meta;
-        body.querySelector('.recent-card-desc').textContent = p.desc;
-        frame.appendChild(body);
-
-        // Card hover state on this frame's video / thumb is governed by
-        // the .recent-card:hover selector — nothing to wire per-frame.
-        return frame;
-      }
-
-      function applyProject(p) {
-        card.href = `grid.html#project=${p.id}`;
-      }
-
-      function tryPlay(v) {
-        if (!v) return;
-        try { v.currentTime = 0; const r = v.play(); if (r && r.catch) r.catch(() => {}); } catch {}
-      }
-
-      function mountFirst() {
-        const p = PROJECTS[idx];
-        const frame = buildFrame(p);
-        track.appendChild(frame);
-        activeFrame = frame;
-        activeVideo = frame.querySelector('video.recent-card-thumb');
-        applyProject(p);
-      }
-
-      // Slide direction: +1 = next (slides UP — new from below, old to top)
-      //                  -1 = prev (slides DOWN — new from above, old to bottom)
-      function slideTo(newIdx, dir) {
-        if (isSwapping) return;
-        if (newIdx === idx) return;
-        isSwapping = true;
-        idx = newIdx;
-        const p = PROJECTS[idx];
-
-        const incoming = buildFrame(p);
-        // CSS @keyframes auto-fire when the class is applied — no rAF needed.
-        const enterClass = dir > 0 ? 'is-enter-up' : 'is-enter-down';
-        const leaveClass = dir > 0 ? 'is-leave-up' : 'is-leave-down';
-        incoming.classList.add(enterClass);
-        track.appendChild(incoming);
-        if (activeFrame) activeFrame.classList.add(leaveClass);
-
-        const oldFrame = activeFrame;
-        const oldVideo = activeVideo;
-        activeFrame = incoming;
-        activeVideo = incoming.querySelector('video.recent-card-thumb');
-        applyProject(p);
-
-        // Start playing the new video if hovered
-        if (hovered) tryPlay(activeVideo);
-        try { if (oldVideo) oldVideo.pause(); } catch {}
-
-        setTimeout(() => {
-          if (oldFrame && oldFrame.parentNode) oldFrame.parentNode.removeChild(oldFrame);
-          isSwapping = false;
-        }, SLIDE_MS + 30);
-      }
-
-      function tick() {
-        if (hovered || document.hidden) return;
-        const next = (idx + 1) % PROJECTS.length;
-        slideTo(next, +1);
-      }
-
-      function startCycle() {
-        if (cycleTimer) clearInterval(cycleTimer);
-        cycleTimer = setInterval(tick, CYCLE_MS);
-      }
-      function stopCycle() {
-        if (cycleTimer) { clearInterval(cycleTimer); cycleTimer = null; }
-      }
-
-      mountFirst();
-      startCycle();
-
-      card.addEventListener('mouseenter', () => {
-        hovered = true;
-        tryPlay(activeVideo);
-      });
-      card.addEventListener('mouseleave', () => {
-        hovered = false;
-        try { if (activeVideo) activeVideo.pause(); } catch {}
-      });
-
-      // Wheel cycling: scroll down → next (slide left), up → prev (slide right).
-      // Wheel handler intentionally absent — wheel always scrolls the page,
-      // never gets captured by the card. Auto-cycle handles project rotation.
-
-      // On touch devices the first tap expands the card (since hover
-      // doesn't really apply); a second tap then opens the project.
-      const isTouch = window.matchMedia('(hover: none)').matches;
-      card.addEventListener('click', (e) => {
-        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
-        if (isTouch && !card.classList.contains('is-expanded')) {
-          e.preventDefault();
-          card.classList.add('is-expanded');
-          tryPlay(activeVideo);
-          return;
-        }
-        if (typeof window.openProject === 'function') {
-          e.preventDefault();
-          window.openProject(PROJECTS[idx].id);
-        }
-      });
-
-      // Tap outside while expanded → collapse.
-      if (isTouch) {
-        document.addEventListener('click', (e) => {
-          if (!card.classList.contains('is-expanded')) return;
-          if (card.contains(e.target)) return;
-          card.classList.remove('is-expanded');
-          try { if (activeVideo) activeVideo.pause(); } catch {}
-        });
-      }
-
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) stopCycle();
-        else startCycle();
-      });
-    })();
-
-    // Services panel: hovering a service swaps description + small
-    // recent-project preview (cover + animation + name + project link).
-    (function () {
-      const desc = document.getElementById('servicesDesc');
-      if (!desc) return;
-      const items = document.querySelectorAll('.services-item');
-      const link = document.getElementById('servicesProjLink');
-      const img = document.getElementById('servicesProjImg');
-      const vid = document.getElementById('servicesProjVid');
-      const nameEl = document.getElementById('servicesProjName');
-      const defaultDesc = desc.textContent;
-      const defaultName = nameEl ? nameEl.textContent : '';
-      const defaultThumb = (link && link.style.display !== 'none') ? '' : '';
-
-      function clearPreview() {
-        items.forEach(i => i.classList.remove('is-active'));
-        desc.textContent = defaultDesc;
-        if (img) img.removeAttribute('src');
-        if (vid) { try { vid.pause(); } catch {}; vid.removeAttribute('src'); vid.style.display = 'none'; }
-        if (link) {
-          link.style.visibility = 'hidden';
-          link.removeAttribute('href');
-          link.setAttribute('tabindex', '-1');
-          link.setAttribute('aria-hidden', 'true');
-        }
-        if (nameEl) nameEl.textContent = defaultName;
-      }
-
-      function isVideoSrc(s) { return /\.(webm|mp4|mov)$/i.test(s || ''); }
-
-      function setPreview(el) {
-        items.forEach(i => i.classList.remove('is-active'));
-        el.classList.add('is-active');
-        desc.textContent = el.getAttribute('data-desc') || '';
-
-        const projId = el.getAttribute('data-proj') || '';
-        const projHref = el.getAttribute('data-proj-href') || (projId ? `grid.html#project=${projId}` : '');
-        const projName = el.getAttribute('data-proj-name') || '';
-        const projThumb = el.getAttribute('data-proj-thumb') || '';
-        const projVideo = el.getAttribute('data-proj-video') || '';
-
-        if (img) {
-          if (projThumb) img.src = projThumb;
-          else img.removeAttribute('src');
-        }
-        if (vid) {
-          try { vid.pause(); } catch {}
-          if (isVideoSrc(projVideo)) {
-            vid.src = projVideo;
-            vid.style.display = '';
-            try { vid.currentTime = 0; vid.play().catch(() => {}); } catch {}
-          } else {
-            vid.removeAttribute('src');
-            vid.style.display = 'none';
-          }
-        }
-        if (link) {
-          if (projHref) {
-            link.href = projHref;
-            link.style.visibility = 'visible';
-            link.removeAttribute('tabindex');
-            link.removeAttribute('aria-hidden');
-          } else {
-            link.style.visibility = 'hidden';
-          }
-        }
-        if (nameEl) {
-          nameEl.textContent = projName ? `↳ ${projName}` : '';
-        }
-      }
-
-      // Subtle letter scramble on item hover: each char briefly cycles
-      // through random letters (case-matched) before settling on the real one.
-      const LOWER = 'abcdefghijklmnopqrstuvwxyz';
-      const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      function pickGlyphFor(ch) {
-        if (/[A-Z]/.test(ch)) return UPPER[(Math.random() * 26) | 0];
-        if (/[a-z]/.test(ch)) return LOWER[(Math.random() * 26) | 0];
-        return ch;
-      }
-      const scrambleState = new WeakMap();
-      function startScramble(el) {
-        const original = el.dataset.label || el.textContent;
-        if (!el.dataset.label) el.dataset.label = original;
-        const prev = scrambleState.get(el);
-        if (prev) cancelAnimationFrame(prev.raf);
-        const len = original.length;
-        const startTimes = new Array(len);
-        const total = 260;
-        for (let i = 0; i < len; i++) {
-          startTimes[i] = (i / Math.max(len - 1, 1)) * 140;
-        }
-        const t0 = performance.now();
-        const state = { raf: 0, alive: true };
-        function tick(now) {
-          if (!state.alive) return;
-          const elapsed = now - t0;
-          let out = '';
-          let allDone = true;
-          for (let i = 0; i < len; i++) {
-            const local = elapsed - startTimes[i];
-            if (local < 0) {
-              out += pickGlyphFor(original[i]);
-              allDone = false;
-            } else if (local < 100) {
-              out += pickGlyphFor(original[i]);
-              allDone = false;
-            } else {
-              out += original[i];
-            }
-          }
-          el.textContent = out;
-          if (!allDone && elapsed < total + 100) {
-            state.raf = requestAnimationFrame(tick);
-          } else {
-            el.textContent = original;
-          }
-        }
-        state.raf = requestAnimationFrame(tick);
-        scrambleState.set(el, state);
-      }
-      function stopScramble(el) {
-        const s = scrambleState.get(el);
-        if (s) { s.alive = false; cancelAnimationFrame(s.raf); }
-        if (el.dataset.label) el.textContent = el.dataset.label;
-      }
-
-      // Locked-in preset applied by clicking a service. Panel mouseleave
-      // restores this state instead of releasing back to base.
-      // (Coordinate labels are always-on now and aren't touched by presets.)
-      let lockedFlow = null;
-      let lockedShape = null;
-
-      function applyPreset(shape, flow) {
-        if (shape && typeof window.__coverShape === 'function') {
-          window.__coverShape(shape);
-          if (typeof window.__coverFlow === 'function') window.__coverFlow(null);
-        } else if (flow && typeof window.__coverFlow === 'function') {
-          window.__coverFlow(flow);
-          if (typeof window.__coverShape === 'function') window.__coverShape(null);
-        } else {
-          if (typeof window.__coverFlow === 'function') window.__coverFlow(null);
-          if (typeof window.__coverShape === 'function') window.__coverShape(null);
-        }
-      }
-
-      // Render the tags on the particle canvas itself — small mono labels
-      // attached to a handful of drifting particles.
-      function showServiceTags(rawTags) {
-        if (!rawTags) { hideServiceTags(); return; }
-        const parts = rawTags.split('|').map(s => s.trim()).filter(Boolean);
-        if (typeof window.__coverServiceTags === 'function') {
-          window.__coverServiceTags(parts);
-        }
-      }
-      function hideServiceTags() {
-        if (typeof window.__coverServiceTags === 'function') {
-          window.__coverServiceTags(null);
-        }
-      }
-
-      // Side project list — populated from data-projects on the clicked
-      // service item; pulls names + years from window.projects.
-      const projPanel = document.getElementById('serviceProjects');
-      const projTitleEl = document.getElementById('serviceProjectsTitle');
-      const projListEl = document.getElementById('serviceProjectsList');
-      const projCloseEl = document.getElementById('serviceProjectsClose');
-
-      // Active typewriter timers — cancelled if the panel is reopened
-      // for a different service.
-      const typeTimers = [];
-      function clearTypeTimers() {
-        while (typeTimers.length) clearTimeout(typeTimers.pop());
-      }
-      function typeLine(el, full, startDelay, charSpeed) {
-        el.textContent = '';
-        const t0 = setTimeout(() => {
-          let i = 0;
-          const step = () => {
-            el.textContent = full.slice(0, ++i);
-            if (i < full.length) {
-              const t = setTimeout(step, charSpeed);
-              typeTimers.push(t);
-            }
-          };
-          step();
-        }, startDelay);
-        typeTimers.push(t0);
-      }
-
-      function openServiceProjects(el) {
-        if (!projPanel || !projListEl) return;
-        clearTypeTimers();
-        const ids = (el.getAttribute('data-projects') || '')
-          .split('|').map(s => s.trim()).filter(Boolean);
-        const projects = window.projects || {};
-        const records = ids
-          .map(id => ({ id, p: projects[id] }))
-          .filter(r => r.p)
-          .sort((a, b) => (b.p.year || 0) - (a.p.year || 0));
-        const titleText = el.dataset.label || el.textContent;
-        if (projTitleEl) typeLine(projTitleEl, titleText, 0, 10);
-        projListEl.innerHTML = '';
-        if (!records.length) {
-          const li = document.createElement('li');
-          li.className = 'service-projects-item';
-          const span = document.createElement('span');
-          span.className = 'service-projects-link';
-          span.style.color = 'rgba(255,255,255,0.5)';
-          li.appendChild(span);
-          projListEl.appendChild(li);
-          typeLine(span, 'No archived projects yet.', 80, 8);
-        } else {
-          // Each line starts after the previous reaches a certain number
-          // of chars — keeps the cascade tight without waiting full lines.
-          let runningDelay = 80;
-          records.forEach((r) => {
-            const li = document.createElement('li');
-            li.className = 'service-projects-item';
-            const a = document.createElement('a');
-            a.className = 'service-projects-link';
-            a.href = `grid.html#project=${r.id}`;
-            a.addEventListener('click', (ev) => {
-              if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.button === 1) return;
-              if (typeof window.openProject === 'function') {
-                ev.preventDefault();
-                window.openProject(r.id);
-              }
-            });
-            const year = document.createElement('span');
-            year.className = 'service-projects-year';
-            year.style.opacity = '0';
-            year.style.transition = 'opacity 0.2s ease';
-            li.appendChild(a);
-            li.appendChild(year);
-            projListEl.appendChild(li);
-            const fullName = r.p.name || r.id;
-            const charSpeed = 6;
-            typeLine(a, fullName, runningDelay, charSpeed);
-            const totalLineMs = runningDelay + fullName.length * charSpeed;
-            // Year fades in once the name finishes typing.
-            const yearTimer = setTimeout(() => {
-              year.textContent = r.p.year ? String(r.p.year) : '';
-              year.style.opacity = '1';
-            }, totalLineMs + 20);
-            typeTimers.push(yearTimer);
-            // Next line starts after just a couple chars of this one for a
-            // tight rolling cascade.
-            runningDelay += Math.min(70, fullName.length * charSpeed * 0.4);
-          });
-        }
-        projPanel.setAttribute('aria-hidden', 'false');
-        projPanel.classList.add('is-open');
-      }
-      function closeServiceProjects() {
-        if (!projPanel) return;
-        clearTypeTimers();
-        projPanel.classList.remove('is-open');
-        projPanel.setAttribute('aria-hidden', 'true');
-      }
-      if (projCloseEl) projCloseEl.addEventListener('click', closeServiceProjects);
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeServiceProjects();
-      });
-
-      items.forEach((el) => {
-        el.dataset.label = el.textContent;
-        el.addEventListener('mouseenter', () => {
-          setPreview(el);
-          startScramble(el);
-          applyPreset(el.getAttribute('data-cover-shape'), el.getAttribute('data-flow'));
-          showServiceTags(el.getAttribute('data-tags'));
-        });
-        el.addEventListener('mouseleave', () => stopScramble(el));
-
-        // Click → commit this service's preset, close dropdown, open
-        // the side project list.
-        el.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          const shape = el.getAttribute('data-cover-shape');
-          const flow = el.getAttribute('data-flow');
-          lockedShape = shape || null;
-          lockedFlow = shape ? null : (flow || null);
-          applyPreset(lockedShape, lockedFlow);
-          const services = document.getElementById('servicesPin');
-          if (services) services.classList.remove('is-open');
-          openServiceProjects(el);
-        });
-      });
-
-      // Click toggle on the Services label — open/close the dropdown.
-      const services = document.getElementById('servicesPin');
-      const label = services ? services.querySelector('.services-label') : null;
-      if (label && services) {
-        label.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          services.classList.toggle('is-open');
-        });
-      }
-      // Click outside closes the panel.
-      document.addEventListener('click', (e) => {
-        if (!services || !services.classList.contains('is-open')) return;
-        if (services.contains(e.target)) return;
-        services.classList.remove('is-open');
-        clearPreview();
-        hideServiceTags();
-        applyPreset(lockedShape, lockedFlow);
-      });
-      // Escape closes too.
-      document.addEventListener('keydown', (e) => {
-        if (e.key !== 'Escape') return;
-        if (!services || !services.classList.contains('is-open')) return;
-        services.classList.remove('is-open');
-        clearPreview();
-        hideServiceTags();
-        applyPreset(lockedShape, lockedFlow);
-      });
-
-      // Click on the preview thumb opens the project overlay on home (no nav).
-      if (link) {
-        link.addEventListener('click', (e) => {
-          if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
-          const projId = (document.querySelector('.services-item.is-active') || {}).getAttribute
-            ? document.querySelector('.services-item.is-active').getAttribute('data-proj')
-            : '';
-          if (projId && typeof window.openProject === 'function') {
+        const el = document.createElement('a');
+        el.className = 'story';
+        el.href = 'grid.html#project=' + id;   // graceful fallback
+        el.setAttribute('aria-label', p.name || id);
+        el.innerHTML =
+          '<span class="story-media">' + mediaHtml + '</span>' +
+          '<span class="story-meta">' +
+            (p.year ? '<span class="story-year">' + p.year + '</span>' : '') +
+            '<span class="story-title">' + (p.name || id) + '</span>' +
+            '<span class="story-desc">' + brief + '</span>' +
+            (cat ? '<span class="story-tags">' + cat + '</span>' : '') +
+          '</span>';
+        el.addEventListener('click', function (e) {
+          if (typeof window.openProject === 'function') {
             e.preventDefault();
-            window.openProject(projId);
+            window.openProject(id);
           }
         });
+        wrap.appendChild(el);
+      });
+      initParallax();
+    }
+
+    // Classic parallax: each project image drifts vertically inside its frame
+    // based on how far the story is through the viewport. Driven by the CSS
+    // `--py` custom property (feeds `translate`), rAF-throttled on scroll.
+    function initParallax() {
+      const imgs = Array.prototype.slice.call(
+        document.querySelectorAll('.story-media img, .story-media video')
+      );
+      if (!imgs.length) return;
+      const RANGE = 7; // max ±% shift (stays within the base scale overflow)
+      let ticking = false;
+      function update() {
+        ticking = false;
+        const vh = window.innerHeight || document.documentElement.clientHeight;
+        for (let k = 0; k < imgs.length; k++) {
+          const media = imgs[k].parentNode;
+          const r = media.getBoundingClientRect();
+          if (r.bottom < -240 || r.top > vh + 240) continue; // skip off-screen
+          const center = r.top + r.height / 2;
+          let p = (center - vh / 2) / (vh / 2 + r.height / 2);
+          if (p > 1) p = 1; else if (p < -1) p = -1;
+          imgs[k].style.setProperty('--py', (-p * RANGE).toFixed(2) + '%');
+        }
       }
+      function onScroll() {
+        if (!ticking) { ticking = true; requestAnimationFrame(update); }
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      update();
+    }
 
-      clearPreview(); // initial state
-    })();
+    // projects.js / overlay.js are deferred; wait for DOM + a tick so
+    // window.projects is populated.
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => setTimeout(build, 0));
+    } else {
+      setTimeout(build, 0);
+    }
+  })();
 
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    document.addEventListener('dragstart', e => e.preventDefault());
+  // Footer reveal — footer.css keeps footer text hidden until body has
+  // .footer-visible. Toggle it when the footer scrolls into view.
+  (function initFooterReveal() {
+    const footer = document.querySelector('.site-footer');
+    if (!footer) return;
+    const obs = new IntersectionObserver((entries) => {
+      const visible = entries.some(e => e.isIntersecting);
+      document.body.classList.toggle('footer-visible', visible);
+    }, { threshold: 0.05 });
+    obs.observe(footer);
+  })();
+
+  // Statement — scroll-driven word reveal: words shift from faint grey to
+  // near-black as the section scrolls up through the viewport.
+  (function initReveal() {
+    const container = document.querySelector('.reveal-text');
+    if (!container) return;
+    const section = container.closest('.home-statement');
+    const words = [];
+    container.querySelectorAll('p').forEach((p) => {
+      const text = p.textContent;
+      p.textContent = '';
+      text.split(/(\s+)/).forEach((tok) => {
+        if (/^\s+$/.test(tok)) {
+          p.appendChild(document.createTextNode(tok));
+        } else if (tok) {
+          const span = document.createElement('span');
+          span.className = 'reveal-word';
+          span.textContent = tok;
+          p.appendChild(span);
+          words.push(span);
+        }
+      });
+    });
+    if (!words.length) return;
+
+    let ticking = false;
+    function update() {
+      ticking = false;
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      const rect = container.getBoundingClientRect();
+      const start = vh * 0.95;   // text top near bottom of viewport → progress 0
+      const end = vh * 0.10;     // text top near top of viewport   → progress 1
+      let p = (start - rect.top) / (start - end);
+      if (p < 0) p = 0; else if (p > 1) p = 1;
+      const lit = Math.round(p * words.length);
+      for (let i = 0; i < words.length; i++) {
+        words[i].classList.toggle('lit', i < lit);
+      }
+    }
+    function onScroll() {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
+  })();
+
+  // Contact popup — "Get in touch" (cover) and "Start a project" (nav) open a
+  // modal on the home page instead of navigating to the About page.
+  (function initContact() {
+    const overlay = document.getElementById('contactOverlay');
+    if (!overlay) return;
+    function open(e) {
+      if (e) e.preventDefault();
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden', 'false');
+      const first = overlay.querySelector('input[name="name"]');
+      setTimeout(() => { if (first) first.focus(); }, 180);
+    }
+    function close() {
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden', 'true');
+    }
+    document.querySelectorAll('.cover-contact, .site-nav-cta').forEach(o =>
+      o.addEventListener('click', open)
+    );
+    const closeBtn = document.getElementById('contactClose');
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && overlay.classList.contains('open')) close();
+    });
+
+    const form = document.getElementById('contactFormEl');
+    if (form) form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const note = document.getElementById('contactNote');
+      const btn = form.querySelector('.hc-submit');
+      btn.textContent = 'Sending…';
+      btn.disabled = true;
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+        if (res.ok) {
+          note.textContent = "Message sent! I'll get back to you soon.";
+          note.style.color = '#16a34a';
+          form.reset();
+        } else {
+          note.textContent = 'Something went wrong. Try again.';
+          note.style.color = '#dc2626';
+        }
+      } catch (err) {
+        note.textContent = 'Network error. Try again.';
+        note.style.color = '#dc2626';
+      }
+      btn.textContent = 'Send message';
+      btn.disabled = false;
+    });
+  })();
   </script>
 </body>
 </html>
