@@ -1623,3 +1623,8 @@ body.scroll-locked .site-footer {
   .cp-section { gap: 6px; }
   .cp-row-label { width: 38px; font-size: 0.54rem; }
 }
+
+/* The control panel is switched off (the `hidden` attribute in grid.html).
+   Its own rules set `display`, which would otherwise win over `hidden`. */
+.control-panel[hidden],
+.cp-handle[hidden] { display: none !important; }

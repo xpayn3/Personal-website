@@ -14,6 +14,13 @@
   cursor: default;
   -webkit-tap-highlight-color: transparent;
 }
+/* The line is for playing with, not for selecting: a double click or a drag
+   across it would paint a selection over words that are mid-performance. */
+.about-statement {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
 /* a faint dotted line says "this one does something" */
 .pw-hint {
   text-decoration: underline dotted;
@@ -119,7 +126,7 @@
   70% { transform: translateY(0.06em); }
 }
 
-/* ---- 3D: a wireframe cube that turns; drag it to spin it yourself ---- */
+/* ---- 3D: a solid black cube that turns; drag it to spin it yourself ---- */
 .pw-cube-wrap {
   display: inline-block;
   width: 0.62em;
@@ -141,24 +148,35 @@
 }
 .pw-cube.is-held { animation: none; cursor: grabbing; }
 :is(.pw-3d:hover, .is-live .pw-3d) .pw-cube:not(.is-held) { animation-duration: 3s; }
+/* Each face is a different black, as if lit from above and a little to the
+   left: the top catches the most light, the sides fall off, the underside
+   is darkest. A soft gradient across each face and a hairline of light on
+   its edges keep the shape readable when two faces are nearly the same tone. */
 .pw-cube i {
   position: absolute;
   inset: 0;
-  border: 0.055em solid var(--ink);
-  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 55%, rgba(0, 0, 0, 0.28)),
+    var(--face, #121214);
+  box-shadow: inset 0 0 0 0.012em rgba(255, 255, 255, 0.16);
+  backface-visibility: hidden;
 }
-.pw-cube i:nth-child(1) { transform: translateZ(0.31em); }
-.pw-cube i:nth-child(2) { transform: rotateY(180deg) translateZ(0.31em); }
-.pw-cube i:nth-child(3) { transform: rotateY(90deg) translateZ(0.31em); }
-.pw-cube i:nth-child(4) { transform: rotateY(-90deg) translateZ(0.31em); }
-.pw-cube i:nth-child(5) { transform: rotateX(90deg) translateZ(0.31em); }
-.pw-cube i:nth-child(6) { transform: rotateX(-90deg) translateZ(0.31em); }
+.pw-cube i:nth-child(1) { --face: #1b1b1e; transform: translateZ(0.31em); }                   /* front */
+.pw-cube i:nth-child(2) { --face: #0e0e10; transform: rotateY(180deg) translateZ(0.31em); }   /* back */
+.pw-cube i:nth-child(3) { --face: #0a0a0b; transform: rotateY(90deg) translateZ(0.31em); }    /* right */
+.pw-cube i:nth-child(4) { --face: #26262a; transform: rotateY(-90deg) translateZ(0.31em); }   /* left */
+.pw-cube i:nth-child(5) { --face: #3b3b40; transform: rotateX(90deg) translateZ(0.31em); }    /* top */
+.pw-cube i:nth-child(6) { --face: #000000; transform: rotateX(-90deg) translateZ(0.31em); }   /* underside */
 @keyframes pw-spin {
   from { transform: rotateX(-24deg) rotateY(0deg); }
   to { transform: rotateX(-24deg) rotateY(360deg); }
 }
 
-/* ---- worlds: the "o" stretches into an orbit ---- */
+/* ---- worlds: an orbit opens around the "o" ----
+   The "o" itself keeps its size, so the word never gets wider and the
+   sentence does not re-wrap. The orbit and its moon are drawn over the
+   neighbouring letters instead. The "o" is tilted (which does not show on a
+   circle) so that everything drawn inside it is tilted with it. */
 .pw-o {
   position: relative;
   display: inline-block;
@@ -167,27 +185,44 @@
   margin: 0 0.035em;
   border: 0.085em solid currentColor;
   border-radius: 999px;
-  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  rotate: -14deg;
 }
+.pw-o::before,
 .pw-o::after {
   content: '';
   position: absolute;
+  left: 50%;
   top: 50%;
-  left: 0.06em;
-  width: 0.13em;
-  height: 0.13em;
   border-radius: 50%;
-  background: currentColor;
-  translate: 0 -50%;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  pointer-events: none;
+  transition: opacity 0.3s ease, scale 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
-:is(.pw-world:hover, .pw-world.is-on, .is-live .pw-world) .pw-o { width: 1.5em; }
+/* the orbit */
+.pw-o::before {
+  width: 1.7em;
+  height: 0.6em;
+  border: 0.045em solid currentColor;
+  translate: -50% -50%;
+  scale: 0.3;
+}
+/* the moon: side to side and up and down a quarter turn apart, which is a
+   trip round the orbit */
+.pw-o::after {
+  width: 0.15em;
+  height: 0.15em;
+  margin: -0.075em 0 0 -0.075em;
+  background: currentColor;
+}
+:is(.pw-world:hover, .pw-world.is-on, .is-live .pw-world) .pw-o::before { opacity: 1; scale: 1; }
 :is(.pw-world:hover, .pw-world.is-on, .is-live .pw-world) .pw-o::after {
   opacity: 1;
-  animation: pw-orbit 1.4s ease-in-out infinite alternate;
+  animation:
+    pw-orbit-x 1.5s ease-in-out infinite alternate,
+    pw-orbit-y 1.5s ease-in-out -0.75s infinite alternate;
 }
-@keyframes pw-orbit { to { left: calc(100% - 0.19em); } }
+@keyframes pw-orbit-x { from { left: calc(50% - 0.85em); } to { left: calc(50% + 0.85em); } }
+@keyframes pw-orbit-y { from { top: calc(50% - 0.3em); } to { top: calc(50% + 0.3em); } }
 
 /* ---- touch: it gives when pressed, and ripples ---- */
 .pw-touch { transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -227,25 +262,46 @@
 .pw-blur { filter: blur(0.07em); transition: filter 0.55s ease; }
 :is(.pw-blur:hover, .pw-blur.is-on, .is-live .pw-blur) { filter: blur(0); }
 
-/* ---- legible: under a magnifying glass ---- */
-.pw-zoom {
-  z-index: 1;
-  transform-origin: 50% 62%;
-  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.pw-zoom::after {
-  content: '';
+/* ---- legible: under a magnifying glass ----
+   A round lens follows the pointer over the word (statement.js: "the
+   lens"). It holds a second set of the word's letters, which the script
+   draws magnified and bent as glass would bend them; the word underneath
+   stays as it is. This is only how the glass and its letters look. */
+.pw-zoom { z-index: 2; cursor: zoom-in; }
+.pw-zoom i { display: inline-block; font-style: normal; }
+.pw-lens {
   position: absolute;
-  inset: -0.02em -0.22em -0.08em;
-  border: 0.035em solid currentColor;
-  border-radius: 999px;
-  background: var(--bg);
-  z-index: -1;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  width: 2.5em;
+  height: 2.5em;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 0.028em solid color-mix(in srgb, currentColor 80%, transparent);
+  /* nearly opaque glass with a soft highlight: what is behind it only ghosts through */
+  background:
+    radial-gradient(circle at 30% 22%, color-mix(in srgb, #ffffff 70%, transparent) 0, transparent 36%),
+    color-mix(in srgb, var(--bg) 93%, transparent);
+  -webkit-backdrop-filter: blur(0.1em);
+  backdrop-filter: blur(0.1em);
+  box-shadow:
+    0 0.18em 0.55em color-mix(in srgb, currentColor 18%, transparent),
+    inset 0 -0.16em 0.36em color-mix(in srgb, currentColor 10%, transparent),
+    inset 0 0 0 0.05em color-mix(in srgb, var(--bg) 70%, transparent);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  pointer-events: none;
+  will-change: transform, opacity;
 }
-:is(.pw-zoom:hover, .pw-zoom.is-on, .is-live .pw-zoom) { transform: scale(1.42); }
-:is(.pw-zoom:hover, .pw-zoom.is-on, .is-live .pw-zoom)::after { opacity: 1; }
+/* a magnified letter: sized and placed by the script */
+.pw-lens span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  text-align: center;
+  white-space: pre;
+  will-change: transform;
+}
 
 /* ---- trustworthy: a padlock slides in and clicks shut ---- */
 .pw-lock svg {

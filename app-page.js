@@ -168,127 +168,39 @@
     window.addEventListener('pointercancel', release);
   }
 
-  // ---- pictures: paging and full screen -----------------------------------
-  const SVG_ICONS = {
-    prev: 'M14.5 5.5L8 12l6.5 6.5',
-    next: 'M9.5 5.5L16 12l-6.5 6.5',
-    expand: 'M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5',
-    close: 'M6 6l12 12M18 6L6 18',
-  };
-  function iconButton(name, label, className) {
-    const button = el('button', className);
-    button.type = 'button';
-    button.setAttribute('aria-label', label);
-    const svg = document.createElementNS(NS, 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.setAttribute('aria-hidden', 'true');
-    const path = document.createElementNS(NS, 'path');
-    path.setAttribute('d', SVG_ICONS[name]);
-    svg.append(path);
-    button.append(svg);
-    return button;
-  }
+  // ---- pictures: page dots and full screen ---------------------------------
+  // Nothing to press: a strip is moved by dragging (or touch), a row of dots
+  // under it shows where you are, and a click on a picture opens it in the
+  // lightbox.
 
-  // Full screen: one picture at a time over the whole window, with arrows, a
-  // counter and its caption. Built on first use and shared by every strip.
-  // Left / right arrow keys page through; Escape or a click beside the
-  // picture closes it.
-  let viewer = null;
-  function openViewer(items, index) {
-    if (!viewer) {
-      const dialog = el('dialog', 'app-viewer');
-      dialog.setAttribute('aria-label', 'Pictures, full screen');
-      const count = el('span', 'app-viewer-count');
-      const close = iconButton('close', 'Close', 'app-viewer-btn');
-      const bar = el('div', 'app-viewer-bar');
-      bar.append(count, close);
-      const stage = el('div', 'app-viewer-stage');
-      const img = el('img');
-      const prev = iconButton('prev', 'Previous picture', 'app-viewer-btn is-prev');
-      const next = iconButton('next', 'Next picture', 'app-viewer-btn is-next');
-      stage.append(img, prev, next);
-      const caption = el('p', 'app-viewer-caption');
-      dialog.append(bar, stage, caption);
-      document.body.append(dialog);
-
-      viewer = { dialog, img, count, caption, prev, next, items: [], index: 0 };
-      viewer.show = (i) => {
-        const n = viewer.items.length;
-        viewer.index = (i + n) % n;
-        const [src, text] = viewer.items[viewer.index];
-        Object.assign(img, { src, alt: `${app.title}: ${text}` });
-        // restart the little pop each time the picture changes
-        img.classList.remove('is-in');
-        void img.offsetWidth;
-        img.classList.add('is-in');
-        caption.textContent = text;
-        count.textContent = `${viewer.index + 1} / ${n}`;
-        prev.hidden = next.hidden = n < 2;
-      };
-      prev.addEventListener('click', () => viewer.show(viewer.index - 1));
-      next.addEventListener('click', () => viewer.show(viewer.index + 1));
-      close.addEventListener('click', () => dialog.close());
-      dialog.addEventListener('click', (e) => { if (e.target === dialog || e.target === stage) dialog.close(); });
-      dialog.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') viewer.show(viewer.index - 1);
-        if (e.key === 'ArrowRight') viewer.show(viewer.index + 1);
-      });
-      dialog.addEventListener('close', () => { document.documentElement.style.overflow = ''; });
-    }
-    viewer.items = items;
-    viewer.show(index);
-    document.documentElement.style.overflow = 'hidden';   // the page stays put behind it
-    viewer.dialog.showModal();
-  }
-
-  // Classic paging for a strip: previous, a numbered button per picture,
-  // next, and a full-screen button. It follows the strip however it is moved
-  // (buttons, drag, touch or wheel).
-  function pager(strip, items) {
-    const nav = el('nav', 'app-pager');
-    nav.setAttribute('aria-label', 'Pictures');
+  // The dots for a strip: one per picture, the lit one following the strip
+  // however it is moved. Call .sync() once the strip is in the page.
+  function dots(strip) {
     const figs = [...strip.children];
+    const row = el('div', 'app-dots');
+    row.setAttribute('aria-hidden', 'true');
+    const marks = figs.map(() => row.appendChild(el('i')));
     const leftOf = (fig) => fig.offsetLeft - strip.offsetLeft;
-    const current = () => {
+    row.sync = () => {
       const max = strip.scrollWidth - strip.clientWidth;
-      if (max <= 0) return 0;
-      if (strip.scrollLeft >= max - 2) return figs.length - 1;
-      let best = 0;
-      figs.forEach((fig, i) => {
-        if (Math.abs(leftOf(fig) - strip.scrollLeft) < Math.abs(leftOf(figs[best]) - strip.scrollLeft)) best = i;
+      let now = 0;
+      if (max > 0 && strip.scrollLeft >= max - 2) now = figs.length - 1;
+      else figs.forEach((fig, i) => {
+        if (Math.abs(leftOf(fig) - strip.scrollLeft) < Math.abs(leftOf(figs[now]) - strip.scrollLeft)) now = i;
       });
-      return best;
+      marks.forEach((mark, i) => mark.classList.toggle('is-active', i === now));
     };
-    const go = (i) => strip.scrollTo({ left: leftOf(figs[Math.max(0, Math.min(figs.length - 1, i))]), behavior: 'smooth' });
+    strip.addEventListener('scroll', row.sync, { passive: true });
+    return row;
+  }
 
-    const expand = iconButton('expand', 'View full screen', 'app-pager-expand');
-    expand.addEventListener('click', () => openViewer(items, current()));
-    if (figs.length < 2) { nav.append(expand); return nav; }
-
-    const prev = iconButton('prev', 'Previous picture');
-    const next = iconButton('next', 'Next picture');
-    const pages = figs.map((fig, i) => {
-      const button = el('button', '', String(i + 1));
-      button.type = 'button';
-      button.setAttribute('aria-label', `Picture ${i + 1} of ${figs.length}`);
-      button.addEventListener('click', () => go(i));
-      return button;
-    });
-    prev.addEventListener('click', () => go(current() - 1));
-    next.addEventListener('click', () => go(current() + 1));
-    const sync = () => {
-      const now = current();
-      pages.forEach((button, i) => {
-        button.classList.toggle('is-active', i === now);
-        if (i === now) button.setAttribute('aria-current', 'true'); else button.removeAttribute('aria-current');
-      });
-      prev.disabled = now === 0;
-      next.disabled = now === figs.length - 1;
-    };
-    strip.addEventListener('scroll', sync, { passive: true });
-    sync();
-    nav.append(prev, ...pages, next, expand);
-    return nav;
+  // Full screen: the site's own lightbox (overlay.js), the same one the
+  // project pages and the Lab open, so pictures look and behave alike
+  // everywhere. `items` are [image, caption] pairs.
+  function openViewer(items, index) {
+    if (typeof window.setLightboxItems !== 'function' || typeof window.openLightbox !== 'function') return;
+    window.setLightboxItems(items.map(([src]) => src), false);
+    window.openLightbox(index);
   }
 
   // ---- header: icon, name, buttons ----
@@ -319,8 +231,11 @@
     const strip = figures(app.shots, 'app-shots is-wide');
     const sec = section('Preview');
     sec.append(strip);
-    // built once the strip is in the page, so it can measure where it stands
-    sec.querySelector('.app-section-head').append(pager(strip, app.shots));
+    if (app.shots.length > 1) {
+      const row = dots(strip);
+      sec.append(row);
+      row.sync();
+    }
   }
 
   // ---- description + headline figures ----
@@ -342,10 +257,12 @@
   // ---- a closer look: big cards, a picture with an icon, a name and a line ----
   if (app.spotlights && app.spotlights.length) {
     const grid = el('div', 'app-spots');
-    app.spotlights.forEach(([name, line, image, hint]) => {
+    const pictures = app.spotlights.map(([name, , image]) => [image, name]);
+    app.spotlights.forEach(([name, line, image, hint], i) => {
       const card = el('figure');
       const img = el('img');
       Object.assign(img, { src: image, alt: `${app.title}: ${name}`, loading: 'lazy', decoding: 'async' });
+      img.addEventListener('click', () => openViewer(pictures, i));
       const caption = el('figcaption');
       caption.append(icon(name, hint), el('strong', '', name), el('span', '', line));
       card.append(img, caption);

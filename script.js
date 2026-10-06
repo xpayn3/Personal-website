@@ -804,6 +804,8 @@ if (wmEl) {
       document.activeElement.isContentEditable
     );
     if (inFormField) return;
+    const panel = document.getElementById('controlPanel');
+    if (!panel || panel.hidden) return;              // panel switched off: leave the keys alone
     if (e.key === '/' || ((e.ctrlKey || e.metaKey) && e.key === 'k')) {
       e.preventDefault();
       if (searchEl) searchEl.focus();
@@ -833,8 +835,11 @@ if (wmEl) {
   const panel = document.getElementById('controlPanel');
   const collapseBtn = document.getElementById('cpCollapse');
   const handle = document.getElementById('cpHandle');
+  // The panel is switched off when grid.html marks it `hidden`: then neither
+  // it nor its handle is ever shown.
+  const panelOff = !panel || panel.hidden;
   function setCollapsed(yes) {
-    if (!panel || !handle) return;
+    if (panelOff || !handle) return;
     panel.classList.toggle('is-collapsed', yes);
     // Keep the handle in the DOM and toggle a class so it can animate
     // its scale/opacity in time with the panel pinch.
@@ -848,7 +853,7 @@ if (wmEl) {
   }
   // Initial: panel collapsed by default — user opens it via the handle
   // when they want filters / layout / cols.
-  if (handle) handle.hidden = false;
+  if (handle && !panelOff) handle.hidden = false;
   setCollapsed(true);
   if (collapseBtn) collapseBtn.addEventListener('click', () => setCollapsed(true));
   if (handle) handle.addEventListener('click', () => setCollapsed(false));
