@@ -17,27 +17,24 @@
 html:has(body.page-grid),
 html:has(body.page-lab) { background: #000000; }
 
-/* ---- page title: one big word, then a row of small print ---- */
+/* ---- page title: a single row of small print, the page's name leading it ---- */
 .page-head {
   max-width: 1800px;
   margin: 0 auto;
-  padding: clamp(120px, 20vh, 220px) var(--g-gutter) 0;
+  padding: clamp(104px, 15vh, 160px) var(--g-gutter) 0;
   color: var(--g-ink);
 }
-.page-head-title {
-  font-family: var(--font-display);
-  font-size: clamp(3.25rem, 10vw, 9rem);
-  font-weight: 500;
-  letter-spacing: -0.045em;
-  line-height: 0.9;
-  margin-left: -0.04em;                   /* optical: flush with the tiles */
+.page-head-label {
+  display: inline;
+  font: inherit;
+  letter-spacing: inherit;
+  color: var(--g-ink);
 }
 .page-head-row {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: 24px;
-  margin-top: clamp(28px, 6vh, 64px);
   padding-bottom: 14px;
   font-size: 13px;
   letter-spacing: 0.08em;
