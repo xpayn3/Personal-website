@@ -14,6 +14,8 @@
 //   shots     screenshots: [image, caption] pairs (optional)
 //   gallery   small square pictures: [image, caption] pairs, titled by
 //             galleryTitle (optional)
+//   spotlights  "a closer look": big cards, each [name, a line about it,
+//             picture, icon name] (optional)
 //   about     paragraphs
 //   highlights  the headline cards: [big figure, a line about it] (optional)
 //   steps     how it works, in order: [name, a line about it] (optional)
@@ -33,8 +35,12 @@ window.labApps = [
     cover: 'Images/apps/meshoptimiser-viewer.webp',
     shots: [
       ['Images/apps/meshoptimiser-viewer.webp', 'The viewer: assembly tree, viewport, properties and actions'],
-      ['Images/apps/meshoptimiser-add.webp', 'Add menu: parametric shapes and DIN fasteners'],
-      ['Images/apps/meshoptimiser-open.webp', 'Open a model: STEP, GLB, GLTF, FBX, OBJ, 3MF or STL'],
+    ],
+    spotlights: [
+      ['Command palette', 'Every action in the app, searchable, with its shortcut beside it. Open it with Ctrl / ⌘ + K.', 'Images/apps/meshoptimiser-palette.webp', 'command'],
+      ['Parametric shapes and fasteners', 'Add cubes, tori and capsules, or DIN bolts, nuts, screws and washers, each with editable dimensions.', 'Images/apps/meshoptimiser-add.webp', 'cube'],
+      ['Open almost anything', 'Drop a STEP, GLB, GLTF, FBX, OBJ, 3MF or STL file, or start from an empty scene.', 'Images/apps/meshoptimiser-open.webp', 'upload'],
+      ['Tree, viewport, properties', 'Parts on the left, the model in the middle, and what is selected on the right: triangles, size, volume, shape parameters.', 'Images/apps/meshoptimiser-viewer.webp', 'tree'],
     ],
     stats: [['Version', '0.8.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
     about: [
@@ -145,25 +151,156 @@ window.labApps = [
     cover: 'Images/apps/windytree-editor.webp',
     shots: [
       ['Images/apps/windytree-editor.webp', 'The editor: a cherry tree with its trunk, shape and branching controls'],
-      ['Images/apps/windytree-species.webp', 'Pick a species to start from'],
+      ['Images/apps/windytree-oak.webp', 'The oak preset'],
     ],
     galleryTitle: 'Species presets',
     stats: [['Category', '3D tool'], ['Platform', 'Web'], ['Presets', '35'], ['Engine', 'WebGPU']],
     gallery: ['oak', 'willow', 'palm', 'baobab', 'japanesemaple', 'birch', 'pine', 'cherry', 'olive', 'redwood', 'ginkgo', 'cypress']
       .map(name => [`https://xpayn3.github.io/webtree/presets/${name}.png`, name === 'japanesemaple' ? 'Japanese maple' : name]),
     about: [
-      'Windy Tree is a real-time procedural tree generator built on WebGPU and Three.js. Sculpt branches, swap species, tune wind, and export your tree.',
+      'A real-time procedural tree generator. Sculpt branches, swap species, tune wind and light, then export your tree.',
+      'Nothing is modelled by hand. Trunk, bark, branching, leaves, moss and vines all come from parameters, and every one of them can be found from a single search box. It is built on WebGPU and Three.js and runs in the browser.',
     ],
-    features: [
-      ['35 species presets', 'Start from acacia, baobab, birch, ginkgo, Japanese maple, oak, olive, palm, redwood, willow and more.'],
-      ['Runs in the browser', 'Built on WebGPU and Three.js. Nothing to install: open the link.'],
-      ['Installable', 'Ships a web app manifest, so it can be added to a device like an app.'],
+    highlights: [
+      ['35', 'Species presets, in three families: broadleaf, conifer and bush.'],
+      ['180+', 'Parameters, from trunk lean to leaf wax sheen, all searchable.'],
+      ['4', 'Levels of detail per tree, exported together as one bundle.'],
+      ['0', 'Things to install. Open the link in a WebGPU browser.'],
     ],
+    spotlights: [
+      ['Pick a species', 'Start from one of 35 presets, grouped into broadleaf, conifer and bush, or reopen a recent tree.', 'Images/apps/windytree-species.webp', 'leaf'],
+      ['Sculpt mode', 'Reshape branches by hand with a right-drag. Wind and physics pause while you sculpt, and you can discard to undo everything in one go.', 'Images/apps/windytree-sculpt.webp', 'pointer'],
+      ['LOD editor', 'Build lower-detail versions of the tree, see the triangle count of each, and export the chain as one .glb bundle.', 'Images/apps/windytree-lod.webp', 'layers'],
+      ['Scene settings', 'Camera, environment and physics, renderer, shadows and post effects, plus your saved presets and mesh export.', 'Images/apps/windytree-scene.webp', 'sun'],
+    ],
+    steps: [
+      ['Pick a species', 'Choose a preset to start from, or begin with a blank custom tree.'],
+      ['Shape it', 'Tune the sliders for trunk, branching, foliage and bark, or switch to Sculpt and move branches by hand.'],
+      ['Export', 'Save a mesh, a level-of-detail bundle, a screenshot, or the preset itself.'],
+    ],
+    featureGroups: [
+      { title: 'The tree', items: [
+        ['Trunk', 'Height, lean, twist, taper, root flare, buttresses and knots.', 'tree'],
+        ['Branching levels', 'Each level has its own count, angles, forks, gravity and curve; add, copy or remove levels.', 'tree'],
+        ['Bark', 'Procedural fissures, bands, patches and grain, with moss on top.', 'mesh'],
+        ['Leaves and needles', 'Arrangement, size, droop and season, with a leaf material that has transmission and wax sheen.', 'leaf'],
+        ['Fruits, flowers and vines', 'Optional extras, plus dead-wood stubs and canopy dieback to age a tree.', 'spark'],
+        ['Crown and pruning', 'Crown silhouette, clean bole, pruning and gravity sag.', 'slice'],
+      ] },
+      { title: 'Shaping and motion', items: [
+        ['Sculpt mode', 'Right-drag branches to reshape them by hand, with undo.', 'pointer'],
+        ['Wind', 'Stiffness, damping, mass and wind response decide how each branch moves.', 'wind'],
+        ['Regenerate', 'A variation seed and one key (R) give a new tree from the same settings.', 'refresh'],
+        ['Your own leaves', 'Upload a leaf texture and use it on the tree.', 'upload'],
+      ] },
+      { title: 'Viewing', items: [
+        ['Light and sky', 'Sun direction, an HDR sky, and light and dark themes.', 'sun'],
+        ['Wireframe and spline views', 'See the mesh, or the tree as its underlying curves.', 'mesh'],
+        ['Scale reference', 'A 1.8 m human figure to judge size against.', 'eye'],
+        ['Command search', 'Fuzzy-search every parameter, species and action.', 'command'],
+      ] },
+      { title: 'Export', items: [
+        ['Mesh export', 'OBJ, or GLB / GLTF for the full mesh and scene.', 'download'],
+        ['LOD bundle', 'A chain of lower-detail versions in one .glb.', 'layers'],
+        ['Presets', 'Save your own with thumbnails, or copy a preset as JSON.', 'bookmark'],
+        ['PNG screenshot', 'Save the current view as a picture.', 'aperture'],
+        ['Installable', 'Ships a web app manifest, so it can be added to a device like an app.', 'phone'],
+      ] },
+    ],
+    start: {
+      text: 'Open the link in Chrome, Edge or Safari 18+, pick a species and start shaping. The controls:',
+      commands: [
+        ['Orbit', 'Drag'],
+        ['Zoom', 'Scroll'],
+        ['Bend a branch', 'Right-drag'],
+        ['Regenerate', 'R'],
+        ['Wireframe', 'W'],
+        ['Leaves on / off', 'L'],
+        ['Light / dark', 'T'],
+        ['All controls', '?'],
+      ],
+    },
     info: [
-      ['Platform', 'A WebGPU-capable browser'],
+      ['Platform', 'Chrome, Edge or Safari 18+ (needs WebGPU)'],
       ['Built with', 'WebGPU, Three.js'],
+      ['Exports', 'OBJ, GLB / GLTF, PNG, preset JSON'],
       ['First published', 'April 2026'],
       ['Source', 'github.com/xpayn3/webtree'],
+    ],
+  },
+  {
+    id: 'cycleiq',
+    title: 'CycleIQ',
+    subtitle: 'A cycling training dashboard, powered by intervals.icu.',
+    category: 'Fitness',
+    repo: 'https://github.com/xpayn3/cyclingHUB',
+    url: 'https://xpayn3.github.io/cyclingHUB/',
+    icon: 'https://xpayn3.github.io/cyclingHUB/icon-192.png',
+    cover: 'Images/apps/cycleiq-workouts.webp',
+    shots: [
+      ['Images/apps/cycleiq-workouts.webp', 'Workout Builder: recommended, indoor and outdoor sessions'],
+      ['Images/apps/cycleiq-routes.webp', 'Route Builder: plan a ride on a 3D terrain map'],
+    ],
+    stats: [['Category', 'Fitness'], ['Platform', 'Web · installable'], ['Pages', '22'], ['Badges', '28']],
+    about: [
+      'Track fitness, power and heart rate zones, and plan your training.',
+      'CycleIQ reads your rides from intervals.icu (and Strava) and turns them into a dashboard: training load, power analysis, goals and streaks, weather, a garage for your bikes, and builders for workouts and routes. Your credentials stay in your own browser.',
+    ],
+    highlights: [
+      ['22', 'Pages, from the dashboard to a lifetime heatmap of everywhere you have ridden.'],
+      ['28', 'Achievement badges, each a holographic 3D card you can spin.'],
+      ['Offline', 'Works without a connection after the first load, map tiles included.'],
+      ['4', 'Themes: dark, light, editorial and custom.'],
+    ],
+    spotlights: [
+      ['Workout Builder', 'Design intervals visually from warm-up, steady, interval, ramp and cool-down blocks, then export a Zwift .zwo file.', 'Images/apps/cycleiq-workouts.webp', 'pulse'],
+      ['Route Builder', 'Click to add waypoints on a 3D terrain map, get auto-routing on the road network and an elevation profile, and export GPX or FIT.', 'Images/apps/cycleiq-routes.webp', 'globe'],
+      ['Connect and sync', 'Link an intervals.icu account, use a setup link, or restore from a JSON backup. Only new activities are fetched after the first sync.', 'Images/apps/cycleiq-connect.webp', 'refresh'],
+    ],
+    featureGroups: [
+      { title: 'Training', items: [
+        ['Dashboard', 'Weekly stats, a fitness snapshot and recent rides in widgets you can reorder, hide and rearrange.', 'grid'],
+        ['Fitness and training load', 'CTL, ATL and TSB over any date range, FTP history, wellness insights and race prediction.', 'pulse'],
+        ['Power analysis', 'Power curve, time in zones, a power profile radar and W′ balance.', 'spark'],
+        ['Activity detail', 'A 3D terrain map with power, heart rate, cadence, speed and elevation charts, intervals and climbs detected.', 'globe'],
+        ['Goals and streaks', 'Week, day and month streaks, a 52-week calendar heatmap, and targets with progress rings.', 'bookmark'],
+        ['Compare', 'One period against another, side by side, with the change in each metric.', 'layers'],
+      ] },
+      { title: 'Planning', items: [
+        ['Workout Builder', 'A visual interval designer with power and heart rate targets, exported as Zwift .zwo.', 'pulse'],
+        ['Route Builder', 'Waypoints, auto-routing, gradient bands and GPX / FIT export.', 'globe'],
+        ['Calendar', 'Month and week views with planned rides and training plans.', 'grid'],
+        ['Weather', 'A 7-day forecast with ride-quality badges, an hourly breakdown and a wind rose.', 'sun'],
+        ['What-if tools', 'A tapering wizard, a CTL simulator, race pacing and a fuelling plan.', 'spark'],
+      ] },
+      { title: 'Gear', items: [
+        ['My Garage', 'Your bikes with photos, components, service history and wear.', 'cube'],
+        ['Battery monitoring', 'Garmin, SRAM AXS and coin-cell batteries, with estimated drain.', 'pulse'],
+        ['Tire pressure calculator', 'SRAM / Zipp, Silca and Berto models.', 'drop'],
+      ] },
+      { title: 'Under the hood', items: [
+        ['Offline and installable', 'A service worker caches the app and up to 3,000 map tiles.', 'phone'],
+        ['3D badge cards', 'Procedural cards with holographic materials, a moving spotlight and drag momentum.', 'cube'],
+        ['Device sync', 'Peer-to-peer between your devices, paired with a QR code.', 'refresh'],
+        ['Backup', 'Export and import everything as one JSON file.', 'download'],
+        ['Design system', '150+ design tokens and four themes.', 'code'],
+      ] },
+    ],
+    start: {
+      text: 'CycleIQ needs an intervals.icu account for its data. Three steps to connect:',
+      commands: [
+        ['1', 'In intervals.icu, open Settings → API'],
+        ['2', 'Copy your Athlete ID'],
+        ['3', 'Show the API key, copy it, and paste both into CycleIQ'],
+      ],
+    },
+    info: [
+      ['Data', 'intervals.icu, Strava'],
+      ['Also uses', 'Open-Meteo (weather and air quality), Nominatim (place names), MapLibre (maps)'],
+      ['Platform', 'Any modern browser; installable as an app'],
+      ['Privacy', 'Credentials are stored locally in your browser only'],
+      ['First published', 'February 2026'],
+      ['Source', 'github.com/xpayn3/cyclingHUB'],
     ],
   },
 ];

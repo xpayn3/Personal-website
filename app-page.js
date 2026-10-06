@@ -1,7 +1,7 @@
 // ========== APP PAGE (apps/<id>.html) ==========
 // Draws one app's page from the list in apps.js, laid out like a store's
 // product page: icon and buttons, a strip of facts, screenshots, headline
-// figures, how it works, feature tiles with icons, how to start, the
+// figures, picture cards, how it works, feature tiles with icons, how to start, the
 // changelog, and an information table. Every part is optional and only
 // drawn when the app has it. Look: apps.css.
 
@@ -116,38 +116,46 @@
     return strip;
   }
   // A strip of pictures scrolls sideways by touch already; with a mouse,
-  // press and drag it. It keeps gliding a little after you let go.
+  // press and drag it. It glides on a little after a flick, but stops dead
+  // if the mouse was resting when you let go.
   function dragToScroll(strip) {
-    let startX = 0, startLeft = 0, lastX = 0, speed = 0, held = false, glide = 0;
+    let startX = 0, startLeft = 0, lastX = 0, lastT = 0, speed = 0, held = false, moved = false, glide = 0;
     strip.addEventListener('pointerdown', (e) => {
       if (e.pointerType !== 'mouse' || e.button !== 0) return;
       cancelAnimationFrame(glide);
       held = true;
+      moved = false;
       startX = lastX = e.clientX;
+      lastT = e.timeStamp;
       startLeft = strip.scrollLeft;
       speed = 0;
-      strip.setPointerCapture(e.pointerId);
-      strip.classList.add('is-held');
     });
-    strip.addEventListener('pointermove', (e) => {
+    // listen on the window so the drag carries on when the mouse leaves the strip
+    window.addEventListener('pointermove', (e) => {
       if (!held) return;
-      speed = e.clientX - lastX;
+      const dx = e.clientX - startX;
+      if (!moved && Math.abs(dx) < 4) return;       // a click, not a drag, so far
+      if (!moved) { moved = true; strip.classList.add('is-held'); }
+      const dt = Math.max(1, e.timeStamp - lastT);
+      speed = 0.7 * speed + 0.3 * ((e.clientX - lastX) / dt * 16);   // px per frame, smoothed
       lastX = e.clientX;
-      strip.scrollLeft = startLeft - (e.clientX - startX);
+      lastT = e.timeStamp;
+      strip.scrollLeft = startLeft - dx;
     });
-    const release = () => {
+    const release = (e) => {
       if (!held) return;
       held = false;
+      strip.classList.remove('is-held');
+      if (!moved || e.timeStamp - lastT > 80) return;   // let go while resting: no glide
       const coast = () => {
-        speed *= 0.93;
+        speed *= 0.94;
         strip.scrollLeft -= speed;
-        if (Math.abs(speed) > 0.4) glide = requestAnimationFrame(coast);
-        else strip.classList.remove('is-held');
+        if (Math.abs(speed) > 0.3) glide = requestAnimationFrame(coast);
       };
       coast();
     };
-    strip.addEventListener('pointerup', release);
-    strip.addEventListener('pointercancel', release);
+    window.addEventListener('pointerup', release);
+    window.addEventListener('pointercancel', release);
   }
 
   // ---- header: icon, name, buttons ----
@@ -188,6 +196,21 @@
       grid.append(card);
     });
     about.append(grid);
+  }
+
+  // ---- a closer look: big cards, a picture with an icon, a name and a line ----
+  if (app.spotlights && app.spotlights.length) {
+    const grid = el('div', 'app-spots');
+    app.spotlights.forEach(([name, line, image, hint]) => {
+      const card = el('figure');
+      const img = el('img');
+      Object.assign(img, { src: image, alt: `${app.title}: ${name}`, loading: 'lazy', decoding: 'async' });
+      const caption = el('figcaption');
+      caption.append(icon(name, hint), el('strong', '', name), el('span', '', line));
+      card.append(img, caption);
+      grid.append(card);
+    });
+    section('A closer look').append(grid);
   }
 
   if (app.steps && app.steps.length) {
