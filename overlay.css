@@ -547,17 +547,16 @@ html:has(body.scroll-locked) {
 /* Zoom transition (overlay.js "Lightbox zoom transition"): the stand-in
    picture that travels between a gallery cell and the lightbox. */
 .lb-fly {
-  position: fixed;
+  position: absolute;   /* page coordinates: scrolls with the gallery */
   z-index: 320;
-  overflow: hidden;
   pointer-events: none;
-  will-change: left, top, width, height;
+  transform-origin: center center;
+  will-change: transform, clip-path;
 }
 .lb-fly img {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
 }
 /* while zooming, the real picture must sit still at its final place */
 .lightbox.lb-zoom .lightbox-content img,
@@ -812,12 +811,16 @@ html.lenis { scroll-behavior: auto !important; }
    (body.project-page) and letting the project sit in normal flow, scrolled by
    the window. Phone browsers then treat it like any page and draw it under
    their translucent bars; there is no inner scroller or scroll lock. */
-body.project-page > :not(#overlay):not(#overlayClose):not(#lightbox):not(.reticle):not(.lb-fly) {
+body.project-page > :not(#overlay):not(#overlayClose):not(#lightbox):not(.lb-fly) {
   display: none !important;
 }
 body.project-page {
   background: var(--bg, #ffffff) !important;   /* also what the browser bars pick up */
   overflow-x: hidden;
+  /* clip, not hidden: where <html> has its own overflow set (the Work page),
+     hidden would turn <body> into a scroll box of its own and the sticky
+     section index would stop following the window. */
+  overflow-x: clip;
 }
 body.project-page #overlay {
   position: relative;
@@ -835,6 +838,10 @@ body.project-page #overlay {
   transition: background-color 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
 body.project-page .overlay-inner { transition-delay: 0s; }
+/* Keep the scrollbar's space reserved on project pages. Opening the lightbox
+   locks the page and hides the scrollbar; without this the whole gallery
+   would shift sideways by the scrollbar's width, then back on close. */
+html:has(body.project-page) { scrollbar-gutter: stable; }
 
 /* Gallery mode: overlay.js adds body.project-dark while the gallery is on
    screen. Everything in the project view reads its colours from these

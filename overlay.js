@@ -88,8 +88,21 @@
   let savedScrollY = 0;
   let scrollLockCount = 0;
 
+  // Locking pins <body> and the page's scroll position reads as 0 until it is
+  // released. The gallery's scroll-driven parallax would follow that and
+  // slide every picture inside its cell, visibly, behind the lightbox as it
+  // fades in. Hold the parallax where it is for the length of the lock.
+  function freezeParallax(frozen) {
+    if (typeof ScrollTrigger === 'undefined') return;
+    overlayScrollTriggers.forEach(st => {
+      if (!st) return;
+      if (frozen) st.disable(false); else st.enable(false, false);
+    });
+  }
+
   function lockScroll() {
     if (scrollLockCount === 0) {
+      freezeParallax(true);
       savedScrollY = window.scrollY;
       document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
@@ -99,6 +112,20 @@
       document.body.classList.add('scroll-locked');
     }
     scrollLockCount++;
+  }
+
+  // A smooth-scroll instance that lives through a lock (or through the page
+  // being swapped for a project) is left with stale numbers: it saw the page
+  // at 0, and it caches the page's scrollable height, refreshing that only a
+  // quarter of a second after the layout changes. A wheel tick inside that
+  // window would be clamped to the stale height (0 while locked) and throw
+  // the page to the top. Re-measure and re-seat it right away instead. (The
+  // caller sets the window's own scroll position afterwards.)
+  function syncSmoothScroll(y) {
+    const lenis = overlayLenis || window.pageLenis;
+    if (!lenis) return;
+    lenis.resize();
+    lenis.scrollTo(y, { immediate: true, force: true });
   }
 
   function unlockScroll() {
@@ -111,7 +138,9 @@
       document.body.classList.remove('scroll-locked');
       // Remove fixed positioning and restore scroll in one go
       document.body.style.cssText = '';
+      syncSmoothScroll(y);
       window.scrollTo({ top: y, behavior: 'instant' });
+      freezeParallax(false);
     }
   }
 
@@ -188,7 +217,7 @@
   const viewLenis = () => overlayLenis || (pageMode && window.pageLenis) || null;
   function jumpTo(y) {
     if (!pageMode) { overlay.scrollTop = y; return; }
-    if (window.pageLenis) window.pageLenis.scrollTo(y, { immediate: true, force: true });
+    syncSmoothScroll(y);
     window.scrollTo({ top: y, behavior: 'instant' });
   }
 
@@ -444,6 +473,15 @@
     const progress = overlayInner.querySelector('.pv-progress');
     const progressPct = progress.querySelector('span');
     const cellTop = c => c.getBoundingClientRect().top - viewTop();
+    // The gallery's label has "arrived" once it is pinned in the pile of
+    // labels, i.e. the gallery has started sliding up past it. Where the
+    // labels don't stick (phones), once it is near the top of the screen.
+    const galleryLabel = gallery ? gallery.previousElementSibling : null;
+    const galleryLabelArrived = () => {
+      const cs = getComputedStyle(galleryLabel);
+      if (cs.position !== 'sticky') return cellTop(galleryLabel) <= 72;
+      return cellTop(galleryLabel) - cellTop(gallery) > parseFloat(cs.marginTop) + 0.5;
+    };
     labels.forEach((label, i) => {
       label.querySelector('.pv-jump').addEventListener('click', () => {
         scrollToY(viewScrollY() + cellTop(cells[i]) + 1, 1.1);
@@ -464,8 +502,8 @@
       progress.style.setProperty('--p', p.toFixed(4));
       progressPct.textContent = Math.round(p * 100) + '%';
 
-      // lights down once the gallery has risen past the lower part of the screen
-      const dark = !!gallery && cellTop(gallery) <= h * 0.6;
+      // lights down once the gallery's label has reached the top of the screen
+      const dark = !!galleryLabel && galleryLabelArrived();
       if (dark !== document.body.classList.contains('project-dark')) {
         document.body.classList.toggle('project-dark', dark);
         setThemeColor(dark ? '#000000' : pageBg());
@@ -660,7 +698,7 @@
     document.documentElement.style.overflow = '';
     document.body.classList.remove('scroll-locked');
     document.body.style.cssText = '';
-    if (window.pageLenis) window.pageLenis.scrollTo(y, { immediate: true, force: true });
+    syncSmoothScroll(y);
     window.scrollTo({ top: y, behavior: 'instant' });
 
     if (pageMeta) {
@@ -985,11 +1023,18 @@
   // Opening from a gallery cell: a stand-in picture lifts out of the cell,
   // moves to the centre and un-crops to full size while the lightbox fades in
   // behind it. Closing runs it backwards, into the cell of whichever picture
-  // is showing (if that cell is on screen). The stand-in (.lb-fly) is a fixed
-  // box animated between two rects; the real lightbox content is revealed at
-  // the end, so nothing jumps.
-  const ZOOM = { duration: 520, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' };
-  let lbZoomRun = 0;   // bumps on every open/close so stale animations bow out
+  // is showing (if that cell is on screen).
+  //
+  // The stand-in (.lb-fly) is laid out once, at the picture's final lightbox
+  // rect, and only its `transform` and `clip-path` are animated, so the motion
+  // stays on the compositor. Its "in the cell" pose is computed from where the
+  // real picture is actually drawn in the cell (cover crop, parallax scale and
+  // offset included), so both ends line up exactly and nothing pops.
+  const ZOOM = { duration: 620, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' };
+  const FULL_POSE = { transform: 'translate(0px, 0px) scale(1)', clipPath: 'inset(0px 0px 0px 0px round 0px)' };
+  // The flight in progress, if any: { fly, media, anim, src, full, ar }.
+  // There is only ever one; a new one takes over from or replaces the old.
+  let flight = null;
 
   function cellFor(index) {
     const src = lightboxItems[index];
@@ -999,93 +1044,148 @@
     return null;
   }
   const onScreen = (r) => r.bottom > 0 && r.top < window.innerHeight && r.right > 0 && r.left < window.innerWidth;
+  const aspectOf = (el) => {
+    const w = el && (el.naturalWidth || el.videoWidth), h = el && (el.naturalHeight || el.videoHeight);
+    return w && h ? w / h : 0;
+  };
 
   // The rect the picture itself occupies inside its lightbox element (a
   // full-width box with the picture `contain`ed in it), or null if unknown.
   function containedRect(el) {
     const box = el.getBoundingClientRect();
-    const nw = el.naturalWidth || el.videoWidth, nh = el.naturalHeight || el.videoHeight;
-    if (!nw || !nh || !box.width || !box.height) return null;
-    const ar = nw / nh;
+    const ar = aspectOf(el);
+    if (!ar || !box.width || !box.height) return null;
     const w = box.width / box.height > ar ? box.height * ar : box.width;
     const h = w / ar;
     return { left: box.left + (box.width - w) / 2, top: box.top + (box.height - h) / 2, width: w, height: h };
   }
-  async function lightboxMediaRect() {
-    const el = lightboxContent.querySelector('img, video');
-    if (!el) return null;
-    if (el.tagName === 'IMG') {
-      try { await el.decode(); } catch (e) { /* measured below anyway */ }
-    } else if (!el.videoWidth) {
-      await Promise.race([
-        new Promise(res => el.addEventListener('loadedmetadata', res, { once: true })),
-        new Promise(res => setTimeout(res, 400)),
-      ]);
-    }
-    return containedRect(el);
+  // The same rect worked out from the lightbox's layout rules (.lightbox-content
+  // in overlay.css: full width, at most the screen minus 180px tall, sitting
+  // 120px above centre-bottom), for when the big picture hasn't loaded yet.
+  function expectedRect(ar) {
+    const box = lightbox.getBoundingClientRect();
+    let w = box.width, h = w / ar;
+    const maxH = box.height - 180;
+    if (h > maxH) { h = maxH; w = h * ar; }
+    return { left: box.left + (box.width - w) / 2, top: box.top + (box.height - (h + 120)) / 2, width: w, height: h };
   }
 
-  function makeFlyer(src, rect, radius, innerScale) {
+  // The pose (transform + clip) that makes a stand-in laid out at `full`
+  // coincide with the picture as it is drawn inside `cell` right now.
+  function cellPose(cell, full, ar) {
+    const media = cell.querySelector('img, video');
+    const c = cell.getBoundingClientRect();
+    const m = media.getBoundingClientRect();              // includes parallax scale + offset
+    // the picture covers the media box
+    const w = m.width / m.height > ar ? m.width : m.height * ar;
+    const h = w / ar;
+    const left = m.left + (m.width - w) / 2, top = m.top + (m.height - h) / 2;
+    const k = w / full.width;
+    const dx = left + w / 2 - (full.left + full.width / 2);
+    const dy = top + h / 2 - (full.top + full.height / 2);
+    const inset = [c.top - top, left + w - c.right, top + h - c.bottom, c.left - left].map(v => Math.max(0, v / k));
+    const radius = (parseFloat(getComputedStyle(cell).borderTopLeftRadius) || 0) / k;
+    return {
+      transform: `translate(${dx}px, ${dy}px) scale(${k})`,
+      clipPath: `inset(${inset.map(v => v + 'px').join(' ')} round ${radius}px)`,
+    };
+  }
+
+  function makeFlyer(src, rect, pose) {
     const fly = document.createElement('div');
     fly.className = 'lb-fly';
     fly.innerHTML = `<img src="${posterOf(src)}" alt="" />`;
+    // Positioned in page coordinates (relative to <body>, which is where the
+    // page's scroll offset lives whether or not it is locked), so if the page
+    // scrolls mid-flight the stand-in travels with the gallery.
+    const page = document.body.getBoundingClientRect();
     Object.assign(fly.style, {
-      left: rect.left + 'px', top: rect.top + 'px', width: rect.width + 'px', height: rect.height + 'px',
-      borderRadius: radius,
+      left: rect.left - page.left + 'px', top: rect.top - page.top + 'px',
+      width: rect.width + 'px', height: rect.height + 'px',
+      transform: pose.transform, clipPath: pose.clipPath,
     });
-    fly.firstChild.style.transform = `scale(${innerScale})`;
     document.body.appendChild(fly);
     return fly;
   }
-  function flyTo(fly, from, to, radiusFrom, radiusTo, scaleFrom, scaleTo) {
-    const px = r => ({ left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
-    fly.firstChild.animate(
-      [{ transform: `scale(${scaleFrom})` }, { transform: `scale(${scaleTo})` }],
-      Object.assign({ fill: 'forwards' }, ZOOM));
-    return fly.animate(
-      [Object.assign(px(from), { borderRadius: radiusFrom }), Object.assign(px(to), { borderRadius: radiusTo })],
-      Object.assign({ fill: 'forwards' }, ZOOM)).finished;
+
+  // Drop the current flight where it stands and put its cell back to normal.
+  function endFlight() {
+    if (!flight) return;
+    flight.anim.cancel();
+    flight.media.style.visibility = '';
+    flight.fly.remove();
+    flight = null;
   }
-  // gallery media is drawn slightly over-scaled for the parallax; match it
-  const cellScale = () => (overlay.classList.contains('no-parallax') ? 1 : 1.15);
 
   function zoomIn(cell) {
-    const run = ++lbZoomRun;
-    const from = cell.getBoundingClientRect();
-    const radius = getComputedStyle(cell).borderRadius;
+    endFlight();
     const media = cell.querySelector('img, video');
-    const fly = makeFlyer(lightboxItems[lightboxIndex], from, radius, cellScale());
-    const done = () => {
-      lightboxContent.style.visibility = '';
-      if (media) media.style.visibility = '';
-      fly.remove();
-    };
-    if (media) media.style.visibility = 'hidden';
+    const real = lightboxContent.querySelector('img, video');
+    const ar = aspectOf(media) || aspectOf(real);
+    if (!ar || !real) return;                              // nothing to measure: plain fade
+    const src = lightboxItems[lightboxIndex];
+    const full = containedRect(real) || expectedRect(ar);
+    const from = cellPose(cell, full, ar);
+    const fly = makeFlyer(src, full, from);
+    const anim = fly.animate([from, FULL_POSE], ZOOM);
+    const mine = flight = { fly, media, anim, src, full, ar };
+    media.style.visibility = 'hidden';
     lightboxContent.style.visibility = 'hidden';
-    lightboxMediaRect().then((to) => {
-      if (run !== lbZoomRun || !to) return done();
-      return flyTo(fly, from, to, radius, '0px', cellScale(), 1).then(done, done);
-    });
+
+    // swap to the real picture only once the flight is over AND it can paint
+    const ready = real.tagName === 'IMG'
+      ? real.decode().catch(() => {})
+      : new Promise(res => (real.readyState >= 2 ? res() : real.addEventListener('loadeddata', res, { once: true })));
+    const patience = new Promise(res => setTimeout(res, ZOOM.duration + 1500));
+    Promise.all([anim.finished, Promise.race([ready, patience])]).then(() => {
+      if (flight !== mine) return;                         // closed or replaced meanwhile
+      flight = null;
+      media.style.visibility = '';
+      lightboxContent.style.visibility = '';
+      requestAnimationFrame(() => fly.remove());           // one frame of overlap: no gap
+    }, () => { /* cancelled: whoever cancelled it cleaned up */ });
   }
 
-  function zoomOut(cell, src) {
-    const el = lightboxContent.querySelector('img, video');
-    const to = cell.getBoundingClientRect();
-    const from = el && containedRect(el);
-    if (!from || !onScreen(to)) return false;
+  // `full` is where the picture was in the lightbox, measured before closing.
+  // Returns false when there is nothing sensible to fly to.
+  function zoomOut(cell, src, full, ar) {
+    // Closed while still flying open: turn that same stand-in around from
+    // wherever it has got to, rather than starting a second one.
+    const turning = flight && flight.src === src ? flight : null;
+    if (turning) { full = turning.full; ar = turning.ar; }
+    if (!full || !ar || !onScreen(cell.getBoundingClientRect())) return false;
 
-    const run = ++lbZoomRun;
-    const radius = getComputedStyle(cell).borderRadius;
     const media = cell.querySelector('img, video');
-    const fly = makeFlyer(src, from, '0px', 1);
-    if (media) media.style.visibility = 'hidden';
-    const done = () => {
-      if (media) media.style.visibility = '';
-      fly.remove();
-      if (run === lbZoomRun) lightbox.classList.remove('lb-zoom');
-    };
-    flyTo(fly, from, to, '0px', radius, 1, cellScale()).then(done, done);
+    let fly, start = FULL_POSE;
+    if (turning) {
+      const now = getComputedStyle(turning.fly);
+      start = { transform: now.transform, clipPath: now.clipPath };
+      fly = turning.fly;
+      turning.anim.cancel();
+      if (turning.media !== media) turning.media.style.visibility = '';
+      flight = null;
+    } else {
+      endFlight();
+      fly = makeFlyer(src, full, FULL_POSE);
+    }
+    const anim = fly.animate([start, cellPose(cell, full, ar)], ZOOM);
+    const mine = flight = { fly, media, anim, src, full, ar };
+    media.style.visibility = 'hidden';
+    anim.finished.then(() => {
+      if (flight !== mine) return;
+      flight = null;
+      media.style.visibility = '';
+      requestAnimationFrame(() => fly.remove());
+      if (!lightbox.classList.contains('open')) lightbox.classList.remove('lb-zoom');
+    }, () => {});
     return true;
+  }
+
+  // The gallery cell the current lightbox picture can fly back into, if any.
+  function zoomTarget() {
+    if (!pageMode || reducedMotion.matches) return null;
+    const cell = cellFor(lightboxIndex);
+    return cell && onScreen(cell.getBoundingClientRect()) ? cell : null;
   }
 
   function openLightbox(index, fromCell) {
@@ -1096,20 +1196,22 @@
     buildLightboxStrip();
     renderLightbox();
     lightbox.classList.add('open');
-    if (zoom) zoomIn(fromCell);                   // measured before the page is locked
+    // Lock first: hiding the scrollbar can nudge the layout, and the zoom has
+    // to measure the cell where it ends up.
     lockScroll();
+    if (zoom) zoomIn(fromCell);
   }
 
   function closeLightbox() {
     if (!lightbox.classList.contains('open')) return;
-    // fly the picture back into its gallery cell when that cell is on screen
-    const cell = pageMode && !reducedMotion.matches ? cellFor(lightboxIndex) : null;
-    const flying = !!cell && zoomOut(cell, lightboxItems[lightboxIndex]);
-    if (!flying) lbZoomRun++;
-    lightbox.classList.toggle('lb-zoom', flying);
+    const src = lightboxItems[lightboxIndex];
+    const real = lightboxContent.querySelector('img, video');
+    const full = real && containedRect(real);   // measured before it is torn down
+    const ar = aspectOf(real);
+    const cell = zoomTarget();
+    lightbox.classList.toggle('lb-zoom', !!cell);
 
-    const vid = lightboxContent.querySelector('video');
-    if (vid) { vid.pause(); vid.removeAttribute('src'); }
+    if (real && real.tagName === 'VIDEO') { real.pause(); real.removeAttribute('src'); }
     lightbox.classList.remove('open');
     lightboxContent.innerHTML = '';
     lightboxContent.style.visibility = '';
@@ -1118,6 +1220,13 @@
     // the Lab panel keeps the page locked itself; otherwise release it
     if (pageMode || !overlay.classList.contains('open')) {
       unlockScroll();
+    }
+
+    // Fly the picture back into its gallery cell. Measured only now: the page
+    // is unlocked and back in its normal layout.
+    if (!(cell && zoomOut(cell, src, full, ar))) {
+      endFlight();
+      lightbox.classList.remove('lb-zoom');
     }
   }
 
@@ -1230,6 +1339,18 @@
     lbDragging = false;
     const diffX = lbTouchX - e.changedTouches[0].clientX;
 
+    if (lbDragY > 100 && zoomTarget()) {
+      // Let go far enough down: the picture flies from where the finger left
+      // it straight back into its gallery cell.
+      closeLightbox();
+      lightboxContent.style.transition = '';
+      lightboxContent.style.transform = '';
+      lightboxContent.style.opacity = '';
+      lbSwipeHint.style.opacity = '0';
+      lbDragY = 0;
+      return;
+    }
+
     if (lbDragY > 100) {
       // Commit close — animate out
       lightboxContent.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
@@ -1265,9 +1386,15 @@
   });
 
   // Mouse wheel navigation in lightbox
+  // A wheel or trackpad gesture sends a burst of events; step one picture
+  // per burst instead of re-rendering the big picture for every event.
+  let lbWheelAt = 0;
   lightbox.addEventListener('wheel', (e) => {
     if (!lightbox.classList.contains('open')) return;
     e.preventDefault();
+    const now = performance.now();
+    if (Math.abs(e.deltaY) < 4 || now - lbWheelAt < 280) return;
+    lbWheelAt = now;
     if (e.deltaY > 0) { lbDirection = 'right'; lightboxIndex = (lightboxIndex + 1) % lightboxItems.length; }
     else { lbDirection = 'left'; lightboxIndex = (lightboxIndex - 1 + lightboxItems.length) % lightboxItems.length; }
     renderLightbox();

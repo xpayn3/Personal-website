@@ -121,12 +121,10 @@ function renderGrid() {
         label.innerHTML = 'L<span style="font-weight:300">a</span>B';
       });
     } else {
-      // Multi-line techy label: tag (year · category) + project name.
+      // Caption under the picture: project name + year (gallery.css).
       const tag = document.createElement('span');
       tag.className = 'item-label-tag';
-      const cat = (item.category || [])[0] || '';
-      const yearStr = item.year ? `// ${item.year}` : '//';
-      tag.textContent = cat ? `${yearStr} · ${cat}` : yearStr;
+      tag.textContent = item.year || '';
       const name = document.createElement('span');
       name.className = 'item-label-name';
       name.textContent = item.projectName;
@@ -166,6 +164,16 @@ const isMobile = window.innerWidth < 768;
 const isSlowConnection = navigator.connection && (navigator.connection.saveData || navigator.connection.effectiveType === '2g' || navigator.connection.effectiveType === 'slow-2g');
 
 renderGrid();
+
+// Page title small print: piece count and the span of years on show.
+(function fillPageHead() {
+  const shown = gridItems.filter(i => i.project !== 'lab');
+  const years = shown.map(i => parseInt(i.year, 10)).filter(Boolean);
+  const countEl = document.getElementById('workCount');
+  const yearsEl = document.getElementById('workYears');
+  if (countEl) countEl.textContent = shown.length;
+  if (yearsEl && years.length) yearsEl.textContent = `${Math.min(...years)} — ${Math.max(...years)}`;
+})();
 
 // ========== TRUE LAZY LOAD ==========
 const lazyObserver = new IntersectionObserver((entries) => {
@@ -337,6 +345,8 @@ function applyFilters() {
   // Show/hide no results
   const visibleCount = gridEl.querySelectorAll('.grid-item:not(.hidden)').length;
   const noMatch = visibleCount === 0;
+  const countEl = document.getElementById('workCount');
+  if (countEl) countEl.textContent = visibleCount;
   document.getElementById('noResults').classList.toggle('visible', noMatch);
   const footer = document.querySelector('.site-footer');
   if (footer) footer.style.display = noMatch ? 'none' : '';
@@ -514,7 +524,7 @@ window.scrollTo(0, 0);
 
 const _mobile = window.innerWidth < 768;
 const gridSlider = document.getElementById('gridSlider');
-gridSlider.value = _mobile ? 3 : 5;
+gridSlider.value = _mobile ? 2 : 4;
 const sliderDotsEl = document.getElementById('sliderDots');
 const sliderMin = parseInt(gridSlider.min);
 const sliderMax = parseInt(gridSlider.max);

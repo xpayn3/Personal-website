@@ -1,0 +1,194 @@
+/* ===================================================================
+   gallery.css — the shared "gallery wall" look of the Work and Lab pages.
+   Loaded after style.css / lab.css and overrides their tile styling, so
+   both pages hang their pieces the same way: a black wall, uniform square
+   tiles with air between them, and a quiet numbered caption under each.
+   Colours match the project view's gallery (dark) mode in overlay.css.
+   =================================================================== */
+.page-grid,
+.page-lab {
+  --g-bg: #000000;
+  --g-ink: #f4f4f5;
+  --g-muted: #8e8e95;
+  --g-line: rgba(244, 244, 245, 0.18);
+  --g-gutter: clamp(20px, 4vw, 64px);
+  background: var(--g-bg);
+}
+html:has(body.page-grid),
+html:has(body.page-lab) { background: #000000; }
+
+/* ---- page title: one big word, then a hairline row of small print ---- */
+.page-head {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: clamp(120px, 20vh, 220px) var(--g-gutter) 0;
+  color: var(--g-ink);
+}
+.page-head-title {
+  font-family: var(--font-display);
+  font-size: clamp(3.25rem, 10vw, 9rem);
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 0.9;
+  margin-left: -0.04em;                   /* optical: flush with the tiles */
+}
+.page-head-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
+  margin-top: clamp(28px, 6vh, 64px);
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--g-line);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--g-muted);
+}
+.page-head-row > :last-child { flex: none; white-space: nowrap; }
+
+/* ---- the wall ---- */
+.grid:not(.list-view),
+.lab-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);  /* Work: the COLS slider overrides this inline */
+  column-count: initial;
+  gap: clamp(28px, 3.6vw, 56px) clamp(12px, 1.6vw, 24px);
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: clamp(28px, 5vh, 56px) var(--g-gutter) clamp(80px, 12vh, 160px);
+  counter-reset: piece;
+}
+@media (max-width: 1200px) { .lab-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 768px) {
+  .grid:not(.list-view),
+  .lab-grid { grid-template-columns: repeat(2, 1fr); gap: 24px 10px; }
+}
+
+/* ---- a piece: square picture, caption underneath ---- */
+:is(.grid:not(.list-view) > .grid-item, .lab-card) {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  aspect-ratio: auto;
+  overflow: visible;
+  contain: layout style;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  counter-increment: piece;
+}
+.grid:not(.list-view) > .grid-item { transition: opacity 0.45s ease; }
+.grid:not(.list-view) > .grid-item:hover { background: none; }
+.grid:not(.list-view) > .grid-item::after { display: none; }
+
+.grid:not(.list-view) > .grid-item > img,
+.lab-card .media-wrap {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 0;
+  background: #0c0c0d;
+}
+.grid:not(.list-view) > .grid-item > img,
+.lab-card .media-wrap > img,
+.lab-card .media-wrap > video {
+  object-fit: cover;
+}
+.lab-card .media-wrap > img,
+.lab-card .media-wrap > video { height: 100%; }
+/* no zoom on hover: the picture stays put, the rest of the wall steps back */
+.grid:not(.list-view) > .grid-item:hover > img,
+.grid:not(.list-view) > .grid-item:hover .hover-video,
+.lab-card:hover .media-wrap > img,
+.lab-card:hover .media-wrap > video { transform: none; }
+.grid:not(.list-view) .hover-video-wrap {
+  inset: 0 0 auto 0;
+  aspect-ratio: 1 / 1;
+  border-radius: 0;
+}
+.grid:not(.list-view) > .grid-item.loading::before {
+  inset: 0 0 auto 0;
+  aspect-ratio: 1 / 1;
+  border-radius: 0;
+  background: #0c0c0d;
+  animation: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .grid:not(.list-view):has(.grid-item:hover) > .grid-item:not(:hover),
+  .lab-grid:has(.lab-card:hover) > .lab-card.in-view:not(:hover) { opacity: 0.32; }
+}
+
+/* ---- caption: number · name ........ year / type ---- */
+:is(.grid:not(.list-view) > .grid-item, .lab-card) .item-label {
+  position: static;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  column-gap: 10px;
+  align-items: baseline;
+  width: auto;
+  padding: 10px 0 0;
+  background: none;
+  border-radius: 0;
+  opacity: 1;
+  transform: none;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+  color: var(--g-muted);
+  pointer-events: none;
+}
+:is(.grid:not(.list-view) > .grid-item, .lab-card) .item-label::before {
+  content: counter(piece, decimal-leading-zero);
+  grid-column: 1;
+  grid-row: 1;
+}
+:is(.grid:not(.list-view) > .grid-item, .lab-card) .item-label-name {
+  grid-column: 2;
+  grid-row: 1;
+  display: block;
+  font: inherit;
+  letter-spacing: inherit;
+  color: var(--g-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+:is(.grid:not(.list-view) > .grid-item, .lab-card) .item-label-tag {
+  grid-column: 3;
+  grid-row: 1;
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+}
+
+/* ---- Work's list view, on the black wall ---- */
+.grid.list-view {
+  max-width: 1800px;
+  padding: clamp(28px, 5vh, 56px) var(--g-gutter) clamp(80px, 12vh, 160px);
+}
+.grid.list-view .grid-item { border-bottom-color: var(--g-line); }
+.grid.list-view .grid-item:hover { background: rgba(244, 244, 245, 0.04); }
+.grid.list-view .grid-item .item-meta { color: var(--g-muted); }
+
+/* ---- Lab cards keep their rise-in; only the look above is shared ---- */
+.lab-card {
+  transition:
+    opacity 0.45s ease,
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (max-width: 768px) {
+  .page-head-row { font-size: 11px; }
+  .grid:not(.list-view) > .grid-item > img { border-radius: 0; }
+  :is(.grid:not(.list-view) > .grid-item, .lab-card) .item-label { font-size: 10px; column-gap: 8px; }
+}
