@@ -40,6 +40,21 @@ body.page-home {
 body.page-home a,
 body.page-home button { cursor: pointer; }
 
+/* Touch devices: a resting finger draws smoke, so a long press must not
+   start a text selection or pop the iOS callout. Form fields stay editable. */
+@media (pointer: coarse) {
+  body.page-home {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+  body.page-home input,
+  body.page-home textarea {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+}
+
 /* ---------------- HERO ---------------- */
 .hero {
   min-height: 100vh;

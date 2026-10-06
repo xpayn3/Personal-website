@@ -725,6 +725,31 @@ html:has(body.scroll-locked) {
 }
 
 
+/* Touch devices: the strip is a scrubber (overlay.js "Strip scrubbing").
+   It spans the screen, pads its ends so the first and last thumbnails can
+   reach the centre, and snaps thumbnails to the centre when it settles. */
+@media (pointer: coarse) {
+  .lightbox-bottom {
+    left: 0;
+    right: 0;
+    transform: none;
+    padding: 0;
+  }
+  .lightbox-strip {
+    width: 100%;
+    max-width: 100%;
+    padding: 6px calc(50% - 30px);
+    scroll-snap-type: x proximity;
+    scroll-behavior: auto;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x;
+    -webkit-overflow-scrolling: touch;
+  }
+  .lightbox-strip-item { scroll-snap-align: center; }
+  .lightbox-strip-item:hover { transform: none; }
+  .lightbox-strip-item.active { transform: scale(1.1); }
+}
+
 /* ========== PROJECT VIEW ==========
    Layout of a single project inside the overlay (built in overlay.js):
    intro (counter · big title · fact sheet) → hero media → labelled sections

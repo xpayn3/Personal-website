@@ -35,10 +35,11 @@
   // carried by a velocity field that gets buoyancy, vorticity confinement
   // and a little ambient turbulence, then thins out and diffuses away.
   // =====================================================================
-  // Phones get a coarser simulation, thinner and more transparent smoke,
-  // and keep their text as plain text (no dissolve).
+  // Phones get a coarser simulation, a thumb-sized brush that radiates smoke
+  // while held (see puff), slightly softer smoke, and keep their text as
+  // plain text (no dissolve).
   const COARSE = matchMedia('(pointer: coarse)').matches;
-  const LIGHT = COARSE ? { density: 0.5, opacity: 0.7 } : { density: 1, opacity: 1 };
+  const LIGHT = COARSE ? { density: 0.9, opacity: 0.85, size: 2.4 } : { density: 1, opacity: 1, size: 1 };
   const TUNE = {
     simRes: COARSE ? 96 : 144,          // velocity grid, short side
     dyeRes: COARSE ? 384 : 640,          // smoke density grid, short side
@@ -658,7 +659,7 @@
           ax: ax / W, ay: 1 - ay / H, bx: bx / W, by: 1 - by / H,
           vx: vx * k + rand(-j, j), vy: -vy * k + rand(-j, j),
           amount: Math.min(0.22 + 5 * dt, 0.6) * (1 - 0.45 * fast) * TUNE.density * LIGHT.density,
-          dyeR: 0.011 * (1 + 1.4 * fast) * rand(0.8, 1.25) * TUNE.size,
+          dyeR: 0.011 * (1 + 1.4 * fast) * rand(0.8, 1.25) * TUNE.size * LIGHT.size,
           velR: 0.028 * (1 + fast),
         });
         if (queue.length > 64) queue.shift();
@@ -675,6 +676,28 @@
             t.until = performance.now() + hold;
           }
         }
+      },
+      // A finger resting on the screen: smoke wells up inside a thumb-sized
+      // circle and radiates from its rim. (One outward push all round would be
+      // cancelled by the pressure solve, so the rim sends out a couple of small
+      // jets in random directions each frame instead.)
+      puff(x, y, dt) {
+        const R = 26;                        // css px, about a thumb pad
+        const amount = Math.min(6 * dt, 0.2) * TUNE.density * LIGHT.density;
+        queue.push({
+          ax: x / W, ay: 1 - y / H, bx: x / W, by: 1 - y / H,
+          vx: 0, vy: 0, amount: amount * 0.6, dyeR: R / H, velR: R / H,
+        });
+        for (let i = 0; i < 2; i++) {
+          const a = Math.random() * Math.PI * 2, c = Math.cos(a), sn = Math.sin(a);
+          const px = x + c * R, py = y + sn * R;
+          const speed = rand(30, 60);        // sim texels / s, outward
+          queue.push({
+            ax: px / W, ay: 1 - py / H, bx: px / W, by: 1 - py / H,
+            vx: c * speed, vy: -sn * speed, amount, dyeR: R * 0.45 / H, velR: R * 0.9 / H,
+          });
+        }
+        if (queue.length > 64) queue.splice(0, queue.length - 64);
       },
       // released while moving at v (px/s): a gust that carries the smoke onward
       flick(x, y, vx, vy) {
@@ -868,6 +891,7 @@
       clear() { particles.length = 0; },
       scroll(dy) { for (const p of particles) p.y -= dy; },
       flick() {},
+      puff(x, y, dt) { this.stroke(x, y, x, y, 0, 0, dt); },
       busy() { return false; },
       stroke(ax, ay, bx, by, vx, vy) {
         const steps = Math.max(1, Math.floor(Math.hypot(bx - ax, by - ay) / 5));
@@ -918,19 +942,22 @@
 
   // ---------- pointer ----------
   let lastActive = -Infinity;   // time of the last stroke; drives the idle check in the loop
-  const pointer = { down: false, armed: false, sx: 0, sy: 0, x: 0, y: 0, vx: 0, vy: 0, svx: 0, svy: 0, t: 0 };
+  const pointer = { down: false, armed: false, touch: false, holdTimer: 0, sx: 0, sy: 0, x: 0, y: 0, vx: 0, vy: 0, svx: 0, svy: 0, t: 0 };
   const clampV = (v) => Math.max(-1600, Math.min(1600, v));
 
   addEventListener('pointerdown', (e) => {
     if (e.target.closest?.('a, button, input, textarea, select, label, .smoke-panel, .hc-overlay, #overlay, #lightbox, #mobileProjList, .mobile-menu')) return;
     pointer.x = e.clientX; pointer.y = e.clientY;
     // A finger landing on the page is usually the start of a scroll, so touch
-    // only arms a stroke; it starts once the finger has clearly moved sideways
-    // (see pointermove). Otherwise every scroll would puff smoke and wake the
-    // simulation.
-    if (e.pointerType === 'touch') {
+    // only arms a stroke. It starts when the finger rests for a moment (smoke
+    // then radiates from under it) or clearly moves sideways (see
+    // pointermove). A plain vertical swipe scrolls and makes no smoke.
+    pointer.touch = e.pointerType === 'touch';
+    if (pointer.touch) {
       pointer.armed = true;
       pointer.sx = e.clientX; pointer.sy = e.clientY;
+      clearTimeout(pointer.holdTimer);
+      pointer.holdTimer = setTimeout(() => { if (pointer.armed) startStroke(); }, 160);
       return;
     }
     startStroke();
@@ -969,7 +996,11 @@
     pointer.t = now;
   });
 
-  const release = () => { pointer.down = pointer.armed = false; document.body.classList.remove('smoke-dragging'); };
+  const release = () => {
+    pointer.down = pointer.armed = false;
+    clearTimeout(pointer.holdTimer);
+    document.body.classList.remove('smoke-dragging');
+  };
   addEventListener('pointerup', () => {
     const moving = performance.now() - pointer.t < 80;
     if (pointer.down && moving && Math.hypot(pointer.svx, pointer.svy) > 300) {
@@ -1001,8 +1032,11 @@
       parked = false;
       // carry the smoke with the page so it stays attached to what it was drawn on
       if (scrollY !== lastScroll) { engine.scroll(scrollY - lastScroll); lastScroll = scrollY; }
-      // holding still keeps the source smouldering
-      if (pointer.down && now - pointer.t > 40) {
+      if (pointer.down && pointer.touch) {
+        // a finger on the screen radiates smoke for as long as it stays down
+        engine.puff(pointer.x, pointer.y, dt);
+      } else if (pointer.down && now - pointer.t > 40) {
+        // mouse: holding still keeps the source smouldering
         pointer.vx = pointer.vy = 0;
         engine.stroke(pointer.x, pointer.y, pointer.x, pointer.y, 0, 0, dt);
       }

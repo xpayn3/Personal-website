@@ -139,6 +139,8 @@
 
   document.addEventListener('touchmove', (e) => {
     if (scrollLockCount === 0) return;
+    // the lightbox thumbnail strip scrolls sideways; let it
+    if (e.target.closest && e.target.closest('.lightbox-strip')) return;
 
     // Find nearest scrollable ancestor
     let scrollable = null;
@@ -887,9 +889,60 @@
     items.forEach((item, i) => {
       item.classList.toggle('active', i === lightboxIndex);
     });
+    // while a finger is scrubbing the strip, don't pull it back to centre
     const active = lightboxStrip.querySelector('.active');
-    if (active) active.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+    if (active && !stripScrubbing) active.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
   }
+
+  // ---- Strip scrubbing (touch) ----------------------------------------------
+  // Like the Photos app on a phone: swipe the thumbnail strip and whichever
+  // thumbnail sits under its centre becomes the picture on screen. Momentum
+  // after the finger lifts keeps scrubbing; when it settles the strip snaps
+  // the current thumbnail to the centre.
+  let stripScrubbing = false;
+  let stripTouching = false;
+  let stripIdleTimer = 0;
+  let stripRenderedAt = 0;
+
+  lightboxStrip.addEventListener('touchstart', () => {
+    stripScrubbing = stripTouching = true;
+    clearTimeout(stripIdleTimer);
+  }, { passive: true });
+  const stripTouchEnd = () => {
+    stripTouching = false;
+    clearTimeout(stripIdleTimer);
+    stripIdleTimer = setTimeout(settleStrip, 160);
+  };
+  lightboxStrip.addEventListener('touchend', stripTouchEnd, { passive: true });
+  lightboxStrip.addEventListener('touchcancel', stripTouchEnd, { passive: true });
+
+  function settleStrip() {
+    if (stripTouching) return;
+    stripScrubbing = false;
+    renderLightbox();          // full render of where we landed (also re-centres)
+  }
+
+  lightboxStrip.addEventListener('scroll', () => {
+    if (!stripScrubbing) return;
+    const box = lightboxStrip.getBoundingClientRect();
+    const mid = box.left + box.width / 2;
+    let best = lightboxIndex, bestDist = Infinity;
+    lightboxStrip.querySelectorAll('.lightbox-strip-item').forEach((item, i) => {
+      const r = item.getBoundingClientRect();
+      const dist = Math.abs(r.left + r.width / 2 - mid);
+      if (dist < bestDist) { bestDist = dist; best = i; }
+    });
+    if (best !== lightboxIndex) {
+      lightboxIndex = best;
+      lbDirection = 'init';   // no slide animation while scrubbing
+      // swapping the big picture is the costly part: at most ~10 times a second
+      const now = performance.now();
+      if (now - stripRenderedAt > 90) { stripRenderedAt = now; renderLightbox(); }
+      else updateStripActive();
+    }
+    clearTimeout(stripIdleTimer);
+    stripIdleTimer = setTimeout(settleStrip, 160);
+  }, { passive: true });
 
   function openLightbox(index) {
     lightboxIndex = index;
