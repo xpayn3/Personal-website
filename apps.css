@@ -233,6 +233,28 @@
 .app-steps li > span:last-child,
 .app-features li > span:last-child { font-size: 0.95rem; line-height: 1.5; color: var(--g-muted); }
 
+/* a closer look: picture cards, two across */
+.app-spots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.app-spots figure {
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #0e0e10;
+  box-shadow: inset 0 0 0 1px rgba(244, 244, 245, 0.07);
+}
+.app-spots img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-bottom: 1px solid rgba(244, 244, 245, 0.07);
+  background: #0c0c0d;
+}
+.app-spots figcaption { display: grid; gap: 6px; align-content: start; padding: 22px; }
+.app-spots strong { font-size: 1.15rem; font-weight: 500; letter-spacing: -0.01em; }
+.app-spots figcaption > span:last-child { font-size: 0.95rem; line-height: 1.5; color: var(--g-muted); }
+
 /* how it works: numbered cards in a row */
 .app-steps { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 .app-steps > li { display: grid; gap: 8px; align-content: start; padding: clamp(20px, 2.4vw, 28px); }
@@ -361,10 +383,11 @@
   scrollbar-width: none;
 }
 .app-shots::-webkit-scrollbar { display: none; }
-/* with a mouse the strip is dragged (app-page.js); snapping waits until it rests */
+/* with a mouse the strip is dragged (app-page.js); snapping is for touch
+   only, since it would yank a dragged strip back when the mouse lets go */
 @media (hover: hover) and (pointer: fine) {
-  .app-shots { cursor: grab; user-select: none; -webkit-user-select: none; }
-  .app-shots.is-held { cursor: grabbing; scroll-snap-type: none; }
+  .app-shots { cursor: grab; user-select: none; -webkit-user-select: none; scroll-snap-type: none; }
+  .app-shots.is-held { cursor: grabbing; }
 }
 .app-shots figure { flex: none; width: clamp(180px, 24vw, 240px); scroll-snap-align: start; }
 .app-shots img {
@@ -511,6 +534,7 @@
 }
 @media (max-width: 768px) {
   .app-steps,
+  .app-spots,
   .app-highlights { grid-template-columns: 1fr; }
   .app-log > li { grid-template-columns: 1fr; gap: 10px; }
   .app-log-body li { grid-template-columns: 1fr; gap: 4px; }
