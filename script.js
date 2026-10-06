@@ -139,6 +139,83 @@ const isSlowConnection = navigator.connection && (navigator.connection.saveData 
 
 renderGrid();
 
+// ========== FEATURES ==========
+// A few projects get a full-width block in the wall: a large picture with the
+// project's brief and description beside it, alternating sides. They break
+// up the uniform tiles and give the page something to read. Blocks are woven
+// in every few rows (placeFeatures) and step aside whenever the wall is
+// filtered, searched or shown as a list.
+const FEATURED = ['cestel', 'radenci', 'taf', 'accbox', 'natureta_renders', 'halloween'];
+
+function buildFeature(id, index, total) {
+  const p = projects[id];
+  const el = (tag, className, text) => {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text != null) node.textContent = text;
+    return node;
+  };
+  const cover = p.images.find(s => /cover/i.test(s) && /\.webp$/i.test(s))
+    || p.images.find(s => /\.(webp|jpg|jpeg|png)$/i.test(s))
+    || p.images[0].replace(/\.(webm|mp4)$/, '_thumb.webp');
+  const pad = n => String(n).padStart(2, '0');
+  const about = (p.desc && p.desc[0]) || '';
+
+  const block = el('a', 'wall-feature' + (index % 2 ? ' is-flipped' : ''));
+  block.href = '#project=' + id;
+
+  const media = el('span', 'wall-feature-media');
+  const img = el('img');
+  Object.assign(img, { src: cover, loading: 'lazy', decoding: 'async', alt: `${p.name} — ${(p.category || []).join(', ')} by Luka Grčar` });
+  media.appendChild(img);
+
+  const text = el('span', 'wall-feature-text');
+  text.append(
+    el('span', 'wall-feature-kicker', `Featured ${pad(index + 1)} / ${pad(total)} · ${(p.category || []).join(' · ')}`),
+    el('span', 'wall-feature-title', p.name),
+    el('span', 'wall-feature-brief', p.brief || ''),
+    el('span', 'wall-feature-about', about.length > 240 ? about.slice(0, 238).trim() + '…' : about),
+    el('span', 'wall-feature-meta', [p.client, p.year].filter(Boolean).join(' · ')),
+    el('span', 'wall-feature-cta', 'Open project →'),
+  );
+
+  block.append(media, text);
+  block.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.openProject(id);
+  });
+  return block;
+}
+
+const features = FEATURED.filter(id => projects[id])
+  .map((id, i, list) => buildFeature(id, i, list.length));
+
+// each block wipes in the first time it scrolls into view
+const featureObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    entry.target.classList.add('is-in');
+    featureObserver.unobserve(entry.target);
+  });
+}, { threshold: 0.25 });
+features.forEach(f => featureObserver.observe(f));
+
+// Weave the blocks into the wall: the first after two rows of tiles, then one
+// every three rows (four on a two-column phone). Counting in whole rows keeps
+// the tile grid free of holes at any column count.
+function placeFeatures() {
+  features.forEach(f => f.remove());
+  const filtered = !!(activeFilters.project || activeFilters.year || activeFilters.color || activeFilters.category || (activeFilters.search || '').trim());
+  if (filtered || gridEl.classList.contains('list-view')) return;
+  const cols = getComputedStyle(gridEl).gridTemplateColumns.split(' ').length || 4;
+  const every = cols * (cols <= 2 ? 4 : 3);
+  const tiles = gridEl.querySelectorAll('.grid-item');
+  features.forEach((f, i) => {
+    const before = tiles[cols * 2 + i * every];
+    if (before) gridEl.insertBefore(f, before);
+  });
+}
+
 // Page title small print: piece count and the span of years on show.
 (function fillPageHead() {
   const shown = gridItems.filter(i => i.project !== 'lab');
@@ -196,6 +273,7 @@ document.querySelectorAll('.grid-item').forEach(item => lazyObserver.observe(ite
 
 // ========== FILTERS ==========
 let activeFilters = { project: null, year: null, color: null, category: null, search: '' };
+placeFeatures();
 window.activeFilters = activeFilters;
 let activeSort = 'newest'; // 'newest' | 'oldest' | 'random'
 
@@ -344,6 +422,8 @@ function applyFilters() {
       item.style.animationDelay = '';
     }, { once: true });
   });
+
+  placeFeatures();
 
   // Show/hide no results
   const visibleCount = gridEl.querySelectorAll('.grid-item:not(.hidden)').length;
@@ -543,6 +623,7 @@ for (let i = 0; i < sliderSteps; i++) {
 function updateSlider() {
   const val = parseInt(gridSlider.value);
   gridEl.style.gridTemplateColumns = `repeat(${val}, 1fr)`;
+  placeFeatures();
 
   // Fill dots and track
   const pct = ((val - sliderMin) / (sliderMax - sliderMin)) * 100;
@@ -570,6 +651,7 @@ function switchLayout(toList) {
     if (toList) {
       gridEl.classList.add('list-view');
       gridEl.style.gridTemplateColumns = '';
+      placeFeatures();
       layoutListBtn.classList.add('active');
       layoutGridBtn.classList.remove('active');
     } else {
@@ -669,6 +751,7 @@ if (wmEl) {
     const frag = document.createDocumentFragment();
     sorted.forEach(el => frag.appendChild(el));
     gridEl.appendChild(frag);
+    placeFeatures();
   }
   sortBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
