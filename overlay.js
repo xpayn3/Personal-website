@@ -681,6 +681,9 @@
   // in which case the argument is an event and counts as false.
   function closeOverlay(fromHistory) {
     if (!overlay.classList.contains('open')) return;
+    // e.g. the back button pressed with a picture open: don't leave the
+    // lightbox hanging over the page the project is about to hand back
+    if (lightbox.classList.contains('open')) { closeLightbox(); endFlight(); }
     overlayClose.style.display = 'none';
     cleanupOverlay();
     overlay.classList.remove('open');
@@ -1262,7 +1265,9 @@
     const isVid = src.endsWith('.webm') || src.endsWith('.mp4');
     lightboxContent.className = 'lightbox-content slide-' + lbDirection;
     if (isVid) {
-      lightboxContent.innerHTML = `<video src="${src}" autoplay muted loop playsinline></video>`;
+      // the poster shows while the clip loads, and stands in for it on a
+      // phone that can't play the format
+      lightboxContent.innerHTML = `<video src="${src}" poster="${posterOf(src)}" autoplay muted loop playsinline></video>`;
     } else {
       lightboxContent.innerHTML = `<img src="${src}" alt="" />`;
     }

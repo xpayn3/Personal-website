@@ -100,6 +100,15 @@ html:has(body.page-lab) { background: #000000; }
 }
 .lab-card .media-wrap > img,
 .lab-card .media-wrap > video { height: 100%; }
+/* Lab clips: the tile shows the poster; lab.js lays a <video> over it only
+   while a mouse hovers, faded in once it is actually playing. */
+.lab-card .media-wrap > video {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.lab-card .media-wrap > video.is-playing { opacity: 1; }
 /* no zoom on hover: the picture stays put, the rest of the wall steps back */
 .grid:not(.list-view) > .grid-item:hover > img,
 .grid:not(.list-view) > .grid-item:hover .hover-video,

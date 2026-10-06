@@ -27,17 +27,10 @@ function renderGrid() {
     div.dataset.type = (isVideo || isAnim) ? 'video' : 'image';
     div.dataset.category = (item.category || []).join(',');
 
-    // On mobile: use tiny 300px images, on desktop: use thumbs for videos, full for images
-    let gridSrc;
-    if (isMobile) {
-      if (isVideo) {
-        gridSrc = item.src.replace(/\.(webm|mp4)$/, '_thumb.webp');
-      } else {
-        gridSrc = item.src.replace('Images/', 'Images/mobile/');
-      }
-    } else {
-      gridSrc = isVideo ? item.src.replace(/\.(webm|mp4)$/, '_thumb.webp') : item.src;
-    }
+    // Clips show their poster. Stills use the full picture, or the small
+    // 300px copy on phones.
+    const fullSrc = isVideo ? item.src.replace(/\.(webm|mp4)$/, '_thumb.webp') : item.src;
+    const gridSrc = isMobile && !isVideo ? item.src.replace('Images/', 'Images/mobile/') : fullSrc;
 
     const media = document.createElement('img');
     media.alt = item.projectName;
@@ -46,6 +39,11 @@ function renderGrid() {
     div.appendChild(media);
     media.addEventListener('load', () => {
       div.classList.remove('loading');
+    });
+    // A phone-sized copy that was never generated: fall back to the full
+    // picture once, rather than leaving an empty tile.
+    media.addEventListener('error', () => {
+      if (gridSrc !== fullSrc && media.getAttribute('src') === gridSrc) media.src = fullSrc;
     });
 
     // Video hover — desktop only, with preload-on-hover
