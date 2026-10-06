@@ -180,10 +180,9 @@ body.page-plain {
   display: block;
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: var(--img-radius, 6px);
   background: color-mix(in srgb, var(--ink) 6%, transparent);
-  transition: background-color var(--fade), border-color var(--fade);
+  transition: background-color var(--fade);
 }
 .card .thumb img,
 .card .thumb video {
