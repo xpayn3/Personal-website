@@ -167,14 +167,13 @@
     </div>
   </div>
 
-  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+  <!-- GSAP / ScrollTrigger / Lenis: loaded by motion.js on desktop only -->
+  <script src="motion.js"></script>
   <script defer src="projects.js?v=4"></script>
-  <script defer src="overlay.js?v=34"></script>
+  <script defer src="overlay.js?v=35"></script>
   <script src="floating-nav.js?v=8" defer></script>
   <script src="brand.js" defer></script>
-  <script src="smoke.js?v=9" defer></script>
+  <script src="smoke.js?v=10" defer></script>
 
   <!-- Render the selected-work cards from the shared project data. -->
   <script>
@@ -187,6 +186,8 @@
     const STATIC_COVER = ['grounded2026'];
     // Per-project cover-clip override (e.g. TAF's default clip glitches).
     const VIDEO_OVERRIDE = { taf: 'Images/Athletesfoot/taf_landscape.webm' };
+
+    const IS_TOUCH = matchMedia('(pointer: coarse)').matches;
 
     function pickCover(imgs) {
       if (!imgs || !imgs.length) return null;
@@ -215,8 +216,11 @@
         const video = STATIC_COVER.indexOf(id) === -1
           ? (VIDEO_OVERRIDE[id] || pickVideo(p.images))
           : null;
-        const mediaHtml = video
-          ? '<video autoplay muted loop playsinline preload="metadata" poster="' + cover + '"><source src="' + video + '" type="video/webm"></video>'
+        // Clips never autoplay on their own: the observer below plays one only
+        // while its card is on screen, and phones (which decode this format
+        // in software, at a real cost to the battery) get the still instead.
+        const mediaHtml = video && !IS_TOUCH
+          ? '<video muted loop playsinline preload="none" poster="' + cover + '" data-src="' + video + '"></video>'
           : '<img loading="lazy" src="' + cover + '" alt="">';
         const meta = [(p.category || []).join(', '), p.year].filter(Boolean).join(' · ');
 
@@ -235,6 +239,17 @@
         });
         wrap.appendChild(el);
       });
+
+      // play a card's clip while it is in view, pause it the moment it isn't
+      const clipObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          const clip = entry.target;
+          if (!entry.isIntersecting) { clip.pause(); return; }
+          if (!clip.src) clip.src = clip.dataset.src;
+          clip.play().catch(function () {});
+        });
+      }, { threshold: 0.25 });
+      wrap.querySelectorAll('video[data-src]').forEach(function (clip) { clipObserver.observe(clip); });
 
       const all = document.createElement('a');
       all.className = 'work-all';
@@ -256,23 +271,30 @@
   // (settings shared from overlay.js). Desktop only: phones scroll natively.
   // An open project is scrolled by this same instance. While the lightbox
   // has the page locked it is torn down, and rebuilt when the page is free.
-  document.addEventListener('DOMContentLoaded', function initSmoothScroll() {
-    if (typeof Lenis === 'undefined' || !window.SMOOTH_SCROLL) return;
-    if (matchMedia('(pointer: coarse)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    let lenis = null;
-    function sync() {
-      const locked = document.body.classList.contains('scroll-locked');
-      if (locked && lenis) { lenis.destroy(); lenis = null; }
-      else if (!locked && !lenis) lenis = new Lenis(window.SMOOTH_SCROLL);
-      window.pageLenis = lenis;   // overlay.js scrolls an open project through this
+  (function initSmoothScroll() {
+    let started = false;
+    // needs both the libraries (motion.js, desktop only) and the settings
+    // from overlay.js; whichever arrives last starts it
+    function start() {
+      if (started || typeof Lenis === 'undefined' || !window.SMOOTH_SCROLL) return;
+      started = true;
+      let lenis = null;
+      function sync() {
+        const locked = document.body.classList.contains('scroll-locked');
+        if (locked && lenis) { lenis.destroy(); lenis = null; }
+        else if (!locked && !lenis) lenis = new Lenis(window.SMOOTH_SCROLL);
+        window.pageLenis = lenis;   // overlay.js scrolls an open project through this
+      }
+      new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+      sync();
+      requestAnimationFrame(function raf(time) {
+        if (lenis) lenis.raf(time);
+        requestAnimationFrame(raf);
+      });
     }
-    new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class'] });
-    sync();
-    requestAnimationFrame(function raf(time) {
-      if (lenis) lenis.raf(time);
-      requestAnimationFrame(raf);
-    });
-  });
+    document.addEventListener('DOMContentLoaded', start);
+    window.addEventListener('motionlibs', start);
+  })();
 
   // Contact popup — "Get in touch" (hero), "Let's make something" (contact) and "Start a project" (nav) open a
   // modal on the home page instead of navigating to the About page.

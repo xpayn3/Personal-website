@@ -621,7 +621,11 @@
         }
       });
     }, { rootMargin: '200px' });
-    overlayInner.querySelectorAll('video[data-src]').forEach(vid => currentOverlayObs.observe(vid));
+    // On phones only the hero clip plays in the page. Each gallery clip keeps
+    // its poster (tap it and the lightbox plays it): several clips decoding
+    // at once is what drains a phone.
+    const autoplaying = coarsePointer.matches ? '.pv-hero video[data-src]' : 'video[data-src]';
+    overlayInner.querySelectorAll(autoplaying).forEach(vid => currentOverlayObs.observe(vid));
 
     // Every piece of media opens the lightbox at its own index.
     lightboxItems = proj.images;

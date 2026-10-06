@@ -584,6 +584,9 @@
       // out; keep the existing buffers (and the smoke in them) through that
       const keep = velocity && w === W && Math.abs(h - H) < 160;
       W = w; H = h;
+      // ...and on phones the drawing buffer too: reallocating it for every step
+      // of the toolbar's slide is wasted GPU work (CSS stretches it the few pixels)
+      if (keep && COARSE) return true;
       canvas.width = Math.round(W * dpr);
       canvas.height = Math.round(H * dpr);
       if (keep) { buildText(); return true; }
@@ -970,6 +973,7 @@
     pointer.vx = pointer.vy = pointer.svx = pointer.svy = 0;
     pointer.t = lastActive = performance.now();
     engine.stroke(pointer.x, pointer.y, pointer.x, pointer.y, 0, 0, 0.03);
+    wake();
   }
 
   addEventListener('pointermove', (e) => {
@@ -1019,37 +1023,50 @@
   addEventListener('blur', release);
 
   // ---------- loop ----------
-  let last = performance.now();
+  // The loop only runs while there is smoke to simulate. With clear air it
+  // stops entirely (no frame callbacks at all) and a new stroke wakes it:
+  // an idle page should cost the battery nothing.
+  let last = 0;
   let lastScroll = scrollY;
-  let parked = false;
+  let running = false;
+  // phones often refresh at 120Hz; the simulation doesn't need more than 60
+  const MIN_FRAME_MS = COARSE ? 15 : 0;
   // long enough for the slowest smoke and the text to settle before the solver rests
   const idleAfter = () => Math.min(60, Math.max(6, 10 / (TUNE.dyeDecay + 0.05))) * 1000;
+
+  function wake() {
+    if (running) return;
+    running = true;
+    last = performance.now();
+    lastScroll = scrollY;
+    requestAnimationFrame(frame);
+  }
+
   function frame(now) {
+    if (now - last < MIN_FRAME_MS) { requestAnimationFrame(frame); return; }
     const dt = Math.min((now - last) / 1000, 1 / 30);
     last = now;
     if (pointer.down) lastActive = now;
-    const idle = now - lastActive > idleAfter() && !engine.busy();
 
-    if (idle) {
-      // Nothing in the air: wipe the canvas once, then do no GPU work at all
-      // until the next stroke. Scrolling a clear page costs nothing.
-      if (!parked) { engine.clear(); engine.frame(dt, now, true); parked = true; }
-      lastScroll = scrollY;
-    } else {
-      parked = false;
-      // carry the smoke with the page so it stays attached to what it was drawn on
-      if (scrollY !== lastScroll) { engine.scroll(scrollY - lastScroll); lastScroll = scrollY; }
-      if (pointer.down && pointer.touch) {
-        // a finger on the screen radiates smoke for as long as it stays down
-        engine.puff(pointer.x, pointer.y, dt);
-      } else if (pointer.down && now - pointer.t > 40) {
-        // mouse: holding still keeps the source smouldering
-        pointer.vx = pointer.vy = 0;
-        engine.stroke(pointer.x, pointer.y, pointer.x, pointer.y, 0, 0, dt);
-      }
-      engine.frame(dt, now, false);
+    if (now - lastActive > idleAfter() && !engine.busy()) {
+      // Nothing in the air: wipe the canvas once and stop.
+      engine.clear();
+      engine.frame(dt, now, true);
+      running = false;
+      return;
     }
+
+    // carry the smoke with the page so it stays attached to what it was drawn on
+    if (scrollY !== lastScroll) { engine.scroll(scrollY - lastScroll); lastScroll = scrollY; }
+    if (pointer.down && pointer.touch) {
+      // a finger on the screen radiates smoke for as long as it stays down
+      engine.puff(pointer.x, pointer.y, dt);
+    } else if (pointer.down && now - pointer.t > 40) {
+      // mouse: holding still keeps the source smouldering
+      pointer.vx = pointer.vy = 0;
+      engine.stroke(pointer.x, pointer.y, pointer.x, pointer.y, 0, 0, dt);
+    }
+    engine.frame(dt, now, false);
     requestAnimationFrame(frame);
   }
-  requestAnimationFrame(frame);
 })();
