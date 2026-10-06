@@ -779,6 +779,15 @@ html:has(body.scroll-locked) {
   scrollbar-width: thin;
   scrollbar-color: color-mix(in srgb, var(--ink, #0b0b0c) 30%, transparent) transparent;
 }
+/* Smooth scroll (Lenis) drives the scroll position itself, frame by frame.
+   A page that also sets `scroll-behavior: smooth` (the Work page does) makes
+   the browser animate every one of those tiny steps, so the wheel barely
+   moves the page and it feels laggy. Lenis marks <html> while it is active;
+   switch the CSS smoothing off for that time. */
+html.lenis,
+html.lenis body { height: auto; }
+html.lenis { scroll-behavior: auto !important; }
+
 /* ---- Project as the page ----
    overlay.js shows a project by hiding everything else on the page
    (body.project-page) and letting the project sit in normal flow, scrolled by

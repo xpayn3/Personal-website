@@ -271,6 +271,14 @@
     if (overlayLenis) {
       overlayLenis.destroy();
       overlayLenis = null;
+      // Lenis can re-add its marker classes from a timer just after being
+      // destroyed; clear them once it is truly gone so the page's own CSS
+      // scroll behaviour comes back.
+      setTimeout(() => {
+        if (!overlayLenis && !window.pageLenis) {
+          document.documentElement.classList.remove('lenis', 'lenis-smooth', 'lenis-scrolling', 'lenis-stopped');
+        }
+      }, 700);
     }
     overlayScrollTriggers.forEach(st => st && st.kill());
     overlayScrollTriggers = [];
