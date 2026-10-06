@@ -71,6 +71,10 @@
   // Each letter also gets a slot as wide as the real letter it stands in
   // for, so the letters that have already settled don't slide about while
   // the rest are still changing. Returns the slots, one per character.
+  // The slots ignore the mouse: the pointer must stay on the word itself,
+  // or swapping them in and out under a resting cursor would count as the
+  // mouse entering again (restarting the scramble forever) and would eat
+  // clicks whose press landed on a slot that is gone by the release.
   function makeSlots(el, original) {
     const node = el.firstChild;
     const range = document.createRange();
@@ -83,7 +87,7 @@
     el.textContent = '';
     return widths.map((w, i) => {
       const slot = document.createElement('span');
-      slot.style.cssText = `display:inline-block;width:${w}px;text-align:center;white-space:pre`;
+      slot.style.cssText = `display:inline-block;width:${w}px;text-align:center;white-space:pre;pointer-events:none`;
       slot.textContent = original[i];
       el.appendChild(slot);
       return slot;
