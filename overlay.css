@@ -743,6 +743,22 @@ html:has(body.scroll-locked) {
 }
 
 
+/* Touch devices: no flying picture. Opening, the picture settles in with a
+   short fade and a slight scale; closing, it eases back the same way while
+   the lightbox fades. Two cheap properties, nothing measured. */
+@keyframes lbSettle {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+@media (pointer: coarse) {
+  .lightbox-content.slide-init img,
+  .lightbox-content.slide-init video {
+    animation: lbSettle 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .lightbox-content { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+  .lightbox:not(.open) .lightbox-content { transform: scale(0.96); }
+}
+
 /* Touch devices: the strip is a scrubber (overlay.js "Strip scrubbing").
    It spans the screen, pads its ends so the first and last thumbnails can
    reach the centre, and snaps thumbnails to the centre when it settles. */

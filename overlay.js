@@ -1182,17 +1182,24 @@
   }
 
   // The gallery cell the current lightbox picture can fly back into, if any.
+  // Touch devices skip the flight altogether: the lightbox simply fades and
+  // settles in (see "lbSettle" in overlay.css), which is lighter and smoother
+  // on a phone.
   function zoomTarget() {
-    if (!pageMode || reducedMotion.matches) return null;
+    if (!pageMode || reducedMotion.matches || coarsePointer.matches) return null;
     const cell = cellFor(lightboxIndex);
     return cell && onScreen(cell.getBoundingClientRect()) ? cell : null;
   }
 
+  let lbCloseRun = 0;
+
   function openLightbox(index, fromCell) {
     lightboxIndex = index;
     lbDirection = 'init';
-    const zoom = !!fromCell && !reducedMotion.matches && onScreen(fromCell.getBoundingClientRect());
+    const zoom = !!fromCell && !reducedMotion.matches && !coarsePointer.matches
+      && onScreen(fromCell.getBoundingClientRect());
     lightbox.classList.toggle('lb-zoom', zoom);   // no slide-in animation under the stand-in
+    lbCloseRun++;                                 // cancels a pending teardown from a close
     buildLightboxStrip();
     renderLightbox();
     lightbox.classList.add('open');
@@ -1211,10 +1218,22 @@
     const cell = zoomTarget();
     lightbox.classList.toggle('lb-zoom', !!cell);
 
-    if (real && real.tagName === 'VIDEO') { real.pause(); real.removeAttribute('src'); }
     lightbox.classList.remove('open');
-    lightboxContent.innerHTML = '';
-    lightboxContent.style.visibility = '';
+    if (cell) {
+      // the stand-in takes over at once, so the real picture can go now
+      lightboxContent.innerHTML = '';
+      lightboxContent.style.visibility = '';
+    } else {
+      // plain close: leave the picture in place while the lightbox fades out
+      // (0.3s in overlay.css), then clear it
+      if (real && real.tagName === 'VIDEO') real.pause();
+      const run = ++lbCloseRun;
+      setTimeout(() => {
+        if (run !== lbCloseRun || lightbox.classList.contains('open')) return;
+        lightboxContent.innerHTML = '';
+        lightboxContent.style.visibility = '';
+      }, 320);
+    }
     if (lbFrameRAF) cancelAnimationFrame(lbFrameRAF);
     lbFrameRAF = null;
     // the Lab panel keeps the page locked itself; otherwise release it
@@ -1359,6 +1378,7 @@
       lbSwipeHint.style.opacity = '0';
       setTimeout(() => {
         closeLightbox();
+        lightboxContent.innerHTML = '';   // already swiped away: don't let it show again during the fade
         lightboxContent.style.transform = '';
         lightboxContent.style.opacity = '';
         lightboxContent.style.transition = '';
