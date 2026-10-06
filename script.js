@@ -630,12 +630,7 @@ if (wmEl) {
 }
 
 
-// ========== AUTO-OPEN FROM HASH ==========
-// grid.html#project=X deep links open the overlay on page load.
-const hashMatch = location.hash.match(/project=(\w+)/);
-if (hashMatch) {
-  setTimeout(() => window.openProject(hashMatch[1]), 100);
-}
+// (grid.html#project=X deep links are opened by overlay.js, on every page.)
 
 // ========== CONTROL PANEL — sort / search / collapse =================
 (function initControlPanelExtras() {

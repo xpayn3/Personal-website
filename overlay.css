@@ -151,107 +151,55 @@ html:has(body.scroll-locked) {
   pointer-events: auto;
 }
 
-/* Floating project title pill */
-.proj-floating-pill {
-  position: fixed;
-  bottom: 24px;
-  top: auto;
-  left: 50%;
-  transform: translateX(-50%) translateY(60px);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 20px 8px 8px;
-  background: rgba(20,20,20,0.7);
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  border: 1px solid rgba(255,255,255,0.08);
+/* Close button look: a small uppercase pill on a blurred page-coloured
+   surface, like the home page's controls. --bg/--ink/--line come from
+   home.css when present. */
+.overlay-close {
+  font-family: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink, #0b0b0c);
+  background: color-mix(in srgb, var(--bg, #ffffff) 78%, transparent);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--line, rgba(11, 11, 12, 0.14));
   border-radius: 999px;
-  z-index: 240;
-  opacity: 0;
-  pointer-events: none;
-  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+  cursor: pointer;
 }
 
-.proj-floating-pill.visible {
-  transform: translateX(-50%) translateY(0);
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.proj-pill-icon {
-  position: relative;
-  width: 38px;
-  height: 38px;
-  flex-shrink: 0;
-}
-
-.proj-pill-progress {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.proj-pill-ring {
-  transition: stroke-dashoffset 0.1s linear;
-}
-
-.proj-pill-thumb {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.proj-pill-name {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #fff;
-  white-space: nowrap;
-  letter-spacing: 0.02em;
-}
-
+/* Close: "Close ×" pill, top right; the cross turns on hover. */
 .overlay-close {
   position: fixed;
   top: 20px;
   right: 24px;
   z-index: 250;
-  background: rgba(20,20,20,0.6);
-  backdrop-filter: blur(24px) saturate(1.6);
-  -webkit-backdrop-filter: blur(24px) saturate(1.6);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: #fff;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-  font-size: 1.6rem;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  cursor: pointer;
   display: flex;
   align-items: center;
-  line-height: 1;
-  justify-content: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 14px 0 16px;
   opacity: 0;
-  transform: scale(0.8);
-  transition: opacity 0.3s ease 0.2s, transform 0.3s ease 0.2s, background 0.2s;
+  transform: scale(0.9);
+  transition: opacity 0.3s ease 0.2s, transform 0.3s ease 0.2s, border-color 0.2s ease, background-color 0.7s ease, color 0.7s ease;
   pointer-events: none;
 }
-
+.overlay-close::before { content: 'Close'; }
+.overlay-close svg {
+  width: 11px;
+  height: 11px;
+  transition: rotate 0.45s cubic-bezier(0.34,1.56,0.64,1);
+}
 .overlay.open ~ .overlay-close,
 .overlay-close.visible {
   opacity: 1;
   transform: scale(1);
   pointer-events: auto;
 }
-
-.overlay-close:hover {
-  background: rgba(20,20,20,0.8);
-}
+.overlay-close:hover { border-color: var(--ink, #0b0b0c); }
+.overlay-close:hover svg { rotate: 90deg; }
+.overlay-close:focus-visible { outline: 2px solid var(--ink, #0b0b0c); outline-offset: 3px; }
 
 .overlay-inner {
   max-width: 100%;
@@ -372,7 +320,6 @@ html:has(body.scroll-locked) {
   border-radius: 0;
   cursor: pointer;
   transition: opacity 0.2s;
-  will-change: transform;
   transform: scale(1.15);
 }
 
@@ -798,6 +745,50 @@ html:has(body.scroll-locked) {
   cursor: auto;
 }
 
+/* Scrollbar area. The overlay is its own scroll container, so its
+   scrollbar is painted over the overlay's background (#111 by default) —
+   with a transparent track that showed as a black band beside the white
+   page. Match the background to the project view and use a thin bar. */
+.overlay:has(.pv) {
+  background: var(--bg, #ffffff);
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--ink, #0b0b0c) 30%, transparent) transparent;
+}
+/* Pages that reserve a scrollbar gutter (home, lab) leave a strip of page
+   background to the right of the overlay. Once the overlay has finished
+   sliding up (body.project-covered, set by overlay.js) paint that strip to
+   match too. */
+body.project-covered { background: var(--bg, #ffffff) !important; }
+
+/* Gallery mode: overlay.js adds body.project-dark while the gallery is on
+   screen. Everything in the project view reads its colours from these
+   variables, so swapping them turns the whole view (and its chrome) black. */
+.pv,
+.pv-label,
+.pv-cell::before,
+.pv-colophon,
+.pv-next-thumb,
+.pv-next-meta,
+.pv-tools span {
+  transition-property: background-color, color, border-color;
+  transition-duration: 0.7s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+body.project-dark .pv {
+  --pv-bg: #000000;
+  --pv-ink: #f4f4f5;
+  --pv-muted: #8e8e95;
+  --pv-line: rgba(244, 244, 245, 0.18);
+}
+body.project-dark .overlay-close,
+body.project-dark .overlay:has(.pv) {
+  --bg: #000000;
+  --ink: #f4f4f5;
+  --line: rgba(244, 244, 245, 0.18);
+}
+.overlay:has(.pv) { transition: top 0.5s cubic-bezier(0.16,1,0.3,1), background-color 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
+body.project-dark.project-covered { background: #000000 !important; }
+
 /* The site nav would sit on top of the project view; tuck it away. */
 .site-nav { transition: opacity var(--duration-normal, 0.3s) ease, visibility 0s; }
 body.project-open .site-nav {
@@ -808,7 +799,8 @@ body.project-open .site-nav {
 
 .pv-label,
 .pv-kicker,
-.pv-facts dt {
+.pv-facts dt,
+.pv-colophon {
   font-size: 13px;
   font-weight: 400;
   letter-spacing: 0.08em;
@@ -816,20 +808,32 @@ body.project-open .site-nav {
   color: var(--pv-muted);
 }
 
-/* ---- intro ---- */
+/* ---- cover: most of the first screen — kicker on top, big title, fact sheet,
+   and a foot row like the home hero's ---- */
 .pv-intro {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  min-height: 72vh;
-  min-height: 72svh;
-  padding: 120px 0 clamp(24px, 3vw, 40px);
+  /* a little short of the full screen, so the top of the hero picture
+     peeks in below and invites the scroll */
+  min-height: 82vh;
+  min-height: 82svh;
+  padding: 32px 0 var(--pv-gutter);
 }
 .pv-kicker {
   display: flex;
+  flex-wrap: wrap;
+  gap: 6px 28px;
+  padding-right: 120px;                  /* clear of the Close pill */
+}
+.pv-foot {
+  display: flex;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: clamp(16px, 2vw, 28px);
+  margin-top: clamp(28px, 4vw, 56px);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pv-muted);
 }
 .pv-title {
   font-size: clamp(44px, 10vw, 160px);
@@ -837,14 +841,18 @@ body.project-open .site-nav {
   letter-spacing: -0.045em;
   font-weight: 700;
   text-wrap: balance;
+  margin-top: auto;                      /* pushes title + facts to the bottom */
+  padding-top: 64px;
 }
 /* each word sits in a clipping box and rises into it */
 .pv-word {
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
-  padding-bottom: 0.12em;
-  margin-bottom: -0.12em;
+  /* The tight letter-spacing makes each box narrower than its glyphs, which
+     clipped the last character; pad the box out and pull the layout back. */
+  padding: 0 0.08em 0.12em;
+  margin: 0 -0.08em -0.12em;
 }
 .pv-word > span { display: inline-block; transform: translateY(115%); }
 .overlay.open .pv-word > span {
@@ -865,13 +873,21 @@ body.project-open .site-nav {
 }
 .pv-facts dd { margin-top: 6px; font-size: 17px; line-height: 1.35; }
 
-/* ---- media ---- */
-.pv .media-cell { border-radius: 14px; max-height: none; }
+/* ---- media ----
+   Every cell has a fixed aspect ratio and its media covers it, so the page
+   never shifts as (lazy-loaded) media arrives. A faint tint holds the place. */
+.pv .media-cell {
+  border-radius: 14px;
+  max-height: none;
+  background: color-mix(in srgb, var(--pv-ink) 6%, transparent);
+}
+.pv .media-cell img,
+.pv .media-cell video { height: 100%; max-height: none; }
+.pv .media-cell img:not([src]) { visibility: hidden; }   /* not downloaded yet */
+.pv-hero { aspect-ratio: 16 / 9; max-height: 92vh; max-height: 92dvh; }
 /* Media is inset rather than edge to edge: it starts at the same line as
    the section text (past the label column), leaving the left column clear. */
 .pv-hero { margin-left: calc((100% - 24px) / 5 + 24px); }
-.pv-hero img,
-.pv-hero video { max-height: 92vh; max-height: 92dvh; }
 
 .pv-reveal {
   opacity: 0;
@@ -885,15 +901,11 @@ body.project-open .site-nav {
   gap: clamp(12px, 1.6vw, 24px);
 }
 /* cells in a shared row get matching heights through their aspect ratios */
-.pv-grid .span-12 { grid-column: span 12; }
+.pv-grid .span-12 { grid-column: span 12; aspect-ratio: 16 / 9; }
 .pv-grid .span-7 { grid-column: span 7; aspect-ratio: 7 / 5; }
 .pv-grid .span-5 { grid-column: span 5; aspect-ratio: 5 / 5; }
 .pv-grid .span-6 { grid-column: span 6; aspect-ratio: 6 / 4.5; }
 .pv-grid .span-4 { grid-column: span 4; aspect-ratio: 4 / 5; }
-.pv-grid .media-cell:not(.span-12) img,
-.pv-grid .media-cell:not(.span-12) video { height: 100%; max-height: none; }
-.pv-grid .span-12 img,
-.pv-grid .span-12 video { max-height: 92vh; max-height: 92dvh; }
 
 /* ---- body: labelled rows with stacking labels ----
    One grid for every row. Each label is sticky and spans from its own row
@@ -916,6 +928,44 @@ body.project-open .site-nav {
   /* keeps the pile intact when the body's end pushes the labels out */
   margin-bottom: calc((var(--n) - var(--r)) * var(--pv-step) + var(--pv-pad));
 }
+/* Reading progress: a hairline that fills, with a tiny percentage, pinned
+   just under the pile of labels. */
+.pv-progress {
+  grid-column: 1;
+  grid-row: 1 / span var(--n);
+  align-self: start;
+  position: sticky;
+  top: calc(32px + var(--n) * var(--pv-step) + 14px);
+  margin-top: calc(var(--pv-pad) + var(--n) * var(--pv-step) + 14px);
+  margin-bottom: calc(var(--pv-pad) - 30px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: min(100%, 132px);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  font-variant-numeric: tabular-nums;
+  color: var(--pv-muted);
+  pointer-events: none;
+  transition: color 0.7s ease;
+}
+/* fixed-width read so "100%" doesn't shorten the line */
+.pv-progress span { flex: none; width: 4.5ch; text-align: right; }
+.pv-progress i {
+  position: relative;
+  flex: 1;
+  height: 1px;
+  background: var(--pv-line);
+}
+.pv-progress i::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--pv-ink);
+  transform: scaleX(var(--p, 0));
+  transform-origin: left center;
+}
+
 /* Each label is a button: click to glide to its row. It springs a little
    on hover, and the row being read grows, darkens and gets a dot. */
 .pv-jump {
@@ -1010,50 +1060,92 @@ body.project-open .site-nav {
   font-size: 14px;
 }
 
-/* ---- next project ---- */
+/* ---- next project: a compact card in the content column ---- */
 .pv-next {
-  position: relative;
-  align-items: end;
   color: inherit;
   text-decoration: none;
   cursor: pointer;
 }
-.pv-next-name {
-  font-size: clamp(36px, 8vw, 128px);
-  line-height: 0.95;
-  letter-spacing: -0.04em;
-  font-weight: 700;
-  transition: translate 0.5s var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+.pv-next-card {
+  display: grid;
+  grid-template-columns: clamp(140px, 20vw, 300px) 1fr auto;
+  align-items: center;
+  gap: clamp(16px, 2.5vw, 36px);
+  max-width: 980px;
 }
-.pv-next:hover .pv-next-name { translate: clamp(8px, 1.5vw, 24px) 0; }
-.pv-next:focus-visible { outline: 2px solid var(--pv-ink); outline-offset: 4px; }
 .pv-next-thumb {
-  position: absolute;
-  right: 0;
-  bottom: clamp(48px, 8vw, 120px);
-  width: clamp(140px, 18vw, 300px);
+  display: block;
   aspect-ratio: 4 / 3;
-  object-fit: cover;
+  overflow: hidden;
+  border: 1px solid var(--pv-line);
   border-radius: 14px;
-  opacity: 0;
-  translate: 0 24px;
-  transition: opacity 0.4s ease, translate 0.6s var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
-  pointer-events: none;
 }
-.pv-next:hover .pv-next-thumb { opacity: 1; translate: 0 0; }
+.pv-next-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 0.6s var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+}
+.pv-next-text { display: grid; gap: 8px; min-width: 0; }
+.pv-next-name {
+  font-size: clamp(22px, 2.6vw, 40px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 500;
+}
+.pv-next-meta { font-size: 14px; color: var(--pv-muted); }
+.pv-next-arrow {
+  display: grid;
+  place-items: center;
+  width: clamp(44px, 4.5vw, 64px);
+  aspect-ratio: 1;
+  border: 1px solid var(--pv-line);
+  border-radius: 50%;
+  font-size: clamp(16px, 1.6vw, 22px);
+  transition:
+    translate 0.5s var(--ease-bounce, cubic-bezier(0.34, 1.56, 0.64, 1)),
+    background-color var(--duration-normal, 0.3s) ease,
+    color var(--duration-normal, 0.3s) ease,
+    border-color var(--duration-normal, 0.3s) ease;
+}
+.pv-next:hover .pv-next-thumb img { scale: 1.06; }
+.pv-next:hover .pv-next-arrow {
+  translate: 6px 0;
+  background: var(--pv-ink);
+  border-color: var(--pv-ink);
+  color: var(--pv-bg);
+}
+.pv-next:focus-visible { outline: 2px solid var(--pv-ink); outline-offset: 4px; }
 
-.pv .proj-copyright {
+/* colophon row, like the home page's */
+.pv-colophon {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px 32px;
   padding: 24px 0 var(--pv-gutter);
   border-top: 1px solid var(--pv-line);
-  text-align: left;
-  font-family: inherit;
-  font-size: 13px;
-  letter-spacing: 0.02em;
-  color: var(--pv-muted);
 }
+.pv-colophon span { max-width: 70ch; line-height: 1.5; }
+.pv-top {
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--pv-ink);
+  cursor: pointer;
+}
+.pv-top:hover { text-decoration: underline; text-underline-offset: 0.3em; }
+.pv-top:focus-visible { outline: 2px solid var(--pv-ink); outline-offset: 4px; }
 
 @media (max-width: 768px) {
-  .pv-intro { min-height: 60svh; padding-top: 96px; }
+  .pv-intro { padding-top: 76px; }
+  .pv-kicker { padding-right: 0; }
+  .pv-colophon { flex-direction: column; }
   .pv-next { grid-template-columns: 1fr; }
   .pv-hero { margin-left: 0; }
   /* single column: labels sit above their content, no stacking */
@@ -1061,11 +1153,14 @@ body.project-open .site-nav {
   .pv-body > .pv-label { grid-row: auto; position: static; margin: 36px 0 0; }
   .pv-cell { grid-column: 1; grid-row: auto; padding: 14px 0 36px; }
   .pv-cell::before { display: none; }
+  .pv-progress { display: none; }
   .pv-grid { grid-template-columns: 1fr; }
-  .pv-grid .media-cell[class*="span-"] { grid-column: 1; aspect-ratio: auto; }
-  .pv-grid .media-cell:not(.span-12) img,
-  .pv-grid .media-cell:not(.span-12) video { height: auto; }
-  .pv-next-thumb { display: none; }
+  /* one column: landscape cells, with the narrow spans kept as portraits */
+  .pv-hero { aspect-ratio: 4 / 3; }
+  .pv-grid .media-cell[class*="span-"] { grid-column: 1; aspect-ratio: 4 / 3; }
+  .pv-grid .media-cell.span-5,
+  .pv-grid .media-cell.span-4 { aspect-ratio: 4 / 5; }
+  .pv-next-card { grid-template-columns: 96px 1fr auto; }
 }
 @media (prefers-reduced-motion: reduce) {
   .pv-word > span,

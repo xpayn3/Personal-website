@@ -167,8 +167,17 @@
   let overlayScrollTriggers = [];
   let overlayTickerFn = null;
   let currentOverlayObs = null;
+  let coveredTimer = 0;
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   function initOverlayParallax() {
+    // Smooth scroll and parallax are enhancements: skip them when the CDN
+    // libraries didn't load or the visitor prefers reduced motion. The
+    // overlay then simply scrolls natively.
+    if (typeof Lenis === 'undefined' || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    if (reducedMotion.matches) return;
+
     // Lenis smooth scroll on the overlay container
     overlayLenis = new Lenis({
       wrapper: overlay,
@@ -216,11 +225,16 @@
     }
     overlayScrollTriggers.forEach(st => st && st.kill());
     overlayScrollTriggers = [];
-    ScrollTrigger.getAll().forEach(st => st.kill());
+    if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.getAll().forEach(st => st.kill());
   }
+
+  // Teardown callbacks registered by whatever view is currently in the
+  // overlay (scroll listeners, observers). Run on every open and close.
+  const viewCleanups = [];
 
   function cleanupOverlay() {
     cleanupOverlayParallax();
+    viewCleanups.splice(0).forEach(fn => fn());
     // Disconnect old observer
     if (currentOverlayObs) {
       currentOverlayObs.disconnect();
@@ -234,292 +248,339 @@
     overlayInner.innerHTML = '';
   }
 
-  const loremPool = [
-    'The creative process began with extensive research into the brand\'s visual language, exploring how motion and form could communicate the core message.',
-    'Every detail was carefully considered — from color grading to timing — ensuring each frame contributed to a cohesive narrative.',
-    'The project pushed the boundaries of what\'s possible with real-time rendering, combining procedural techniques with hand-crafted animation.',
-    'Working closely with the client, we iterated through multiple visual directions before arriving at a concept that felt both fresh and authentic.',
-    'Typography and motion were treated as equal partners in the design, each reinforcing the other to create a unified visual experience.',
-    'The final deliverables included a full suite of animated assets optimized for social media, web, and large-format display.',
-  ];
+  // ---- Project view --------------------------------------------------------
+  // intro (counter · title · fact sheet) → hero → labelled rows (brief /
+  // about / tools / gallery) with a stacking section index → next project.
+  // Styles: "PROJECT VIEW" in overlay.css.
 
-  function openProject(projId) {
+  const TOOL_ICONS = {
+    'Cinema 4D': 'Images/tools/Cinema4D-Logo-Icon-Small.png',
+    'Redshift': 'Images/tools/Redshift-Logo-Icon-Small.png',
+    'AfterEffects': 'Images/tools/after-effects-1.svg',
+    'Photoshop': 'Images/tools/adobe-photoshop.svg',
+    'InDesign': 'Images/tools/adobe-indesign-cc-icon.svg',
+    'Illustrator': 'Images/tools/adobe-illustrator-cc-3.svg',
+    'Houdini': 'Images/tools/Houdini3D_icon.png',
+    'ZBrush': 'Images/tools/ZBrush-new-logo.jpg 1.png',
+    'Substance 3D': 'Images/tools/substance-3d-painter-1.svg',
+  };
+  // Gallery rhythm: column spans (of 12) per row, cycled.
+  const GALLERY_ROWS = [[12], [7, 5], [5, 7], [12], [4, 4, 4], [6, 6]];
+
+  const isVideo = src => /\.(webm|mp4)$/i.test(src);
+  const posterOf = src => (isVideo(src) ? src.replace(/\.(webm|mp4)$/i, '_thumb.webp') : src);
+  const pad2 = n => String(n).padStart(2, '0');
+  const metaLine = p => [(p.category || []).join(', '), p.year].filter(Boolean).join(' · ');
+
+  // Gallery media downloads only as it nears the viewport (see lazy observer
+  // in wireProjectView). Cells have fixed aspect ratios, so nothing shifts
+  // when it arrives.
+  function lazyMedia(src) {
+    return isVideo(src)
+      ? `<video data-src="${src}" poster="${posterOf(src)}" muted loop playsinline preload="none"></video>`
+      : `<img data-src="${src}" alt="" decoding="async" />`;
+  }
+
+  function galleryHTML(media) {
+    let html = '<div class="proj-media-grid pv-grid">';
+    for (let i = 0, r = 0; i < media.length; r++) {
+      let row = GALLERY_ROWS[r % GALLERY_ROWS.length];
+      const left = media.length - i;
+      if (left < row.length) row = left === 2 ? [6, 6] : [12];
+      for (const span of row) {
+        html += `<div class="media-cell pv-reveal span-${span}">${lazyMedia(media[i++])}</div>`;
+      }
+    }
+    return html + '</div>';
+  }
+
+  function projectViewHTML(projId) {
     const projects = window.projects;
     const proj = projects[projId];
+    const ids = Object.keys(projects).filter(id => id !== 'lab');
+    const pos = ids.indexOf(projId);
+    const nextId = ids[(pos + 1) % ids.length];
+    const next = projects[nextId];
+
+    // each title word sits in a clipping box and rises into it (.pv-word)
+    const title = proj.name.split(/\s+/).map((w, i) =>
+      `<span class="pv-word"><span style="--i:${i}">${w}</span></span>`).join(' ');
+
+    const facts = [
+      ['Client', proj.client], ['Year', proj.year], ['With', proj.collab], ['Location', proj.location],
+      ['Theme', proj.theme], ['Type', proj.type], ['Award', proj.award],
+    ].filter(f => f[1]).map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
+
+    // Labelled rows. Each becomes a sticky label + a content cell on one
+    // shared grid, which is what lets the labels pile up (see .pv-body).
+    const rows = [];
+    if (proj.brief) rows.push(['Brief', `<p class="pv-statement">${proj.brief}</p>`]);
+    if ((proj.desc && proj.desc.length) || proj.link) {
+      const paras = (proj.desc || []).map(t => `<p>${t}</p>`).join('');
+      const link = proj.link
+        ? `<p><a href="${proj.link}" target="_blank" rel="noopener noreferrer">${proj.link} ↗</a></p>` : '';
+      rows.push(['About', `<div class="pv-text">${paras}${link}</div>`]);
+    }
+    if (proj.tools && proj.tools.length) {
+      const chips = proj.tools.map(t =>
+        `<span>${TOOL_ICONS[t] ? `<img src="${TOOL_ICONS[t]}" alt="" class="tool-icon" />` : ''}${t}</span>`).join('');
+      rows.push(['Tools', `<div class="pv-tools">${chips}</div>`]);
+    }
+    if (proj.images.length > 1) rows.push(['Gallery', galleryHTML(proj.images.slice(1))]);
+
+    const body = rows.map(([label, content], i) =>
+      `<h2 class="pv-label" style="--r:${i + 1}"><button type="button" class="pv-jump"><i>${pad2(i + 1)}</i>${label}</button></h2>` +
+      `<div class="pv-cell" data-row="${label.toLowerCase()}" style="--r:${i + 1}">${content}</div>`).join('');
+
+    const html = `
+      <article class="pv">
+        <header class="pv-intro">
+          <div class="pv-kicker"><span>Project ${pad2(pos + 1)} / ${pad2(ids.length)}</span><span>${(proj.category || []).join(' · ')}</span></div>
+          <h1 class="pv-title">${title}</h1>
+          ${facts ? `<dl class="pv-facts">${facts}</dl>` : ''}
+          <div class="pv-foot" aria-hidden="true"><span>Luka Grčar</span><span>Scroll down</span></div>
+        </header>
+
+        <div class="media-cell pv-hero pv-reveal">${mediaTag(proj.images[0], proj.name, true)}</div>
+
+        <div class="pv-body" style="--n:${rows.length}">
+          ${body}
+          <div class="pv-progress" aria-hidden="true"><i></i><span>0%</span></div>
+        </div>
+
+        <a class="pv-next" href="#project=${nextId}">
+          <span class="pv-label">Next project</span>
+          <span class="pv-next-card">
+            <span class="pv-next-thumb"><img src="${posterOf(next.images[0])}" alt="" loading="lazy" /></span>
+            <span class="pv-next-text">
+              <span class="pv-next-name">${next.name}</span>
+              <span class="pv-next-meta">${metaLine(next)}</span>
+            </span>
+            <span class="pv-next-arrow" aria-hidden="true">→</span>
+          </span>
+        </a>
+        <div class="pv-colophon">
+          <span>&copy; ${proj.year || new Date().getFullYear()} Luka Grčar. All rights reserved. All work shown is original and may not be reproduced without permission.</span>
+          <button type="button" class="pv-top">Back to top ↑</button>
+        </div>
+      </article>`;
+    return { html, nextId };
+  }
+
+  function wireProjectView(nextId) {
+    const scrollToY = (y, duration) => {
+      if (overlayLenis) overlayLenis.scrollTo(y, { duration });
+      else overlay.scrollTo({ top: y, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+    };
+
+    overlayInner.querySelector('.pv-next').addEventListener('click', (e) => {
+      e.preventDefault();
+      openProject(nextId, { replace: true });
+    });
+    overlayInner.querySelector('.pv-top').addEventListener('click', () => scrollToY(0, 1.2));
+
+    // The stacked labels are a section index: click one to glide to its row.
+    const labels = overlayInner.querySelectorAll('.pv-body > .pv-label');
+    const cells = overlayInner.querySelectorAll('.pv-body > .pv-cell');
+    const gallery = overlayInner.querySelector('.pv-cell[data-row="gallery"]');
+    const progress = overlayInner.querySelector('.pv-progress');
+    const progressPct = progress.querySelector('span');
+    const cellTop = c => c.getBoundingClientRect().top - overlay.getBoundingClientRect().top;
+    labels.forEach((label, i) => {
+      label.querySelector('.pv-jump').addEventListener('click', () => {
+        scrollToY(overlay.scrollTop + cellTop(cells[i]) + 1, 1.1);
+      });
+    });
+
+    // One scroll handler keeps three things in step with the scroll position:
+    // the active label, the progress read, and gallery (dark) mode. Scroll
+    // events are already delivered at most once per frame.
+    const onScroll = () => {
+      const h = overlay.clientHeight;
+      let active = 0;
+      cells.forEach((c, i) => { if (cellTop(c) <= h * 0.45) active = i; });
+      labels.forEach((l, i) => l.classList.toggle('is-active', i === active));
+
+      const range = overlay.scrollHeight - h;
+      const p = range > 0 ? Math.min(1, Math.max(0, overlay.scrollTop / range)) : 0;
+      progress.style.setProperty('--p', p.toFixed(4));
+      progressPct.textContent = Math.round(p * 100) + '%';
+
+      // lights down once the gallery has risen past the lower part of the screen
+      document.body.classList.toggle('project-dark', !!gallery && cellTop(gallery) <= h * 0.6);
+    };
+    overlay.addEventListener('scroll', onScroll, { passive: true });
+    viewCleanups.push(() => overlay.removeEventListener('scroll', onScroll));
+    onScroll();
+
+    // Media rises into place the first time it scrolls into view.
+    const revealObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-in');
+        revealObs.unobserve(entry.target);
+      });
+    }, { root: overlay, threshold: 0.08 });
+    overlayInner.querySelectorAll('.pv-reveal').forEach(el => revealObs.observe(el));
+
+    // Gallery images start downloading about a screen before they are needed.
+    const lazyObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.src = entry.target.dataset.src;
+        lazyObs.unobserve(entry.target);
+      });
+    }, { root: overlay, rootMargin: '100% 0px' });
+    overlayInner.querySelectorAll('img[data-src]').forEach(img => lazyObs.observe(img));
+
+    viewCleanups.push(() => { revealObs.disconnect(); lazyObs.disconnect(); });
+  }
+
+  // Lab keeps its simple dark-hero gallery layout.
+  function labViewHTML(proj) {
+    let html = `<div class="proj-hero-dark"><div class="proj-hero-content">`;
+    html += `<h1 class="proj-title">${proj.name}</h1>`;
+    if (proj.desc) proj.desc.forEach(p => html += `<p class="proj-desc">${p}</p>`);
+    if (proj.tools) {
+      html += '<div class="proj-tools">';
+      proj.tools.forEach(t => html += `<span class="proj-tag">${t}</span>`);
+      html += '</div>';
+    }
+    html += '</div></div>';
+    html += '<div class="proj-white-sheet"><div class="proj-gallery">';
+    for (const row of proj.layout) {
+      html += `<div class="gallery-row row-${row.cols}">`;
+      for (const idx of row.imgs) {
+        if (proj.images[idx]) html += mediaTag(proj.images[idx], proj.name, true);
+      }
+      html += '</div>';
+    }
+    html += '</div></div>';
+    html += '<div class="lab-splash" id="labSplash">L<span>a</span>B</div>';
+    return html;
+  }
+
+  // ---- Deep links + back button --------------------------------------------
+  // An open project lives in the URL as #project=<id>, so it can be shared
+  // and the browser's back button closes it instead of leaving the site.
+  const projectInHash = () => {
+    const m = location.hash.match(/project=([\w-]+)/);
+    return m ? m[1] : null;
+  };
+  function recordOpenInHistory(projId, replace) {
+    const current = projectInHash();
+    if (current === projId) return;                 // came from the URL or back/forward
+    // moving between projects replaces the entry, so one "back" always closes
+    const push = !current && !replace;
+    const pushed = push || !!(history.state && history.state.pushed);
+    history[push ? 'pushState' : 'replaceState']({ project: projId, pushed }, '', '#project=' + projId);
+  }
+  function recordCloseInHistory() {
+    if (!projectInHash()) return;
+    if (history.state && history.state.pushed) history.back();   // popstate does nothing more: already closed
+    else history.replaceState(null, '', location.pathname + location.search);
+  }
+
+  // ---- Open / close ---------------------------------------------------------
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+
+  let currentProjectId = null;
+  let pageMeta = null;        // the host page's title / og tags, restored on close
+  let focusBeforeOpen = null;
+  const metaTag = prop => document.querySelector(`meta[property="og:${prop}"]`);
+  const setMeta = (prop, value) => { const el = metaTag(prop); if (el) el.content = value; };
+
+  function openProject(projId, opts) {
+    const proj = window.projects && window.projects[projId];
     if (!proj) return;
+    const wasOpen = overlay.classList.contains('open');
+    const isLab = projId === 'lab';
 
     cleanupOverlay();
 
-    const isLab = projId === 'lab';
-
     if (isLab) {
-      // Lab keeps simple gallery layout
-      let html = `<div class="proj-hero-dark"><div class="proj-hero-content">`;
-      html += `<h1 class="proj-title">${proj.name}</h1>`;
-      if (proj.desc) proj.desc.forEach(p => html += `<p class="proj-desc">${p}</p>`);
-      if (proj.tools) {
-        html += '<div class="proj-tools">';
-        proj.tools.forEach(t => html += `<span class="proj-tag">${t}</span>`);
-        html += '</div>';
-      }
-      html += '</div></div>';
-      html += '<div class="proj-white-sheet"><div class="proj-gallery">';
-      for (const row of proj.layout) {
-        html += `<div class="gallery-row row-${row.cols}">`;
-        for (const idx of row.imgs) {
-          if (proj.images[idx]) html += mediaTag(proj.images[idx], proj.name, true);
-        }
-        html += '</div>';
-      }
-      html += '</div></div>';
-      html += '<div class="lab-splash" id="labSplash">L<span>a</span>B</div>';
-      overlayInner.innerHTML = html;
+      overlayInner.innerHTML = labViewHTML(proj);
       setTimeout(() => {
         const splash = document.getElementById('labSplash');
         if (splash) splash.classList.add('fade-out');
       }, 2500);
     } else {
-      // ---- Project view: intro → hero → labelled sections → gallery → next ----
-      const ids = Object.keys(projects).filter(id => id !== 'lab');
-      const pos = ids.indexOf(projId);
-      const nextId = ids[(pos + 1) % ids.length];
-      const next = projects[nextId];
-      const pad = n => String(n).padStart(2, '0');
-      const thumbOf = src => /\.(webm|mp4)$/.test(src) ? src.replace(/\.(webm|mp4)$/, '_thumb.webp') : src;
-
-      let html = '<article class="pv">';
-
-      // Intro: counter, big title (words rise in one by one), fact sheet.
-      // Keeps .proj-header — the floating pill watches it to know when to show.
-      html += '<header class="proj-header pv-intro">';
-      html += `<div class="pv-kicker"><span>${pad(pos + 1)} / ${pad(ids.length)}</span><span>${(proj.category || []).join(' · ')}</span></div>`;
-      html += '<h1 class="pv-title">' + proj.name.split(/\s+/).map((w, i) =>
-        `<span class="pv-word"><span style="--i:${i}">${w}</span></span>`).join(' ') + '</h1>';
-      const facts = [
-        ['Client', proj.client], ['Year', proj.year], ['With', proj.collab], ['Location', proj.location],
-        ['Theme', proj.theme], ['Type', proj.type], ['Award', proj.award],
-      ].filter(f => f[1]);
-      if (facts.length) {
-        html += '<dl class="pv-facts">';
-        facts.forEach(([k, v]) => html += `<div><dt>${k}</dt><dd>${v}</dd></div>`);
-        html += '</dl>';
-      }
-      html += '</header>';
-
-      // Hero media (first image / clip)
-      html += `<div class="media-cell pv-hero pv-reveal">${mediaTag(proj.images[0], proj.name, true)}</div>`;
-
-      // Body: labelled rows (brief, about, tools, gallery) on one two-column
-      // grid. The labels are sticky and each spans down to the end of the
-      // grid, so as you scroll they pile up in the left column beside the
-      // gallery (see .pv-body in overlay.css).
-      const rows = [];
-      if (proj.brief) rows.push(['Brief', `<p class="pv-statement">${proj.brief}</p>`]);
-
-      const descTexts = proj.desc && proj.desc.length > 0 ? proj.desc : [loremPool[0], loremPool[1]];
-      let about = '<div class="pv-text">';
-      descTexts.forEach(t => about += `<p>${t}</p>`);
-      if (proj.link) {
-        about += `<p><a href="${proj.link}" target="_blank" rel="noopener noreferrer">${proj.link} ↗</a></p>`;
-      }
-      rows.push(['About', about + '</div>']);
-
-      const toolIcons = {
-        'Cinema 4D': 'Images/tools/Cinema4D-Logo-Icon-Small.png',
-        'Redshift': 'Images/tools/Redshift-Logo-Icon-Small.png',
-        'AfterEffects': 'Images/tools/after-effects-1.svg',
-        'Photoshop': 'Images/tools/adobe-photoshop.svg',
-        'InDesign': 'Images/tools/adobe-indesign-cc-icon.svg',
-        'Illustrator': 'Images/tools/adobe-illustrator-cc-3.svg',
-        'Houdini': 'Images/tools/Houdini3D_icon.png',
-        'ZBrush': 'Images/tools/ZBrush-new-logo.jpg 1.png',
-        'Substance 3D': 'Images/tools/substance-3d-painter-1.svg',
-      };
-      if (proj.tools) {
-        let tools = '<div class="pv-tools">';
-        proj.tools.forEach(t => {
-          const iconSrc = toolIcons[t];
-          const icon = iconSrc ? `<img src="${iconSrc}" alt="" class="tool-icon" />` : '';
-          tools += `<span>${icon}${t}</span>`;
-        });
-        rows.push(['Tools', tools + '</div>']);
-      }
-
-      // Gallery: the remaining media on a 12-column grid, cycling through row
-      // shapes (full · 7/5 · 5/7 · full · thirds · halves) for an uneven rhythm.
-      const rest = proj.images.slice(1);
-      if (rest.length) {
-        const ROWS = [[12], [7, 5], [5, 7], [12], [4, 4, 4], [6, 6]];
-        let gallery = '<div class="proj-media-grid pv-grid">';
-        for (let i = 0, r = 0; i < rest.length; r++) {
-          let row = ROWS[r % ROWS.length];
-          const left = rest.length - i;
-          if (left < row.length) row = left === 2 ? [6, 6] : [12];
-          for (const span of row) {
-            gallery += `<div class="media-cell pv-reveal span-${span}">${mediaTag(rest[i++], proj.name, true)}</div>`;
-          }
-        }
-        rows.push(['Gallery', gallery + '</div>']);
-      }
-
-      html += `<div class="pv-body" style="--n:${rows.length}">`;
-      rows.forEach(([label, content], i) => {
-        html += `<h2 class="pv-label" style="--r:${i + 1}"><button type="button" class="pv-jump"><i>${pad(i + 1)}</i>${label}</button></h2>` +
-          `<div class="pv-cell" style="--r:${i + 1}">${content}</div>`;
-      });
-      html += '</div>';
-
-      // Next project
-      html += `<a class="pv-next" href="grid.html#project=${nextId}">` +
-        '<span class="pv-label">Next project</span>' +
-        `<span class="pv-next-name">${next.name}</span>` +
-        `<img class="pv-next-thumb" src="${thumbOf(next.images[0])}" alt="" />` +
-        '</a>';
-
-      html += `<div class="proj-copyright">&copy; ${proj.year || new Date().getFullYear()} Luka Grčar. All rights reserved. All work shown is original and may not be reproduced without permission.</div>`;
-
-      html += '</article>';
-      overlayInner.innerHTML = html;
-
-      overlayInner.querySelector('.pv-next').addEventListener('click', (e) => {
-        e.preventDefault();
-        openProject(nextId);
-      });
-
-      // Stacked labels double as a section index: click one to glide to its
-      // row; the row currently being read is marked .is-active (grows, darkens).
-      const pvLabels = overlayInner.querySelectorAll('.pv-body > .pv-label');
-      const pvCells = overlayInner.querySelectorAll('.pv-body > .pv-cell');
-      const cellTop = (c) => c.getBoundingClientRect().top - overlay.getBoundingClientRect().top;
-      pvLabels.forEach((label, i) => {
-        label.querySelector('.pv-jump').addEventListener('click', () => {
-          const y = overlay.scrollTop + cellTop(pvCells[i]) + 1;
-          if (overlayLenis) overlayLenis.scrollTo(y, { duration: 1.1 });
-          else overlay.scrollTo({ top: y, behavior: 'smooth' });
-        });
-      });
-      const spy = () => {
-        if (!pvLabels.length || !pvLabels[0].isConnected) { overlay.removeEventListener('scroll', spy); return; }
-        const line = overlay.clientHeight * 0.45;
-        let active = 0;
-        pvCells.forEach((c, i) => { if (cellTop(c) <= line) active = i; });
-        pvLabels.forEach((l, i) => l.classList.toggle('is-active', i === active));
-      };
-      overlay.addEventListener('scroll', spy, { passive: true });
-      spy();
-
-      // Media rises into place as it scrolls into view
-      const revealObs = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add('is-in');
-          revealObs.unobserve(entry.target);
-        });
-      }, { root: overlay, threshold: 0.08 });
-      overlayInner.querySelectorAll('.pv-reveal').forEach(el => revealObs.observe(el));
+      const view = projectViewHTML(projId);
+      overlayInner.innerHTML = view.html;
+      wireProjectView(view.nextId);
     }
 
-    // Lazy-load overlay videos when they scroll into view
+    // Videos load when they near the viewport, play while visible, pause after.
     currentOverlayObs = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const vid = entry.target;
         if (entry.isIntersecting) {
-          if (!vid.src && vid.dataset.src) {
-            vid.src = vid.dataset.src;
-          }
+          if (!vid.src && vid.dataset.src) vid.src = vid.dataset.src;
           vid.play().catch(() => {});
         } else {
           vid.pause();
         }
       });
     }, { root: overlay, rootMargin: '200px' });
-
     overlayInner.querySelectorAll('video[data-src]').forEach(vid => currentOverlayObs.observe(vid));
 
-    // Wire up lightbox on all clickable media
+    // Every piece of media opens the lightbox at its own index.
     lightboxItems = proj.images;
-    const allMedia = overlayInner.querySelectorAll('.media-cell img, .media-cell video, .proj-row-full img, .proj-row-full video, .proj-gallery img, .proj-gallery video');
-    allMedia.forEach((el) => {
-      const src = el.getAttribute('src') || el.dataset.src;
-      const idx = proj.images.indexOf(src);
-      el.addEventListener('click', () => { lbIsLab = (projId === 'lab'); openLightbox(idx >= 0 ? idx : 0); });
+    overlayInner.querySelectorAll('.media-cell img, .media-cell video, .proj-gallery img, .proj-gallery video').forEach((el) => {
+      const idx = proj.images.indexOf(el.getAttribute('src') || el.dataset.src);
+      el.addEventListener('click', () => { lbIsLab = isLab; openLightbox(idx >= 0 ? idx : 0); });
     });
 
-
-    // Floating title pill — appears when scrolling past project header
-    const existingPill = document.getElementById('projFloatingPill');
-    if (existingPill) existingPill.remove();
-    if (!isLab) {
-      const pill = document.createElement('div');
-      pill.id = 'projFloatingPill';
-      pill.className = 'proj-floating-pill';
-      const firstSrc = proj.images[0];
-      const pillThumb = firstSrc.endsWith('.webm') || firstSrc.endsWith('.mp4')
-        ? firstSrc.replace(/\.(webm|mp4)$/, '_thumb.webp') : firstSrc;
-      pill.innerHTML = `<div class="proj-pill-icon"><svg class="proj-pill-progress" viewBox="0 0 36 36"><circle cx="18" cy="18" r="16" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2.5"/><circle class="proj-pill-ring" cx="18" cy="18" r="16" fill="none" stroke="#fff" stroke-width="2.5" stroke-dasharray="100.53" stroke-dashoffset="100.53" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg><img src="${pillThumb}" alt="" class="proj-pill-thumb" /></div><span class="proj-pill-name">${proj.name}</span>`;
-      pill.style.cursor = 'pointer';
-      pill.addEventListener('click', () => {
-        if (overlayLenis) {
-          overlayLenis.scrollTo(0, { duration: 1.2 });
-        } else {
-          overlay.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-      });
-      overlay.appendChild(pill);
-
-      const ring = pill.querySelector('.proj-pill-ring');
-      const circumference = 2 * Math.PI * 16; // 100.53
-
-      const header = overlayInner.querySelector('.proj-header');
-      if (header) {
-        const pillObs = new IntersectionObserver((entries) => {
-          pill.classList.toggle('visible', !entries[0].isIntersecting);
-        }, { root: overlay, threshold: 0 });
-        pillObs.observe(header);
-      }
-
-      // Update scroll progress ring
-      overlay.addEventListener('scroll', function pillScroll() {
-        if (!pill.parentNode) { overlay.removeEventListener('scroll', pillScroll); return; }
-        const scrollTop = overlay.scrollTop;
-        const scrollHeight = overlay.scrollHeight - overlay.clientHeight;
-        const progress = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
-        ring.style.strokeDashoffset = circumference * (1 - progress);
-      });
-    }
-
     overlay.classList.add('open');
+    overlay.setAttribute('aria-label', proj.name);
     overlayClose.classList.add('visible');
     document.body.classList.add('project-open'); // hides the site nav (overlay.css)
-    lockScroll();
-    const tc = document.getElementById('themeColor');
-    if (tc) tc.content = '#111111';
+    document.body.classList.remove('project-dark');
+    // once the slide-up has finished, let overlay.css recolour the page's
+    // scrollbar gutter to match the project view (not for the dark Lab view)
+    clearTimeout(coveredTimer);
+    if (!isLab) coveredTimer = setTimeout(() => document.body.classList.add('project-covered'), 520);
+    if (!wasOpen) {
+      lockScroll();
+      focusBeforeOpen = document.activeElement;
+      pageMeta = {
+        title: document.title,
+        ogTitle: (metaTag('title') || {}).content,
+        ogDesc: (metaTag('description') || {}).content,
+        ogImg: (metaTag('image') || {}).content,
+      };
+    }
     overlay.scrollTop = 0;
+    overlayClose.focus({ preventScroll: true });
+    const tc = document.getElementById('themeColor');
+    if (tc) tc.content = isLab ? '#111111' : '#ffffff';
 
-    // Update page meta for sharing
+    // Page meta for sharing
     document.title = proj.name + ' — Luka Grčar';
-    let ogTitle = document.querySelector('meta[property="og:title"]');
-    let ogDesc = document.querySelector('meta[property="og:description"]');
-    let ogImg = document.querySelector('meta[property="og:image"]');
-    if (ogTitle) ogTitle.content = proj.name + ' — Luka Grčar';
-    if (ogDesc) ogDesc.content = (proj.desc && proj.desc[0]) ? proj.desc[0].substring(0, 160) : 'Portfolio of Luka Grčar';
-    const ogThumb = proj.images[0].endsWith('.webm') || proj.images[0].endsWith('.mp4')
-      ? proj.images[0].replace(/\.(webm|mp4)$/, '_thumb.webp')
-      : proj.images[0];
-    if (ogImg) ogImg.content = 'https://lukagrcar.com/' + ogThumb;
+    setMeta('title', proj.name + ' — Luka Grčar');
+    setMeta('description', (proj.desc && proj.desc[0]) ? proj.desc[0].substring(0, 160) : 'Portfolio of Luka Grčar');
+    setMeta('image', 'https://lukagrcar.com/' + posterOf(proj.images[0]));
+
+    currentProjectId = projId;
+    recordOpenInHistory(projId, opts && opts.replace);
 
     // Init smooth scroll + parallax after DOM settles
     requestAnimationFrame(() => initOverlayParallax());
   }
 
-  function closeOverlay() {
+  // `fromHistory` is true only when the browser's back/forward triggered the
+  // close (the URL has already changed then). Used as an event handler too,
+  // in which case the argument is an event and counts as false.
+  function closeOverlay(fromHistory) {
+    if (!overlay.classList.contains('open')) return;
     overlayClose.style.display = 'none';
     cleanupOverlay();
-    const pill = document.getElementById('projFloatingPill');
-    if (pill) pill.remove();
     overlay.classList.remove('open');
     overlayClose.classList.remove('visible');
-    document.body.classList.remove('project-open');
+    clearTimeout(coveredTimer);
+    document.body.classList.remove('project-open', 'project-covered', 'project-dark');
+    currentProjectId = null;
     // Always fully clear the body-fixed state. If `scrollLockCount` drifted
     // (e.g. lightbox/mobile-list flows nested on top) a counter decrement is
     // not enough — the body would stay `position: fixed; top: -Ypx` and
@@ -531,17 +592,34 @@
     document.body.classList.remove('scroll-locked');
     document.body.style.cssText = '';
     window.scrollTo({ top: y, behavior: 'instant' });
-    document.title = 'Luka Grčar — Portfolio';
-    let ogTitle = document.querySelector('meta[property="og:title"]');
-    let ogDesc = document.querySelector('meta[property="og:description"]');
-    let ogImg = document.querySelector('meta[property="og:image"]');
-    if (ogTitle) ogTitle.content = 'Luka Grčar — Portfolio';
-    if (ogDesc) ogDesc.content = '3D generalist & motion designer based in Ljubljana, Slovenia.';
-    if (ogImg) ogImg.content = 'https://lukagrcar.com/og-image.png';
+
+    if (pageMeta) {
+      document.title = pageMeta.title;
+      if (pageMeta.ogTitle != null) setMeta('title', pageMeta.ogTitle);
+      if (pageMeta.ogDesc != null) setMeta('description', pageMeta.ogDesc);
+      if (pageMeta.ogImg != null) setMeta('image', pageMeta.ogImg);
+      pageMeta = null;
+    }
     const tc = document.getElementById('themeColor');
     if (tc) tc.content = '#ffffff';
+    if (focusBeforeOpen && focusBeforeOpen.focus) focusBeforeOpen.focus({ preventScroll: true });
+    focusBeforeOpen = null;
     setTimeout(() => { overlayClose.style.display = ''; }, 500);
+
+    if (fromHistory !== true) recordCloseInHistory();
   }
+
+  // Back / forward: follow the URL.
+  window.addEventListener('popstate', () => {
+    const id = projectInHash();
+    if (id && window.projects && window.projects[id]) {
+      if (id !== currentProjectId) openProject(id);
+    } else {
+      closeOverlay(true);
+    }
+  });
+  // Deep link: <page>#project=<id> opens that project on load.
+  if (projectInHash()) setTimeout(() => openProject(projectInHash()), 100);
 
   overlayClose.addEventListener('click', closeOverlay);
 
