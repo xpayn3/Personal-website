@@ -1,0 +1,235 @@
+/* ========== LAB APPS ==========
+   Two things, both laid out like an app store: the shelf of app cards on
+   the Lab page (built by lab.js) and an app's own page (apps/<id>.html,
+   built by app-page.js). Colours (--g-*) come from gallery.css. */
+
+/* ---- icon tile (apps.js: labAppIcon) ---- */
+.app-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--icon, 72px);
+  aspect-ratio: 1 / 1;
+  border-radius: 22.5%;
+  overflow: hidden;
+  background: #131316;
+  box-shadow: inset 0 0 0 1px var(--g-line);
+}
+.app-icon img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.app-icon.is-letter {
+  font-family: var(--font-display);
+  font-size: calc(var(--icon, 72px) * 0.46);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--g-ink);
+  background: linear-gradient(160deg, #26262b, #0d0d0f);
+}
+
+/* ---- the shelf on the Lab page ---- */
+.app-shelf { margin-bottom: clamp(36px, 5vw, 64px); }
+.app-shelf[hidden] { display: none; }
+.app-shelf-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 14px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--g-muted);
+}
+.app-shelf-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(16px, 2.4vw, 32px);
+  border-top: 1px solid var(--g-line);
+}
+.app-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--g-line);
+  color: var(--g-ink);
+  text-decoration: none;
+}
+.app-card-text { flex: 1; min-width: 0; display: grid; gap: 3px; }
+.app-card-name { font-size: 1.05rem; font-weight: 500; letter-spacing: -0.01em; }
+.app-card-sub {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--g-muted);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+.app-card-get,
+.app-btn {
+  flex: none;
+  padding: 8px 18px;
+  border: 1px solid var(--g-line);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--g-ink);
+  text-decoration: none;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+.app-card:hover .app-card-get,
+.app-btn:hover,
+.app-btn.is-primary { background: var(--g-ink); border-color: var(--g-ink); color: var(--g-bg); }
+.app-btn.is-primary:hover { background: #ffffff; border-color: #ffffff; }
+.app-card:focus-visible,
+.app-btn:focus-visible { outline: 1px solid var(--g-ink); outline-offset: 4px; }
+
+/* ---- an app's own page ---- */
+.app-page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: clamp(104px, 15vh, 160px) var(--g-gutter) clamp(80px, 12vh, 160px);
+  color: var(--g-ink);
+}
+.app-back {
+  display: inline-block;
+  margin-bottom: clamp(28px, 5vh, 48px);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--g-muted);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+.app-back:hover { color: var(--g-ink); }
+
+.app-hero { display: flex; align-items: center; gap: clamp(20px, 3vw, 36px); }
+.app-hero .app-icon { --icon: clamp(96px, 14vw, 148px); }
+.app-hero-text { min-width: 0; }
+.app-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.4vw, 3.25rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+.app-subtitle {
+  margin-top: 10px;
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  line-height: 1.35;
+  color: var(--g-muted);
+}
+.app-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.app-btn { padding: 11px 22px; }
+
+.app-stats {
+  display: flex;
+  margin-top: clamp(32px, 5vw, 56px);
+  border-top: 1px solid var(--g-line);
+  border-bottom: 1px solid var(--g-line);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.app-stats::-webkit-scrollbar { display: none; }
+.app-stats > div {
+  flex: 1 0 auto;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  padding: 18px clamp(16px, 2.4vw, 28px);
+  text-align: center;
+}
+.app-stats > div + div { border-left: 1px solid var(--g-line); }
+.app-stats dt,
+.app-info dt,
+.app-section-head span {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--g-muted);
+}
+.app-stats dd { font-size: 1.05rem; font-weight: 500; white-space: nowrap; }
+
+.app-section { margin-top: clamp(40px, 6vw, 72px); }
+.app-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.app-section-head h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.app-text {
+  max-width: 68ch;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: rgba(244, 244, 245, 0.78);
+}
+.app-text + .app-text { margin-top: 14px; }
+
+/* previews: a row you scroll sideways, bleeding to the right edge on phones */
+.app-shots {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.app-shots::-webkit-scrollbar { display: none; }
+.app-shots figure { flex: none; width: clamp(180px, 24vw, 240px); scroll-snap-align: start; }
+.app-shots img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 18px;
+  background: #0c0c0d;
+}
+.app-shots figcaption {
+  margin-top: 10px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--g-muted);
+}
+
+.app-features {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(20px, 3vw, 32px) clamp(24px, 4vw, 56px);
+}
+.app-features li { display: grid; gap: 6px; align-content: start; }
+.app-features strong { font-size: 1.05rem; font-weight: 500; }
+.app-features span { font-size: 0.95rem; line-height: 1.55; color: var(--g-muted); }
+
+.app-info { border-top: 1px solid var(--g-line); }
+.app-info > div {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) 3fr;
+  gap: 16px;
+  align-items: baseline;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--g-line);
+}
+.app-info dd { font-size: 0.95rem; line-height: 1.5; }
+
+@media (max-width: 768px) {
+  .app-shelf-list,
+  .app-features { grid-template-columns: 1fr; }
+  .app-hero { align-items: flex-start; }
+  .app-stats > div { flex: 0 0 auto; }
+  .app-shots { margin-right: calc(var(--g-gutter) * -1); padding-right: var(--g-gutter); }
+  .app-info > div { grid-template-columns: 1fr; gap: 4px; }
+}

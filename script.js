@@ -856,16 +856,3 @@ if (wmEl) {
   // ---- Initial count + label sync. ----------------------------------
   applyFilters();
 })();
-
-// ========== FOOTER REVEAL ==========
-// footer.css hides footer text until body has .footer-visible — toggle it
-// once the footer comes into view.
-(function initFooterReveal() {
-  const footer = document.querySelector('.site-footer');
-  if (!footer) return;
-  const obs = new IntersectionObserver((entries) => {
-    const visible = entries.some(e => e.isIntersecting);
-    document.body.classList.toggle('footer-visible', visible);
-  }, { threshold: 0.05 });
-  obs.observe(footer);
-})();

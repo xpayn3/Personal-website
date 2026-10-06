@@ -60,7 +60,7 @@ body {
 .journal-filter button:hover { color: var(--g-ink); }
 .journal-filter button.is-active { background: var(--g-ink); border-color: var(--g-ink); color: var(--g-bg); }
 .journal-filter button:focus-visible { outline: 1px solid var(--g-ink); outline-offset: 3px; }
-.journal-feed { grid-column: 2; min-width: 0; }
+.journal-main { grid-column: 2; min-width: 0; }
 
 /* ---- an entry ---- */
 .entry {
@@ -101,31 +101,6 @@ body {
   color: var(--lab-ink-dim);
 }
 
-/* ---- an app entry's small print: tags, then links out ---- */
-.entry-links {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  margin-top: 16px;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-.entry-tag,
-.entry-link {
-  padding: 7px 13px;
-  border: 1px solid var(--g-line);
-  border-radius: 999px;
-  color: var(--g-muted);
-}
-.entry-link {
-  color: var(--g-ink);
-  text-decoration: none;
-  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
-}
-.entry-link:hover { background: var(--g-ink); border-color: var(--g-ink); color: var(--g-bg); }
-.entry-link:focus-visible { outline: 1px solid var(--g-ink); outline-offset: 3px; }
 /* shown by lab.js when a filter has nothing to list */
 .journal-empty {
   max-width: 52ch;
@@ -223,10 +198,25 @@ body {
 .entry-media .entry-nav:disabled { opacity: 0; pointer-events: none; }
 @media (hover: none), (pointer: coarse) { .entry-nav { display: none; } }
 
+/* dots under a set, one per picture (lab.js: wireSet) */
+.entry-dots { display: flex; justify-content: center; gap: 7px; margin-top: 14px; }
+.entry-dots button {
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(244, 244, 245, 0.28);
+  cursor: pointer;
+  transition: background-color 0.25s ease, scale 0.25s ease;
+}
+.entry-dots button.is-active { background: var(--g-ink); scale: 1.25; }
+.entry-dots button:focus-visible { outline: 1px solid var(--g-ink); outline-offset: 3px; }
+
 @media (max-width: 1100px) {
   .journal { grid-template-columns: minmax(0, 760px); justify-content: center; }
   .journal-rail { position: static; max-width: none; margin-bottom: clamp(28px, 6vw, 44px); }
-  .journal-feed { grid-column: 1; }
+  .journal-main { grid-column: 1; }
 }
 @media (max-width: 768px) {
   .entry-media { border-radius: 2px; }

@@ -2,8 +2,9 @@
 // The Lab reads like a personal sketchbook feed: one column of entries, each
 // with a small header line, a title, an optional note, and its picture or
 // clip at its own proportions. Files that belong together are posted as one
-// entry you can flick through. Clicking any picture opens the shared lightbox
-// (overlay.js) scoped to the Lab.
+// entry you can flick through, with dots under it. Clicking a picture opens
+// the shared lightbox (overlay.js) on that entry's own pictures. Apps
+// (apps.js) are listed above the feed as a shelf of cards, store-style.
 //
 // Clips are plain posters until they are needed: with a mouse the clip in
 // view plays by itself (one <video> per clip, created on first play); on
@@ -25,19 +26,6 @@
   // Both accept `date` ('2025-03-14', or any text such as 'Spring 2024') and
   // `note` (a line or two of journal text); each is shown only when present.
   // A Lab file listed in neither becomes an entry titled from its file name.
-  // APPS: small apps, tools and web experiments, posted at the top of the
-  // feed and listed on their own under the "Apps & web" filter. Give each a
-  // `title` and a `repo` (its GitHub link) and/or a `url` (where it runs);
-  // `kind` (the header word: 'App' unless set, e.g. 'Web experiment'), `date`,
-  // `note`, `tags` and `image` (a screenshot, opened in the lightbox) are optional.
-  const APPS = [
-    { title: 'MeshOptimiser', repo: 'https://github.com/xpayn3/MeshOptimiser', tags: ['JavaScript', 'WebGPU'],
-      note: 'From bloated CAD to browser-ready, locally. STEP → Meshopt-compressed GLB + WebGPU viewer.' },
-    { title: 'Webtree', repo: 'https://github.com/xpayn3/webtree', tags: ['JavaScript'],
-      note: 'Web based tree generator.' },
-    // { title: 'App name', repo: 'https://github.com/xpayn3/app-name', url: 'https://…', date: '2026-11-01',
-    //   note: 'What it does, in a line or two.', tags: ['Three.js', 'WebGL'], image: 'Images/Lab/app-name.webp' },
-  ];
   const SETS = [
     { title: 'Dream', files: ['Dream_01.webp', 'Dream_02.webp', 'Dream_03.webp', 'Dream_03-2.webp', 'Dream_04-2.webp'] },
     { title: 'Kristal', files: ['lab_kristal.webm', 'lab_kristal_story.webm', 'kristal0020.webp', 'kristal0025.webp', 'kristal0026.webp'] },
@@ -100,7 +88,7 @@
   const setOf = new Map();
   SETS.forEach(set => set.files.forEach(file => setOf.set(file, set)));
 
-  const entries = APPS.map(app => Object.assign({}, app, { app: true, media: app.image ? [app.image] : [] }));
+  const entries = [];
   const posted = new Set();
   sources.forEach((src) => {
     const set = setOf.get(fileOf(src));
@@ -112,14 +100,13 @@
     }
   });
 
-  // The lightbox walks every picture of the feed, top to bottom.
-  const flat = entries.flatMap(entry => entry.media);
-  function openAt(idx) {
-    if (typeof window.setLightboxItems === 'function') window.setLightboxItems(flat, true);
+  // Clicking a picture opens the lightbox on that entry's own pictures.
+  function openEntry(media, idx) {
+    if (typeof window.setLightboxItems === 'function') window.setLightboxItems(media, true);
     if (typeof window.openLightbox === 'function') window.openLightbox(idx);
   }
 
-  function makeSlide(src, flatIdx, title) {
+  function makeSlide(src, media, idx, title) {
     const clip = isVideo(src);
     const slide = el('button', 'entry-slide');
     slide.type = 'button';
@@ -136,12 +123,13 @@
     }
     slide.appendChild(img);
     if (clip) slide.appendChild(el('span', 'entry-badge', 'Clip'));
-    slide.addEventListener('click', () => openAt(flatIdx));
+    slide.addEventListener('click', () => openEntry(media, idx));
     return slide;
   }
 
-  // A set is a sideways strip of slides with a counter and, with a mouse,
-  // a pair of arrows; on touch you just swipe it.
+  // A set is a sideways strip of slides with a counter, a row of dots under
+  // it and, with a mouse, a pair of arrows; on touch you just swipe it.
+  // Returns the dots, which sit below the picture.
   function wireSet(media, track, total) {
     const count = el('span', 'entry-count', `1 / ${total}`);
     const prev = el('button', 'entry-nav is-prev', '←');
@@ -149,71 +137,81 @@
     prev.type = next.type = 'button';
     prev.setAttribute('aria-label', 'Previous picture');
     next.setAttribute('aria-label', 'Next picture');
+
+    const go = i => track.scrollTo({ left: i * track.clientWidth, behavior: reducedMotion ? 'auto' : 'smooth' });
+    const dots = el('div', 'entry-dots');
+    for (let i = 0; i < total; i++) {
+      const dot = el('button');
+      dot.type = 'button';
+      dot.setAttribute('aria-label', `Picture ${i + 1} of ${total}`);
+      dot.addEventListener('click', () => go(i));
+      dots.append(dot);
+    }
+
     const at = () => Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
     const sync = () => {
       const i = at();
       count.textContent = `${i + 1} / ${total}`;
       prev.disabled = i === 0;
       next.disabled = i === total - 1;
+      [...dots.children].forEach((dot, n) => dot.classList.toggle('is-active', n === i));
     };
-    const step = dir => track.scrollBy({ left: dir * track.clientWidth, behavior: reducedMotion ? 'auto' : 'smooth' });
-    prev.addEventListener('click', () => step(-1));
-    next.addEventListener('click', () => step(1));
+    prev.addEventListener('click', () => go(at() - 1));
+    next.addEventListener('click', () => go(at() + 1));
     track.addEventListener('scroll', sync, { passive: true });
     media.append(count, prev, next);
     sync();
+    return dots;
   }
 
-  // An app's small print: its tags, then where to find it.
-  function makeAppLinks(app) {
-    const row = el('div', 'entry-links');
-    (app.tags || []).forEach(tag => row.append(el('span', 'entry-tag', tag)));
-    const link = (href, text) => {
-      const a = el('a', 'entry-link', text);
-      Object.assign(a, { href, target: '_blank', rel: 'noopener noreferrer' });
-      return a;
-    };
-    if (app.url) row.append(link(app.url, 'Open app ↗'));
-    if (app.repo) row.append(link(app.repo, `${app.repo.replace(/^https?:\/\/(www\.)?github\.com\//, '').replace(/\/$/, '')} ↗`));
-    return row;
-  }
-
-  function makeEntry(entry, idx, flatStart) {
+  function makeEntry(entry, idx) {
     const clips = entry.media.filter(isVideo).length;
     const total = entry.media.length;
     const article = el('article', 'entry');
     article.id = `entry-${idx + 1}`;
-    if (entry.app) article.dataset.app = '';
-    else if (clips) article.dataset.clip = '';
-    if (!entry.app && clips < total) article.dataset.still = '';
+    if (clips) article.dataset.clip = '';
+    if (clips < total) article.dataset.still = '';
 
     const head = el('header', 'entry-head');
-    head.append(el('span', '', pad2(idx + 1)), el('span', '', entry.app ? (entry.kind || 'App') : total > 1 ? `Set of ${total}` : clips ? 'Clip' : 'Still'));
+    head.append(el('span', '', pad2(idx + 1)), el('span', '', total > 1 ? `Set of ${total}` : clips ? 'Clip' : 'Still'));
     if (entry.date) head.append(el('time', '', dateText(entry.date)));
     article.append(head, el('h2', 'entry-title', entry.title));
     if (entry.note) article.append(el('p', 'entry-note', entry.note));
-    if (entry.app) article.append(makeAppLinks(entry));
-    if (!total) return article;
 
     const media = el('div', 'entry-media');
     const track = el('div', 'entry-track');
-    entry.media.forEach((src, i) => track.appendChild(makeSlide(src, flatStart + i, entry.title)));
+    entry.media.forEach((src, i) => track.appendChild(makeSlide(src, entry.media, i, entry.title)));
     media.appendChild(track);
-    if (total > 1) wireSet(media, track, total);
     article.appendChild(media);
+    if (total > 1) article.appendChild(wireSet(media, track, total));
     return article;
   }
 
   const frag = document.createDocumentFragment();
-  let flatStart = 0;
-  entries.forEach((entry, idx) => {
-    frag.appendChild(makeEntry(entry, idx, flatStart));
-    flatStart += entry.media.length;
-  });
+  entries.forEach((entry, idx) => frag.appendChild(makeEntry(entry, idx)));
   feed.prepend(frag);                      // ahead of the "nothing here yet" note
 
+  // ---- Apps: a shelf of cards above the feed, each linking to its page ---
+  const apps = window.labApps || [];
+  const shelf = document.getElementById('labApps');
+  if (shelf && apps.length) {
+    const head = el('div', 'app-shelf-head');
+    head.append(el('span', '', 'Apps & web'), el('span', '', String(apps.length)));
+    const list = el('div', 'app-shelf-list');
+    apps.forEach((app) => {
+      const card = el('a', 'app-card');
+      card.href = `apps/${app.id}.html`;
+      const text = el('span', 'app-card-text');
+      text.append(el('span', 'app-card-name', app.title), el('span', 'app-card-sub', app.subtitle));
+      card.append(window.labAppIcon(app), text, el('span', 'app-card-get', 'View'));
+      list.append(card);
+    });
+    shelf.append(head, list);
+    shelf.hidden = false;
+  }
+
   const countEl = document.getElementById('labCount');
-  if (countEl) countEl.textContent = String(entries.length);
+  if (countEl) countEl.textContent = String(entries.length + apps.length);
 
   // ---- Show: all / stills / clips / apps ---------------------------------
   const filterBtns = document.querySelectorAll('.journal-filter button');
@@ -227,7 +225,8 @@
         entry.hidden = show !== 'all' && !(show in entry.dataset);
         if (!entry.hidden) shown++;
       });
-      if (emptyNote) emptyNote.hidden = shown > 0;
+      if (shelf) shelf.hidden = !apps.length || (show !== 'all' && show !== 'app');
+      if (emptyNote) emptyNote.hidden = shown > 0 || (shelf && !shelf.hidden);
     });
   });
 
@@ -261,11 +260,4 @@
     }
   }, { threshold: 0.05, rootMargin: '0px 0px -5% 0px' });
   feed.querySelectorAll('.entry').forEach(entry => revealObs.observe(entry));
-
-  // Footer reveal (same pattern as other pages)
-  const footer = document.querySelector('.site-footer');
-  if (!footer) return;
-  new IntersectionObserver((seen) => {
-    document.body.classList.toggle('footer-visible', seen.some(item => item.isIntersecting));
-  }, { threshold: 0.05 }).observe(footer);
 })();
