@@ -377,6 +377,7 @@ const projects = {
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects'],
     images: [
       `${IMG}/Grounded_2026/Render_still_01_CC.webp`,   // hero — wide landscape render
+      `${IMG}/Grounded_2026/Grounded_2026_web.webm`,    // 16:9 web film: first, full-width gallery row
       `${IMG}/Grounded_2026/Grounded_2026_anim.webm`,
       `${IMG}/Grounded_2026/Render_closeup_CC.webp`,
       `${IMG}/Grounded_2026/Render_still_02_CC.webp`,
