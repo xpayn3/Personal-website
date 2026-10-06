@@ -35,8 +35,10 @@
   // carried by a velocity field that gets buoyancy, vorticity confinement
   // and a little ambient turbulence, then thins out and diffuses away.
   // =====================================================================
-  // phones get a coarser simulation
+  // Phones get a coarser simulation, thinner and more transparent smoke,
+  // and keep their text as plain text (no dissolve).
   const COARSE = matchMedia('(pointer: coarse)').matches;
+  const LIGHT = COARSE ? { density: 0.5, opacity: 0.7 } : { density: 1, opacity: 1 };
   const TUNE = {
     simRes: COARSE ? 96 : 144,          // velocity grid, short side
     dyeRes: COARSE ? 384 : 640,          // smoke density grid, short side
@@ -522,7 +524,7 @@
     // Each [data-smoke] element is rasterised from the real DOM into a texture,
     // so the canvas version lines up with (and replaces) the HTML text.
     // The display shader has two text layers, so at most two elements.
-    const texts = [...document.querySelectorAll('[data-smoke]')].slice(0, 2)
+    const texts = (COARSE ? [] : [...document.querySelectorAll('[data-smoke]')].slice(0, 2))
       .map((el) => ({ el, tex: gl.createTexture(), box: null, until: 0, live: false }));
     function buildText() { texts.forEach(buildLayer); }
     function buildLayer(layer) {
@@ -655,7 +657,7 @@
         queue.push({
           ax: ax / W, ay: 1 - ay / H, bx: bx / W, by: 1 - by / H,
           vx: vx * k + rand(-j, j), vy: -vy * k + rand(-j, j),
-          amount: Math.min(0.22 + 5 * dt, 0.6) * (1 - 0.45 * fast) * TUNE.density,
+          amount: Math.min(0.22 + 5 * dt, 0.6) * (1 - 0.45 * fast) * TUNE.density * LIGHT.density,
           dyeR: 0.011 * (1 + 1.4 * fast) * rand(0.8, 1.25) * TUNE.size,
           velR: 0.028 * (1 + fast),
         });
@@ -804,7 +806,7 @@
         gl.uniform3fv(cur.u.ink, ink);
         gl.uniform3fv(cur.u.edgeCol, edge);
         gl.uniform3fv(cur.u.coreCol, core);
-        gl.uniform1f(cur.u.opacity, TUNE.opacity);
+        gl.uniform1f(cur.u.opacity, TUNE.opacity * LIGHT.opacity);
         gl.uniform1f(cur.u.shading, TUNE.shading);
         gl.clearColor(0, 0, 0, 0);
         draw(null);
@@ -915,20 +917,40 @@
   addEventListener('resize', () => engine.resize());
 
   // ---------- pointer ----------
-  const pointer = { down: false, x: 0, y: 0, vx: 0, vy: 0, svx: 0, svy: 0, t: 0 };
+  let lastActive = -Infinity;   // time of the last stroke; drives the idle check in the loop
+  const pointer = { down: false, armed: false, sx: 0, sy: 0, x: 0, y: 0, vx: 0, vy: 0, svx: 0, svy: 0, t: 0 };
   const clampV = (v) => Math.max(-1600, Math.min(1600, v));
 
   addEventListener('pointerdown', (e) => {
     if (e.target.closest?.('a, button, input, textarea, select, label, .smoke-panel, .hc-overlay, #overlay, #lightbox, #mobileProjList, .mobile-menu')) return;
-    pointer.down = true;
-    document.body.classList.add('smoke-dragging'); // no text selection mid-stroke
     pointer.x = e.clientX; pointer.y = e.clientY;
-    pointer.vx = pointer.vy = pointer.svx = pointer.svy = 0;
-    pointer.t = performance.now();
-    engine.stroke(pointer.x, pointer.y, pointer.x, pointer.y, 0, 0, 0.03);
+    // A finger landing on the page is usually the start of a scroll, so touch
+    // only arms a stroke; it starts once the finger has clearly moved sideways
+    // (see pointermove). Otherwise every scroll would puff smoke and wake the
+    // simulation.
+    if (e.pointerType === 'touch') {
+      pointer.armed = true;
+      pointer.sx = e.clientX; pointer.sy = e.clientY;
+      return;
+    }
+    startStroke();
   });
 
+  function startStroke() {
+    pointer.armed = false;
+    pointer.down = true;
+    document.body.classList.add('smoke-dragging'); // no text selection mid-stroke
+    pointer.vx = pointer.vy = pointer.svx = pointer.svy = 0;
+    pointer.t = lastActive = performance.now();
+    engine.stroke(pointer.x, pointer.y, pointer.x, pointer.y, 0, 0, 0.03);
+  }
+
   addEventListener('pointermove', (e) => {
+    if (pointer.armed) {
+      const dx = e.clientX - pointer.sx, dy = e.clientY - pointer.sy;
+      if (Math.abs(dy) > 10 && Math.abs(dy) >= Math.abs(dx)) pointer.armed = false;       // it's a scroll
+      else if (Math.abs(dx) > 10) { pointer.x = pointer.sx; pointer.y = pointer.sy; startStroke(); }
+    }
     if (!pointer.down) return;
     // use every sub-frame sample so fast strokes stay curved, not polygonal
     const events = e.getCoalescedEvents ? e.getCoalescedEvents() : [];
@@ -947,7 +969,7 @@
     pointer.t = now;
   });
 
-  const release = () => { pointer.down = false; document.body.classList.remove('smoke-dragging'); };
+  const release = () => { pointer.down = pointer.armed = false; document.body.classList.remove('smoke-dragging'); };
   addEventListener('pointerup', () => {
     const moving = performance.now() - pointer.t < 80;
     if (pointer.down && moving && Math.hypot(pointer.svx, pointer.svy) > 300) {
@@ -961,21 +983,31 @@
   // ---------- loop ----------
   let last = performance.now();
   let lastScroll = scrollY;
-  let lastActive = last;
+  let parked = false;
   // long enough for the slowest smoke and the text to settle before the solver rests
   const idleAfter = () => Math.min(60, Math.max(6, 10 / (TUNE.dyeDecay + 0.05))) * 1000;
   function frame(now) {
     const dt = Math.min((now - last) / 1000, 1 / 30);
     last = now;
-    // carry the smoke with the page so it stays attached to what it was drawn on
-    if (scrollY !== lastScroll) { engine.scroll(scrollY - lastScroll); lastScroll = scrollY; lastActive = now; }
     if (pointer.down) lastActive = now;
-    // holding still keeps the source smouldering
-    if (pointer.down && now - pointer.t > 40) {
-      pointer.vx = pointer.vy = 0;
-      engine.stroke(pointer.x, pointer.y, pointer.x, pointer.y, 0, 0, dt);
+    const idle = now - lastActive > idleAfter() && !engine.busy();
+
+    if (idle) {
+      // Nothing in the air: wipe the canvas once, then do no GPU work at all
+      // until the next stroke. Scrolling a clear page costs nothing.
+      if (!parked) { engine.clear(); engine.frame(dt, now, true); parked = true; }
+      lastScroll = scrollY;
+    } else {
+      parked = false;
+      // carry the smoke with the page so it stays attached to what it was drawn on
+      if (scrollY !== lastScroll) { engine.scroll(scrollY - lastScroll); lastScroll = scrollY; }
+      // holding still keeps the source smouldering
+      if (pointer.down && now - pointer.t > 40) {
+        pointer.vx = pointer.vy = 0;
+        engine.stroke(pointer.x, pointer.y, pointer.x, pointer.y, 0, 0, dt);
+      }
+      engine.frame(dt, now, false);
     }
-    engine.frame(dt, now, now - lastActive > idleAfter() && !engine.busy());
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);

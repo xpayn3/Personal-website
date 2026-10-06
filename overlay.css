@@ -884,6 +884,9 @@ body.project-open .site-nav {
 .pv .media-cell img,
 .pv .media-cell video { height: 100%; max-height: none; }
 .pv .media-cell img:not([src]) { visibility: hidden; }   /* not downloaded yet */
+/* no parallax (phones, reduced motion): media sits at its natural size */
+.overlay.no-parallax .media-cell img,
+.overlay.no-parallax .media-cell video { transform: none; }
 .pv-hero { aspect-ratio: 16 / 9; max-height: 92vh; max-height: 92dvh; }
 /* Media is inset rather than edge to edge: it starts at the same line as
    the section text (past the label column), leaving the left column clear. */

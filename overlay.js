@@ -170,24 +170,45 @@
   let coveredTimer = 0;
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const coarsePointer = window.matchMedia('(pointer: coarse)');
+
+  // One smooth-scroll feel for the whole site: the home page's own scroll
+  // (index.html) and the project view both use these settings.
+  const SMOOTH_SCROLL = { lerp: 0.14, wheelMultiplier: 1.25, smoothWheel: true };
+  window.SMOOTH_SCROLL = SMOOTH_SCROLL;
+
+  // Browser UI tint (address bar / status bar areas on phones).
+  let themeColorBefore;
+  function setThemeColor(color) {
+    let meta = document.querySelector('meta[name="theme-color"]');
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.name = 'theme-color';
+      document.head.appendChild(meta);
+    }
+    if (themeColorBefore === undefined) themeColorBefore = meta.content || '';
+    meta.content = color;
+  }
+  function restoreThemeColor() {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta && themeColorBefore !== undefined) {
+      if (themeColorBefore) meta.content = themeColorBefore; else meta.remove();
+    }
+    themeColorBefore = undefined;
+  }
+  const pageBg = () => getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#ffffff';
 
   function initOverlayParallax() {
-    // Smooth scroll and parallax are enhancements: skip them when the CDN
-    // libraries didn't load or the visitor prefers reduced motion. The
-    // overlay then simply scrolls natively.
-    if (typeof Lenis === 'undefined' || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
-    if (reducedMotion.matches) return;
+    // Smooth scroll and parallax are desktop enhancements. Skip them when the
+    // CDN libraries didn't load, the visitor prefers reduced motion, or the
+    // device is touch-first: phones scroll natively, which is both smoother
+    // and much cheaper than scrubbing a transform on every picture.
+    const libs = typeof Lenis !== 'undefined' && typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined';
+    const enhance = libs && !reducedMotion.matches && !coarsePointer.matches;
+    overlay.classList.toggle('no-parallax', !enhance);   // drops the parallax over-scale (overlay.css)
+    if (!enhance) return;
 
-    // Lenis smooth scroll on the overlay container
-    overlayLenis = new Lenis({
-      wrapper: overlay,
-      content: overlayInner,
-      // 0.07 felt silky but couldn't keep up with a fast wheel; this catches
-      // up about twice as quickly, and each wheel notch travels a bit further
-      lerp: 0.14,
-      wheelMultiplier: 1.25,
-      smoothWheel: true,
-    });
+    overlayLenis = new Lenis(Object.assign({ wrapper: overlay, content: overlayInner }, SMOOTH_SCROLL));
 
     overlayLenis.on('scroll', ScrollTrigger.update);
     overlayTickerFn = (time) => { if (overlayLenis) overlayLenis.raf(time * 1000); };
@@ -407,7 +428,11 @@
       progressPct.textContent = Math.round(p * 100) + '%';
 
       // lights down once the gallery has risen past the lower part of the screen
-      document.body.classList.toggle('project-dark', !!gallery && cellTop(gallery) <= h * 0.6);
+      const dark = !!gallery && cellTop(gallery) <= h * 0.6;
+      if (dark !== document.body.classList.contains('project-dark')) {
+        document.body.classList.toggle('project-dark', dark);
+        setThemeColor(dark ? '#000000' : pageBg());
+      }
     };
     overlay.addEventListener('scroll', onScroll, { passive: true });
     viewCleanups.push(() => overlay.removeEventListener('scroll', onScroll));
@@ -477,7 +502,10 @@
   }
   function recordCloseInHistory() {
     if (!projectInHash()) return;
-    if (history.state && history.state.pushed) history.back();   // popstate does nothing more: already closed
+    if (history.state && history.state.pushed) {
+      pendingScrollY = savedScrollY;   // re-applied after the browser's own scroll restoration
+      history.back();                  // popstate has nothing left to close
+    }
     else history.replaceState(null, '', location.pathname + location.search);
   }
 
@@ -496,6 +524,11 @@
     if (!proj) return;
     const wasOpen = overlay.classList.contains('open');
     const isLab = projId === 'lab';
+
+    // Must happen before the page is scroll-locked: the browser remembers the
+    // page's scroll position for the history entry at this moment, and
+    // restores it when "back" closes the project.
+    recordOpenInHistory(projId, opts && opts.replace);
 
     cleanupOverlay();
 
@@ -553,8 +586,7 @@
     }
     overlay.scrollTop = 0;
     overlayClose.focus({ preventScroll: true });
-    const tc = document.getElementById('themeColor');
-    if (tc) tc.content = isLab ? '#111111' : '#ffffff';
+    setThemeColor(isLab ? '#111111' : pageBg());
 
     // Page meta for sharing
     document.title = proj.name + ' — Luka Grčar';
@@ -563,7 +595,6 @@
     setMeta('image', 'https://lukagrcar.com/' + posterOf(proj.images[0]));
 
     currentProjectId = projId;
-    recordOpenInHistory(projId, opts && opts.replace);
 
     // Init smooth scroll + parallax after DOM settles
     requestAnimationFrame(() => initOverlayParallax());
@@ -600,8 +631,7 @@
       if (pageMeta.ogImg != null) setMeta('image', pageMeta.ogImg);
       pageMeta = null;
     }
-    const tc = document.getElementById('themeColor');
-    if (tc) tc.content = '#ffffff';
+    restoreThemeColor();
     if (focusBeforeOpen && focusBeforeOpen.focus) focusBeforeOpen.focus({ preventScroll: true });
     focusBeforeOpen = null;
     setTimeout(() => { overlayClose.style.display = ''; }, 500);
@@ -610,7 +640,13 @@
   }
 
   // Back / forward: follow the URL.
+  let pendingScrollY = null;
   window.addEventListener('popstate', () => {
+    if (pendingScrollY != null) {
+      const y = pendingScrollY;
+      pendingScrollY = null;
+      requestAnimationFrame(() => window.scrollTo({ top: y, behavior: 'instant' }));
+    }
     const id = projectInHash();
     if (id && window.projects && window.projects[id]) {
       if (id !== currentProjectId) openProject(id);
