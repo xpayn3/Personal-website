@@ -388,6 +388,11 @@
     // the active label, the progress read, and gallery (dark) mode. Scroll
     // events are already delivered at most once per frame.
     const onScroll = () => {
+      // While the lightbox has the page pinned, its scroll position reads 0
+      // and the sticky labels let go, so everything below would be judged
+      // wrongly (dark mode switched off behind the lightbox, then a white
+      // flash as it came back on close). Keep the state as it was.
+      if (scrollLockCount > 0) return;
       const h = window.innerHeight;
       let active = 0;
       cells.forEach((c, i) => { if (cellTop(c) <= h * 0.45) active = i; });
