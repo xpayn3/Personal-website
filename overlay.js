@@ -241,7 +241,7 @@
 
   // One smooth-scroll feel for the whole site: motion.js sets the settings
   // and runs the page's own scroll (window.pageLenis) on every page.
-  const SMOOTH_SCROLL = window.SMOOTH_SCROLL || { lerp: 0.14, wheelMultiplier: 1.25, smoothWheel: true };
+  const SMOOTH_SCROLL = window.SMOOTH_SCROLL || { lerp: 0.24, wheelMultiplier: 1.1, smoothWheel: true };
 
   // Browser UI tint (address bar / status bar areas on phones).
   let themeColorBefore;

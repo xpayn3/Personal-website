@@ -119,22 +119,26 @@ body.page-about {
 .about-link:hover { color: var(--ink); }
 
 /* What I do · Tools */
-.chip-list { display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; list-style: none; }
+.chip-list { display: flex; flex-wrap: wrap; gap: 10px; align-content: flex-start; list-style: none; }
 .chip {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
+  gap: 12px;
+  padding: 12px 22px;
   border: 1px solid var(--line);
   border-radius: var(--radius-pill, 999px);
-  font-size: 14px;
+  font-size: clamp(16px, 1.3vw, 19px);
 }
 .chip-icon {
   flex: none;
-  width: 16px;
-  height: 16px;
+  width: 26px;
+  height: 26px;
   object-fit: contain;
-  border-radius: 3px;
+  border-radius: 5px;
+}
+@media (max-width: 720px) {
+  .chip { gap: 10px; padding: 10px 18px; font-size: 15px; }
+  .chip-icon { width: 22px; height: 22px; }
 }
 
 /* Clients */

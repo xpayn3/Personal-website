@@ -38,7 +38,7 @@
   });
 
   // ---- one smooth scroll for the whole site ----
-  window.SMOOTH_SCROLL = { lerp: 0.14, wheelMultiplier: 1.25, smoothWheel: true };
+  window.SMOOTH_SCROLL = { lerp: 0.24, wheelMultiplier: 1.1, smoothWheel: true };
   window.PAGE_SMOOTH_SCROLL = true;        // tells overlay.js not to start one of its own
 
   // Boxes that scroll by themselves (dropdowns, panels, the contact form)

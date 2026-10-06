@@ -198,6 +198,17 @@ body.page-plain {
 .card:focus-visible { outline: 2px solid var(--ink); outline-offset: 6px; }
 .card h3 { margin-top: 14px; font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
 .card p { margin-top: 4px; font-size: 14px; color: var(--muted); transition: color var(--fade); }
+/* With a mouse the small print under a card's title shows only while the
+   card is hovered (or focused); touch screens have no hover, so it stays. */
+@media (hover: hover) and (pointer: fine) {
+  .card p {
+    opacity: 0;
+    translate: 0 -4px;
+    transition: color var(--fade), opacity 0.3s ease, translate 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .card:hover p,
+  .card:focus-visible p { opacity: 1; translate: 0 0; }
+}
 .work-all {
   grid-column: 1 / -1;
   justify-self: start;

@@ -175,9 +175,12 @@ body {
 .entry-nav {
   position: absolute;
   top: 50%;
+  display: grid;
+  place-items: center;
   width: 36px;
   height: 36px;
   margin-top: -18px;
+  padding: 0;
   border: 0;
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.6);
@@ -189,6 +192,16 @@ body {
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.25s ease, background-color 0.25s ease;
+}
+.entry-nav svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .entry-nav.is-prev { left: 12px; }
 .entry-nav.is-next { right: 12px; }

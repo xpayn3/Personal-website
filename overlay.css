@@ -1082,3 +1082,24 @@ html.fade-imgs :is(.grid-item > img, .entry-slide > img, .wall-feature-media img
 @media (prefers-reduced-motion: reduce) {
   html.fade-imgs img.is-loaded { animation: none; }
 }
+
+/* ---- no sharp corners ----
+   Every picture on the site gets the same slight rounding: Work tiles and
+   feature blocks, Lab entries, project galleries, home cards, and the
+   lightbox. One value, set here. */
+:root { --img-radius: 6px; }
+.pv .media-cell,
+.media-cell,
+.pv-next-thumb,
+.card .thumb,
+.wall-feature-media,
+.entry-media,
+.app-entry-cover,
+.grid:not(.list-view) > .grid-item > img,
+.grid:not(.list-view) .hover-video-wrap,
+.grid:not(.list-view) > .grid-item.loading::before,
+.lightbox .lightbox-content img,
+.lightbox .lightbox-content video,
+.lb-fly,
+.lb-fly img { border-radius: var(--img-radius); }
+.lb-fly { overflow: hidden; }

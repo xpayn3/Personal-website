@@ -4,7 +4,8 @@
 // clip at its own proportions. Files that belong together are posted as one
 // entry you can flick through, with dots under it. Clicking a picture opens
 // the shared lightbox (overlay.js) on that entry's own pictures. Apps
-// (apps.js) are listed above the feed as a shelf of cards, store-style.
+// (apps.js) are posted at the top of the feed, each with a cover picture
+// and a link to its own page.
 //
 // Clips are plain posters until they are needed: with a mouse the clip in
 // view plays by itself (one <video> per clip, created on first play); on
@@ -66,7 +67,6 @@
     const name = fileOf(src).replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ').trim();
     return name.charAt(0).toUpperCase() + name.slice(1);
   };
-  const pad2 = n => String(n).padStart(2, '0');
   const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const el = (tag, className, text) => {
@@ -132,8 +132,10 @@
   // touch you just swipe it.
   function wireSet(media, track, total) {
     const count = el('span', 'entry-count', `1 / ${total}`);
-    const prev = el('button', 'entry-nav is-prev', '←');
-    const next = el('button', 'entry-nav is-next', '→');
+    const prev = el('button', 'entry-nav is-prev');
+    const next = el('button', 'entry-nav is-next');
+    prev.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>';
+    next.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
     prev.type = next.type = 'button';
     prev.setAttribute('aria-label', 'Previous picture');
     next.setAttribute('aria-label', 'Next picture');
@@ -172,7 +174,7 @@
     if (clips < total) article.dataset.still = '';
 
     const head = el('header', 'entry-head');
-    head.append(el('span', '', pad2(idx + 1)), el('span', '', total > 1 ? `Set of ${total}` : clips ? 'Clip' : 'Still'));
+    head.append(el('span', '', total > 1 ? `Set of ${total}` : clips ? 'Clip' : 'Still'));
     if (entry.date) head.append(el('time', '', dateText(entry.date)));
     article.append(head, el('h2', 'entry-title', entry.title));
     if (entry.note) article.append(el('p', 'entry-note', entry.note));
@@ -190,24 +192,37 @@
   entries.forEach((entry, idx) => frag.appendChild(makeEntry(entry, idx)));
   feed.prepend(frag);                      // ahead of the "nothing here yet" note
 
-  // ---- Apps: a shelf of cards above the feed, each linking to its page ---
+  // ---- Apps: each a post of its own at the top of the feed --------------
+  // Cover picture, then its icon, name and what it is; the whole post links
+  // to the app's page.
   const apps = window.labApps || [];
-  const shelf = document.getElementById('labApps');
-  if (shelf && apps.length) {
-    const head = el('div', 'app-shelf-head');
-    head.append(el('span', '', 'Apps & web'), el('span', '', String(apps.length)));
-    const list = el('div', 'app-shelf-list');
-    apps.forEach((app) => {
-      const card = el('a', 'app-card');
-      card.href = `apps/${app.id}.html`;
-      const text = el('span', 'app-card-text');
-      text.append(el('span', 'app-card-name', app.title), el('span', 'app-card-sub', app.subtitle));
-      card.append(window.labAppIcon(app), text, el('span', 'app-card-get', 'View'));
-      list.append(card);
-    });
-    shelf.append(head, list);
-    shelf.hidden = false;
+  function makeAppEntry(app) {
+    const article = el('article', 'entry app-entry');
+    article.dataset.app = '';
+    const head = el('header', 'entry-head');
+    head.append(el('span', '', 'App'), el('span', '', app.category));
+
+    const page = el('a', 'app-entry-link');
+    page.href = `apps/${app.id}.html`;
+    if (app.cover) {
+      const cover = el('span', 'app-entry-cover');
+      const img = el('img');
+      Object.assign(img, { src: app.cover, alt: `${app.title}: the app's interface`, loading: 'lazy', decoding: 'async' });
+      cover.append(img);
+      page.append(cover);
+    }
+    const row = el('span', 'app-card');
+    const text = el('span', 'app-card-text');
+    text.append(el('span', 'app-card-name', app.title), el('span', 'app-card-sub', app.subtitle));
+    row.append(window.labAppIcon(app), text, el('span', 'app-card-get', 'View'));
+    page.append(row);
+
+    article.append(head, page);
+    return article;
   }
+  const appFrag = document.createDocumentFragment();
+  apps.forEach(app => appFrag.appendChild(makeAppEntry(app)));
+  feed.prepend(appFrag);
 
   const countEl = document.getElementById('labCount');
   if (countEl) countEl.textContent = String(entries.length + apps.length);
@@ -224,8 +239,7 @@
         entry.hidden = show !== 'all' && !(show in entry.dataset);
         if (!entry.hidden) shown++;
       });
-      if (shelf) shelf.hidden = !apps.length || (show !== 'all' && show !== 'app');
-      if (emptyNote) emptyNote.hidden = shown > 0 || (shelf && !shelf.hidden);
+      if (emptyNote) emptyNote.hidden = shown > 0;
     });
   });
 

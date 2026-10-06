@@ -25,26 +25,26 @@
   background: linear-gradient(160deg, #26262b, #0d0d0f);
 }
 
-/* ---- the shelf on the Lab page ---- */
-.app-shelf { margin-bottom: clamp(36px, 5vw, 64px); }
-.app-shelf[hidden] { display: none; }
-.app-shelf-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding-bottom: 14px;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-variant-numeric: tabular-nums;
-  color: var(--g-muted);
+/* ---- an app's post in the Lab feed (lab.js): cover picture, then a row
+   with its icon, name and a View button; the whole post is one link ---- */
+.app-entry-link { display: block; margin-top: 14px; color: var(--g-ink); text-decoration: none; }
+.app-entry-cover {
+  display: block;
+  aspect-ratio: 16 / 10;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #0c0c0d;
 }
-.app-shelf-list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(16px, 2.4vw, 32px);
-  border-top: 1px solid var(--g-line);
+.app-entry-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
+.app-entry-link:hover .app-entry-cover img { scale: 1.02; }
+.app-entry-link:focus-visible { outline: 1px solid var(--g-ink); outline-offset: 6px; }
+.app-entry .app-card { padding: 16px 0 0; border-bottom: 0; }
 .app-card {
   display: flex;
   align-items: center;
@@ -53,7 +53,6 @@
   padding: 18px 0;
   border-bottom: 1px solid var(--g-line);
   color: var(--g-ink);
-  text-decoration: none;
 }
 .app-card-text { flex: 1; min-width: 0; display: grid; gap: 3px; }
 .app-card-name { font-size: 1.05rem; font-weight: 500; letter-spacing: -0.01em; }
@@ -81,11 +80,10 @@
   text-decoration: none;
   transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
-.app-card:hover .app-card-get,
+.app-entry-link:hover .app-card-get,
 .app-btn:hover,
 .app-btn.is-primary { background: var(--g-ink); border-color: var(--g-ink); color: var(--g-bg); }
 .app-btn.is-primary:hover { background: #ffffff; border-color: #ffffff; }
-.app-card:focus-visible,
 .app-btn:focus-visible { outline: 1px solid var(--g-ink); outline-offset: 4px; }
 
 /* ---- an app's own page ---- */
@@ -177,7 +175,166 @@
 }
 .app-text + .app-text { margin-top: 14px; }
 
-/* previews: a row you scroll sideways, bleeding to the right edge on phones */
+.app-lead {
+  max-width: 30ch;
+  font-size: clamp(1.6rem, 3.2vw, 2.6rem);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  margin-bottom: clamp(18px, 2.4vw, 28px);
+  text-wrap: balance;
+}
+.app-more { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g-muted); text-decoration: none; transition: color 0.25s ease; }
+.app-more:hover { color: var(--g-ink); }
+
+/* shared card surface for the tiles below */
+.app-highlights > div,
+.app-steps > li,
+.app-features > li,
+.app-commands {
+  border-radius: 20px;
+  background: #0e0e10;
+  box-shadow: inset 0 0 0 1px rgba(244, 244, 245, 0.07);
+}
+
+/* headline figures: a few big numbers */
+.app-highlights {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: clamp(24px, 3vw, 40px);
+}
+.app-highlights > div { display: grid; gap: 10px; align-content: start; padding: clamp(20px, 2.6vw, 30px); }
+.app-highlights strong {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3.4vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+.app-highlights span,
+.app-steps li > span:last-child,
+.app-features li > span:last-child { font-size: 0.95rem; line-height: 1.5; color: var(--g-muted); }
+
+/* how it works: numbered cards in a row */
+.app-steps { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.app-steps > li { display: grid; gap: 8px; align-content: start; padding: clamp(20px, 2.4vw, 28px); }
+.app-steps strong { font-size: 1.15rem; font-weight: 500; letter-spacing: -0.01em; }
+.app-step-no {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin-bottom: 10px;
+  border-radius: 50%;
+  background: var(--g-ink);
+  color: var(--g-bg);
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* features: tiles with an icon, grouped under small headings */
+.app-group {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: clamp(28px, 4vw, 44px) 0 14px;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--g-ink);
+}
+.app-section-head + .app-group { margin-top: 0; }
+.app-group i { font-style: normal; color: var(--g-muted); }
+.app-features { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.app-features > li {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  padding: 22px;
+  transition: background-color 0.3s ease, translate 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.app-features > li:hover { background: #151518; translate: 0 -3px; }
+.app-features strong { font-size: 1.02rem; font-weight: 500; letter-spacing: -0.01em; }
+.app-feature-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 14px;
+  border-radius: 12px;
+  background: linear-gradient(160deg, #2a2a30, #131316);
+  box-shadow: inset 0 0 0 1px rgba(244, 244, 245, 0.1);
+  color: var(--g-ink);
+}
+.app-feature-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* how to start: label + command, monospaced */
+.app-commands { margin-top: 18px; padding: 6px 22px; }
+.app-commands > div {
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) 3fr;
+  gap: 16px;
+  align-items: baseline;
+  padding: 14px 0;
+}
+.app-commands > div + div { border-top: 1px solid var(--g-line); }
+.app-commands dt { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g-muted); }
+.app-commands dd { font-family: var(--font-mono); font-size: 0.9rem; overflow-wrap: anywhere; }
+
+/* changelog: version on the left, what changed on the right */
+.app-log { list-style: none; border-top: 1px solid var(--g-line); }
+.app-log > li {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) 4fr;
+  gap: 16px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--g-line);
+}
+.app-log-head { display: flex; flex-wrap: wrap; align-items: baseline; align-content: start; gap: 6px 10px; }
+.app-log-head strong { font-size: 1.05rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+.app-log-head em {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--g-ink);
+  color: var(--g-bg);
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.app-log-head span { flex-basis: 100%; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g-muted); }
+.app-log-body p { max-width: 68ch; font-size: 0.98rem; line-height: 1.55; color: rgba(244, 244, 245, 0.78); }
+.app-log-body ul { list-style: none; display: grid; gap: 10px; margin-top: 16px; }
+.app-log-body li { display: grid; grid-template-columns: 76px 1fr; gap: 12px; align-items: baseline; font-size: 0.92rem; line-height: 1.5; color: var(--g-muted); }
+.app-log-body b {
+  justify-self: start;
+  padding: 2px 8px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px currentColor;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--g-ink);
+}
+.app-log-body b.is-new { color: #5fd3a0; }
+.app-log-body b.is-fix { color: #f58a9c; }
+.app-log-body b.is-polish { color: #c79bf7; }
+.app-log-body b.is-refactor { color: #86b3f8; }
+
+/* pictures: a row you scroll sideways, bleeding to the right edge on phones */
 .app-shots {
   display: flex;
   gap: 14px;
@@ -196,23 +353,17 @@
   border-radius: 18px;
   background: #0c0c0d;
 }
+/* screenshots: wide, most of the column each */
+.app-shots.is-wide figure { width: min(86%, 760px); }
+.app-shots.is-wide img { aspect-ratio: 16 / 10; border-radius: 14px; box-shadow: inset 0 0 0 1px var(--g-line); }
 .app-shots figcaption {
   margin-top: 10px;
   font-size: 11px;
+  line-height: 1.5;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--g-muted);
 }
-
-.app-features {
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(20px, 3vw, 32px) clamp(24px, 4vw, 56px);
-}
-.app-features li { display: grid; gap: 6px; align-content: start; }
-.app-features strong { font-size: 1.05rem; font-weight: 500; }
-.app-features span { font-size: 0.95rem; line-height: 1.55; color: var(--g-muted); }
 
 .app-info { border-top: 1px solid var(--g-line); }
 .app-info > div {
@@ -225,11 +376,21 @@
 }
 .app-info dd { font-size: 0.95rem; line-height: 1.5; }
 
+@media (max-width: 900px) {
+  .app-features { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 @media (max-width: 768px) {
-  .app-shelf-list,
-  .app-features { grid-template-columns: 1fr; }
+  .app-steps,
+  .app-highlights { grid-template-columns: 1fr; }
+  .app-log > li { grid-template-columns: 1fr; gap: 10px; }
+  .app-log-body li { grid-template-columns: 1fr; gap: 4px; }
+  .app-commands > div { grid-template-columns: 1fr; gap: 4px; }
+  .app-shots.is-wide figure { width: 88%; }
   .app-hero { align-items: flex-start; }
   .app-stats > div { flex: 0 0 auto; }
   .app-shots { margin-right: calc(var(--g-gutter) * -1); padding-right: var(--g-gutter); }
   .app-info > div { grid-template-columns: 1fr; gap: 4px; }
+}
+@media (max-width: 520px) {
+  .app-features { grid-template-columns: 1fr; }
 }
