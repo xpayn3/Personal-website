@@ -108,11 +108,46 @@
     items.forEach(([src, caption]) => {
       const figure = el('figure');
       const img = el('img');
-      Object.assign(img, { src, alt: `${app.title}: ${alt || caption}`, loading: 'lazy', decoding: 'async' });
+      Object.assign(img, { src, alt: `${app.title}: ${alt || caption}`, loading: 'lazy', decoding: 'async', draggable: false });
       figure.append(img, el('figcaption', '', caption));
       strip.append(figure);
     });
+    dragToScroll(strip);
     return strip;
+  }
+  // A strip of pictures scrolls sideways by touch already; with a mouse,
+  // press and drag it. It keeps gliding a little after you let go.
+  function dragToScroll(strip) {
+    let startX = 0, startLeft = 0, lastX = 0, speed = 0, held = false, glide = 0;
+    strip.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      cancelAnimationFrame(glide);
+      held = true;
+      startX = lastX = e.clientX;
+      startLeft = strip.scrollLeft;
+      speed = 0;
+      strip.setPointerCapture(e.pointerId);
+      strip.classList.add('is-held');
+    });
+    strip.addEventListener('pointermove', (e) => {
+      if (!held) return;
+      speed = e.clientX - lastX;
+      lastX = e.clientX;
+      strip.scrollLeft = startLeft - (e.clientX - startX);
+    });
+    const release = () => {
+      if (!held) return;
+      held = false;
+      const coast = () => {
+        speed *= 0.93;
+        strip.scrollLeft -= speed;
+        if (Math.abs(speed) > 0.4) glide = requestAnimationFrame(coast);
+        else strip.classList.remove('is-held');
+      };
+      coast();
+    };
+    strip.addEventListener('pointerup', release);
+    strip.addEventListener('pointercancel', release);
   }
 
   // ---- header: icon, name, buttons ----

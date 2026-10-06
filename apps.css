@@ -344,6 +344,11 @@
   scrollbar-width: none;
 }
 .app-shots::-webkit-scrollbar { display: none; }
+/* with a mouse the strip is dragged (app-page.js); snapping waits until it rests */
+@media (hover: hover) and (pointer: fine) {
+  .app-shots { cursor: grab; user-select: none; -webkit-user-select: none; }
+  .app-shots.is-held { cursor: grabbing; scroll-snap-type: none; }
+}
 .app-shots figure { flex: none; width: clamp(180px, 24vw, 240px); scroll-snap-align: start; }
 .app-shots img {
   display: block;
