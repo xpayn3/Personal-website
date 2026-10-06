@@ -734,7 +734,7 @@ body.project-open .site-nav {
   font-size: clamp(44px, 10vw, 160px);
   line-height: 0.92;
   letter-spacing: -0.045em;
-  font-weight: 700;
+  font-weight: 400;
   text-wrap: balance;
   margin-top: auto;                      /* pushes title + facts to the bottom */
   padding-top: 64px;

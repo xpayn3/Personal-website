@@ -25,6 +25,23 @@
   background: linear-gradient(160deg, #26262b, #0d0d0f);
 }
 
+/* ---- how finished it is (apps.js: stage): a small tag after the name ---- */
+.app-stage {
+  display: inline-block;
+  margin-left: 0.7em;
+  padding: 3px 8px;
+  border: 1px solid var(--g-line);
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  vertical-align: middle;
+  color: var(--g-muted);
+}
+
 /* ---- an app's post in the Lab feed (lab.js): cover picture, then a row
    with its icon, name and a View button; the whole post is one link ---- */
 .app-entry-link { display: block; margin-top: 14px; color: var(--g-ink); text-decoration: none; }
@@ -208,7 +225,7 @@
 .app-highlights strong {
   font-family: var(--font-display);
   font-size: clamp(1.7rem, 3.4vw, 2.75rem);
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1;
   letter-spacing: -0.035em;
 }
@@ -361,6 +378,114 @@
 /* screenshots: wide, most of the column each */
 .app-shots.is-wide figure { width: min(86%, 760px); }
 .app-shots.is-wide img { aspect-ratio: 16 / 10; border-radius: 14px; box-shadow: inset 0 0 0 1px var(--g-line); }
+
+/* ---- paging for a strip of pictures (app-page.js: pager): previous, a
+   numbered button per picture, next, full screen ---- */
+.app-pager { display: flex; align-items: center; gap: 2px; }
+.app-pager button,
+.app-viewer-btn {
+  display: grid;
+  place-items: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 6px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--g-muted);
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, scale 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.app-pager button:hover,
+.app-viewer-btn:hover { color: var(--g-ink); }
+.app-pager button:active,
+.app-viewer-btn:active { scale: 0.9; }
+.app-pager button.is-active { border-color: var(--g-line); background: #151518; color: var(--g-ink); }
+.app-pager button:disabled { opacity: 0.3; cursor: default; }
+.app-pager button:focus-visible,
+.app-viewer-btn:focus-visible { outline: 1px solid var(--g-ink); outline-offset: 2px; }
+.app-pager svg,
+.app-viewer-btn svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.app-pager-expand { margin-left: 8px; }
+.app-shots img { cursor: zoom-in; }
+
+/* ---- full screen (app-page.js: openViewer) ---- */
+.app-viewer {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  border: 0;
+  background: #000000;
+  color: var(--g-ink);
+}
+.app-viewer::backdrop { background: #000000; }
+.app-viewer[open] {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  animation: appViewerIn 0.25s ease both;
+}
+.app-viewer-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px var(--g-gutter);
+}
+.app-viewer-count,
+.app-viewer-caption {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--g-muted);
+}
+.app-viewer-caption { padding: 14px var(--g-gutter) 22px; text-align: center; }
+.app-viewer-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  padding: 0 clamp(12px, 5vw, 72px);
+  cursor: zoom-out;
+}
+.app-viewer-stage img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  min-height: 0;
+  object-fit: contain;
+  border-radius: 10px;
+  cursor: auto;
+}
+.app-viewer-stage img.is-in { animation: appViewerPop 0.4s cubic-bezier(0.34, 1.42, 0.64, 1) both; }
+.app-viewer-btn { width: 40px; height: 40px; color: var(--g-ink); }
+.app-viewer-btn:hover { background: #1a1a1e; }
+.app-viewer-btn.is-prev,
+.app-viewer-btn.is-next { position: absolute; top: 50%; margin-top: -20px; background: rgba(0, 0, 0, 0.6); }
+.app-viewer-btn.is-prev { left: 12px; }
+.app-viewer-btn.is-next { right: 12px; }
+.app-viewer-btn[hidden] { display: none; }
+@keyframes appViewerIn { from { opacity: 0; } }
+@keyframes appViewerPop { from { opacity: 0; scale: 0.92; } }
+@media (prefers-reduced-motion: reduce) {
+  .app-viewer[open],
+  .app-viewer-stage img.is-in { animation: none; }
+}
 .app-shots figcaption {
   margin-top: 10px;
   font-size: 11px;

@@ -933,9 +933,20 @@
   // stays on the compositor. Its "in the cell" pose is computed from where the
   // real picture is actually drawn in the cell (cover crop, parallax scale and
   // offset included), so both ends line up exactly and nothing pops.
-  const ZOOM = { duration: 620, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' };
+  const ZOOM = { duration: 440, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' };
+  // The move and the un-crop run as two animations so they can be eased
+  // apart: the picture springs a little past its place and settles back
+  // (a bigger bounce opening than closing), while the crop glides straight
+  // there. A crop that overshot would flash the cell's edges.
+  const SPRING_OPEN = 'cubic-bezier(0.34, 1.42, 0.64, 1)';
+  const SPRING_CLOSE = 'cubic-bezier(0.3, 1.22, 0.6, 1)';
+  function fling(fly, from, to, spring) {
+    const clip = fly.animate([{ clipPath: from.clipPath }, { clipPath: to.clipPath }], ZOOM);
+    const anim = fly.animate([{ transform: from.transform }, { transform: to.transform }], { ...ZOOM, easing: spring });
+    return { anim, clip };
+  }
   const FULL_POSE = { transform: 'translate(0px, 0px) scale(1)', clipPath: 'inset(0px 0px 0px 0px round 0px)' };
-  // The flight in progress, if any: { fly, media, anim, src, full, ar }.
+  // The flight in progress, if any: { fly, media, anim, clip, src, full, ar }.
   // There is only ever one; a new one takes over from or replaces the old.
   let flight = null;
 
@@ -1015,6 +1026,7 @@
   function endFlight() {
     if (!flight) return;
     flight.anim.cancel();
+    flight.clip.cancel();
     flight.media.style.visibility = '';
     flight.fly.remove();
     flight = null;
@@ -1030,8 +1042,8 @@
     const full = containedRect(real) || expectedRect(ar);
     const from = cellPose(cell, full, ar);
     const fly = makeFlyer(src, full, from);
-    const anim = fly.animate([from, FULL_POSE], ZOOM);
-    const mine = flight = { fly, media, anim, src, full, ar };
+    const { anim, clip } = fling(fly, from, FULL_POSE, SPRING_OPEN);
+    const mine = flight = { fly, media, anim, clip, src, full, ar };
     media.style.visibility = 'hidden';
     lightboxContent.style.visibility = 'hidden';
 
@@ -1065,14 +1077,15 @@
       start = { transform: now.transform, clipPath: now.clipPath };
       fly = turning.fly;
       turning.anim.cancel();
+      turning.clip.cancel();
       if (turning.media !== media) turning.media.style.visibility = '';
       flight = null;
     } else {
       endFlight();
       fly = makeFlyer(src, full, FULL_POSE);
     }
-    const anim = fly.animate([start, cellPose(cell, full, ar)], ZOOM);
-    const mine = flight = { fly, media, anim, src, full, ar };
+    const { anim, clip } = fling(fly, start, cellPose(cell, full, ar), SPRING_CLOSE);
+    const mine = flight = { fly, media, anim, clip, src, full, ar };
     media.style.visibility = 'hidden';
     anim.finished.then(() => {
       if (flight !== mine) return;

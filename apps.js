@@ -7,6 +7,8 @@
 // apps/<id>.html, changing the id, title and description in it.
 //   id        file name of its page, and its handle everywhere
 //   title, subtitle, category
+//   stage     how finished it is, shown as a small tag by its name: 'Alpha',
+//             'Beta', 'Experimental' (optional)
 //   repo      GitHub link            url   where it runs (optional)
 //   icon      image URL (optional; without one the tile shows the initial)
 //   stats     the strip under the header: [label, value] pairs
@@ -29,6 +31,7 @@ window.labApps = [
     title: 'MeshOptimiser',
     subtitle: 'From bloated CAD to browser-ready, locally.',
     category: 'CAD tool',
+    stage: 'Beta',
     repo: 'https://github.com/xpayn3/MeshOptimiser',
     cover: 'Images/apps/meshoptimiser-viewer.webp',
     shots: [
@@ -139,6 +142,7 @@ window.labApps = [
     title: 'Windy Tree',
     subtitle: 'A real-time procedural tree generator.',
     category: '3D tool',
+    stage: 'Alpha',
     repo: 'https://github.com/xpayn3/webtree',
     url: 'https://xpayn3.github.io/webtree/',
     icon: 'https://xpayn3.github.io/webtree/icons/icon.svg',
@@ -164,6 +168,63 @@ window.labApps = [
       ['Built with', 'WebGPU, Three.js'],
       ['First published', 'April 2026'],
       ['Source', 'github.com/xpayn3/webtree'],
+    ],
+  },
+  {
+    id: 'cycleiq',
+    title: 'CycleIQ',
+    subtitle: 'A cycling training dashboard that runs in the browser.',
+    category: 'Cycling analytics',
+    stage: 'Experimental',
+    repo: 'https://github.com/xpayn3/cyclingHUB',
+    url: 'https://xpayn3.github.io/cyclingHUB/',
+    icon: 'https://xpayn3.github.io/cyclingHUB/icon-512.png',
+    cover: 'Images/apps/cycleiq-share.webp',
+    galleryTitle: 'Share card',
+    gallery: [['Images/apps/cycleiq-share.webp', 'A ride drawn over 3D terrain, made in the app']],
+    stats: [['Category', 'Cycling analytics'], ['Platform', 'Web · installable'], ['Pages', '22'], ['Data', 'intervals.icu']],
+    about: [
+      'CycleIQ is a cycling analytics app that pulls your rides from intervals.icu and turns them into a training dashboard: fitness and fatigue, power curves, routes, weather, gear and goals, in one place.',
+      'It is a single-page app written in plain JavaScript, with no framework. It installs to a phone or desktop like a native app and keeps working offline after the first load.',
+    ],
+    highlights: [
+      ['22 pages', 'From the dashboard and activity detail to a workout builder, route builder and lifetime heatmap.'],
+      ['28 badges', 'Achievements for streaks, distance, climbing and special dates, each a 3D holographic card.'],
+      ['150+ tokens', 'One design system of CSS custom properties behind every card, chart and sheet, in four themes.'],
+      ['Offline', 'A service worker caches the app and up to 3,000 map tiles.'],
+    ],
+    featureGroups: [
+      { title: 'Training', items: [
+        ['Fitness and training load', 'Fitness, fatigue and form over any date range, with FTP history and wellness insights.', 'pulse'],
+        ['Power analysis', 'Power curve for all time, 90, 28 and 7 days, time in zones, a power profile radar and W′ balance.', 'spark'],
+        ['Activity detail', 'A 3D terrain map with power, heart rate, cadence, speed and elevation charted together; intervals and climbs are detected for you.', 'layers'],
+        ['Goals and streaks', 'Weekly, monthly and yearly targets with progress rings, a 52-week calendar heatmap and lifetime stats.', 'grid'],
+        ['Compare', 'Put two periods side by side and see what moved.', 'copies'],
+      ] },
+      { title: 'Planning', items: [
+        ['Route builder', 'Click waypoints on a 3D terrain map, route along roads, read the gradient profile, export GPX or FIT.', 'globe'],
+        ['Workout builder', 'Design intervals visually, drag to reorder, and export a Zwift .zwo file.', 'play'],
+        ['Weather', 'A 7-day forecast with ride-quality badges, an hourly breakdown and a wind rose.', 'wind'],
+        ['Calendar', 'Month and week views with planned rides and training plans.', 'bookmark'],
+      ] },
+      { title: 'Garage', items: [
+        ['Bike fleet', 'Every bike with its components, service history and wear.', 'package'],
+        ['Battery monitoring', 'Tracks drain on electronic shifting, head units and coin cells.', 'refresh'],
+        ['Tire pressure', 'A calculator with three pressure models.', 'drop'],
+      ] },
+      { title: 'Under the hood', items: [
+        ['Installable and offline', 'Ships a web app manifest and a service worker; works without a connection after the first load.', 'phone'],
+        ['3D badge cards', 'Three.js cards with holographic materials, a glitter shader and drag momentum, all on one shared renderer.', 'cube'],
+        ['Device sync', 'Pair two devices with a QR code and sync directly between them.', 'shield'],
+        ['Backup', 'Export everything to a JSON file and import it again.', 'download'],
+        ['Themes', 'Dark, light, editorial and custom, with a font picker.', 'sun'],
+      ] },
+    ],
+    info: [
+      ['Platform', 'Any modern browser; installable on phone and desktop'],
+      ['Needs', 'An intervals.icu account; Strava is optional'],
+      ['Built with', 'Plain JavaScript, Three.js, MapLibre, Chart.js'],
+      ['Source', 'github.com/xpayn3/cyclingHUB'],
     ],
   },
 ];

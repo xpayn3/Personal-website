@@ -31,7 +31,8 @@ body {
   align-items: start;
   max-width: 1800px;
   margin: 0 auto;
-  padding: clamp(28px, 5vh, 56px) var(--g-gutter) clamp(80px, 12vh, 160px);
+  /* the top clears the fixed nav; the page title sits in the rail */
+  padding: clamp(104px, 15vh, 160px) var(--g-gutter) clamp(80px, 12vh, 160px);
 }
 .journal-rail {
   position: sticky;
@@ -42,6 +43,14 @@ body {
   font-size: 13px;
   line-height: 1.55;
   color: var(--g-muted);
+}
+/* page title: the same small print as the Work page's, stacked */
+.journal-head {
+  display: grid;
+  gap: 6px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
 }
 .journal-filter { display: flex; flex-wrap: wrap; gap: 6px; }
 .journal-filter button {

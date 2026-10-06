@@ -105,14 +105,24 @@
   }
   function figures(items, className, alt) {
     const strip = el('div', className);
-    items.forEach(([src, caption]) => {
+    items.forEach(([src, caption], i) => {
       const figure = el('figure');
+      figure.dataset.index = i;
       const img = el('img');
       Object.assign(img, { src, alt: `${app.title}: ${alt || caption}`, loading: 'lazy', decoding: 'async', draggable: false });
       figure.append(img, el('figcaption', '', caption));
       strip.append(figure);
     });
     dragToScroll(strip);
+    // A click on a picture opens it full screen. While the mouse holds the
+    // strip the click lands on the strip itself, so look up what is under it;
+    // a press that turned into a drag is not a click.
+    strip.addEventListener('click', (e) => {
+      if (strip.dataset.dragged) return;
+      const under = document.elementFromPoint(e.clientX, e.clientY);
+      const figure = under && under.closest('figure');
+      if (figure && strip.contains(figure)) openViewer(items, Number(figure.dataset.index));
+    });
     return strip;
   }
   // A strip of pictures scrolls sideways by touch already; with a mouse,
@@ -124,6 +134,7 @@
       cancelAnimationFrame(glide);
       held = true;
       startX = lastX = e.clientX;
+      delete strip.dataset.dragged;
       startLeft = strip.scrollLeft;
       speed = 0;
       strip.setPointerCapture(e.pointerId);
@@ -133,6 +144,7 @@
       if (!held) return;
       speed = e.clientX - lastX;
       lastX = e.clientX;
+      if (Math.abs(e.clientX - startX) > 5) strip.dataset.dragged = '1';
       strip.scrollLeft = startLeft - (e.clientX - startX);
     });
     const release = () => {
@@ -150,13 +162,138 @@
     strip.addEventListener('pointercancel', release);
   }
 
+  // ---- pictures: paging and full screen -----------------------------------
+  const SVG_ICONS = {
+    prev: 'M14.5 5.5L8 12l6.5 6.5',
+    next: 'M9.5 5.5L16 12l-6.5 6.5',
+    expand: 'M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5',
+    close: 'M6 6l12 12M18 6L6 18',
+  };
+  function iconButton(name, label, className) {
+    const button = el('button', className);
+    button.type = 'button';
+    button.setAttribute('aria-label', label);
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('aria-hidden', 'true');
+    const path = document.createElementNS(NS, 'path');
+    path.setAttribute('d', SVG_ICONS[name]);
+    svg.append(path);
+    button.append(svg);
+    return button;
+  }
+
+  // Full screen: one picture at a time over the whole window, with arrows, a
+  // counter and its caption. Built on first use and shared by every strip.
+  // Left / right arrow keys page through; Escape or a click beside the
+  // picture closes it.
+  let viewer = null;
+  function openViewer(items, index) {
+    if (!viewer) {
+      const dialog = el('dialog', 'app-viewer');
+      dialog.setAttribute('aria-label', 'Pictures, full screen');
+      const count = el('span', 'app-viewer-count');
+      const close = iconButton('close', 'Close', 'app-viewer-btn');
+      const bar = el('div', 'app-viewer-bar');
+      bar.append(count, close);
+      const stage = el('div', 'app-viewer-stage');
+      const img = el('img');
+      const prev = iconButton('prev', 'Previous picture', 'app-viewer-btn is-prev');
+      const next = iconButton('next', 'Next picture', 'app-viewer-btn is-next');
+      stage.append(img, prev, next);
+      const caption = el('p', 'app-viewer-caption');
+      dialog.append(bar, stage, caption);
+      document.body.append(dialog);
+
+      viewer = { dialog, img, count, caption, prev, next, items: [], index: 0 };
+      viewer.show = (i) => {
+        const n = viewer.items.length;
+        viewer.index = (i + n) % n;
+        const [src, text] = viewer.items[viewer.index];
+        Object.assign(img, { src, alt: `${app.title}: ${text}` });
+        // restart the little pop each time the picture changes
+        img.classList.remove('is-in');
+        void img.offsetWidth;
+        img.classList.add('is-in');
+        caption.textContent = text;
+        count.textContent = `${viewer.index + 1} / ${n}`;
+        prev.hidden = next.hidden = n < 2;
+      };
+      prev.addEventListener('click', () => viewer.show(viewer.index - 1));
+      next.addEventListener('click', () => viewer.show(viewer.index + 1));
+      close.addEventListener('click', () => dialog.close());
+      dialog.addEventListener('click', (e) => { if (e.target === dialog || e.target === stage) dialog.close(); });
+      dialog.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') viewer.show(viewer.index - 1);
+        if (e.key === 'ArrowRight') viewer.show(viewer.index + 1);
+      });
+      dialog.addEventListener('close', () => { document.documentElement.style.overflow = ''; });
+    }
+    viewer.items = items;
+    viewer.show(index);
+    document.documentElement.style.overflow = 'hidden';   // the page stays put behind it
+    viewer.dialog.showModal();
+  }
+
+  // Classic paging for a strip: previous, a numbered button per picture,
+  // next, and a full-screen button. It follows the strip however it is moved
+  // (buttons, drag, touch or wheel).
+  function pager(strip, items) {
+    const nav = el('nav', 'app-pager');
+    nav.setAttribute('aria-label', 'Pictures');
+    const figs = [...strip.children];
+    const leftOf = (fig) => fig.offsetLeft - strip.offsetLeft;
+    const current = () => {
+      const max = strip.scrollWidth - strip.clientWidth;
+      if (max <= 0) return 0;
+      if (strip.scrollLeft >= max - 2) return figs.length - 1;
+      let best = 0;
+      figs.forEach((fig, i) => {
+        if (Math.abs(leftOf(fig) - strip.scrollLeft) < Math.abs(leftOf(figs[best]) - strip.scrollLeft)) best = i;
+      });
+      return best;
+    };
+    const go = (i) => strip.scrollTo({ left: leftOf(figs[Math.max(0, Math.min(figs.length - 1, i))]), behavior: 'smooth' });
+
+    const expand = iconButton('expand', 'View full screen', 'app-pager-expand');
+    expand.addEventListener('click', () => openViewer(items, current()));
+    if (figs.length < 2) { nav.append(expand); return nav; }
+
+    const prev = iconButton('prev', 'Previous picture');
+    const next = iconButton('next', 'Next picture');
+    const pages = figs.map((fig, i) => {
+      const button = el('button', '', String(i + 1));
+      button.type = 'button';
+      button.setAttribute('aria-label', `Picture ${i + 1} of ${figs.length}`);
+      button.addEventListener('click', () => go(i));
+      return button;
+    });
+    prev.addEventListener('click', () => go(current() - 1));
+    next.addEventListener('click', () => go(current() + 1));
+    const sync = () => {
+      const now = current();
+      pages.forEach((button, i) => {
+        button.classList.toggle('is-active', i === now);
+        if (i === now) button.setAttribute('aria-current', 'true'); else button.removeAttribute('aria-current');
+      });
+      prev.disabled = now === 0;
+      next.disabled = now === figs.length - 1;
+    };
+    strip.addEventListener('scroll', sync, { passive: true });
+    sync();
+    nav.append(prev, ...pages, next, expand);
+    return nav;
+  }
+
   // ---- header: icon, name, buttons ----
   const hero = el('header', 'app-hero');
   const text = el('div', 'app-hero-text');
   const actions = el('div', 'app-actions');
   if (app.url) actions.append(link(app.url, 'app-btn is-primary', 'Open app ↗'));
   if (app.repo) actions.append(link(app.repo, 'app-btn', 'GitHub ↗'));
-  text.append(el('h1', 'app-title', app.title), el('p', 'app-subtitle', app.subtitle), actions);
+  const title = el('h1', 'app-title', app.title);
+  if (app.stage) title.append(el('span', 'app-stage', app.stage));
+  text.append(title, el('p', 'app-subtitle', app.subtitle), actions);
   hero.append(window.labAppIcon(app), text);
 
   // ---- strip of facts ----
@@ -172,7 +309,13 @@
   root.replaceChildren(back, hero, stats);
 
   // ---- screenshots ----
-  if (app.shots && app.shots.length) section('Preview').append(figures(app.shots, 'app-shots is-wide'));
+  if (app.shots && app.shots.length) {
+    const strip = figures(app.shots, 'app-shots is-wide');
+    const sec = section('Preview');
+    sec.append(strip);
+    // built once the strip is in the page, so it can measure where it stands
+    sec.querySelector('.app-section-head').append(pager(strip, app.shots));
+  }
 
   // ---- description + headline figures ----
   const about = section('About');
