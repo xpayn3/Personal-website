@@ -101,35 +101,15 @@ function renderGrid() {
     }
 
     const label = document.createElement('span');
-    label.className = 'item-label' + (item.project === 'lab' ? ' lab-label' : '');
-    if (item.project === 'lab') {
-      label.innerHTML = 'L<span style="font-weight:300">a</span>B';
-      let labInterval = null;
-      div.addEventListener('mouseenter', () => {
-        labInterval = setInterval(() => {
-          const chars = ['L','a','B'];
-          label.innerHTML = chars.map(c => {
-            const up = Math.random() > 0.5;
-            const w = Math.random() > 0.5 ? '300' : '700';
-            return `<span style="font-weight:${w}">${up ? c.toUpperCase() : c.toLowerCase()}</span>`;
-          }).join('');
-        }, 250);
-      });
-      div.addEventListener('mouseleave', () => {
-        clearInterval(labInterval);
-        label.innerHTML = 'L<span style="font-weight:300">a</span>B';
-      });
-    } else {
-      // Caption under the picture: project name + year (gallery.css).
-      const tag = document.createElement('span');
-      tag.className = 'item-label-tag';
-      tag.textContent = item.year || '';
-      const name = document.createElement('span');
-      name.className = 'item-label-name';
-      name.textContent = item.projectName;
-      label.appendChild(tag);
-      label.appendChild(name);
-    }
+    label.className = 'item-label';
+    // Caption under the picture: project name + year (gallery.css).
+    const tag = document.createElement('span');
+    tag.className = 'item-label-tag';
+    tag.textContent = item.year || '';
+    const name = document.createElement('span');
+    name.className = 'item-label-name';
+    name.textContent = item.projectName;
+    label.append(tag, name);
     div.appendChild(label);
 
     // Meta info for list view
@@ -143,11 +123,6 @@ function renderGrid() {
       if (gridEl.classList.contains('list-view')) {
         window.setLightboxItems([item.src], false);
         window.openLightbox(0);
-      } else if (item.project === 'lab') {
-        const labImages = projects.lab.images;
-        window.setLightboxItems(labImages, true);
-        const idx = labImages.indexOf(item.src);
-        window.openLightbox(idx >= 0 ? idx : 0);
       } else {
         window.openProject(item.project);
       }

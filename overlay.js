@@ -67,19 +67,12 @@
   const mobileProjClose = document.getElementById('mobileProjClose');
   const mobileProjBg = document.getElementById('mobileProjBg');
 
-  function mediaTag(src, alt, fullRes) {
-    if (src.endsWith('.webm') || src.endsWith('.mp4')) {
-      const thumb = src.replace(/\.(webm|mp4)$/, '_thumb.webp');
+  // The hero: loaded straight away (it is on screen as the project opens).
+  // A clip gets its poster and starts when the video observer sees it.
+  function heroMedia(src, alt) {
+    if (/\.(webm|mp4)$/i.test(src)) {
+      const thumb = src.replace(/\.(webm|mp4)$/i, '_thumb.webp');
       return `<video data-src="${src}" poster="${thumb}" muted loop playsinline preload="none"></video>`;
-    }
-    // NOTE: no loading="lazy" here. The overlay is a fixed container that
-    // starts off-screen (top:100%) and slides up with its own Lenis scroll —
-    // native lazy-loading misjudges visibility there, so below-the-fold images
-    // never load on first open (they only appeared after a lightbox reflow).
-    // These <img>s are created only when a project opens, so eager is fine.
-    if (isMobile && !fullRes) {
-      const mobileSrc = src.replace('Images/', 'Images/mobile/');
-      return `<img src="${mobileSrc}" alt="${alt || ''}" decoding="async" />`;
     }
     return `<img src="${src}" alt="${alt || ''}" decoding="async" />`;
   }
@@ -203,20 +196,13 @@
   // the page: the rest of the page is hidden (body.project-page) and the
   // window does the scrolling. That is what lets phone browsers draw the
   // content under their translucent bars, exactly as on the home page, and
-  // it needs no scroll lock. (Only the Lab view still uses the fixed panel.)
-  let pageMode = false;
+  // it needs no scroll lock.
   let pageScrollY = 0;        // where the host page was, to return to on close
 
-  const viewH = () => (pageMode ? window.innerHeight : overlay.clientHeight);
-  const viewTop = () => (pageMode ? 0 : overlay.getBoundingClientRect().top);
-  const viewScrollY = () => (pageMode ? window.scrollY : overlay.scrollTop);
-  const viewRange = () => (pageMode ? document.documentElement.scrollHeight : overlay.scrollHeight) - viewH();
-  const viewScroller = () => (pageMode ? window : overlay);
-  const viewRoot = () => (pageMode ? null : overlay);     // IntersectionObserver root
-  // the smooth-scroll instance driving the current view, if any
-  const viewLenis = () => overlayLenis || (pageMode && window.pageLenis) || null;
+  // the smooth-scroll instance driving the window, if any (the home page has
+  // its own; elsewhere one runs while a project is open)
+  const viewLenis = () => overlayLenis || window.pageLenis || null;
   function jumpTo(y) {
-    if (!pageMode) { overlay.scrollTop = y; return; }
     syncSmoothScroll(y);
     window.scrollTo({ top: y, behavior: 'instant' });
   }
@@ -260,10 +246,9 @@
     overlay.classList.toggle('no-parallax', !enhance);   // drops the parallax over-scale (overlay.css)
     if (!enhance) return;
 
-    // Page mode scrolls the window: reuse the page's own smooth scroll when
-    // it has one (home), otherwise run one for as long as the project is open.
-    if (!pageMode) overlayLenis = new Lenis(Object.assign({ wrapper: overlay, content: overlayInner }, SMOOTH_SCROLL));
-    else if (!window.pageLenis) overlayLenis = new Lenis(SMOOTH_SCROLL);
+    // Reuse the page's own smooth scroll when it has one (home); otherwise
+    // run one for as long as the project is open.
+    if (!window.pageLenis) overlayLenis = new Lenis(SMOOTH_SCROLL);
 
     if (overlayLenis) {
       overlayLenis.on('scroll', ScrollTrigger.update);
@@ -282,7 +267,6 @@
         ease: 'none',
         scrollTrigger: {
           trigger: el.parentElement,
-          scroller: pageMode ? window : overlay,
           start: 'top bottom',
           end: 'bottom top',
           scrub: true,
@@ -428,7 +412,7 @@
           <div class="pv-foot" aria-hidden="true"><span>Luka Grčar</span><span>Scroll down</span></div>
         </header>
 
-        <div class="media-cell pv-hero pv-reveal">${mediaTag(proj.images[0], proj.name, true)}</div>
+        <div class="media-cell pv-hero pv-reveal">${heroMedia(proj.images[0], proj.name)}</div>
 
         <div class="pv-body" style="--n:${rows.length}">
           ${body}
@@ -458,7 +442,7 @@
     const scrollToY = (y, duration) => {
       const lenis = viewLenis();
       if (lenis) lenis.scrollTo(y, { duration });
-      else viewScroller().scrollTo({ top: y, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+      else window.scrollTo({ top: y, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
     };
 
     overlayInner.querySelector('.pv-next').addEventListener('click', (e) => {
@@ -473,7 +457,7 @@
     const gallery = overlayInner.querySelector('.pv-cell[data-row="gallery"]');
     const progress = overlayInner.querySelector('.pv-progress');
     const progressPct = progress.querySelector('span');
-    const cellTop = c => c.getBoundingClientRect().top - viewTop();
+    const cellTop = c => c.getBoundingClientRect().top;
     // The gallery's label has "arrived" once it is pinned in the pile of
     // labels, i.e. the gallery has started sliding up past it. Where the
     // labels don't stick (phones), once it is near the top of the screen.
@@ -485,7 +469,7 @@
     };
     labels.forEach((label, i) => {
       label.querySelector('.pv-jump').addEventListener('click', () => {
-        scrollToY(viewScrollY() + cellTop(cells[i]) + 1, 1.1);
+        scrollToY(window.scrollY + cellTop(cells[i]) + 1, 1.1);
       });
     });
 
@@ -493,13 +477,13 @@
     // the active label, the progress read, and gallery (dark) mode. Scroll
     // events are already delivered at most once per frame.
     const onScroll = () => {
-      const h = viewH();
+      const h = window.innerHeight;
       let active = 0;
       cells.forEach((c, i) => { if (cellTop(c) <= h * 0.45) active = i; });
       labels.forEach((l, i) => l.classList.toggle('is-active', i === active));
 
-      const range = viewRange();
-      const p = range > 0 ? Math.min(1, Math.max(0, viewScrollY() / range)) : 0;
+      const range = document.documentElement.scrollHeight - h;
+      const p = range > 0 ? Math.min(1, Math.max(0, window.scrollY / range)) : 0;
       progress.style.setProperty('--p', p.toFixed(4));
       progressPct.textContent = Math.round(p * 100) + '%';
 
@@ -510,9 +494,8 @@
         setThemeColor(dark ? '#000000' : pageBg());
       }
     };
-    const scroller = viewScroller();
-    scroller.addEventListener('scroll', onScroll, { passive: true });
-    viewCleanups.push(() => scroller.removeEventListener('scroll', onScroll));
+    window.addEventListener('scroll', onScroll, { passive: true });
+    viewCleanups.push(() => window.removeEventListener('scroll', onScroll));
     onScroll();
 
     // Media rises into place the first time it scrolls into view.
@@ -522,7 +505,7 @@
         entry.target.classList.add('is-in');
         revealObs.unobserve(entry.target);
       });
-    }, { root: viewRoot(), threshold: 0.08 });
+    }, { threshold: 0.08 });
     overlayInner.querySelectorAll('.pv-reveal').forEach(el => revealObs.observe(el));
 
     // Gallery images start downloading about a screen before they are needed.
@@ -532,34 +515,10 @@
         entry.target.src = entry.target.dataset.src;
         lazyObs.unobserve(entry.target);
       });
-    }, { root: viewRoot(), rootMargin: '100% 0px' });
+    }, { rootMargin: '100% 0px' });
     overlayInner.querySelectorAll('img[data-src]').forEach(img => lazyObs.observe(img));
 
     viewCleanups.push(() => { revealObs.disconnect(); lazyObs.disconnect(); });
-  }
-
-  // Lab keeps its simple dark-hero gallery layout.
-  function labViewHTML(proj) {
-    let html = `<div class="proj-hero-dark"><div class="proj-hero-content">`;
-    html += `<h1 class="proj-title">${proj.name}</h1>`;
-    if (proj.desc) proj.desc.forEach(p => html += `<p class="proj-desc">${p}</p>`);
-    if (proj.tools) {
-      html += '<div class="proj-tools">';
-      proj.tools.forEach(t => html += `<span class="proj-tag">${t}</span>`);
-      html += '</div>';
-    }
-    html += '</div></div>';
-    html += '<div class="proj-white-sheet"><div class="proj-gallery">';
-    for (const row of proj.layout) {
-      html += `<div class="gallery-row row-${row.cols}">`;
-      for (const idx of row.imgs) {
-        if (proj.images[idx]) html += mediaTag(proj.images[idx], proj.name, true);
-      }
-      html += '</div>';
-    }
-    html += '</div></div>';
-    html += '<div class="lab-splash" id="labSplash">L<span>a</span>B</div>';
-    return html;
   }
 
   // ---- Deep links + back button --------------------------------------------
@@ -596,8 +555,12 @@
   function openProject(projId, opts) {
     const proj = window.projects && window.projects[projId];
     if (!proj) return;
+    // The Lab is a page of its own, not a project.
+    if (projId === 'lab') {
+      if (!/lab\.html$/.test(location.pathname)) location.href = 'lab.html';
+      return;
+    }
     const wasOpen = overlay.classList.contains('open');
-    const isLab = projId === 'lab';
 
     // Must happen before the page is scroll-locked: the browser remembers the
     // page's scroll position for the history entry at this moment, and
@@ -614,26 +577,15 @@
         ogDesc: (metaTag('description') || {}).content,
         ogImg: (metaTag('image') || {}).content,
       };
-      if (isLab) lockScroll();
-      else pageScrollY = window.scrollY;
+      pageScrollY = window.scrollY;
     }
-    pageMode = !isLab;
-    document.body.classList.toggle('project-page', pageMode);   // hides the rest of the page (overlay.css)
+    document.body.classList.add('project-page');   // hides the rest of the page (overlay.css)
     document.body.classList.remove('project-dark');
-    overlay.setAttribute('role', pageMode ? 'region' : 'dialog');
-    overlay.setAttribute('aria-modal', String(!pageMode));
+    overlay.classList.add('open');                  // in the layout before anything is measured
 
-    if (isLab) {
-      overlayInner.innerHTML = labViewHTML(proj);
-      setTimeout(() => {
-        const splash = document.getElementById('labSplash');
-        if (splash) splash.classList.add('fade-out');
-      }, 2500);
-    } else {
-      const view = projectViewHTML(projId);
-      overlayInner.innerHTML = view.html;
-      wireProjectView(view.nextId);
-    }
+    const view = projectViewHTML(projId);
+    overlayInner.innerHTML = view.html;
+    wireProjectView(view.nextId);
 
     // Videos load when they near the viewport, play while visible, pause after.
     currentOverlayObs = new IntersectionObserver((entries) => {
@@ -646,24 +598,25 @@
           vid.pause();
         }
       });
-    }, { root: viewRoot(), rootMargin: '200px' });
+    }, { rootMargin: '200px' });
     overlayInner.querySelectorAll('video[data-src]').forEach(vid => currentOverlayObs.observe(vid));
 
     // Every piece of media opens the lightbox at its own index.
     lightboxItems = proj.images;
-    overlayInner.querySelectorAll('.media-cell img, .media-cell video, .proj-gallery img, .proj-gallery video').forEach((el) => {
+    lbIsLab = false;
+    overlayInner.querySelectorAll('.media-cell img, .media-cell video').forEach((el) => {
       const idx = proj.images.indexOf(el.getAttribute('src') || el.dataset.src);
       // passing the cell lets the lightbox grow the picture out of it
-      el.addEventListener('click', () => { lbIsLab = isLab; openLightbox(idx >= 0 ? idx : 0, el.closest('.media-cell')); });
+      el.addEventListener('click', () => openLightbox(idx >= 0 ? idx : 0, el.closest('.media-cell')));
     });
 
-    overlay.classList.add('open');
+    overlay.setAttribute('role', 'region');
     overlay.setAttribute('aria-label', proj.name);
     overlayClose.classList.add('visible');
     document.body.classList.add('project-open');
     jumpTo(0);
     overlayClose.focus({ preventScroll: true });
-    setThemeColor(isLab ? '#111111' : pageBg());
+    setThemeColor(pageBg());
 
     // Page meta for sharing
     document.title = proj.name + ' — Luka Grčar';
@@ -689,8 +642,7 @@
     cleanupOverlay();
     overlay.classList.remove('open');
     overlayClose.classList.remove('visible');
-    const y = pageMode ? pageScrollY : savedScrollY;   // where the host page was
-    pageMode = false;
+    const y = pageScrollY;   // where the host page was
     document.body.classList.remove('project-open', 'project-page', 'project-dark');
     currentProjectId = null;
     // Always fully clear the body-fixed state. If `scrollLockCount` drifted
@@ -1190,7 +1142,7 @@
   // settles in (see "lbSettle" in overlay.css), which is lighter and smoother
   // on a phone.
   function zoomTarget() {
-    if (!pageMode || reducedMotion.matches || coarsePointer.matches) return null;
+    if (!overlay.classList.contains('open') || reducedMotion.matches || coarsePointer.matches) return null;
     const cell = cellFor(lightboxIndex);
     return cell && onScreen(cell.getBoundingClientRect()) ? cell : null;
   }
@@ -1240,10 +1192,7 @@
     }
     if (lbFrameRAF) cancelAnimationFrame(lbFrameRAF);
     lbFrameRAF = null;
-    // the Lab panel keeps the page locked itself; otherwise release it
-    if (pageMode || !overlay.classList.contains('open')) {
-      unlockScroll();
-    }
+    unlockScroll();
 
     // Fly the picture back into its gallery cell. Measured only now: the page
     // is unlocked and back in its normal layout.
