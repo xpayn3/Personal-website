@@ -250,12 +250,6 @@ body.page-plain {
   color: var(--muted);
   transition: color var(--fade);
 }
-.contact-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #22a559;
-}
 .contact-links {
   display: flex;
   flex-wrap: wrap;

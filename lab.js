@@ -127,9 +127,9 @@
     return slide;
   }
 
-  // A set is a sideways strip of slides with a counter, a row of dots under
-  // it and, with a mouse, a pair of arrows; on touch you just swipe it.
-  // Returns the dots, which sit below the picture.
+  // A set is a sideways strip of slides with a counter, a row of dots
+  // floating over its bottom edge and, with a mouse, a pair of arrows; on
+  // touch you just swipe it.
   function wireSet(media, track, total) {
     const count = el('span', 'entry-count', `1 / ${total}`);
     const prev = el('button', 'entry-nav is-prev', '←');
@@ -159,9 +159,8 @@
     prev.addEventListener('click', () => go(at() - 1));
     next.addEventListener('click', () => go(at() + 1));
     track.addEventListener('scroll', sync, { passive: true });
-    media.append(count, prev, next);
+    media.append(count, prev, next, dots);
     sync();
-    return dots;
   }
 
   function makeEntry(entry, idx) {
@@ -183,7 +182,7 @@
     entry.media.forEach((src, i) => track.appendChild(makeSlide(src, entry.media, i, entry.title)));
     media.appendChild(track);
     article.appendChild(media);
-    if (total > 1) article.appendChild(wireSet(media, track, total));
+    if (total > 1) wireSet(media, track, total);
     return article;
   }
 

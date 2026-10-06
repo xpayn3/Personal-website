@@ -37,12 +37,6 @@
   gap: 10px;
   margin-bottom: clamp(16px, 2vw, 28px);
 }
-.site-footer .contact-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #22a559;
-}
 .site-footer .contact-big {
   display: inline-block;
   font-size: clamp(36px, 8vw, 128px);

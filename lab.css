@@ -135,7 +135,7 @@ body {
   scroll-snap-stop: always;
   border: 0;
   background: none;
-  cursor: zoom-in;
+  cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
 .entry-slide img,
@@ -198,15 +198,27 @@ body {
 .entry-media .entry-nav:disabled { opacity: 0; pointer-events: none; }
 @media (hover: none), (pointer: coarse) { .entry-nav { display: none; } }
 
-/* dots under a set, one per picture (lab.js: wireSet) */
-.entry-dots { display: flex; justify-content: center; gap: 7px; margin-top: 14px; }
+/* dots floating over the bottom of a set, one per picture (lab.js: wireSet) */
+.entry-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  translate: -50% 0;
+  display: flex;
+  gap: 7px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
 .entry-dots button {
   width: 6px;
   height: 6px;
   padding: 0;
   border: 0;
   border-radius: 50%;
-  background: rgba(244, 244, 245, 0.28);
+  background: rgba(244, 244, 245, 0.4);
   cursor: pointer;
   transition: background-color 0.25s ease, scale 0.25s ease;
 }
