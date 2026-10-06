@@ -93,16 +93,27 @@
     });
   }
 
+  // Touch devices get a "soft" lock: the page is left exactly as it is and
+  // the touchmove guard below simply refuses to scroll it. Pinning <body>
+  // (the hard lock) makes a phone browser treat the page as unscrollable and
+  // redraw its toolbars as solid bands, cropping the page top and bottom, and
+  // they don't always go back afterwards. Nothing to restore, either.
+  const softLock = () => window.matchMedia('(pointer: coarse)').matches;
+  let lockIsSoft = false;
+
   function lockScroll() {
     if (scrollLockCount === 0) {
       freezeParallax(true);
-      savedScrollY = window.scrollY;
-      document.documentElement.style.overflow = 'hidden';
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${savedScrollY}px`;
-      document.body.style.width = '100%';
-      document.body.classList.add('scroll-locked');
+      lockIsSoft = softLock();
+      if (!lockIsSoft) {
+        savedScrollY = window.scrollY;
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${savedScrollY}px`;
+        document.body.style.width = '100%';
+        document.body.classList.add('scroll-locked');
+      }
     }
     scrollLockCount++;
   }
@@ -123,6 +134,11 @@
 
   function unlockScroll() {
     scrollLockCount = Math.max(0, scrollLockCount - 1);
+    if (scrollLockCount === 0 && lockIsSoft) {
+      lockIsSoft = false;
+      freezeParallax(false);
+      return;
+    }
     if (scrollLockCount === 0) {
       const y = savedScrollY;
       // Remove overflow first so scrollTo works
@@ -147,6 +163,12 @@
       document.documentElement.style.overflow = '';
       document.body.style.cssText = '';
       document.body.classList.remove('scroll-locked');
+    }
+    // a soft lock leaves no trace on the page, only the counter: clear it
+    // unless something that needs it is actually still open
+    if (!lightbox.classList.contains('open') && !mobileProjList.classList.contains('open')) {
+      scrollLockCount = 0;
+      lockIsSoft = false;
     }
   }
   window.addEventListener('pageshow', resetStaleScrollLock);
@@ -651,6 +673,7 @@
     // touch-event coordinates would register offset, making the bar
     // dropdowns' lower items unreachable.
     scrollLockCount = 0;
+    lockIsSoft = false;
     document.documentElement.style.overflow = '';
     document.body.classList.remove('scroll-locked');
     document.body.style.cssText = '';
