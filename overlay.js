@@ -1019,7 +1019,45 @@
       transform: pose.transform, clipPath: pose.clipPath,
     });
     document.body.appendChild(fly);
+    // where it was laid out, and where the page stood then (see homeIn)
+    fly.home = { rect, page };
     return fly;
+  }
+
+  // While a picture flies back to its cell the page is free to scroll, and
+  // the gallery's parallax keeps sliding the picture inside the cell. A
+  // landing spot measured once at the start would be stale by the end, and
+  // the picture would jump as the real one takes over. So re-measure the
+  // cell every frame and re-aim the flight at where it is now.
+  //
+  // The stand-in and the cell are measured in the same breath, so the aim is
+  // right relative to each other whatever the page scrolls to afterwards.
+  // Returns the aiming function, so the landing can take one last reading in
+  // the very frame the real picture is shown again.
+  function homeIn(mine, cell, start) {
+    const { rect, page } = mine.fly.home;
+    const aim = () => {
+      if (!cell.isConnected || !mine.fly.isConnected) return;
+      try {
+        const now = document.body.getBoundingClientRect();
+        const full = {
+          left: rect.left + now.left - page.left, top: rect.top + now.top - page.top,
+          width: rect.width, height: rect.height,
+        };
+        const pose = cellPose(cell, full, mine.ar);
+        // a cell that is hidden or has no size measures as nonsense: keep the last good aim
+        if (/NaN|Infinity/.test(pose.transform + pose.clipPath)) return;
+        mine.anim.effect.setKeyframes([{ transform: start.transform }, { transform: pose.transform }]);
+        mine.clip.effect.setKeyframes([{ clipPath: start.clipPath }, { clipPath: pose.clipPath }]);
+      } catch (err) { /* keep flying to the last good aim */ }
+    };
+    const step = () => {
+      if (flight !== mine) return;
+      aim();
+      requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+    return aim;
   }
 
   // Drop the current flight where it stands and put its cell back to normal.
@@ -1087,11 +1125,16 @@
     const { anim, clip } = fling(fly, start, cellPose(cell, full, ar), SPRING_CLOSE);
     const mine = flight = { fly, media, anim, clip, src, full, ar };
     media.style.visibility = 'hidden';
+    const aim = homeIn(mine, cell, start);
     anim.finished.then(() => {
       if (flight !== mine) return;
       flight = null;
+      aim();                                               // land exactly where the cell is now
+      // Swap in the same frame: the cell's own picture never left, it was
+      // only hidden, so there is nothing to wait for and no frame in which
+      // a stale stand-in could sit over it.
       media.style.visibility = '';
-      requestAnimationFrame(() => fly.remove());
+      fly.remove();
       if (!lightbox.classList.contains('open')) lightbox.classList.remove('lb-zoom');
     }, () => {});
     return true;
