@@ -420,7 +420,7 @@
   font-variant-numeric: tabular-nums;
   color: var(--g-muted);
   cursor: pointer;
-  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, scale 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, scale 0.25s ease;
 }
 .app-pager button:hover,
 .app-viewer-btn:hover { color: var(--g-ink); }
@@ -495,7 +495,7 @@
   border-radius: 10px;
   cursor: auto;
 }
-.app-viewer-stage img.is-in { animation: appViewerPop 0.4s cubic-bezier(0.34, 1.42, 0.64, 1) both; }
+.app-viewer-stage img.is-in { animation: appViewerPop 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
 .app-viewer-btn { width: 40px; height: 40px; color: var(--g-ink); }
 .app-viewer-btn:hover { background: #1a1a1e; }
 .app-viewer-btn.is-prev,
@@ -504,7 +504,7 @@
 .app-viewer-btn.is-next { right: 12px; }
 .app-viewer-btn[hidden] { display: none; }
 @keyframes appViewerIn { from { opacity: 0; } }
-@keyframes appViewerPop { from { opacity: 0; scale: 0.92; } }
+@keyframes appViewerPop { from { opacity: 0; scale: 0.96; } }
 @media (prefers-reduced-motion: reduce) {
   .app-viewer[open],
   .app-viewer-stage img.is-in { animation: none; }

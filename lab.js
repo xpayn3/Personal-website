@@ -242,6 +242,9 @@
         if (!entry.hidden) shown++;
       });
       if (emptyNote) emptyNote.hidden = shown > 0;
+      // a new list starts at its top (through the smooth scroller when it runs)
+      if (window.pageLenis) window.pageLenis.scrollTo(0, { immediate: reducedMotion });
+      else window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
     });
   });
 

@@ -933,13 +933,12 @@
   // stays on the compositor. Its "in the cell" pose is computed from where the
   // real picture is actually drawn in the cell (cover crop, parallax scale and
   // offset included), so both ends line up exactly and nothing pops.
-  const ZOOM = { duration: 440, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' };
+  const ZOOM = { duration: 480, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' };
   // The move and the un-crop run as two animations so they can be eased
-  // apart: the picture springs a little past its place and settles back
-  // (a bigger bounce opening than closing), while the crop glides straight
-  // there. A crop that overshot would flash the cell's edges.
-  const SPRING_OPEN = 'cubic-bezier(0.34, 1.42, 0.64, 1)';
-  const SPRING_CLOSE = 'cubic-bezier(0.3, 1.22, 0.6, 1)';
+  // apart. Both are a plain ease-out for now: quick off the mark, a long
+  // soft landing, no overshoot either way.
+  const SPRING_OPEN = ZOOM.easing;
+  const SPRING_CLOSE = ZOOM.easing;
   function fling(fly, from, to, spring) {
     const clip = fly.animate([{ clipPath: from.clipPath }, { clipPath: to.clipPath }], ZOOM);
     const anim = fly.animate([{ transform: from.transform }, { transform: to.transform }], { ...ZOOM, easing: spring });
