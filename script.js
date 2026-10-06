@@ -607,7 +607,7 @@ window.scrollTo(0, 0);
 
 const _mobile = window.innerWidth < 768;
 const gridSlider = document.getElementById('gridSlider');
-gridSlider.value = _mobile ? 2 : 4;
+gridSlider.value = _mobile ? 2 : 3;
 const sliderDotsEl = document.getElementById('sliderDots');
 const sliderMin = parseInt(gridSlider.min);
 const sliderMax = parseInt(gridSlider.max);

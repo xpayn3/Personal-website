@@ -3,6 +3,23 @@
 // slide-up project overlay. Depends on projects.js (window.projects etc.)
 // and GSAP + ScrollTrigger + Lenis CDN libs.
 
+// Pictures that load late (lazy tiles, gallery images, covers) fade in when
+// they arrive instead of popping. Every <img> gets `is-loaded` once it has
+// loaded (or failed, so its alt text still shows); overlay.css does the fade
+// and only hides pictures while `html.fade-imgs` says this script is running.
+(function fadeLazyImages() {
+  const mark = (e) => { if (e.target.tagName === 'IMG') e.target.classList.add('is-loaded'); };
+  document.documentElement.classList.add('fade-imgs');
+  document.addEventListener('load', mark, true);     // load doesn't bubble: capture it
+  document.addEventListener('error', mark, true);
+  // pictures that had already arrived before this script ran
+  const sweep = () => {
+    for (const img of document.images) if (img.complete && img.getAttribute('src')) img.classList.add('is-loaded');
+  };
+  sweep();
+  document.addEventListener('DOMContentLoaded', sweep);
+})();
+
 (function () {
   const isMobile = window.innerWidth < 768;
 
@@ -222,10 +239,9 @@
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const coarsePointer = window.matchMedia('(pointer: coarse)');
 
-  // One smooth-scroll feel for the whole site: the home page's own scroll
-  // (index.html) and the project view both use these settings.
-  const SMOOTH_SCROLL = { lerp: 0.14, wheelMultiplier: 1.25, smoothWheel: true };
-  window.SMOOTH_SCROLL = SMOOTH_SCROLL;
+  // One smooth-scroll feel for the whole site: motion.js sets the settings
+  // and runs the page's own scroll (window.pageLenis) on every page.
+  const SMOOTH_SCROLL = window.SMOOTH_SCROLL || { lerp: 0.14, wheelMultiplier: 1.25, smoothWheel: true };
 
   // Browser UI tint (address bar / status bar areas on phones).
   let themeColorBefore;
@@ -258,9 +274,9 @@
     overlay.classList.toggle('no-parallax', !enhance);   // drops the parallax over-scale (overlay.css)
     if (!enhance) return;
 
-    // Reuse the page's own smooth scroll when it has one (home); otherwise
-    // run one for as long as the project is open.
-    if (!window.pageLenis) overlayLenis = new Lenis(SMOOTH_SCROLL);
+    // The page's own smooth scroll (motion.js) also scrolls the project.
+    // Only a page without one runs one for as long as the project is open.
+    if (!window.pageLenis && !window.PAGE_SMOOTH_SCROLL) overlayLenis = new Lenis(SMOOTH_SCROLL);
 
     if (overlayLenis) {
       overlayLenis.on('scroll', ScrollTrigger.update);

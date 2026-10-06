@@ -1070,3 +1070,15 @@ body.page-project .pv-hero.pv-reveal { opacity: 1; translate: 0 0; transition: n
   .pv-jump,
   .pv-jump::before { transition: none; }
 }
+
+/* ---- late pictures fade in (overlay.js: fadeLazyImages) ----
+   An animation, not a transition, so it doesn't replace the transitions
+   these pictures already have (hover, parallax, the feature wipe). */
+html.fade-imgs :is(.grid-item > img, .entry-slide > img, .wall-feature-media img,
+  .pv .media-cell img, .pv-next-thumb img, .card .thumb img):not(.is-loaded) { opacity: 0; }
+html.fade-imgs :is(.grid-item > img, .entry-slide > img, .wall-feature-media img,
+  .pv .media-cell img, .pv-next-thumb img, .card .thumb img).is-loaded { animation: img-fade-in 0.8s ease; }
+@keyframes img-fade-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  html.fade-imgs img.is-loaded { animation: none; }
+}

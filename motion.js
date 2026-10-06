@@ -12,6 +12,12 @@
    (overlay.js, the smooth-scroll setup in index.html), so the page works
    the same without them. A `motionlibs` event on window announces when
    they have all arrived.
+
+   It also runs the page's own smooth scroll, so every page that includes
+   this file scrolls with the same feel. The instance is window.pageLenis;
+   overlay.js scrolls an open project through it. While the lightbox has
+   the page locked (body.scroll-locked) it is torn down, and rebuilt when
+   the page is free again.
    =================================================================== */
 (function () {
   if (matchMedia('(pointer: coarse)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -30,4 +36,40 @@
     };
     document.head.appendChild(script);
   });
+
+  // ---- one smooth scroll for the whole site ----
+  window.SMOOTH_SCROLL = { lerp: 0.14, wheelMultiplier: 1.25, smoothWheel: true };
+  window.PAGE_SMOOTH_SCROLL = true;        // tells overlay.js not to start one of its own
+
+  // Boxes that scroll by themselves (dropdowns, panels, the contact form)
+  // keep their own wheel instead of moving the page.
+  function scrollsItself(node) {
+    if (!node || node === document.body || node === document.documentElement) return false;
+    if (node.scrollHeight <= node.clientHeight + 1) return false;
+    var overflow = getComputedStyle(node).overflowY;
+    return overflow === 'auto' || overflow === 'scroll';
+  }
+
+  var started = false;
+  function start() {
+    if (started || typeof Lenis === 'undefined' || !document.body) return;
+    started = true;
+    var options = { prevent: scrollsItself };
+    for (var key in window.SMOOTH_SCROLL) options[key] = window.SMOOTH_SCROLL[key];
+    var lenis = null;
+    function sync() {
+      var locked = document.body.classList.contains('scroll-locked');
+      if (locked && lenis) { lenis.destroy(); lenis = null; }
+      else if (!locked && !lenis) lenis = new Lenis(options);
+      window.pageLenis = lenis;
+    }
+    new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    sync();
+    requestAnimationFrame(function raf(time) {
+      if (lenis) lenis.raf(time);
+      requestAnimationFrame(raf);
+    });
+  }
+  document.addEventListener('DOMContentLoaded', start);
+  window.addEventListener('motionlibs', start);
 })();

@@ -31,6 +31,10 @@
   // `kind` (the header word: 'App' unless set, e.g. 'Web experiment'), `date`,
   // `note`, `tags` and `image` (a screenshot, opened in the lightbox) are optional.
   const APPS = [
+    { title: 'MeshOptimiser', repo: 'https://github.com/xpayn3/MeshOptimiser', tags: ['JavaScript', 'WebGPU'],
+      note: 'From bloated CAD to browser-ready, locally. STEP → Meshopt-compressed GLB + WebGPU viewer.' },
+    { title: 'Webtree', repo: 'https://github.com/xpayn3/webtree', tags: ['JavaScript'],
+      note: 'Web based tree generator.' },
     // { title: 'App name', repo: 'https://github.com/xpayn3/app-name', url: 'https://…', date: '2026-11-01',
     //   note: 'What it does, in a line or two.', tags: ['Three.js', 'WebGL'], image: 'Images/Lab/app-name.webp' },
   ];
