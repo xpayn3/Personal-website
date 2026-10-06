@@ -25,6 +25,15 @@
   // Both accept `date` ('2025-03-14', or any text such as 'Spring 2024') and
   // `note` (a line or two of journal text); each is shown only when present.
   // A Lab file listed in neither becomes an entry titled from its file name.
+  // APPS: small apps, tools and web experiments, posted at the top of the
+  // feed and listed on their own under the "Apps & web" filter. Give each a
+  // `title` and a `repo` (its GitHub link) and/or a `url` (where it runs);
+  // `kind` (the header word: 'App' unless set, e.g. 'Web experiment'), `date`,
+  // `note`, `tags` and `image` (a screenshot, opened in the lightbox) are optional.
+  const APPS = [
+    // { title: 'App name', repo: 'https://github.com/xpayn3/app-name', url: 'https://…', date: '2026-11-01',
+    //   note: 'What it does, in a line or two.', tags: ['Three.js', 'WebGL'], image: 'Images/Lab/app-name.webp' },
+  ];
   const SETS = [
     { title: 'Dream', files: ['Dream_01.webp', 'Dream_02.webp', 'Dream_03.webp', 'Dream_03-2.webp', 'Dream_04-2.webp'] },
     { title: 'Kristal', files: ['lab_kristal.webm', 'lab_kristal_story.webm', 'kristal0020.webp', 'kristal0025.webp', 'kristal0026.webp'] },
@@ -87,7 +96,7 @@
   const setOf = new Map();
   SETS.forEach(set => set.files.forEach(file => setOf.set(file, set)));
 
-  const entries = [];
+  const entries = APPS.map(app => Object.assign({}, app, { app: true, media: app.image ? [app.image] : [] }));
   const posted = new Set();
   sources.forEach((src) => {
     const set = setOf.get(fileOf(src));
@@ -151,19 +160,36 @@
     sync();
   }
 
+  // An app's small print: its tags, then where to find it.
+  function makeAppLinks(app) {
+    const row = el('div', 'entry-links');
+    (app.tags || []).forEach(tag => row.append(el('span', 'entry-tag', tag)));
+    const link = (href, text) => {
+      const a = el('a', 'entry-link', text);
+      Object.assign(a, { href, target: '_blank', rel: 'noopener noreferrer' });
+      return a;
+    };
+    if (app.url) row.append(link(app.url, 'Open app ↗'));
+    if (app.repo) row.append(link(app.repo, `${app.repo.replace(/^https?:\/\/(www\.)?github\.com\//, '').replace(/\/$/, '')} ↗`));
+    return row;
+  }
+
   function makeEntry(entry, idx, flatStart) {
     const clips = entry.media.filter(isVideo).length;
     const total = entry.media.length;
     const article = el('article', 'entry');
     article.id = `entry-${idx + 1}`;
-    if (clips) article.dataset.clip = '';
-    if (clips < total) article.dataset.still = '';
+    if (entry.app) article.dataset.app = '';
+    else if (clips) article.dataset.clip = '';
+    if (!entry.app && clips < total) article.dataset.still = '';
 
     const head = el('header', 'entry-head');
-    head.append(el('span', '', pad2(idx + 1)), el('span', '', total > 1 ? `Set of ${total}` : clips ? 'Clip' : 'Still'));
+    head.append(el('span', '', pad2(idx + 1)), el('span', '', entry.app ? (entry.kind || 'App') : total > 1 ? `Set of ${total}` : clips ? 'Clip' : 'Still'));
     if (entry.date) head.append(el('time', '', dateText(entry.date)));
     article.append(head, el('h2', 'entry-title', entry.title));
     if (entry.note) article.append(el('p', 'entry-note', entry.note));
+    if (entry.app) article.append(makeAppLinks(entry));
+    if (!total) return article;
 
     const media = el('div', 'entry-media');
     const track = el('div', 'entry-track');
@@ -180,20 +206,24 @@
     frag.appendChild(makeEntry(entry, idx, flatStart));
     flatStart += entry.media.length;
   });
-  feed.appendChild(frag);
+  feed.prepend(frag);                      // ahead of the "nothing here yet" note
 
   const countEl = document.getElementById('labCount');
   if (countEl) countEl.textContent = String(entries.length);
 
-  // ---- Show: all / stills / clips ----------------------------------------
+  // ---- Show: all / stills / clips / apps ---------------------------------
   const filterBtns = document.querySelectorAll('.journal-filter button');
+  const emptyNote = document.getElementById('labEmpty');
   filterBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       const show = btn.dataset.show;
+      let shown = 0;
       filterBtns.forEach(b => b.classList.toggle('is-active', b === btn));
       feed.querySelectorAll('.entry').forEach((entry) => {
         entry.hidden = show !== 'all' && !(show in entry.dataset);
+        if (!entry.hidden) shown++;
       });
+      if (emptyNote) emptyNote.hidden = shown > 0;
     });
   });
 

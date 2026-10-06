@@ -101,6 +101,39 @@ body {
   color: var(--lab-ink-dim);
 }
 
+/* ---- an app entry's small print: tags, then links out ---- */
+.entry-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.entry-tag,
+.entry-link {
+  padding: 7px 13px;
+  border: 1px solid var(--g-line);
+  border-radius: 999px;
+  color: var(--g-muted);
+}
+.entry-link {
+  color: var(--g-ink);
+  text-decoration: none;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+.entry-link:hover { background: var(--g-ink); border-color: var(--g-ink); color: var(--g-bg); }
+.entry-link:focus-visible { outline: 1px solid var(--g-ink); outline-offset: 3px; }
+/* shown by lab.js when a filter has nothing to list */
+.journal-empty {
+  max-width: 52ch;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--lab-ink-dim);
+}
+
 /* ---- its picture(s): a strip of slides, one in view at a time ---- */
 .entry-media {
   position: relative;

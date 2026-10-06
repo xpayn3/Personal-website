@@ -56,11 +56,25 @@
     return ch;
   }
   const state = new WeakMap();
+  // The random letters are wider or narrower than the real ones. Hold the
+  // word's box at its real width while it scrambles, so its neighbours (the
+  // rest of the nav) stay where they are.
+  function lockWidth(el) {
+    if (el.style.width) return;
+    if (getComputedStyle(el).display === 'inline') el.style.display = 'inline-block';
+    el.style.width = el.getBoundingClientRect().width + 'px';
+    el.style.whiteSpace = 'nowrap';
+  }
+  function unlockWidth(el) {
+    el.style.width = el.style.display = el.style.whiteSpace = '';
+  }
   function start(el) {
     const original = el.dataset.label || el.textContent;
     if (!el.dataset.label) el.dataset.label = original;
     const prev = state.get(el);
     if (prev) cancelAnimationFrame(prev.raf);
+    el.textContent = original;
+    lockWidth(el);
     const len = original.length;
     const startTimes = new Array(len);
     const total = 260;
@@ -88,6 +102,7 @@
         s.raf = requestAnimationFrame(tick);
       } else {
         el.textContent = original;
+        unlockWidth(el);
       }
     }
     s.raf = requestAnimationFrame(tick);
@@ -97,6 +112,7 @@
     const s = state.get(el);
     if (s) { s.alive = false; cancelAnimationFrame(s.raf); }
     if (el.dataset.label) el.textContent = el.dataset.label;
+    unlockWidth(el);
   }
   const targets = document.querySelectorAll(
     '.floating-nav-link, .floating-name, .footer-col-link, .footer-col-title'

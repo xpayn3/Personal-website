@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="tokens.css" />
-  <link rel="stylesheet" href="lab.css?v=4" />
+  <link rel="stylesheet" href="lab.css?v=5" />
   <link rel="stylesheet" href="gallery.css?v=6" />
   <link rel="stylesheet" href="overlay.css?v=29" />
   <link rel="stylesheet" href="floating-nav.css?v=13" />
@@ -43,9 +43,12 @@
         <button type="button" class="is-active" data-show="all">All</button>
         <button type="button" data-show="still">Stills</button>
         <button type="button" data-show="clip">Clips</button>
+        <button type="button" data-show="app">Apps &amp; web</button>
       </div>
     </aside>
-    <div class="journal-feed" id="labFeed" aria-label="Journal entries"></div>
+    <div class="journal-feed" id="labFeed" aria-label="Journal entries">
+      <p class="journal-empty" id="labEmpty" hidden>Nothing posted here yet. Apps, small tools and web experiments will be listed here, each with a link to where it runs and to its GitHub repository.</p>
+    </div>
   </main>
 
   <!-- Floating top-left nav (shared component) -->
@@ -107,8 +110,8 @@
   <script defer src="projects.js?v=5"></script>
   <script defer src="project-template.js"></script>
   <script defer src="overlay.js?v=37"></script>
-  <script defer src="lab.js?v=6"></script>
-  <script src="floating-nav.js?v=8" defer></script>
+  <script defer src="lab.js?v=7"></script>
+  <script src="floating-nav.js?v=9" defer></script>
   <script src="brand.js" defer></script>
 </body>
 </html>
