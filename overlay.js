@@ -173,7 +173,10 @@
     overlayLenis = new Lenis({
       wrapper: overlay,
       content: overlayInner,
-      lerp: 0.07,
+      // 0.07 felt silky but couldn't keep up with a fast wheel; this catches
+      // up about twice as quickly, and each wheel notch travels a bit further
+      lerp: 0.14,
+      wheelMultiplier: 1.25,
       smoothWheel: true,
     });
 
@@ -276,52 +279,51 @@
         if (splash) splash.classList.add('fade-out');
       }, 2500);
     } else {
-      // Hero — fullscreen background
-      const heroSrc = proj.images[0];
-      const isHeroVid = heroSrc.endsWith('.webm') || heroSrc.endsWith('.mp4');
-      let html = `<div class="proj-hero-bg">`;
-      if (isHeroVid && !isMobile) {
-        html += `<video data-src="${heroSrc}" muted loop playsinline preload="none" class="proj-hero-bg-media"></video>`;
-      } else {
-        const thumbSrc = isHeroVid ? heroSrc.replace(/\.(webm|mp4)$/, '_thumb.webp') : heroSrc;
-        html += `<img src="${thumbSrc}" class="proj-hero-bg-media" alt="${proj.name}" />`;
+      // ---- Project view: intro → hero → labelled sections → gallery → next ----
+      const ids = Object.keys(projects).filter(id => id !== 'lab');
+      const pos = ids.indexOf(projId);
+      const nextId = ids[(pos + 1) % ids.length];
+      const next = projects[nextId];
+      const pad = n => String(n).padStart(2, '0');
+      const thumbOf = src => /\.(webm|mp4)$/.test(src) ? src.replace(/\.(webm|mp4)$/, '_thumb.webp') : src;
+
+      let html = '<article class="pv">';
+
+      // Intro: counter, big title (words rise in one by one), fact sheet.
+      // Keeps .proj-header — the floating pill watches it to know when to show.
+      html += '<header class="proj-header pv-intro">';
+      html += `<div class="pv-kicker"><span>${pad(pos + 1)} / ${pad(ids.length)}</span><span>${(proj.category || []).join(' · ')}</span></div>`;
+      html += '<h1 class="pv-title">' + proj.name.split(/\s+/).map((w, i) =>
+        `<span class="pv-word"><span style="--i:${i}">${w}</span></span>`).join(' ') + '</h1>';
+      const facts = [
+        ['Client', proj.client], ['Year', proj.year], ['With', proj.collab], ['Location', proj.location],
+        ['Theme', proj.theme], ['Type', proj.type], ['Award', proj.award],
+      ].filter(f => f[1]);
+      if (facts.length) {
+        html += '<dl class="pv-facts">';
+        facts.forEach(([k, v]) => html += `<div><dt>${k}</dt><dd>${v}</dd></div>`);
+        html += '</dl>';
       }
-      html += '</div>';
+      html += '</header>';
 
-      // White sheet — title, meta, description, images, tools at bottom
-      html += '<div class="proj-white-sheet">';
+      // Hero media (first image / clip)
+      html += `<div class="media-cell pv-hero pv-reveal">${mediaTag(proj.images[0], proj.name, true)}</div>`;
 
-      // Header: thumbnail on left, title + meta on right
-      const thumbSrcHeader = heroSrc.endsWith('.webm') || heroSrc.endsWith('.mp4')
-        ? heroSrc.replace(/\.(webm|mp4)$/, '_thumb.webp')
-        : heroSrc;
-      html += '<div class="proj-header">';
-      html += `<img src="${thumbSrcHeader}" alt="${proj.name}" class="proj-header-thumb" />`;
-      html += '<div class="proj-header-info">';
-      html += `<h1 class="proj-title-white">${proj.name}</h1>`;
-      html += '<div class="proj-meta-white">';
-      if (proj.client) html += `<span>${proj.client}</span>`;
-      if (proj.year) html += `<span>${proj.year}</span>`;
-      if (proj.collab) html += `<span>${proj.collab}</span>`;
-      if (proj.location) html += `<span>${proj.location}</span>`;
-      if (proj.theme) html += `<span>${proj.theme}</span>`;
-      if (proj.type) html += `<span>${proj.type}</span>`;
-      if (proj.award) html += `<span>${proj.award}</span>`;
-      html += '</div>';
-      html += '</div></div>';
+      // Body: labelled rows (brief, about, tools, gallery) on one two-column
+      // grid. The labels are sticky and each spans down to the end of the
+      // grid, so as you scroll they pile up in the left column beside the
+      // gallery (see .pv-body in overlay.css).
+      const rows = [];
+      if (proj.brief) rows.push(['Brief', `<p class="pv-statement">${proj.brief}</p>`]);
 
       const descTexts = proj.desc && proj.desc.length > 0 ? proj.desc : [loremPool[0], loremPool[1]];
-      html += '<div class="proj-intro">';
-      if (proj.brief) {
-        html += '<div class="proj-brief"><span class="proj-brief-label">Brief</span><p>' + proj.brief + '</p></div>';
-      }
-      descTexts.forEach(p => html += `<p>${p}</p>`);
+      let about = '<div class="pv-text">';
+      descTexts.forEach(t => about += `<p>${t}</p>`);
       if (proj.link) {
-        html += `<p><a href="${proj.link}" target="_blank" rel="noopener noreferrer">${proj.link} ↗</a></p>`;
+        about += `<p><a href="${proj.link}" target="_blank" rel="noopener noreferrer">${proj.link} ↗</a></p>`;
       }
-      html += '</div>';
+      rows.push(['About', about + '</div>']);
 
-      // Tools — right after description
       const toolIcons = {
         'Cinema 4D': 'Images/tools/Cinema4D-Logo-Icon-Small.png',
         'Redshift': 'Images/tools/Redshift-Logo-Icon-Small.png',
@@ -334,37 +336,87 @@
         'Substance 3D': 'Images/tools/substance-3d-painter-1.svg',
       };
       if (proj.tools) {
-        html += '<div class="proj-tools-inline"><span class="proj-tools-label">Tools</span><div class="proj-tools-list">';
+        let tools = '<div class="pv-tools">';
         proj.tools.forEach(t => {
           const iconSrc = toolIcons[t];
-          const icon = iconSrc ? `<img src="${iconSrc}" alt="${t}" class="tool-icon" />` : '';
-          html += `<span>${icon}${t}</span>`;
+          const icon = iconSrc ? `<img src="${iconSrc}" alt="" class="tool-icon" />` : '';
+          tools += `<span>${icon}${t}</span>`;
         });
-        html += '</div></div>';
+        rows.push(['Tools', tools + '</div>']);
       }
 
-      // Dynamic 2-column grid layout with white space
-      const remaining = proj.images.slice(1);
-      html += '<div class="proj-media-grid">';
-      // Pattern: left, right, left, full, right, left, right, full...
-      const pattern = ['left', 'right', 'left', 'full', 'right', 'left', 'right', 'full'];
-      for (let i = 0; i < remaining.length; i++) {
-        const pos = pattern[i % pattern.length];
-        html += `<div class="media-cell ${pos}">${mediaTag(remaining[i], proj.name, true)}</div>`;
+      // Gallery: the remaining media on a 12-column grid, cycling through row
+      // shapes (full · 7/5 · 5/7 · full · thirds · halves) for an uneven rhythm.
+      const rest = proj.images.slice(1);
+      if (rest.length) {
+        const ROWS = [[12], [7, 5], [5, 7], [12], [4, 4, 4], [6, 6]];
+        let gallery = '<div class="proj-media-grid pv-grid">';
+        for (let i = 0, r = 0; i < rest.length; r++) {
+          let row = ROWS[r % ROWS.length];
+          const left = rest.length - i;
+          if (left < row.length) row = left === 2 ? [6, 6] : [12];
+          for (const span of row) {
+            gallery += `<div class="media-cell pv-reveal span-${span}">${mediaTag(rest[i++], proj.name, true)}</div>`;
+          }
+        }
+        rows.push(['Gallery', gallery + '</div>']);
       }
+
+      html += `<div class="pv-body" style="--n:${rows.length}">`;
+      rows.forEach(([label, content], i) => {
+        html += `<h2 class="pv-label" style="--r:${i + 1}"><button type="button" class="pv-jump"><i>${pad(i + 1)}</i>${label}</button></h2>` +
+          `<div class="pv-cell" style="--r:${i + 1}">${content}</div>`;
+      });
       html += '</div>';
+
+      // Next project
+      html += `<a class="pv-next" href="grid.html#project=${nextId}">` +
+        '<span class="pv-label">Next project</span>' +
+        `<span class="pv-next-name">${next.name}</span>` +
+        `<img class="pv-next-thumb" src="${thumbOf(next.images[0])}" alt="" />` +
+        '</a>';
 
       html += `<div class="proj-copyright">&copy; ${proj.year || new Date().getFullYear()} Luka Grčar. All rights reserved. All work shown is original and may not be reproduced without permission.</div>`;
 
-      html += '</div>';
+      html += '</article>';
       overlayInner.innerHTML = html;
 
-      // Autoplay hero video if present
-      const heroVid = overlayInner.querySelector('.proj-hero-bg-media[data-src]');
-      if (heroVid) {
-        heroVid.src = heroVid.dataset.src;
-        heroVid.play().catch(() => {});
-      }
+      overlayInner.querySelector('.pv-next').addEventListener('click', (e) => {
+        e.preventDefault();
+        openProject(nextId);
+      });
+
+      // Stacked labels double as a section index: click one to glide to its
+      // row; the row currently being read is marked .is-active (grows, darkens).
+      const pvLabels = overlayInner.querySelectorAll('.pv-body > .pv-label');
+      const pvCells = overlayInner.querySelectorAll('.pv-body > .pv-cell');
+      const cellTop = (c) => c.getBoundingClientRect().top - overlay.getBoundingClientRect().top;
+      pvLabels.forEach((label, i) => {
+        label.querySelector('.pv-jump').addEventListener('click', () => {
+          const y = overlay.scrollTop + cellTop(pvCells[i]) + 1;
+          if (overlayLenis) overlayLenis.scrollTo(y, { duration: 1.1 });
+          else overlay.scrollTo({ top: y, behavior: 'smooth' });
+        });
+      });
+      const spy = () => {
+        if (!pvLabels.length || !pvLabels[0].isConnected) { overlay.removeEventListener('scroll', spy); return; }
+        const line = overlay.clientHeight * 0.45;
+        let active = 0;
+        pvCells.forEach((c, i) => { if (cellTop(c) <= line) active = i; });
+        pvLabels.forEach((l, i) => l.classList.toggle('is-active', i === active));
+      };
+      overlay.addEventListener('scroll', spy, { passive: true });
+      spy();
+
+      // Media rises into place as it scrolls into view
+      const revealObs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-in');
+          revealObs.unobserve(entry.target);
+        });
+      }, { root: overlay, threshold: 0.08 });
+      overlayInner.querySelectorAll('.pv-reveal').forEach(el => revealObs.observe(el));
     }
 
     // Lazy-load overlay videos when they scroll into view
@@ -388,7 +440,7 @@
     lightboxItems = proj.images;
     const allMedia = overlayInner.querySelectorAll('.media-cell img, .media-cell video, .proj-row-full img, .proj-row-full video, .proj-gallery img, .proj-gallery video');
     allMedia.forEach((el) => {
-      const src = el.src || el.dataset.src;
+      const src = el.getAttribute('src') || el.dataset.src;
       const idx = proj.images.indexOf(src);
       el.addEventListener('click', () => { lbIsLab = (projId === 'lab'); openLightbox(idx >= 0 ? idx : 0); });
     });
@@ -438,6 +490,7 @@
 
     overlay.classList.add('open');
     overlayClose.classList.add('visible');
+    document.body.classList.add('project-open'); // hides the site nav (overlay.css)
     lockScroll();
     const tc = document.getElementById('themeColor');
     if (tc) tc.content = '#111111';
@@ -466,6 +519,7 @@
     if (pill) pill.remove();
     overlay.classList.remove('open');
     overlayClose.classList.remove('visible');
+    document.body.classList.remove('project-open');
     // Always fully clear the body-fixed state. If `scrollLockCount` drifted
     // (e.g. lightbox/mobile-list flows nested on top) a counter decrement is
     // not enough — the body would stay `position: fixed; top: -Ypx` and

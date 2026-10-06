@@ -19,10 +19,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="tokens.css" />
-  <link rel="stylesheet" href="home.css?v=15" />
+  <link rel="stylesheet" href="home.css?v=19" />
+  <link rel="stylesheet" href="smoke.css?v=2" />
   <link rel="stylesheet" href="floating-nav.css?v=13" />
-  <link rel="stylesheet" href="footer.css" />
-  <link rel="stylesheet" href="overlay.css?v=2" />
+  <link rel="stylesheet" href="overlay.css?v=6" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 <script type="application/ld+json">
@@ -61,6 +61,10 @@
 </head>
 <body class="page-home nav-light">
 
+  <!-- Smoke layer (smoke.js) + its tuning panel (shown only with ?controls) -->
+  <canvas id="smoke" aria-hidden="true"></canvas>
+  <aside class="smoke-panel" id="panel" aria-label="Smoke controls" hidden></aside>
+
   <!-- Site top nav (shared component) -->
   <header class="site-nav">
     <a href="index.html" class="floating-name">Luka Grčar</a>
@@ -71,97 +75,70 @@
       <a href="about.html" class="floating-nav-link">About</a>
     </nav>
     <div class="site-nav-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Toggle dark theme">Dark</button>
       <a href="about.html#contact" class="site-nav-cta">Start a project <span class="site-nav-cta-arrow">↗</span></a>
     </div>
   </header>
 
   <main class="home-content">
 
-    <!-- ===== COVER — scrolling wordmark marquee ===== -->
-    <section class="home-cover">
-      <div class="cover-top">
-        <span class="cover-role"><span data-role>Interaction &amp; Product Designer</span> — Screen &amp; Space</span>
-        <a class="cover-contact" href="about.html#contact">Get in touch ↗</a>
+    <!-- ===== HERO — drag anywhere to draw smoke; the headline is drawn by
+         the smoke canvas so smoke can dissolve it ===== -->
+    <section class="hero">
+      <div class="hero-main">
+        <h1 data-smoke>Screen<br><em>&amp; space.</em></h1>
+        <p class="lede">Luka Grčar — <span data-role>Interaction &amp; Product Designer</span>. Based in Ljubljana, working globally.</p>
+        <a class="cta" href="about.html#contact" data-contact>Get in touch</a>
       </div>
-      <div class="cover-marquee" aria-hidden="true">
-        <div class="cover-marquee-track">
-          <div class="cm-group">
-            <span class="cm-word">Luka Grčar</span><span class="cm-mark">LG</span>
-            <span class="cm-word">Luka Grčar</span><span class="cm-mark">LG</span>
-            <span class="cm-word">Luka Grčar</span><span class="cm-mark">LG</span>
-            <span class="cm-word">Luka Grčar</span><span class="cm-mark">LG</span>
-          </div>
-          <div class="cm-group">
-            <span class="cm-word">Luka Grčar</span><span class="cm-mark">LG</span>
-            <span class="cm-word">Luka Grčar</span><span class="cm-mark">LG</span>
-            <span class="cm-word">Luka Grčar</span><span class="cm-mark">LG</span>
-            <span class="cm-word">Luka Grčar</span><span class="cm-mark">LG</span>
-          </div>
-        </div>
-      </div>
-      <p class="cover-intro">Based in Ljubljana, working globally — I work across interaction, motion, and 3D to make complex systems legible: designing how something communicates its state, earns trust, and feels intuitive — on screen and in the space around it.</p>
-    </section>
-
-    <!-- ===== SELECTED WORK ("Success Stories" style) ===== -->
-    <section class="home-stories">
-      <div class="stories-wrap">
-        <div class="stories-label">Selected Work</div>
-        <div class="stories-list" id="workList"></div>
+      <div class="hero-foot" aria-hidden="true">
+        <span>Click + drag</span>
+        <span>Scroll down</span>
       </div>
     </section>
 
-    <!-- ===== STATEMENT — scroll-driven word reveal ===== -->
-    <section class="home-statement">
-      <div class="statement-wrap">
-        <div class="reveal-text">
-          <p>Whether it's an interactive 3D showcase, a visualization that makes a complex process legible, or an experience that spans screen and physical space, I bring ideas to life in ways that feel intuitive and earn trust.</p>
+    <div class="content">
+      <section>
+        <h2 class="label">About</h2>
+        <div>
+          <p class="statement" data-smoke>I’m Luka, an interaction and product designer. I build interfaces, visualizations and spatial experiences that respond to the people using them.</p>
+          <p>Based in Ljubljana, working globally. I work across interaction, motion and 3D to make complex systems legible, on screen and in the space around it.</p>
         </div>
+      </section>
+
+      <section>
+        <h2 class="label">Selected work</h2>
+        <div class="work" id="workList"></div>
+      </section>
+
+      <section>
+        <h2 class="label">Capabilities</h2>
+        <div class="caps">
+          <div><h3>Design</h3><ul><li>Interaction Design</li><li>Product Design</li><li>UX/UI Design</li><li>Systems Thinking</li><li>Prototyping</li></ul></div>
+          <div><h3>3D &amp; Motion</h3><ul><li>3D &amp; Motion</li><li>Product Visualization</li><li>Projection Mapping</li></ul></div>
+          <div><h3>Tools</h3><ul><li>Cinema 4D</li><li>Houdini</li><li>Redshift</li><li>After Effects</li><li>Figma</li></ul></div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="label">Contact</h2>
+        <div>
+          <a class="contact-big" href="about.html#contact" data-contact>Let’s make<br>something.</a>
+          <p class="contact-links">
+            <a href="mailto:luka.grcar@me.com">luka.grcar@me.com</a>
+            <a href="https://www.instagram.com/lukakluka/" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="https://www.behance.net/lukagrcar" target="_blank" rel="noopener noreferrer">Behance</a>
+            <a href="https://www.linkedin.com/in/luka-grcar-9534b695/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          </p>
+        </div>
+      </section>
+
+      <div class="colophon">
+        <span>All rights reserved _ Luka Grčar&copy;2026</span>
+        <span>Design &amp; code by Luka Grčar</span>
       </div>
-    </section>
+    </div>
 
   </main>
-
-  <!-- ===== FOOTER ===== -->
-  <footer class="site-footer">
-    <div class="footer-top">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <div class="footer-tagline">
-        <p data-role>Interaction &amp; Product Designer</p>
-        <p>Based in Ljubljana, Slovenia</p>
-      </div>
-    </div>
-
-    <div class="footer-grid">
-      <div class="footer-col">
-        <h4 class="footer-col-title">Site Index</h4>
-        <a href="index.html" class="footer-col-link">Home</a>
-        <a href="grid.html" class="footer-col-link">Work</a>
-        <a href="about.html" class="footer-col-link">About</a>
-        <a href="about.html#contact" class="footer-col-link">Contact me</a>
-      </div>
-      <div class="footer-col">
-        <h4 class="footer-col-title">Social</h4>
-        <a href="https://www.instagram.com/lukakluka/" target="_blank" rel="noopener noreferrer" class="footer-col-link">Instagram</a>
-        <a href="https://www.behance.net/lukagrcar" target="_blank" rel="noopener noreferrer" class="footer-col-link">Behance</a>
-        <a href="https://www.linkedin.com/in/luka-grcar-9534b695/" target="_blank" rel="noopener noreferrer" class="footer-col-link">LinkedIn</a>
-      </div>
-      <div class="footer-col">
-        <h4 class="footer-col-title">Get in touch</h4>
-        <a href="mailto:luka.grcar@me.com" class="footer-col-link">luka.grcar@me.com</a>
-      </div>
-      <div class="footer-col">
-        <h4 class="footer-col-title">Legal</h4>
-        <a href="#" class="footer-col-link">Imprint</a>
-        <a href="#" class="footer-col-link">Privacy Policy</a>
-      </div>
-    </div>
-
-    <div class="footer-baseline">
-      <span class="footer-copy">All rights reserved _ Luka Grčar&copy;2026</span>
-      <span class="footer-built">Design &amp; code by Luka Grčar</span>
-    </div>
-  </footer>
 
   <!-- Contact popup -->
   <div class="hc-overlay" id="contactOverlay" aria-hidden="true">
@@ -187,16 +164,18 @@
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
   <script defer src="projects.js?v=4"></script>
-  <script defer src="overlay.js?v=3"></script>
+  <script defer src="overlay.js?v=7"></script>
   <script src="floating-nav.js?v=8" defer></script>
   <script src="brand.js" defer></script>
+  <script src="smoke.js?v=5" defer></script>
+  <script src="cursor.js?v=3" defer></script>
 
-  <!-- Render the selected-work list from the shared project data. -->
+  <!-- Render the selected-work cards from the shared project data. -->
   <script>
   (function () {
-    // Curated featured projects, in order. Falls back gracefully if an id
-    // is missing from window.projects.
-    const FEATURED = ['cestel', 'grounded2026', 'taf'];
+    // Curated featured projects, in order. Ids missing from window.projects
+    // are skipped.
+    const FEATURED = ['cestel', 'grounded2026', 'taf', 'radenci'];
 
     // These projects keep a STATIC image cover instead of the animated one.
     const STATIC_COVER = ['grounded2026'];
@@ -220,39 +199,28 @@
       const wrap = document.getElementById('workList');
       if (!wrap) return;
       const ids = FEATURED.filter(id => P[id]);
-      // If none of the curated ids exist, fall back to first 6 available.
-      const list = ids.length ? ids : Object.keys(P).filter(k => k !== 'lab').slice(0, 6);
+      const list = ids.length ? ids : Object.keys(P).filter(k => k !== 'lab').slice(0, 4);
 
       wrap.innerHTML = '';
-      const total = String(list.length).padStart(2, '0');
-      list.forEach((id, i) => {
+      list.forEach((id) => {
         const p = P[id];
         const cover = pickCover(p.images);
         if (!cover) return;
-        let brief = p.brief || (p.desc && p.desc[0]) || '';
-        if (brief.length > 150) brief = brief.slice(0, 148).trim() + '…';
-        const cat = (p.category || []).join(' · ');
-
-        // Animated (video) cover by default; static image for STATIC_COVER ids.
         const video = STATIC_COVER.indexOf(id) === -1
           ? (VIDEO_OVERRIDE[id] || pickVideo(p.images))
           : null;
         const mediaHtml = video
           ? '<video autoplay muted loop playsinline preload="metadata" poster="' + cover + '"><source src="' + video + '" type="video/webm"></video>'
-          : '<img loading="lazy" src="' + cover + '" alt="' + (p.name || '') + '">';
+          : '<img loading="lazy" src="' + cover + '" alt="">';
+        const meta = [(p.category || []).join(', '), p.year].filter(Boolean).join(' · ');
 
         const el = document.createElement('a');
-        el.className = 'story';
+        el.className = 'card';
         el.href = 'grid.html#project=' + id;   // graceful fallback
-        el.setAttribute('aria-label', p.name || id);
         el.innerHTML =
-          '<span class="story-media">' + mediaHtml + '</span>' +
-          '<span class="story-meta">' +
-            (p.year ? '<span class="story-year">' + p.year + '</span>' : '') +
-            '<span class="story-title">' + (p.name || id) + '</span>' +
-            '<span class="story-desc">' + brief + '</span>' +
-            (cat ? '<span class="story-tags">' + cat + '</span>' : '') +
-          '</span>';
+          '<span class="thumb">' + mediaHtml + '</span>' +
+          '<h3>' + (p.name || id) + '</h3>' +
+          (meta ? '<p>' + meta + '</p>' : '');
         el.addEventListener('click', function (e) {
           if (typeof window.openProject === 'function') {
             e.preventDefault();
@@ -261,38 +229,12 @@
         });
         wrap.appendChild(el);
       });
-      initParallax();
-    }
 
-    // Classic parallax: each project image drifts vertically inside its frame
-    // based on how far the story is through the viewport. Driven by the CSS
-    // `--py` custom property (feeds `translate`), rAF-throttled on scroll.
-    function initParallax() {
-      const imgs = Array.prototype.slice.call(
-        document.querySelectorAll('.story-media img, .story-media video')
-      );
-      if (!imgs.length) return;
-      const RANGE = 7; // max ±% shift (stays within the base scale overflow)
-      let ticking = false;
-      function update() {
-        ticking = false;
-        const vh = window.innerHeight || document.documentElement.clientHeight;
-        for (let k = 0; k < imgs.length; k++) {
-          const media = imgs[k].parentNode;
-          const r = media.getBoundingClientRect();
-          if (r.bottom < -240 || r.top > vh + 240) continue; // skip off-screen
-          const center = r.top + r.height / 2;
-          let p = (center - vh / 2) / (vh / 2 + r.height / 2);
-          if (p > 1) p = 1; else if (p < -1) p = -1;
-          imgs[k].style.setProperty('--py', (-p * RANGE).toFixed(2) + '%');
-        }
-      }
-      function onScroll() {
-        if (!ticking) { ticking = true; requestAnimationFrame(update); }
-      }
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll);
-      update();
+      const all = document.createElement('a');
+      all.className = 'work-all';
+      all.href = 'grid.html';
+      all.textContent = 'All work →';
+      wrap.appendChild(all);
     }
 
     // projects.js / overlay.js are deferred; wait for DOM + a tick so
@@ -304,65 +246,7 @@
     }
   })();
 
-  // Footer reveal — footer.css keeps footer text hidden until body has
-  // .footer-visible. Toggle it when the footer scrolls into view.
-  (function initFooterReveal() {
-    const footer = document.querySelector('.site-footer');
-    if (!footer) return;
-    const obs = new IntersectionObserver((entries) => {
-      const visible = entries.some(e => e.isIntersecting);
-      document.body.classList.toggle('footer-visible', visible);
-    }, { threshold: 0.05 });
-    obs.observe(footer);
-  })();
-
-  // Statement — scroll-driven word reveal: words shift from faint grey to
-  // near-black as the section scrolls up through the viewport.
-  (function initReveal() {
-    const container = document.querySelector('.reveal-text');
-    if (!container) return;
-    const section = container.closest('.home-statement');
-    const words = [];
-    container.querySelectorAll('p').forEach((p) => {
-      const text = p.textContent;
-      p.textContent = '';
-      text.split(/(\s+)/).forEach((tok) => {
-        if (/^\s+$/.test(tok)) {
-          p.appendChild(document.createTextNode(tok));
-        } else if (tok) {
-          const span = document.createElement('span');
-          span.className = 'reveal-word';
-          span.textContent = tok;
-          p.appendChild(span);
-          words.push(span);
-        }
-      });
-    });
-    if (!words.length) return;
-
-    let ticking = false;
-    function update() {
-      ticking = false;
-      const vh = window.innerHeight || document.documentElement.clientHeight;
-      const rect = container.getBoundingClientRect();
-      const start = vh * 0.95;   // text top near bottom of viewport → progress 0
-      const end = vh * 0.10;     // text top near top of viewport   → progress 1
-      let p = (start - rect.top) / (start - end);
-      if (p < 0) p = 0; else if (p > 1) p = 1;
-      const lit = Math.round(p * words.length);
-      for (let i = 0; i < words.length; i++) {
-        words[i].classList.toggle('lit', i < lit);
-      }
-    }
-    function onScroll() {
-      if (!ticking) { ticking = true; requestAnimationFrame(update); }
-    }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    update();
-  })();
-
-  // Contact popup — "Get in touch" (cover) and "Start a project" (nav) open a
+  // Contact popup — "Get in touch" (hero), "Let's make something" (contact) and "Start a project" (nav) open a
   // modal on the home page instead of navigating to the About page.
   (function initContact() {
     const overlay = document.getElementById('contactOverlay');
@@ -378,7 +262,7 @@
       overlay.classList.remove('open');
       overlay.setAttribute('aria-hidden', 'true');
     }
-    document.querySelectorAll('.cover-contact, .site-nav-cta').forEach(o =>
+    document.querySelectorAll('[data-contact], .site-nav-cta').forEach(o =>
       o.addEventListener('click', open)
     );
     const closeBtn = document.getElementById('contactClose');
