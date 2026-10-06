@@ -40,6 +40,30 @@ body.page-home {
 body.page-home a,
 body.page-home button { cursor: pointer; }
 
+/* Before smoke.js has run, a dark start (index.html decides the theme before
+   first paint) still has the nav's light-page palette: give it the dark one. */
+html[data-theme="dark"] body.page-home.nav-light {
+  --nav-fg: rgba(255, 255, 255, 0.95);
+  --nav-fg-dim: rgba(255, 255, 255, 0.6);
+  --nav-cta-bg: #f4f2ec;
+  --nav-cta-fg: #14140f;
+  --nav-cta-bg-hover: #ffffff;
+}
+
+/* Plain text pages (privacy.html): the same colours and type, without the
+   smoke page's crosshair cursor and touch handling. */
+body.page-plain {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-home);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+.hero-short { min-height: 0; padding-top: calc(var(--gutter) + 160px); padding-bottom: clamp(40px, 6vw, 80px); }
+.prose { display: grid; gap: 1em; max-width: 62ch; font-size: clamp(16px, 1.4vw, 19px); line-height: 1.6; }
+.prose a { color: inherit; text-underline-offset: 0.25em; }
+
 /* Touch devices: a resting finger draws smoke, so a long press must not
    start a text selection or pop the iOS callout. Form fields stay editable. */
 @media (pointer: coarse) {
@@ -186,7 +210,13 @@ body.page-home button { cursor: pointer; }
 
 /* Capabilities */
 .caps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-.caps h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
+.caps h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+.caps p {
+  max-width: 30ch;
+  margin-bottom: 16px;
+  font-size: 15px;
+  line-height: 1.45;
+}
 .caps ul {
   list-style: none;
   display: grid;
@@ -208,6 +238,24 @@ body.page-home button { cursor: pointer; }
 }
 .contact-big:hover { text-decoration: underline; text-decoration-thickness: 0.06em; text-underline-offset: 0.12em; }
 .contact-big:focus-visible { outline: 2px solid var(--ink); outline-offset: 6px; }
+/* availability line above the big contact link */
+.contact-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: clamp(16px, 2vw, 28px);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color var(--fade);
+}
+.contact-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22a559;
+}
 .contact-links {
   display: flex;
   flex-wrap: wrap;
@@ -218,6 +266,8 @@ body.page-home button { cursor: pointer; }
 .contact-links a { color: var(--muted); text-underline-offset: 0.25em; transition: color var(--duration-fast, 0.2s); }
 .contact-links a:hover { color: var(--ink); }
 
+.colophon a { color: inherit; text-underline-offset: 0.25em; }
+.colophon a:hover { color: var(--ink); }
 .colophon {
   display: flex;
   justify-content: space-between;

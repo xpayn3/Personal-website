@@ -14,10 +14,12 @@
   const rand = (a, b) => a + Math.random() * (b - a);
 
   // ---------- theme ----------
-  // Light is the site default. The nav toggle flips <html data-theme> (page
-  // colours live in smoke.css) and the nav's own palette (body.nav-light).
+  // The nav toggle flips <html data-theme> (page colours live in home.css)
+  // and the nav's own palette (body.nav-light).
   const themeBtn = document.getElementById('themeToggle');
-  function setTheme(theme) {
+  // `remember` saves the choice; without it the theme is only applied (used
+  // at start-up, where the choice is either already saved or the system's).
+  function setTheme(theme, remember) {
     root.dataset.theme = theme;
     const dark = theme === 'dark';
     document.body.classList.toggle('nav-light', !dark);
@@ -25,10 +27,13 @@
       themeBtn.setAttribute('aria-pressed', String(dark));
       themeBtn.textContent = dark ? 'Light' : 'Dark';
     }
+    if (!remember) return;
     try { localStorage.setItem('lg-theme', theme); } catch (e) {}
   }
-  try { if (localStorage.getItem('lg-theme') === 'dark') setTheme('dark'); } catch (e) {}
-  if (themeBtn) themeBtn.addEventListener('click', () => setTheme(isDark() ? 'light' : 'dark'));
+  // index.html has already set data-theme before first paint (saved choice,
+  // else the system setting); bring the nav and the button in line with it.
+  setTheme(isDark() ? 'dark' : 'light', false);
+  if (themeBtn) themeBtn.addEventListener('click', () => setTheme(isDark() ? 'light' : 'dark', true));
 
   // =====================================================================
   // Fluid smoke (WebGL2): a small Navier–Stokes solver. Smoke density is

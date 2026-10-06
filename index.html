@@ -7,7 +7,17 @@
   <meta name="robots" content="noai, noimageai" />
   <link rel="icon" type="image/png" href="favicon.png" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="color-scheme" content="light" />
+  <meta name="color-scheme" content="light dark" />
+  <script>
+    // Theme before first paint: the visitor's saved choice, else their system
+    // setting. smoke.js owns the toggle; this only avoids a flash of white.
+    (function () {
+      var saved = null;
+      try { saved = localStorage.getItem('lg-theme'); } catch (e) {}
+      var dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+      if (dark) document.documentElement.dataset.theme = 'dark';
+    })();
+  </script>
   <meta name="description" content="Portfolio of Luka Grčar, a 3D motion and interaction designer in Ljubljana, Slovenia: 3D animation, product visualization, projection mapping and interactive design." />
   <link rel="canonical" href="https://lukagrcar.com/" />
   <meta property="og:title" content="Luka Grčar — 3D Motion &amp; Interaction Designer, Ljubljana" />
@@ -20,10 +30,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="tokens.css" />
-  <link rel="stylesheet" href="home.css?v=21" />
+  <link rel="stylesheet" href="home.css?v=22" />
   <link rel="stylesheet" href="smoke.css?v=2" />
   <link rel="stylesheet" href="floating-nav.css?v=13" />
-  <link rel="stylesheet" href="overlay.css?v=28" />
+  <link rel="stylesheet" href="overlay.css?v=29" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 <script type="application/ld+json">
@@ -120,15 +130,16 @@
       <section>
         <h2 class="label">Capabilities</h2>
         <div class="caps">
-          <div><h3>Design</h3><ul><li>Interaction Design</li><li>Product Design</li><li>UX/UI Design</li><li>Systems Thinking</li><li>Prototyping</li></ul></div>
-          <div><h3>3D &amp; Motion</h3><ul><li>3D &amp; Motion</li><li>Product Visualization</li><li>Projection Mapping</li></ul></div>
-          <div><h3>Tools</h3><ul><li>Cinema 4D</li><li>Houdini</li><li>Redshift</li><li>After Effects</li><li>Figma</li></ul></div>
+          <div><h3>Design</h3><p>Interfaces and product flows that make technical things clear to use.</p><ul><li>Interaction Design</li><li>Product Design</li><li>UX/UI Design</li><li>Systems Thinking</li><li>Prototyping</li></ul></div>
+          <div><h3>3D &amp; Motion</h3><p>Animation, product visuals and projection mapping, from concept to final render.</p><ul><li>3D &amp; Motion</li><li>Product Visualization</li><li>Projection Mapping</li></ul></div>
+          <div><h3>Tools</h3><p>The software the work is built in.</p><ul><li>Cinema 4D</li><li>Houdini</li><li>Redshift</li><li>After Effects</li><li>Figma</li></ul></div>
         </div>
       </section>
 
       <section>
         <h2 class="label">Contact</h2>
         <div>
+          <p class="contact-status"><span class="contact-dot" aria-hidden="true"></span>Available for new projects</p>
           <a class="contact-big" href="about.html#contact" data-contact>Let’s make<br>something.</a>
           <p class="contact-links">
             <a href="mailto:luka.grcar@me.com">luka.grcar@me.com</a>
@@ -141,7 +152,7 @@
 
       <div class="colophon">
         <span>All rights reserved _ Luka Grčar&copy;2026</span>
-        <span>Design &amp; code by Luka Grčar</span>
+        <span><a href="privacy.html">Privacy</a> · Design &amp; code by Luka Grčar</span>
       </div>
     </div>
 
@@ -170,10 +181,11 @@
   <!-- GSAP / ScrollTrigger / Lenis: loaded by motion.js on desktop only -->
   <script src="motion.js"></script>
   <script defer src="projects.js?v=4"></script>
-  <script defer src="overlay.js?v=35"></script>
+  <script defer src="project-template.js"></script>
+  <script defer src="overlay.js?v=36"></script>
   <script src="floating-nav.js?v=8" defer></script>
   <script src="brand.js" defer></script>
-  <script src="smoke.js?v=10" defer></script>
+  <script src="smoke.js?v=11" defer></script>
 
   <!-- Render the selected-work cards from the shared project data. -->
   <script>
@@ -226,7 +238,7 @@
 
         const el = document.createElement('a');
         el.className = 'card';
-        el.href = '#project=' + id;   // real link: overlay.js opens it from the hash
+        el.href = 'work/' + id + '.html';   // the project's own page; the click below opens it in place
         el.innerHTML =
           '<span class="thumb">' + mediaHtml + '</span>' +
           '<h3>' + (p.name || id) + '</h3>' +

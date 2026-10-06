@@ -67,16 +67,6 @@
   const mobileProjClose = document.getElementById('mobileProjClose');
   const mobileProjBg = document.getElementById('mobileProjBg');
 
-  // The hero: loaded straight away (it is on screen as the project opens).
-  // A clip gets its poster and starts when the video observer sees it.
-  function heroMedia(src, alt) {
-    if (/\.(webm|mp4)$/i.test(src)) {
-      const thumb = src.replace(/\.(webm|mp4)$/i, '_thumb.webp');
-      return `<video data-src="${src}" poster="${thumb}" muted loop playsinline preload="none"></video>`;
-    }
-    return `<img src="${src}" alt="${alt || ''}" decoding="async" />`;
-  }
-
   // ---- Scroll lock ---------------------------------------------------------
   let savedScrollY = 0;
   let scrollLockCount = 0;
@@ -341,123 +331,18 @@
   }
 
   // ---- Project view --------------------------------------------------------
-  // intro (counter · title · fact sheet) → hero → labelled rows (brief /
-  // about / tools / gallery) with a stacking section index → next project.
-  // Styles: "PROJECT VIEW" in overlay.css.
+  // The markup comes from project-template.js (shared with the static
+  // work/<id>.html pages); this file fills it in and brings it to life.
+  const { isVideo, posterOf } = window.ProjectTemplate;
 
-  const TOOL_ICONS = {
-    'Cinema 4D': 'Images/tools/Cinema4D-Logo-Icon-Small.png',
-    'Redshift': 'Images/tools/Redshift-Logo-Icon-Small.png',
-    'AfterEffects': 'Images/tools/after-effects-1.svg',
-    'Photoshop': 'Images/tools/adobe-photoshop.svg',
-    'InDesign': 'Images/tools/adobe-indesign-cc-icon.svg',
-    'Illustrator': 'Images/tools/adobe-illustrator-cc-3.svg',
-    'Houdini': 'Images/tools/Houdini3D_icon.png',
-    'ZBrush': 'Images/tools/ZBrush-new-logo.jpg 1.png',
-    'Substance 3D': 'Images/tools/substance-3d-painter-1.svg',
-  };
-  // Gallery rhythm: column spans (of 12) per row, cycled.
-  const GALLERY_ROWS = [[12], [7, 5], [5, 7], [12], [4, 4, 4], [6, 6]];
-
-  const isVideo = src => /\.(webm|mp4)$/i.test(src);
-  const posterOf = src => (isVideo(src) ? src.replace(/\.(webm|mp4)$/i, '_thumb.webp') : src);
-  const pad2 = n => String(n).padStart(2, '0');
-  const metaLine = p => [(p.category || []).join(', '), p.year].filter(Boolean).join(' · ');
-
-  // Gallery media downloads only as it nears the viewport (see lazy observer
-  // in wireProjectView). Cells have fixed aspect ratios, so nothing shifts
-  // when it arrives.
-  function lazyMedia(src, alt) {
-    return isVideo(src)
-      ? `<video data-src="${src}" poster="${posterOf(src)}" muted loop playsinline preload="none"></video>`
-      : `<img data-src="${src}" alt="${alt}" decoding="async" />`;
-  }
-
-  function galleryHTML(media, alt) {
-    let html = '<div class="proj-media-grid pv-grid">';
-    for (let i = 0, r = 0; i < media.length; r++) {
-      let row = GALLERY_ROWS[r % GALLERY_ROWS.length];
-      const left = media.length - i;
-      if (left < row.length) row = left === 2 ? [6, 6] : [12];
-      for (const span of row) {
-        html += `<div class="media-cell pv-reveal span-${span}">${lazyMedia(media[i++], alt)}</div>`;
-      }
-    }
-    return html + '</div>';
-  }
+  // A static project page (work/<id>.html) names its project here. The view
+  // is then the whole page: there is nothing underneath to return to, so
+  // Close goes to the Work page and Next is an ordinary link.
+  const STANDALONE = window.PROJECT_PAGE || null;
+  const projectUrl = id => 'work/' + id + '.html';
 
   function projectViewHTML(projId) {
-    const projects = window.projects;
-    const proj = projects[projId];
-    const ids = Object.keys(projects).filter(id => id !== 'lab');
-    const pos = ids.indexOf(projId);
-    const nextId = ids[(pos + 1) % ids.length];
-    const next = projects[nextId];
-
-    // each title word sits in a clipping box and rises into it (.pv-word)
-    const title = proj.name.split(/\s+/).map((w, i) =>
-      `<span class="pv-word"><span style="--i:${i}">${w}</span></span>`).join(' ');
-
-    const facts = [
-      ['Client', proj.client], ['Year', proj.year], ['With', proj.collab], ['Location', proj.location],
-      ['Theme', proj.theme], ['Type', proj.type], ['Award', proj.award],
-    ].filter(f => f[1]).map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
-
-    // Labelled rows. Each becomes a sticky label + a content cell on one
-    // shared grid, which is what lets the labels pile up (see .pv-body).
-    const rows = [];
-    if (proj.brief) rows.push(['Brief', `<p class="pv-statement">${proj.brief}</p>`]);
-    if ((proj.desc && proj.desc.length) || proj.link) {
-      const paras = (proj.desc || []).map(t => `<p>${t}</p>`).join('');
-      const link = proj.link
-        ? `<p><a href="${proj.link}" target="_blank" rel="noopener noreferrer">${proj.link} ↗</a></p>` : '';
-      rows.push(['About', `<div class="pv-text">${paras}${link}</div>`]);
-    }
-    if (proj.tools && proj.tools.length) {
-      const chips = proj.tools.map(t =>
-        `<span>${TOOL_ICONS[t] ? `<img src="${TOOL_ICONS[t]}" alt="" class="tool-icon" />` : ''}${t}</span>`).join('');
-      rows.push(['Tools', `<div class="pv-tools">${chips}</div>`]);
-    }
-    const alt = `${proj.name} — ${(proj.category || []).join(', ') || 'project'} by Luka Grčar`.replace(/"/g, '&quot;');
-    if (proj.images.length > 1) rows.push(['Gallery', galleryHTML(proj.images.slice(1), alt)]);
-
-    const body = rows.map(([label, content], i) =>
-      `<h2 class="pv-label" style="--r:${i + 1}"><button type="button" class="pv-jump"><i>${pad2(i + 1)}</i>${label}</button></h2>` +
-      `<div class="pv-cell" data-row="${label.toLowerCase()}" style="--r:${i + 1}">${content}</div>`).join('');
-
-    const html = `
-      <article class="pv">
-        <header class="pv-intro">
-          <div class="pv-kicker"><span>Project ${pad2(pos + 1)} / ${pad2(ids.length)}</span><span>${(proj.category || []).join(' · ')}</span></div>
-          <h1 class="pv-title">${title}</h1>
-          ${facts ? `<dl class="pv-facts">${facts}</dl>` : ''}
-          <div class="pv-foot" aria-hidden="true"><span>Luka Grčar</span><span>Scroll down</span></div>
-        </header>
-
-        <div class="media-cell pv-hero pv-reveal">${heroMedia(proj.images[0], proj.name)}</div>
-
-        <div class="pv-body" style="--n:${rows.length}">
-          ${body}
-          <div class="pv-progress" aria-hidden="true"><i></i><span>0%</span></div>
-        </div>
-
-        <a class="pv-next" href="#project=${nextId}">
-          <span class="pv-label">Next project</span>
-          <span class="pv-next-card">
-            <span class="pv-next-thumb"><img src="${posterOf(next.images[0])}" alt="" loading="lazy" /></span>
-            <span class="pv-next-text">
-              <span class="pv-next-name">${next.name}</span>
-              <span class="pv-next-meta">${metaLine(next)}</span>
-            </span>
-            <span class="pv-next-arrow" aria-hidden="true">→</span>
-          </span>
-        </a>
-        <div class="pv-colophon">
-          <span>&copy; ${proj.year || new Date().getFullYear()} Luka Grčar. All rights reserved. All work shown is original and may not be reproduced without permission.</span>
-          <button type="button" class="pv-top">Back to top ↑</button>
-        </div>
-      </article>`;
-    return { html, nextId };
+    return window.ProjectTemplate.html(window.projects, projId, { linkFor: projectUrl });
   }
 
   function wireProjectView(nextId) {
@@ -467,10 +352,14 @@
       else window.scrollTo({ top: y, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
     };
 
-    overlayInner.querySelector('.pv-next').addEventListener('click', (e) => {
-      e.preventDefault();
-      openProject(nextId, { replace: true });
-    });
+    // in the site the next project opens in place; on a static page the link
+    // simply navigates to that project's own page
+    if (!STANDALONE) {
+      overlayInner.querySelector('.pv-next').addEventListener('click', (e) => {
+        e.preventDefault();
+        openProject(nextId, { replace: true });
+      });
+    }
     overlayInner.querySelector('.pv-top').addEventListener('click', () => scrollToY(0, 1.2));
 
     // The stacked labels are a section index: click one to glide to its row.
@@ -551,6 +440,7 @@
     return m ? m[1] : null;
   };
   function recordOpenInHistory(projId, replace) {
+    if (STANDALONE) return;                         // the page's own URL already says it
     const current = projectInHash();
     if (current === projId) return;                 // came from the URL or back/forward
     // moving between projects replaces the entry, so one "back" always closes
@@ -641,14 +531,16 @@
     overlayClose.classList.add('visible');
     document.body.classList.add('project-open');
     jumpTo(0);
-    overlayClose.focus({ preventScroll: true });
+    if (!STANDALONE) overlayClose.focus({ preventScroll: true });
     setThemeColor(pageBg());
 
-    // Page meta for sharing
-    document.title = proj.name + ' — Luka Grčar';
-    setMeta('title', proj.name + ' — Luka Grčar');
-    setMeta('description', (proj.desc && proj.desc[0]) ? proj.desc[0].substring(0, 160) : 'Portfolio of Luka Grčar');
-    setMeta('image', 'https://lukagrcar.com/' + posterOf(proj.images[0]));
+    // Page meta for sharing (a static project page already carries its own)
+    if (!STANDALONE) {
+      document.title = proj.name + ' — Luka Grčar';
+      setMeta('title', proj.name + ' — Luka Grčar');
+      setMeta('description', (proj.desc && proj.desc[0]) ? proj.desc[0].substring(0, 160) : 'Portfolio of Luka Grčar');
+      setMeta('image', 'https://lukagrcar.com/' + posterOf(proj.images[0]));
+    }
 
     currentProjectId = projId;
 
@@ -661,6 +553,7 @@
   // in which case the argument is an event and counts as false.
   function closeOverlay(fromHistory) {
     if (!overlay.classList.contains('open')) return;
+    if (STANDALONE) { location.href = 'grid.html'; return; }
     // e.g. the back button pressed with a picture open: don't leave the
     // lightbox hanging over the page the project is about to hand back
     if (lightbox.classList.contains('open')) { closeLightbox(); endFlight(); }
@@ -702,6 +595,7 @@
   // Back / forward: follow the URL.
   let pendingScrollY = null;
   window.addEventListener('popstate', () => {
+    if (STANDALONE) return;
     if (pendingScrollY != null) {
       const y = pendingScrollY;
       pendingScrollY = null;
@@ -714,8 +608,13 @@
       closeOverlay(true);
     }
   });
-  // Deep link: <page>#project=<id> opens that project on load.
-  if (projectInHash()) setTimeout(() => openProject(projectInHash()), 100);
+  // A static project page opens its project at once (re-rendering the same
+  // markup it shipped with, now interactive). Elsewhere, a deep link
+  // <page>#project=<id> opens that project on load.
+  // (deferred a tick: the lightbox state further down this file has to be
+  // set up before a project can open)
+  if (STANDALONE) setTimeout(() => openProject(STANDALONE), 0);
+  else if (projectInHash()) setTimeout(() => openProject(projectInHash()), 100);
 
   overlayClose.addEventListener('click', closeOverlay);
 

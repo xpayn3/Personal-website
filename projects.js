@@ -1,7 +1,6 @@
 // ========== IMAGE & PROJECT DATA ==========
 // Wrapped in an IIFE so top-level `const IMG` / `const projects` etc. don't
-// collide with home.js (which has its own local `const projects` array) or
-// script.js when all three execute in the shared script scope.
+// collide with script.js, which shares the page's script scope.
 (function () {
 const IMG = 'Images';
 
@@ -700,7 +699,7 @@ function shuffle(arr) {
 }
 shuffle(gridItems);
 
-// Expose shared data to other scripts (script.js, overlay.js, home.js)
+// Expose shared data to other scripts (script.js, overlay.js, lab.js, tools/build-pages.js)
 window.IMG = IMG;
 window.projects = projects;
 window.COLOR_HEX = COLOR_HEX;

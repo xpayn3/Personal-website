@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Privacy — Luka Grčar</title>
+  <meta name="robots" content="noai, noimageai" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <meta name="description" content="What this site collects about visitors, why, and how to have it removed." />
+  <link rel="canonical" href="https://lukagrcar.com/privacy.html" />
+  <meta name="color-scheme" content="light dark" />
+  <script>
+    // same theme as the home page: saved choice, else the system setting
+    (function () {
+      var saved = null;
+      try { saved = localStorage.getItem('lg-theme'); } catch (e) {}
+      var dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+      if (dark) document.documentElement.dataset.theme = 'dark';
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="home.css?v=22" />
+  <link rel="stylesheet" href="floating-nav.css?v=13" />
+</head>
+<body class="page-plain nav-light">
+
+  <header class="site-nav">
+    <a href="index.html" class="floating-name">Luka Grčar</a>
+    <nav class="floating-nav" aria-label="Sections">
+      <a href="index.html" class="floating-nav-link">Home</a>
+      <a href="grid.html" class="floating-nav-link">Work</a>
+      <a href="lab.html" class="floating-nav-link">Lab</a>
+      <a href="about.html" class="floating-nav-link">About</a>
+    </nav>
+    <div class="site-nav-actions">
+      <a href="about.html#contact" class="site-nav-cta">Start a project <span class="site-nav-cta-arrow">↗</span></a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero hero-short">
+      <div class="hero-main">
+        <h1>Privacy</h1>
+        <p class="lede">What this site collects about you, why, and how to have it removed. Last updated 6 October 2026.</p>
+      </div>
+    </section>
+
+    <div class="content">
+      <section>
+        <h2 class="label">Who</h2>
+        <div class="prose">
+          <p>This is the personal portfolio of Luka Grčar, based in Ljubljana, Slovenia. For anything on this page, write to <a href="mailto:luka.grcar@me.com">luka.grcar@me.com</a>.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="label">Visits</h2>
+        <div class="prose">
+          <p>The site uses Google Analytics to count visits and see which pages are viewed. It records the pages you open, the kind of device and browser you use and your approximate location, and it sets cookies in your browser to tell visits apart. That information is processed by Google.</p>
+          <p>The site is hosted on GitHub Pages, which keeps server logs that include visitors' IP addresses.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="label">Contact form</h2>
+        <div class="prose">
+          <p>If you send a message through the contact form, your name, email address, company (if you give one) and message are delivered to my inbox by Web3Forms. I use them only to reply to you.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="label">Other services</h2>
+        <div class="prose">
+          <p>Fonts are loaded from Google Fonts and a few scripts from the jsDelivr network. As with any file your browser requests, those providers see your IP address when it does.</p>
+          <p>Your light or dark theme choice is saved in your own browser so the site remembers it. It is not sent anywhere.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="label">Your choices</h2>
+        <div class="prose">
+          <p>You can ask what I hold about you, have it corrected, or have it deleted. Email <a href="mailto:luka.grcar@me.com">luka.grcar@me.com</a> and I will sort it out.</p>
+          <p>To stop analytics cookies, block them in your browser settings or use a content blocker. The site works the same without them.</p>
+        </div>
+      </section>
+
+      <div class="colophon">
+        <span>All rights reserved _ Luka Grčar&copy;2026</span>
+        <span><a href="index.html">Home</a> · Design &amp; code by Luka Grčar</span>
+      </div>
+    </div>
+  </main>
+
+  <script src="floating-nav.js?v=8" defer></script>
+  <script>
+    // the nav has its own light/dark palette, switched by this class
+    if (document.documentElement.dataset.theme === 'dark') document.body.classList.remove('nav-light');
+  </script>
+</body>
+</html>

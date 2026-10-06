@@ -162,7 +162,7 @@ function buildFeature(id, index, total) {
   const about = (p.desc && p.desc[0]) || '';
 
   const block = el('a', 'wall-feature' + (index % 2 ? ' is-flipped' : ''));
-  block.href = '#project=' + id;
+  block.href = 'work/' + id + '.html';   // the project's own page; the click below opens it in place
 
   const media = el('span', 'wall-feature-media');
   const img = el('img');
@@ -240,7 +240,7 @@ function placeFeatures() {
       item: {
         '@type': 'CreativeWork',
         name: p.name,
-        url: `${origin}grid.html#project=${id}`,
+        url: `${origin}work/${id}`,
         image: origin + encodeURI(poster(p.images[0])),
         description: (p.desc && p.desc[0]) || p.brief || undefined,
         dateCreated: p.year ? String(p.year) : undefined,
@@ -859,7 +859,7 @@ if (wmEl) {
 
 // ========== FOOTER REVEAL ==========
 // footer.css hides footer text until body has .footer-visible — toggle it
-// once the footer comes into view. Same pattern as home.js.
+// once the footer comes into view.
 (function initFooterReveal() {
   const footer = document.querySelector('.site-footer');
   if (!footer) return;
