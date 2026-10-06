@@ -793,6 +793,8 @@ body.project-open .site-nav {
   transition: opacity 0.8s ease, translate 1s var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
 }
 .pv-reveal.is-in { opacity: 1; translate: 0 0; }
+/* a static project page ships with its hero already on screen: no fade-in */
+body.page-project .pv-hero.pv-reveal { opacity: 1; translate: 0 0; transition: none; }
 
 .pv-grid {
   grid-template-columns: repeat(12, 1fr);
@@ -1044,12 +1046,13 @@ body.project-open .site-nav {
   .pv-intro { padding-top: 76px; }
   .pv-kicker { padding-right: 0; }
   .pv-colophon { flex-direction: column; }
-  .pv-next { grid-template-columns: 1fr; }
+  .pv-next { grid-template-columns: 1fr; padding: 64px 0; }
   .pv-hero { margin-left: 0; }
   /* single column: labels sit above their content, no stacking */
   .pv-body { grid-template-columns: 1fr; }
-  .pv-body > .pv-label { grid-row: auto; position: static; margin: 36px 0 0; }
-  .pv-cell { grid-column: 1; grid-row: auto; padding: 14px 0 36px; }
+  /* taller rows on phones, stepped by the golden ratio: 24 -> 40 -> 64px */
+  .pv-body > .pv-label { grid-row: auto; position: static; margin: 64px 0 0; }
+  .pv-cell { grid-column: 1; grid-row: auto; padding: 24px 0 64px; }
   .pv-cell::before { display: none; }
   .pv-progress { display: none; }
   .pv-grid { grid-template-columns: 1fr; }

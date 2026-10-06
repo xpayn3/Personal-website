@@ -232,8 +232,12 @@ body.page-home button { cursor: pointer; }
 }
 
 @media (max-width: 720px) {
-  .content section { grid-template-columns: 1fr; }
+  /* Taller sections on phones: spacing steps by the golden ratio (1.618),
+     24px label gap -> 40px -> 64px -> 104px above and below each section. */
+  .content section { grid-template-columns: 1fr; gap: 40px; padding: 104px 0; }
   .work, .caps { grid-template-columns: 1fr; }
+  .work { gap: 64px; }
+  .caps { gap: 40px; }
   .colophon { flex-direction: column; gap: 6px; }
 }
 
