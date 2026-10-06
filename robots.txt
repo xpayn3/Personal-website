@@ -1,5 +1,16 @@
+# Search engines: everything, including the work itself, so it can appear
+# in web and image results.
+User-agent: Googlebot
+User-agent: Googlebot-Image
+User-agent: Bingbot
+User-agent: DuckDuckBot
+Allow: /
+
+# Everyone else: the pages, but not the image folder (scrapers).
 User-agent: *
 Allow: /
+Disallow: /Images/
+
 Sitemap: https://lukagrcar.com/sitemap.xml
 
 # Block AI training bots
@@ -38,7 +49,3 @@ Disallow: /
 
 User-agent: PerplexityBot
 Disallow: /
-
-# Block image scraping
-User-agent: *
-Disallow: /Images/

@@ -1,17 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://lukagrcar.com/</loc>
+    <lastmod>2026-10-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://lukagrcar.com/grid.html</loc>
+    <lastmod>2026-10-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/Cestel_project/cestel_anim_01_v_thumb.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/Grounded_2022/Grounded_2022_01.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/Grounded_2021/Grounded_IG_thumb.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/Athletesfoot/taf_anim_v_thumb.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/Grounded_2020/Grounded_poster_2.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/Grounded_2018/plakat.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/TamTam_Hoja--moj-transport_plakat-tisk.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/AppointMENT_4.0/AppointMENT_poster.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/Athletesfoot_halloween/Athletesfoot_halloween_01.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/Athletesfoot_blackfriday/Athletesfoot_blackfriday_anim_01.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/LargaVida/01_larga_vida_desktop.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/NewEdge_magazine/NewEdge_magazine_01.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/Grounded_2023/Grounded_2023_01_thumb.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/Grounded_2026/Render_still_01_CC.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/Grounded%202025/gr2025cover.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/Grounded_2024/Grounded_2024_01.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/Radenci_prostorska_projekcija/P1_S1_K01_0323.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/Kersnikova/Plakat-500x700-B2.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/Natureta%20product%20renders/izdelki.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/Natureta/Prebranec-Natureta-657f495f8b596.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/AccountingBox/4_loop_thumb.webp</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/lab.html</loc>
+    <lastmod>2026-10-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://lukagrcar.com/Images/Lab/Fly_fico_thumb.webp</image:loc>
+    </image:image>
   </url>
   <url>
     <loc>https://lukagrcar.com/about.html</loc>
+    <lastmod>2026-10-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

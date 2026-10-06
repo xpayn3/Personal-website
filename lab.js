@@ -75,7 +75,10 @@
 
     const wrap = el('div', 'media-wrap');
     const img = el('img');
-    Object.assign(img, { src: clip ? posterOf(src) : src, loading: 'lazy', decoding: 'async', alt: '' });
+    Object.assign(img, {
+      src: clip ? posterOf(src) : src, loading: 'lazy', decoding: 'async',
+      alt: `${nameOf(src)} — 3D experiment by Luka Grčar`,
+    });
     wrap.appendChild(img);
     if (clip && canHover) addHoverVideo(card, wrap, src);
 

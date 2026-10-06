@@ -361,20 +361,20 @@
   // Gallery media downloads only as it nears the viewport (see lazy observer
   // in wireProjectView). Cells have fixed aspect ratios, so nothing shifts
   // when it arrives.
-  function lazyMedia(src) {
+  function lazyMedia(src, alt) {
     return isVideo(src)
       ? `<video data-src="${src}" poster="${posterOf(src)}" muted loop playsinline preload="none"></video>`
-      : `<img data-src="${src}" alt="" decoding="async" />`;
+      : `<img data-src="${src}" alt="${alt}" decoding="async" />`;
   }
 
-  function galleryHTML(media) {
+  function galleryHTML(media, alt) {
     let html = '<div class="proj-media-grid pv-grid">';
     for (let i = 0, r = 0; i < media.length; r++) {
       let row = GALLERY_ROWS[r % GALLERY_ROWS.length];
       const left = media.length - i;
       if (left < row.length) row = left === 2 ? [6, 6] : [12];
       for (const span of row) {
-        html += `<div class="media-cell pv-reveal span-${span}">${lazyMedia(media[i++])}</div>`;
+        html += `<div class="media-cell pv-reveal span-${span}">${lazyMedia(media[i++], alt)}</div>`;
       }
     }
     return html + '</div>';
@@ -412,7 +412,8 @@
         `<span>${TOOL_ICONS[t] ? `<img src="${TOOL_ICONS[t]}" alt="" class="tool-icon" />` : ''}${t}</span>`).join('');
       rows.push(['Tools', `<div class="pv-tools">${chips}</div>`]);
     }
-    if (proj.images.length > 1) rows.push(['Gallery', galleryHTML(proj.images.slice(1))]);
+    const alt = `${proj.name} — ${(proj.category || []).join(', ') || 'project'} by Luka Grčar`.replace(/"/g, '&quot;');
+    if (proj.images.length > 1) rows.push(['Gallery', galleryHTML(proj.images.slice(1), alt)]);
 
     const body = rows.map(([label, content], i) =>
       `<h2 class="pv-label" style="--r:${i + 1}"><button type="button" class="pv-jump"><i>${pad2(i + 1)}</i>${label}</button></h2>` +

@@ -33,7 +33,8 @@ function renderGrid() {
     const gridSrc = isMobile && !isVideo ? item.src.replace('Images/', 'Images/mobile/') : fullSrc;
 
     const media = document.createElement('img');
-    media.alt = item.projectName;
+    // descriptive alt: what it is, what kind of work, whose
+    media.alt = `${item.projectName} — ${(item.category || []).join(', ') || 'project'} by Luka Grčar`;
     media.decoding = 'async';
     media.dataset.src = gridSrc;
     div.appendChild(media);
@@ -171,6 +172,35 @@ renderGrid();
   const yearsEl = document.getElementById('workYears');
   if (countEl) countEl.textContent = shown.length;
   if (yearsEl && years.length) yearsEl.textContent = `${Math.min(...years)} — ${Math.max(...years)}`;
+})();
+
+// ========== STRUCTURED DATA ==========
+// Tells search engines what is on this page: one CreativeWork per project,
+// built from the same data as the wall so it can't drift out of date.
+(function injectProjectList() {
+  const origin = 'https://lukagrcar.com/';
+  const poster = src => src.replace(/\.(webm|mp4)$/, '_thumb.webp');
+  const works = Object.keys(projects).filter(id => id !== 'lab').map((id, i) => {
+    const p = projects[id];
+    return {
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'CreativeWork',
+        name: p.name,
+        url: `${origin}grid.html#project=${id}`,
+        image: origin + encodeURI(poster(p.images[0])),
+        description: (p.desc && p.desc[0]) || p.brief || undefined,
+        dateCreated: p.year ? String(p.year) : undefined,
+        genre: p.category,
+        creator: { '@type': 'Person', name: 'Luka Grčar', url: origin },
+      },
+    };
+  });
+  const tag = document.createElement('script');
+  tag.type = 'application/ld+json';
+  tag.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: works });
+  document.head.appendChild(tag);
 })();
 
 // ========== TRUE LAZY LOAD ==========
