@@ -109,7 +109,7 @@ html:has(body.page-lab) { background: #000000; }
   transition: opacity 0.2s ease;
 }
 .lab-card .media-wrap > video.is-playing { opacity: 1; }
-/* no zoom on hover: the picture stays put, the rest of the wall steps back */
+/* no zoom on hover: the picture stays put */
 .grid:not(.list-view) > .grid-item:hover > img,
 .grid:not(.list-view) > .grid-item:hover .hover-video,
 .lab-card:hover .media-wrap > img,
@@ -125,11 +125,6 @@ html:has(body.page-lab) { background: #000000; }
   border-radius: 0;
   background: #0c0c0d;
   animation: none;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .grid:not(.list-view):has(.grid-item:hover) > .grid-item:not(:hover),
-  .lab-grid:has(.lab-card:hover) > .lab-card.in-view:not(:hover) { opacity: 0.32; }
 }
 
 /* ---- featured project: a full-width block woven into the Work wall ----
