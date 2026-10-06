@@ -614,7 +614,8 @@
     lightboxItems = proj.images;
     overlayInner.querySelectorAll('.media-cell img, .media-cell video, .proj-gallery img, .proj-gallery video').forEach((el) => {
       const idx = proj.images.indexOf(el.getAttribute('src') || el.dataset.src);
-      el.addEventListener('click', () => { lbIsLab = isLab; openLightbox(idx >= 0 ? idx : 0); });
+      // passing the cell lets the lightbox grow the picture out of it
+      el.addEventListener('click', () => { lbIsLab = isLab; openLightbox(idx >= 0 ? idx : 0, el.closest('.media-cell')); });
     });
 
     overlay.classList.add('open');
@@ -980,20 +981,138 @@
     stripIdleTimer = setTimeout(settleStrip, 160);
   }, { passive: true });
 
-  function openLightbox(index) {
+  // ---- Lightbox zoom transition --------------------------------------------
+  // Opening from a gallery cell: a stand-in picture lifts out of the cell,
+  // moves to the centre and un-crops to full size while the lightbox fades in
+  // behind it. Closing runs it backwards, into the cell of whichever picture
+  // is showing (if that cell is on screen). The stand-in (.lb-fly) is a fixed
+  // box animated between two rects; the real lightbox content is revealed at
+  // the end, so nothing jumps.
+  const ZOOM = { duration: 520, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' };
+  let lbZoomRun = 0;   // bumps on every open/close so stale animations bow out
+
+  function cellFor(index) {
+    const src = lightboxItems[index];
+    for (const el of overlayInner.querySelectorAll('.media-cell img, .media-cell video')) {
+      if (el.dataset.src === src || el.getAttribute('src') === src) return el.parentElement;
+    }
+    return null;
+  }
+  const onScreen = (r) => r.bottom > 0 && r.top < window.innerHeight && r.right > 0 && r.left < window.innerWidth;
+
+  // The rect the picture itself occupies inside its lightbox element (a
+  // full-width box with the picture `contain`ed in it), or null if unknown.
+  function containedRect(el) {
+    const box = el.getBoundingClientRect();
+    const nw = el.naturalWidth || el.videoWidth, nh = el.naturalHeight || el.videoHeight;
+    if (!nw || !nh || !box.width || !box.height) return null;
+    const ar = nw / nh;
+    const w = box.width / box.height > ar ? box.height * ar : box.width;
+    const h = w / ar;
+    return { left: box.left + (box.width - w) / 2, top: box.top + (box.height - h) / 2, width: w, height: h };
+  }
+  async function lightboxMediaRect() {
+    const el = lightboxContent.querySelector('img, video');
+    if (!el) return null;
+    if (el.tagName === 'IMG') {
+      try { await el.decode(); } catch (e) { /* measured below anyway */ }
+    } else if (!el.videoWidth) {
+      await Promise.race([
+        new Promise(res => el.addEventListener('loadedmetadata', res, { once: true })),
+        new Promise(res => setTimeout(res, 400)),
+      ]);
+    }
+    return containedRect(el);
+  }
+
+  function makeFlyer(src, rect, radius, innerScale) {
+    const fly = document.createElement('div');
+    fly.className = 'lb-fly';
+    fly.innerHTML = `<img src="${posterOf(src)}" alt="" />`;
+    Object.assign(fly.style, {
+      left: rect.left + 'px', top: rect.top + 'px', width: rect.width + 'px', height: rect.height + 'px',
+      borderRadius: radius,
+    });
+    fly.firstChild.style.transform = `scale(${innerScale})`;
+    document.body.appendChild(fly);
+    return fly;
+  }
+  function flyTo(fly, from, to, radiusFrom, radiusTo, scaleFrom, scaleTo) {
+    const px = r => ({ left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
+    fly.firstChild.animate(
+      [{ transform: `scale(${scaleFrom})` }, { transform: `scale(${scaleTo})` }],
+      Object.assign({ fill: 'forwards' }, ZOOM));
+    return fly.animate(
+      [Object.assign(px(from), { borderRadius: radiusFrom }), Object.assign(px(to), { borderRadius: radiusTo })],
+      Object.assign({ fill: 'forwards' }, ZOOM)).finished;
+  }
+  // gallery media is drawn slightly over-scaled for the parallax; match it
+  const cellScale = () => (overlay.classList.contains('no-parallax') ? 1 : 1.15);
+
+  function zoomIn(cell) {
+    const run = ++lbZoomRun;
+    const from = cell.getBoundingClientRect();
+    const radius = getComputedStyle(cell).borderRadius;
+    const media = cell.querySelector('img, video');
+    const fly = makeFlyer(lightboxItems[lightboxIndex], from, radius, cellScale());
+    const done = () => {
+      lightboxContent.style.visibility = '';
+      if (media) media.style.visibility = '';
+      fly.remove();
+    };
+    if (media) media.style.visibility = 'hidden';
+    lightboxContent.style.visibility = 'hidden';
+    lightboxMediaRect().then((to) => {
+      if (run !== lbZoomRun || !to) return done();
+      return flyTo(fly, from, to, radius, '0px', cellScale(), 1).then(done, done);
+    });
+  }
+
+  function zoomOut(cell, src) {
+    const el = lightboxContent.querySelector('img, video');
+    const to = cell.getBoundingClientRect();
+    const from = el && containedRect(el);
+    if (!from || !onScreen(to)) return false;
+
+    const run = ++lbZoomRun;
+    const radius = getComputedStyle(cell).borderRadius;
+    const media = cell.querySelector('img, video');
+    const fly = makeFlyer(src, from, '0px', 1);
+    if (media) media.style.visibility = 'hidden';
+    const done = () => {
+      if (media) media.style.visibility = '';
+      fly.remove();
+      if (run === lbZoomRun) lightbox.classList.remove('lb-zoom');
+    };
+    flyTo(fly, from, to, '0px', radius, 1, cellScale()).then(done, done);
+    return true;
+  }
+
+  function openLightbox(index, fromCell) {
     lightboxIndex = index;
     lbDirection = 'init';
+    const zoom = !!fromCell && !reducedMotion.matches && onScreen(fromCell.getBoundingClientRect());
+    lightbox.classList.toggle('lb-zoom', zoom);   // no slide-in animation under the stand-in
     buildLightboxStrip();
     renderLightbox();
     lightbox.classList.add('open');
+    if (zoom) zoomIn(fromCell);                   // measured before the page is locked
     lockScroll();
   }
 
   function closeLightbox() {
+    if (!lightbox.classList.contains('open')) return;
+    // fly the picture back into its gallery cell when that cell is on screen
+    const cell = pageMode && !reducedMotion.matches ? cellFor(lightboxIndex) : null;
+    const flying = !!cell && zoomOut(cell, lightboxItems[lightboxIndex]);
+    if (!flying) lbZoomRun++;
+    lightbox.classList.toggle('lb-zoom', flying);
+
     const vid = lightboxContent.querySelector('video');
     if (vid) { vid.pause(); vid.removeAttribute('src'); }
     lightbox.classList.remove('open');
     lightboxContent.innerHTML = '';
+    lightboxContent.style.visibility = '';
     if (lbFrameRAF) cancelAnimationFrame(lbFrameRAF);
     lbFrameRAF = null;
     // the Lab panel keeps the page locked itself; otherwise release it
