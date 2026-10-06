@@ -68,6 +68,27 @@
   function unlockWidth(el) {
     el.style.width = el.style.display = el.style.whiteSpace = '';
   }
+  // Each letter also gets a slot as wide as the real letter it stands in
+  // for, so the letters that have already settled don't slide about while
+  // the rest are still changing. Returns the slots, one per character.
+  function makeSlots(el, original) {
+    const node = el.firstChild;
+    const range = document.createRange();
+    const widths = [];
+    for (let i = 0; i < original.length; i++) {
+      range.setStart(node, i);
+      range.setEnd(node, i + 1);
+      widths.push(range.getBoundingClientRect().width);
+    }
+    el.textContent = '';
+    return widths.map((w, i) => {
+      const slot = document.createElement('span');
+      slot.style.cssText = `display:inline-block;width:${w}px;text-align:center;white-space:pre`;
+      slot.textContent = original[i];
+      el.appendChild(slot);
+      return slot;
+    });
+  }
   function start(el) {
     const original = el.dataset.label || el.textContent;
     if (!el.dataset.label) el.dataset.label = original;
@@ -75,6 +96,7 @@
     if (prev) cancelAnimationFrame(prev.raf);
     el.textContent = original;
     lockWidth(el);
+    const slots = makeSlots(el, original);
     const len = original.length;
     const startTimes = new Array(len);
     const total = 260;
@@ -86,18 +108,12 @@
     function tick(now) {
       if (!s.alive) return;
       const elapsed = now - t0;
-      let out = '';
       let done = true;
       for (let i = 0; i < len; i++) {
-        const local = elapsed - startTimes[i];
-        if (local < 100) {
-          out += pickGlyphFor(original[i]);
-          done = false;
-        } else {
-          out += original[i];
-        }
+        const settled = elapsed - startTimes[i] >= 100;
+        slots[i].textContent = settled ? original[i] : pickGlyphFor(original[i]);
+        if (!settled) done = false;
       }
-      el.textContent = out;
       if (!done && elapsed < total + 100) {
         s.raf = requestAnimationFrame(tick);
       } else {
