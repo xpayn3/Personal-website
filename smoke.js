@@ -1009,6 +1009,13 @@
     release();
   });
   addEventListener('pointercancel', release);
+
+  // Once a finger is emitting smoke (after the short hold, or a sideways
+  // drag), the page must stay put so the finger can draw in any direction.
+  // Before that point nothing is cancelled, so ordinary scrolling is untouched.
+  addEventListener('touchmove', (e) => {
+    if (pointer.down && pointer.touch && e.cancelable) e.preventDefault();
+  }, { passive: false });
   addEventListener('blur', release);
 
   // ---------- loop ----------

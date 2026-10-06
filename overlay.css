@@ -779,11 +779,34 @@ html:has(body.scroll-locked) {
   scrollbar-width: thin;
   scrollbar-color: color-mix(in srgb, var(--ink, #0b0b0c) 30%, transparent) transparent;
 }
-/* Pages that reserve a scrollbar gutter (home, lab) leave a strip of page
-   background to the right of the overlay. Once the overlay has finished
-   sliding up (body.project-covered, set by overlay.js) paint that strip to
-   match too. */
-body.project-covered { background: var(--bg, #ffffff) !important; }
+/* ---- Project as the page ----
+   overlay.js shows a project by hiding everything else on the page
+   (body.project-page) and letting the project sit in normal flow, scrolled by
+   the window. Phone browsers then treat it like any page and draw it under
+   their translucent bars; there is no inner scroller or scroll lock. */
+body.project-page > :not(#overlay):not(#overlayClose):not(#lightbox):not(.reticle) {
+  display: none !important;
+}
+body.project-page {
+  background: var(--bg, #ffffff) !important;   /* also what the browser bars pick up */
+  overflow-x: hidden;
+}
+body.project-page #overlay {
+  position: relative;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  left: auto;
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
+  z-index: auto;
+  pointer-events: auto;
+  touch-action: auto;
+  overscroll-behavior: auto;
+  transition: background-color 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+body.project-page .overlay-inner { transition-delay: 0s; }
 
 /* Gallery mode: overlay.js adds body.project-dark while the gallery is on
    screen. Everything in the project view reads its colours from these
@@ -812,7 +835,8 @@ body.project-dark .overlay:has(.pv) {
   --line: rgba(244, 244, 245, 0.18);
 }
 .overlay:has(.pv) { transition: top 0.5s cubic-bezier(0.16,1,0.3,1), background-color 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
-body.project-dark.project-covered { background: #000000 !important; }
+body.project-page.project-dark { background: #000000 !important; }
+body.project-page { transition: background-color 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
 
 /* The site nav would sit on top of the project view; tuck it away. */
 .site-nav { transition: opacity var(--duration-normal, 0.3s) ease, visibility 0s; }

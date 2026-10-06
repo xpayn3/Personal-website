@@ -169,7 +169,28 @@
   let overlayScrollTriggers = [];
   let overlayTickerFn = null;
   let currentOverlayObs = null;
-  let coveredTimer = 0;
+
+  // A project is shown as the page itself, not as a panel scrolling inside
+  // the page: the rest of the page is hidden (body.project-page) and the
+  // window does the scrolling. That is what lets phone browsers draw the
+  // content under their translucent bars, exactly as on the home page, and
+  // it needs no scroll lock. (Only the Lab view still uses the fixed panel.)
+  let pageMode = false;
+  let pageScrollY = 0;        // where the host page was, to return to on close
+
+  const viewH = () => (pageMode ? window.innerHeight : overlay.clientHeight);
+  const viewTop = () => (pageMode ? 0 : overlay.getBoundingClientRect().top);
+  const viewScrollY = () => (pageMode ? window.scrollY : overlay.scrollTop);
+  const viewRange = () => (pageMode ? document.documentElement.scrollHeight : overlay.scrollHeight) - viewH();
+  const viewScroller = () => (pageMode ? window : overlay);
+  const viewRoot = () => (pageMode ? null : overlay);     // IntersectionObserver root
+  // the smooth-scroll instance driving the current view, if any
+  const viewLenis = () => overlayLenis || (pageMode && window.pageLenis) || null;
+  function jumpTo(y) {
+    if (!pageMode) { overlay.scrollTop = y; return; }
+    if (window.pageLenis) window.pageLenis.scrollTo(y, { immediate: true, force: true });
+    window.scrollTo({ top: y, behavior: 'instant' });
+  }
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const coarsePointer = window.matchMedia('(pointer: coarse)');
@@ -210,12 +231,17 @@
     overlay.classList.toggle('no-parallax', !enhance);   // drops the parallax over-scale (overlay.css)
     if (!enhance) return;
 
-    overlayLenis = new Lenis(Object.assign({ wrapper: overlay, content: overlayInner }, SMOOTH_SCROLL));
+    // Page mode scrolls the window: reuse the page's own smooth scroll when
+    // it has one (home), otherwise run one for as long as the project is open.
+    if (!pageMode) overlayLenis = new Lenis(Object.assign({ wrapper: overlay, content: overlayInner }, SMOOTH_SCROLL));
+    else if (!window.pageLenis) overlayLenis = new Lenis(SMOOTH_SCROLL);
 
-    overlayLenis.on('scroll', ScrollTrigger.update);
-    overlayTickerFn = (time) => { if (overlayLenis) overlayLenis.raf(time * 1000); };
-    gsap.ticker.add(overlayTickerFn);
-    gsap.ticker.lagSmoothing(0);
+    if (overlayLenis) {
+      overlayLenis.on('scroll', ScrollTrigger.update);
+      overlayTickerFn = (time) => { if (overlayLenis) overlayLenis.raf(time * 1000); };
+      gsap.ticker.add(overlayTickerFn);
+      gsap.ticker.lagSmoothing(0);
+    }
 
     // Parallax: images drift up inside their cropped container
     gsap.registerPlugin(ScrollTrigger);
@@ -227,7 +253,7 @@
         ease: 'none',
         scrollTrigger: {
           trigger: el.parentElement,
-          scroller: overlay,
+          scroller: pageMode ? window : overlay,
           start: 'top bottom',
           end: 'bottom top',
           scrub: true,
@@ -392,8 +418,9 @@
 
   function wireProjectView(nextId) {
     const scrollToY = (y, duration) => {
-      if (overlayLenis) overlayLenis.scrollTo(y, { duration });
-      else overlay.scrollTo({ top: y, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+      const lenis = viewLenis();
+      if (lenis) lenis.scrollTo(y, { duration });
+      else viewScroller().scrollTo({ top: y, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
     };
 
     overlayInner.querySelector('.pv-next').addEventListener('click', (e) => {
@@ -408,10 +435,10 @@
     const gallery = overlayInner.querySelector('.pv-cell[data-row="gallery"]');
     const progress = overlayInner.querySelector('.pv-progress');
     const progressPct = progress.querySelector('span');
-    const cellTop = c => c.getBoundingClientRect().top - overlay.getBoundingClientRect().top;
+    const cellTop = c => c.getBoundingClientRect().top - viewTop();
     labels.forEach((label, i) => {
       label.querySelector('.pv-jump').addEventListener('click', () => {
-        scrollToY(overlay.scrollTop + cellTop(cells[i]) + 1, 1.1);
+        scrollToY(viewScrollY() + cellTop(cells[i]) + 1, 1.1);
       });
     });
 
@@ -419,13 +446,13 @@
     // the active label, the progress read, and gallery (dark) mode. Scroll
     // events are already delivered at most once per frame.
     const onScroll = () => {
-      const h = overlay.clientHeight;
+      const h = viewH();
       let active = 0;
       cells.forEach((c, i) => { if (cellTop(c) <= h * 0.45) active = i; });
       labels.forEach((l, i) => l.classList.toggle('is-active', i === active));
 
-      const range = overlay.scrollHeight - h;
-      const p = range > 0 ? Math.min(1, Math.max(0, overlay.scrollTop / range)) : 0;
+      const range = viewRange();
+      const p = range > 0 ? Math.min(1, Math.max(0, viewScrollY() / range)) : 0;
       progress.style.setProperty('--p', p.toFixed(4));
       progressPct.textContent = Math.round(p * 100) + '%';
 
@@ -436,8 +463,9 @@
         setThemeColor(dark ? '#000000' : pageBg());
       }
     };
-    overlay.addEventListener('scroll', onScroll, { passive: true });
-    viewCleanups.push(() => overlay.removeEventListener('scroll', onScroll));
+    const scroller = viewScroller();
+    scroller.addEventListener('scroll', onScroll, { passive: true });
+    viewCleanups.push(() => scroller.removeEventListener('scroll', onScroll));
     onScroll();
 
     // Media rises into place the first time it scrolls into view.
@@ -447,7 +475,7 @@
         entry.target.classList.add('is-in');
         revealObs.unobserve(entry.target);
       });
-    }, { root: overlay, threshold: 0.08 });
+    }, { root: viewRoot(), threshold: 0.08 });
     overlayInner.querySelectorAll('.pv-reveal').forEach(el => revealObs.observe(el));
 
     // Gallery images start downloading about a screen before they are needed.
@@ -457,7 +485,7 @@
         entry.target.src = entry.target.dataset.src;
         lazyObs.unobserve(entry.target);
       });
-    }, { root: overlay, rootMargin: '100% 0px' });
+    }, { root: viewRoot(), rootMargin: '100% 0px' });
     overlayInner.querySelectorAll('img[data-src]').forEach(img => lazyObs.observe(img));
 
     viewCleanups.push(() => { revealObs.disconnect(); lazyObs.disconnect(); });
@@ -502,19 +530,16 @@
     const pushed = push || !!(history.state && history.state.pushed);
     history[push ? 'pushState' : 'replaceState']({ project: projId, pushed }, '', '#project=' + projId);
   }
-  function recordCloseInHistory() {
+  function recordCloseInHistory(y) {
     if (!projectInHash()) return;
     if (history.state && history.state.pushed) {
-      pendingScrollY = savedScrollY;   // re-applied after the browser's own scroll restoration
+      pendingScrollY = y;              // re-applied after the browser's own scroll restoration
       history.back();                  // popstate has nothing left to close
     }
     else history.replaceState(null, '', location.pathname + location.search);
   }
 
   // ---- Open / close ---------------------------------------------------------
-  overlay.setAttribute('role', 'dialog');
-  overlay.setAttribute('aria-modal', 'true');
-
   let currentProjectId = null;
   let pageMeta = null;        // the host page's title / og tags, restored on close
   let focusBeforeOpen = null;
@@ -533,6 +558,23 @@
     recordOpenInHistory(projId, opts && opts.replace);
 
     cleanupOverlay();
+
+    if (!wasOpen) {
+      focusBeforeOpen = document.activeElement;
+      pageMeta = {
+        title: document.title,
+        ogTitle: (metaTag('title') || {}).content,
+        ogDesc: (metaTag('description') || {}).content,
+        ogImg: (metaTag('image') || {}).content,
+      };
+      if (isLab) lockScroll();
+      else pageScrollY = window.scrollY;
+    }
+    pageMode = !isLab;
+    document.body.classList.toggle('project-page', pageMode);   // hides the rest of the page (overlay.css)
+    document.body.classList.remove('project-dark');
+    overlay.setAttribute('role', pageMode ? 'region' : 'dialog');
+    overlay.setAttribute('aria-modal', String(!pageMode));
 
     if (isLab) {
       overlayInner.innerHTML = labViewHTML(proj);
@@ -557,7 +599,7 @@
           vid.pause();
         }
       });
-    }, { root: overlay, rootMargin: '200px' });
+    }, { root: viewRoot(), rootMargin: '200px' });
     overlayInner.querySelectorAll('video[data-src]').forEach(vid => currentOverlayObs.observe(vid));
 
     // Every piece of media opens the lightbox at its own index.
@@ -570,23 +612,8 @@
     overlay.classList.add('open');
     overlay.setAttribute('aria-label', proj.name);
     overlayClose.classList.add('visible');
-    document.body.classList.add('project-open'); // hides the site nav (overlay.css)
-    document.body.classList.remove('project-dark');
-    // once the slide-up has finished, let overlay.css recolour the page's
-    // scrollbar gutter to match the project view (not for the dark Lab view)
-    clearTimeout(coveredTimer);
-    if (!isLab) coveredTimer = setTimeout(() => document.body.classList.add('project-covered'), 520);
-    if (!wasOpen) {
-      lockScroll();
-      focusBeforeOpen = document.activeElement;
-      pageMeta = {
-        title: document.title,
-        ogTitle: (metaTag('title') || {}).content,
-        ogDesc: (metaTag('description') || {}).content,
-        ogImg: (metaTag('image') || {}).content,
-      };
-    }
-    overlay.scrollTop = 0;
+    document.body.classList.add('project-open');
+    jumpTo(0);
     overlayClose.focus({ preventScroll: true });
     setThemeColor(isLab ? '#111111' : pageBg());
 
@@ -611,19 +638,20 @@
     cleanupOverlay();
     overlay.classList.remove('open');
     overlayClose.classList.remove('visible');
-    clearTimeout(coveredTimer);
-    document.body.classList.remove('project-open', 'project-covered', 'project-dark');
+    const y = pageMode ? pageScrollY : savedScrollY;   // where the host page was
+    pageMode = false;
+    document.body.classList.remove('project-open', 'project-page', 'project-dark');
     currentProjectId = null;
     // Always fully clear the body-fixed state. If `scrollLockCount` drifted
     // (e.g. lightbox/mobile-list flows nested on top) a counter decrement is
     // not enough — the body would stay `position: fixed; top: -Ypx` and
     // touch-event coordinates would register offset, making the bar
     // dropdowns' lower items unreachable.
-    const y = savedScrollY;
     scrollLockCount = 0;
     document.documentElement.style.overflow = '';
     document.body.classList.remove('scroll-locked');
     document.body.style.cssText = '';
+    if (window.pageLenis) window.pageLenis.scrollTo(y, { immediate: true, force: true });
     window.scrollTo({ top: y, behavior: 'instant' });
 
     if (pageMeta) {
@@ -638,7 +666,7 @@
     focusBeforeOpen = null;
     setTimeout(() => { overlayClose.style.display = ''; }, 500);
 
-    if (fromHistory !== true) recordCloseInHistory();
+    if (fromHistory !== true) recordCloseInHistory(y);
   }
 
   // Back / forward: follow the URL.
@@ -960,7 +988,8 @@
     lightboxContent.innerHTML = '';
     if (lbFrameRAF) cancelAnimationFrame(lbFrameRAF);
     lbFrameRAF = null;
-    if (!overlay.classList.contains('open')) {
+    // the Lab panel keeps the page locked itself; otherwise release it
+    if (pageMode || !overlay.classList.contains('open')) {
       unlockScroll();
     }
   }
