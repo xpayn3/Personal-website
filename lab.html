@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="tokens.css" />
-  <link rel="stylesheet" href="lab.css?v=3" />
+  <link rel="stylesheet" href="lab.css?v=4" />
   <link rel="stylesheet" href="gallery.css?v=5" />
   <link rel="stylesheet" href="overlay.css?v=29" />
   <link rel="stylesheet" href="floating-nav.css?v=13" />
@@ -33,11 +33,21 @@
   <!-- ===== PAGE TITLE (gallery.css) ===== -->
   <header class="page-head">
     <h1 class="page-head-title">Lab</h1>
-    <div class="page-head-row"><span>Sketches, renders and works in progress</span><span><span id="labCount">—</span> pieces</span></div>
+    <div class="page-head-row"><span>Journal — sketches, renders and works in progress</span><span><span id="labCount">—</span> entries</span></div>
   </header>
 
-  <!-- ===== WORKSHOP GRID ===== -->
-  <main class="lab-grid" id="labGrid" aria-label="Experiments"></main>
+  <!-- ===== JOURNAL (lab.css; entries built by lab.js) ===== -->
+  <main class="journal">
+    <aside class="journal-rail">
+      <p>A workshop where ideas go before they become projects. 3D sketches, half-baked renders, loops, weird stuff. Updated whenever I make a mess.</p>
+      <div class="journal-filter" role="group" aria-label="Show">
+        <button type="button" class="is-active" data-show="all">All</button>
+        <button type="button" data-show="still">Stills</button>
+        <button type="button" data-show="clip">Clips</button>
+      </div>
+    </aside>
+    <div class="journal-feed" id="labFeed" aria-label="Journal entries"></div>
+  </main>
 
   <!-- Floating top-left nav (shared component) -->
   <header class="site-nav">
@@ -98,7 +108,7 @@
   <script defer src="projects.js?v=5"></script>
   <script defer src="project-template.js"></script>
   <script defer src="overlay.js?v=37"></script>
-  <script defer src="lab.js?v=5"></script>
+  <script defer src="lab.js?v=6"></script>
   <script src="floating-nav.js?v=8" defer></script>
   <script src="brand.js" defer></script>
 </body>

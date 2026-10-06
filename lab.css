@@ -1,18 +1,15 @@
-/* ========== LAB — Clean, modern, high-tech ========== */
+/* ========== LAB — the journal ==========
+   A sketchbook feed: a short rail of small print on the left, one column of
+   entries in the middle. Colours (--g-*) and the page title come from
+   gallery.css, shared with the Work page. Entries are built by lab.js. */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --lab-bg:        #0a0a0c;
-  --lab-bg-soft:   #111114;
   --lab-panel:     #15151a;
   --lab-line:      rgba(255, 255, 255, 0.08);
-  --lab-line-hi:   rgba(255, 255, 255, 0.22);
   --lab-ink:       #f4f4f6;
   --lab-ink-dim:   rgba(244, 244, 246, 0.55);
   --lab-ink-mute:  rgba(244, 244, 246, 0.32);
-  --lab-accent:    #6cf0ff;
-  --lab-accent-dim:rgba(108, 240, 255, 0.18);
-  --lab-mono:      'JetBrains Mono', 'SF Mono', 'Roboto Mono', ui-monospace, Menlo, Consolas, monospace;
 }
 
 html { scrollbar-gutter: stable; }
@@ -20,96 +17,190 @@ html { scrollbar-gutter: stable; }
 body {
   font-family: var(--font-body);
   color: var(--lab-ink);
-  background: var(--lab-bg);
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* ========== GRID — precise CSS columns, no rotations ========== */
-.lab-grid {
-  position: relative;
-  max-width: 1600px;
+/* ---- layout: rail | feed | (air) ---- */
+.journal {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 760px) minmax(0, 1fr);
+  column-gap: clamp(24px, 4vw, 64px);
+  align-items: start;
+  max-width: 1800px;
   margin: 0 auto;
-  padding: clamp(40px, 6vh, 80px) clamp(32px, 6vw, 96px) clamp(80px, 12vh, 160px);
-  column-count: 4;
-  column-gap: 2px;
+  padding: clamp(28px, 5vh, 56px) var(--g-gutter) clamp(80px, 12vh, 160px);
 }
-@media (max-width: 1200px) {
-  .lab-grid { column-count: 3; }
+.journal-rail {
+  position: sticky;
+  top: 96px;
+  max-width: 260px;
+  display: grid;
+  gap: 22px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--g-muted);
 }
-@media (max-width: 760px) {
-  .lab-grid { column-count: 2; }
+.journal-filter { display: flex; flex-wrap: wrap; gap: 6px; }
+.journal-filter button {
+  padding: 7px 13px;
+  border: 1px solid var(--g-line);
+  border-radius: 999px;
+  background: none;
+  font: inherit;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--g-muted);
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
-@media (max-width: 480px) {
-  .lab-grid { column-count: 1; }
+.journal-filter button:hover { color: var(--g-ink); }
+.journal-filter button.is-active { background: var(--g-ink); border-color: var(--g-ink); color: var(--g-bg); }
+.journal-filter button:focus-visible { outline: 1px solid var(--g-ink); outline-offset: 3px; }
+.journal-feed { grid-column: 2; min-width: 0; }
+
+/* ---- an entry ---- */
+.entry {
+  padding: clamp(32px, 4.5vw, 56px) 0;
+  border-top: 1px solid var(--g-line);
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.entry.in-view { opacity: 1; transform: none; }
+.entry:first-child { padding-top: 0; border-top: 0; }
+.entry[hidden] { display: none; }
+
+.entry-head {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--g-muted);
+}
+.entry-head > * + *::before { content: '·'; margin: 0 10px; }
+.entry-title {
+  margin-top: 10px;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--g-ink);
+}
+.entry-note {
+  max-width: 62ch;
+  margin-top: 10px;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--lab-ink-dim);
 }
 
-.lab-card {
+/* ---- its picture(s): a strip of slides, one in view at a time ---- */
+.entry-media {
   position: relative;
-  break-inside: avoid;
-  margin: 0 0 2px;
-  display: block;
-  width: 100%;
-  background: var(--lab-bg-soft);
-  border: 0;
-  outline: 0;
-  font: inherit;
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
+  margin-top: 18px;
+  border-radius: 4px;
   overflow: hidden;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  background: #0c0c0d;
+}
+.entry-track {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.entry-track::-webkit-scrollbar { display: none; }
+.entry-slide {
+  position: relative;
+  flex: 0 0 100%;
+  aspect-ratio: var(--ar, 1.778);
+  max-height: min(84vh, 920px);           /* tall pictures don't outgrow the screen */
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
   -webkit-tap-highlight-color: transparent;
 }
-.lab-card:focus-visible {
-  outline: 1px solid var(--lab-accent);
-  outline-offset: 2px;
-}
-
-.lab-card .media-wrap {
-  position: relative;
+.entry-slide img,
+.entry-slide video {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  overflow: hidden;
-  background: var(--lab-panel);
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  height: 100%;
+  object-fit: contain;
 }
-.lab-card img,
-.lab-card video {
-  width: 100%;
-  height: auto;
-  display: block;
-  object-fit: cover;
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-}
+/* the clip is laid over its poster and shown once it is actually playing */
+.entry-slide video { opacity: 0; transition: opacity 0.25s ease; }
+.entry-slide.is-playing video { opacity: 1; }
+.entry-slide:focus-visible { outline: 1px solid var(--g-ink); outline-offset: -1px; }
 
-.lab-card:hover img,
-.lab-card:hover video {
-  transform: scale(1.04);
+.entry-badge,
+.entry-count {
+  position: absolute;
+  top: 12px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.6);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: var(--g-ink);
+  pointer-events: none;
 }
+.entry-badge { left: 12px; transition: opacity 0.25s ease; }
+.entry-slide.is-playing .entry-badge { opacity: 0; }
+.entry-count { right: 12px; }
 
-/* Reveal — clean opacity + rise, no tilt */
-.lab-card {
+.entry-nav {
+  position: absolute;
+  top: 50%;
+  width: 36px;
+  height: 36px;
+  margin-top: -18px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  font: inherit;
+  font-size: 14px;
+  color: var(--g-ink);
+  cursor: pointer;
   opacity: 0;
-  transform: translateY(20px);
-  transition:
-    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.25s ease, background-color 0.25s ease;
 }
-.lab-card.in-view {
-  opacity: 1;
-  transform: translateY(0);
-}
+.entry-nav.is-prev { left: 12px; }
+.entry-nav.is-next { right: 12px; }
+.entry-media:hover .entry-nav,
+.entry-nav:focus-visible { opacity: 1; }
+.entry-nav:hover { background: rgba(0, 0, 0, 0.85); }
+.entry-media .entry-nav:disabled { opacity: 0; pointer-events: none; }
+@media (hover: none), (pointer: coarse) { .entry-nav { display: none; } }
 
+@media (max-width: 1100px) {
+  .journal { grid-template-columns: minmax(0, 760px); justify-content: center; }
+  .journal-rail { position: static; max-width: none; margin-bottom: clamp(28px, 6vw, 44px); }
+  .journal-feed { grid-column: 1; }
+}
+@media (max-width: 768px) {
+  .entry-media { border-radius: 2px; }
+  .entry-slide { max-height: 78vh; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .lab-card,
-  .lab-card.in-view,
-  .lab-card:hover img,
-  .lab-card:hover video {
-    transform: none;
-    transition: opacity 0.3s ease;
-  }
+  .entry { opacity: 1; transform: none; transition: none; }
 }
 
 /* ========== BOTTOM BAR overrides for dark lab ========== */
@@ -124,4 +215,3 @@ body {
 .bar-project-label { color: var(--lab-ink); }
 .bar-counter { color: var(--lab-ink-mute); }
 .bar-divider { background: var(--lab-line); }
-
