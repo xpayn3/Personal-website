@@ -131,7 +131,6 @@
           <div class="pv-kicker"><span>Project ${pad2(pos + 1)} / ${pad2(ids.length)}</span><span>${(proj.category || []).join(' · ')}</span></div>
           <h1 class="pv-title">${title}</h1>
           ${facts ? `<dl class="pv-facts">${facts}</dl>` : ''}
-          <div class="pv-foot" aria-hidden="true"><span>Luka Grčar</span><span>Scroll down</span></div>
         </header>
 
         <div class="media-cell pv-hero${reveal}">${hero}</div>

@@ -761,16 +761,6 @@ body:has(.lightbox.open) .site-nav {
   gap: 6px 28px;
   padding-right: 120px;                  /* clear of the Close pill */
 }
-.pv-foot {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  margin-top: clamp(28px, 4vw, 56px);
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--pv-muted);
-}
 .pv-title {
   font-size: clamp(44px, 10vw, 160px);
   line-height: 0.92;
