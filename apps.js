@@ -60,16 +60,16 @@ window.labApps = [
       ['Images/apps/meshoptimiser-shortcuts.webp', 'The keyboard shortcuts overlay'],
     ],
     spotlights: [
-      ['Search', 'Every action in the app, searchable, with its shortcut beside it and suggestions that follow what is selected. Open it with Ctrl / ⌘ + K.', 'Images/apps/meshoptimiser-palette.webp', 'command'],
-      ['Parametric shapes and fasteners', 'Add cubes, tori and capsules, or DIN bolts, nuts, screws and washers. Every dimension is a number you can drag.', 'Images/apps/meshoptimiser-add.webp', 'cube'],
+      ['Search', 'Every action in the app, searchable, with its shortcut beside it and suggestions that follow what is selected. It also finds parts by name, adds parts from the library, and works out a sum or a length. Open it with Ctrl / ⌘ + K.', 'Images/apps/meshoptimiser-palette.webp', 'command'],
+      ['An object library', '86 parametric parts on six shelves: shapes, fasteners, nuts, pipes and flanges, profiles and plates, machine parts. Drag one into the scene and it stands on what it is dropped on. Every dimension is a number you can drag.', 'Images/apps/meshoptimiser-add.webp', 'cube'],
       ['Open almost anything', 'Drop a STEP, GLB, glTF, FBX, OBJ, 3MF or STL file, or start from an empty scene.', 'Images/apps/meshoptimiser-open.webp', 'upload'],
       ['Tree, viewport, properties', 'Parts on the left, the model in the middle, and what is selected on the right: triangles, what was saved, size, volume.', 'Images/apps/meshoptimiser-viewer.webp', 'tree'],
     ],
-    stats: [['Version', '0.11.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
+    stats: [['Version', '0.12.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
     about: [
       "A tool for getting heavy CAD assemblies into the browser.",
       "The problem it works on is a practical one. A real-world STEP file can hold 400 identical bolts, 80 duplicate brackets and half a million degenerate triangles, and a browser is still expected to draw it. MeshOptimiser reads the assembly, recognises the parts that are the same and keeps one mesh with a list of positions, re-tessellates the bad geometry, and drops what is too small to see.",
-      "What comes out is a compressed GLB and a viewer to look at it in: the assembly tree, section cuts, recolouring, export. It runs locally, with Python and a browser, as an open, self-hosted take on what preprocessors like Pixyz do.",
+      "What comes out is a compressed GLB and a viewer to look at it in: the assembly tree, recolouring, mesh tools, a library of parts to add, export. It runs locally, with Python and a browser, as an open, self-hosted take on what preprocessors like Pixyz do.",
     ],
     highlights: [
       ['320 MB → 11 MB', 'The README’s example: a STEP assembly down to a Meshopt-compressed GLB.'],
@@ -80,7 +80,7 @@ window.labApps = [
     steps: [
       ['STEP in', 'Drop a .step or .stp file on the welcome screen, or run the converter from the command line.'],
       ['Convert', 'OCCT reads the full assembly tree with names and colours; duplicate parts are instanced, surfaces tessellated adaptively, tiny parts culled, then the result is compressed.'],
-      ['GLB out', 'Open it in the built-in WebGPU viewer: inspect, section, recolour, tidy the hierarchy, and export.'],
+      ['GLB out', 'Open it in the built-in WebGPU viewer: inspect, recolour, reduce, tidy the hierarchy, and export.'],
     ],
     featureGroups: [
       { title: 'Pipeline', note: 'STEP → GLB', items: [
@@ -93,18 +93,21 @@ window.labApps = [
       ] },
       { title: 'Viewer & rendering', items: [
         ['Dual renderer', 'WebGPU by default, with a hot-swap to WebGL2 from the toolbar.'],
-        ['Section / clip planes', 'Live cross-sections with true GPU clipping, not fake plane meshes.'],
         ['PBR, AO and environment', 'Studio lighting, ambient occlusion, screen-space reflections, fog.'],
+        ['Readable dark parts', 'A studio to reflect on the plain backgrounds and a headlight that follows the view, so dark parts keep an edge and a sheen.'],
         ['Pixel-perfect picking', 'Hover, click and marquee-select, including on instanced meshes.'],
         ['Hide / Isolate / Solo', 'One key per mode: flatten the noise, focus on what matters.'],
         ['Recolour by group', 'Per-instance and per-material recolouring, with reset built in.'],
-        ['Wireframe / Shaded / Matcap', 'Three viewport modes, switchable at any time.'],
+        ['Solid / Wireframe / X-ray / Heatmap / Clay', 'View modes switchable at any time. Clay draws every part in one plain material, to read the shape.'],
       ] },
       { title: 'Mesh tools', items: [
         ['Fill holes', 'Closes bolt holes, slots and pockets in flat faces and leaves the rest of the mesh alone. Options for through, blind and open holes, size and depth.'],
         ['Decimate', 'Reduces the selection by a percentage or to a triangle budget, keeping normals, UVs and vertex colours.'],
         ['Split', 'Recovers the separate solids of a mesh that was fused on export.'],
-        ['Smart fit', 'Replaces parts with the best low-poly proxy: box, oriented box or cylinder.'],
+        ['Smart fit', 'Replaces parts with a low-poly stand-in: a box, a turned box, a cylinder, a handful of fitted boxes, or blocks that keep the outline.'],
+        ['Fit to budget', 'A triangle target for the whole scene: the densest meshes are reduced first, with a preview and one undo step.'],
+        ['Select hidden parts', 'Finds the parts that cannot be seen from outside and selects them, ready to delete.'],
+        ['Align to floor', 'Turns a model that arrived on its side and stands it on the grid over the origin, as one undo step.'],
         ['Clean-up', 'Removes small, empty, duplicate and degenerate parts, and empty groups.'],
         ['What it saved', 'Every action shows the triangles it removed; each part remembers the count it arrived with.'],
       ] },
@@ -127,7 +130,8 @@ window.labApps = [
         ['Command panels', 'A tool with settings opens as a panel beside the viewport: Enter runs it, Esc puts it away.'],
         ['Drag any number', 'Dimensions and limits are numbers you drag sideways, or click to type.'],
         ['One Settings window', 'General, viewport, camera, performance, scene and storage, with a search across all of them.'],
-        ['Search (Ctrl / ⌘ + K)', 'Every action, one keystroke away, with suggestions for what is selected.'],
+        ['Search (Ctrl / ⌘ + K)', 'Every action, part and library part, one keystroke away, with suggestions for what is selected.'],
+        ['Object library', 'The left sidebar switches between the parts tree and a library of 86 parts to drag into the scene.'],
         ['Shortcuts overlay', 'A searchable cheatsheet with live key bindings.'],
         ['Resumable sessions', 'File handles and saved scenes persist across reloads.'],
         ['Non-destructive', 'Original geometry is never changed until you export.'],
@@ -145,7 +149,19 @@ window.labApps = [
     changelog: {
       link: 'https://github.com/xpayn3/MeshOptimiser/blob/main/CHANGELOG.md',
       versions: [
-        { version: '0.11.0', latest: true,
+        { version: '0.12.0', latest: true,
+          summary: 'The app builds as well as reduces. A library of 86 parametric parts is dragged into the scene, a model that arrives on its side is stood on the floor in one card, a whole scene is brought down to a triangle budget, and dark parts finally have a shape.',
+          items: [
+            ['New', 'Object library: shapes, fasteners, nuts, pipes and flanges, profiles and plates, machine parts. Drag one over the viewport and a see-through copy shows where it will stand, square to the surface under the pointer. Bolts can carry their own nut.'],
+            ['New', 'Align to floor: turn the model in steps and choose which side of it goes to zero on each axis. A run of adjustments is one undo step, and it can run each time a file is opened.'],
+            ['New', 'Select hidden parts finds what cannot be seen from outside. Fit to budget reduces the whole scene to a triangle target, densest meshes first, with a preview and Cancel.'],
+            ['New', 'Smart fit gains Boxes (a handful of boxes, each fitted to one piece of the part) and Blocks (a coarse grid that keeps the part’s steps, arms and openings).'],
+            ['New', 'Clay view (5): every part in one plain material, to read the shape, with porcelain, steel and red wax looks. A studio to reflect and a headlight that follows the view give dark parts an edge.'],
+            ['New', 'Search finds parts by name and library parts, and works out sums and lengths. Every number field drags. An optimisation report compares the scene as opened with the scene now.'],
+            ['Fix', 'Parts no longer show through thin covers when zoomed out: the camera’s near plane follows it away from the model.'],
+            ['Polish', 'The right sidebar is grouped into Inspect, Clean up and Reduce; the selected row in the tree is easier to find. The section plane is removed.'],
+          ] },
+        { version: '0.11.0',
           summary: 'How the app is used changes: scenes open in tabs, tools appear as panels beside the viewport instead of sitting in a sidebar, every number can be dragged, and one Settings window replaces three places that held options.',
           items: [
             ['New', 'Scene tabs: every tab is its own scene with its own undo history. New and Open never replace a scene that has something in it; a spare tab is kept warm so a new one is there at once.'],
