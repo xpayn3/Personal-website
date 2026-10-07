@@ -1251,7 +1251,7 @@
     if (isVid) {
       // the poster shows while the clip loads, and stands in for it on a
       // phone that can't play the format
-      lightboxContent.innerHTML = `<video src="${src}" poster="${posterOf(src)}" autoplay muted loop playsinline></video>`;
+      lightboxContent.innerHTML = `<video src="${src}" poster="${posterOf(src)}" style="background:url('${posterOf(src)}') center / contain no-repeat" autoplay muted loop playsinline></video>`;
     } else {
       lightboxContent.innerHTML = `<img src="${src}" alt="" />`;
     }

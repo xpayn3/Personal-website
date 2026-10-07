@@ -44,7 +44,11 @@
 
   // A clip always starts as its poster; overlay.js gives it a source and plays
   // it when it comes into view.
-  const clip = src => `<video data-src="${src}" poster="${posterOf(src)}" muted loop playsinline preload="none"></video>`;
+  // The poster is also the clip's background. A phone drops the poster the
+  // moment play() is called and shows nothing until the first frame has
+  // arrived, which on a slow connection (or where the clip cannot be played
+  // at all) is an empty box. The background keeps the picture there.
+  const clip = src => `<video data-src="${src}" poster="${posterOf(src)}" style="background:url('${posterOf(src)}') center / cover no-repeat" muted loop playsinline preload="none"></video>`;
 
   // `prerender` is true for the static pages: pictures carry a real `src`
   // (lazy-loaded natively) so they exist without JavaScript. In the browser
