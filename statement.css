@@ -172,6 +172,15 @@
   to { transform: rotateX(-24deg) rotateY(360deg); }
 }
 
+/* on About's dark theme the black cube would vanish into the page: lift its
+   faces a step and brighten the hairline on its edges */
+html[data-theme="dark"] .pw-cube i {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.04) 55%, rgba(0, 0, 0, 0.2)),
+    color-mix(in srgb, var(--face, #121214) 78%, #6a6a72);
+  box-shadow: inset 0 0 0 0.014em rgba(255, 255, 255, 0.34);
+}
+
 /* ---- worlds: an orbit opens around the "o" ----
    The "o" itself keeps its size, so the word never gets wider and the
    sentence does not re-wrap. The orbit and its moon are drawn over the
@@ -324,6 +333,69 @@
 }
 :is(.pw-lock:hover, .pw-lock.is-on, .is-live .pw-lock) svg { width: 0.55em; margin-left: 0.16em; opacity: 1; }
 :is(.pw-lock:hover, .pw-lock.is-on, .is-live .pw-lock) path { transform: translateY(0); }
+
+/* ---- colour ----
+   The palette of a design tool's canvas: selection blue, component purple,
+   and the red, orange, green and yellow of its labels. Tags wear their
+   colour all the time (a tint at rest, solid when they perform); everything
+   else takes its colour as it performs. The colours themselves (--c-*) are
+   in the site palette, tokens.css. */
+
+/* technical: a purple component tag */
+.pw-tag {
+  border-color: var(--c-purple);
+  background: color-mix(in srgb, var(--c-purple) 12%, transparent);
+  color: var(--c-purple);
+}
+:is(.pw-tag:hover, .pw-tag.is-on, .is-live .pw-tag) { background: var(--c-purple); color: #ffffff; }
+
+/* rotate: a blue selection label */
+.pw-rot {
+  border-color: var(--c-blue);
+  background: color-mix(in srgb, var(--c-blue) 12%, transparent);
+  color: var(--c-blue);
+  transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease, color 0.3s ease;
+}
+:is(.pw-rot:hover, .pw-rot.is-on, .pw-rot.is-held, .is-live .pw-rot) { background: var(--c-blue); color: #ffffff; }
+
+/* the switch: green when on */
+.pw-toggle[aria-checked="true"] { border-color: var(--c-green); background: var(--c-green); }
+.pw-toggle[aria-checked="true"]::after { background: #ffffff; }
+
+/* complex: each letter flies off in a colour of its own */
+.pw-complex i { transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.4s ease; }
+:is(.pw-complex:hover, .pw-complex.is-on, .is-live .pw-complex) i:nth-of-type(6n + 1) { color: var(--c-red); }
+:is(.pw-complex:hover, .pw-complex.is-on, .is-live .pw-complex) i:nth-of-type(6n + 2) { color: var(--c-purple); }
+:is(.pw-complex:hover, .pw-complex.is-on, .is-live .pw-complex) i:nth-of-type(6n + 3) { color: var(--c-blue); }
+:is(.pw-complex:hover, .pw-complex.is-on, .is-live .pw-complex) i:nth-of-type(6n + 4) { color: var(--c-green); }
+:is(.pw-complex:hover, .pw-complex.is-on, .is-live .pw-complex) i:nth-of-type(6n + 5) { color: var(--c-orange); }
+:is(.pw-complex:hover, .pw-complex.is-on, .is-live .pw-complex) i:nth-of-type(6n) { color: var(--c-pink); }
+
+/* motion: the wave carries a colour through the letters */
+.pw-wave i { transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.4s ease; }
+:is(.pw-wave:hover, .pw-wave.is-on, .is-live .pw-wave) i { color: var(--c-orange); }
+
+/* worlds: a blue orbit with an orange moon */
+.pw-o::before { border-color: var(--c-blue); }
+.pw-o::after { background: var(--c-orange); }
+
+/* touch: a red ripple */
+.pw-touch::after { border-color: var(--c-red); }
+
+/* legible: the lens is rimmed in selection blue */
+.pw-lens { border-color: var(--c-blue); }
+
+/* trustworthy: the padlock is green */
+.pw-lock svg { color: var(--c-green); }
+
+/* the dotted hints pick up the colour of what they do */
+.pw-complex.pw-hint { text-decoration-color: color-mix(in srgb, var(--c-red) 70%, transparent); }
+.pw-wave.pw-hint { text-decoration-color: color-mix(in srgb, var(--c-orange) 75%, transparent); }
+.pw-world.pw-hint { text-decoration-color: color-mix(in srgb, var(--c-blue) 70%, transparent); }
+.pw-touch.pw-hint { text-decoration-color: color-mix(in srgb, var(--c-red) 70%, transparent); }
+.pw-zoom.pw-hint { text-decoration-color: color-mix(in srgb, var(--c-blue) 70%, transparent); }
+.pw-lock.pw-hint { text-decoration-color: color-mix(in srgb, var(--c-green) 75%, transparent); }
+:is(.pw-hint:hover, .pw-hint.is-on, .is-live .pw-hint) { text-decoration-color: transparent; }
 
 @media (prefers-reduced-motion: reduce) {
   .pw-cube,

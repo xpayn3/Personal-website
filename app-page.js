@@ -1,9 +1,12 @@
 // ========== APP PAGE (apps/<id>.html) ==========
-// Draws one app's page from the list in apps.js, laid out like a store's
-// product page: icon and buttons, a strip of facts, screenshots, headline
-// figures, picture cards, how it works, feature tiles with icons, how to start, the
-// changelog, and an information table. Every part is optional and only
-// drawn when the app has it. Look: apps.css.
+// Draws one app's page from the list in apps.js, laid out as a product
+// presentation: a big title and a line about it with the release facts
+// listed beside them, the app itself as a wide picture, then sections with
+// a small label in the margin
+// and the content beside it: what it is, headline figures, a closer look
+// (picture and text side by side, alternating), how it works, features, how
+// to start, the changelog and an information table. Every part is optional
+// and only drawn when the app has it. Look: apps.css.
 
 (function initAppPage() {
   const root = document.getElementById('appPage');
@@ -21,19 +24,39 @@
     Object.assign(a, { href, target: '_blank', rel: 'noopener noreferrer' });
     return a;
   };
-  const section = (title, aside) => {
-    const sec = el('section', 'app-section');
-    const head = el('div', 'app-section-head');
-    head.append(el('h2', '', title));
-    if (aside) head.append(typeof aside === 'string' ? el('span', '', aside) : aside);
-    sec.append(head);
-    root.append(sec);
-    return sec;
+  // Sections share one grid (.app-body): a numbered label in the left
+  // column and the section's content beside it. The labels are sticky and
+  // pile up under each other as you scroll, as on the project pages; a
+  // click on one glides to its section, and the one being read is lit.
+  // Returns the content cell to fill.
+  const body = el('div', 'app-body');
+  const rows = [];
+  const section = (title) => {
+    const r = rows.length + 1;
+    const label = el('h2', 'app-label');
+    label.style.setProperty('--r', r);
+    const jump = el('button', 'app-jump');
+    jump.type = 'button';
+    jump.append(el('i', '', String(r).padStart(2, '0')), title);
+    label.append(jump);
+    const cell = el('section', 'app-row');
+    cell.style.setProperty('--r', r);
+    cell.setAttribute('aria-label', title);
+    jump.addEventListener('click', () => {
+      const top = cell.getBoundingClientRect().top + window.scrollY - PIN_TOP;
+      if (window.pageLenis) window.pageLenis.scrollTo(top);
+      else window.scrollTo({ top, behavior: 'smooth' });
+    });
+    body.append(label, cell);
+    rows.push({ label, cell });
+    return cell;
   };
+  const PIN_TOP = 96;                      // where the pile starts, clear of the site nav (apps.css: --pin)
 
   // ---- feature icons ------------------------------------------------------
-  // Line icons on a 24px grid. A feature names its icon as a third value,
-  // or gets the first one whose pattern matches its name.
+  // Simple line icons on a 24px grid, drawn small beside each feature's
+  // name. A feature names its icon as a third value, or gets the first one
+  // whose pattern matches its name.
   const ICONS = {
     tree: 'M10 3h4v4h-4zM12 7v5M6 15v-3h12v3M4 15h4v4H4zM16 15h4v4h-4z',
     cube: 'M12 3l8 4.5v9L12 21l-8-4.5v-9zM4 7.5l8 4.5 8-4.5M12 12v9',
@@ -203,39 +226,69 @@
     window.openLightbox(index);
   }
 
-  // ---- header: icon, name, buttons ----
+  // ---- opening: what it is, its name, a line about it, where to get it ----
   const hero = el('header', 'app-hero');
-  const text = el('div', 'app-hero-text');
+  const kicker = el('p', 'app-kicker');
+  kicker.append(el('span', '', 'App'), el('span', '', app.category));
+  if (app.stage) kicker.append(el('span', 'app-stage is-' + app.stage.toLowerCase(), app.stage));
   const actions = el('div', 'app-actions');
   if (app.url) actions.append(link(app.url, 'app-btn is-primary', 'Open app ↗'));
+  // Download: the app's source as a zip, straight from its GitHub repository.
+  // "HEAD" is whatever the repository's main branch is called, so the link
+  // always gives the current code. An app can name another file with
+  // `download`. It is the main button for apps that only run locally.
+  const zip = app.download || (app.repo ? app.repo.replace(/\/+$/, '') + '/archive/HEAD.zip' : '');
+  if (zip) {
+    const get = el('a', 'app-btn' + (app.url ? '' : ' is-primary'), 'Download .zip ↓');
+    get.href = zip;
+    get.setAttribute('download', '');
+    get.rel = 'noopener';
+    actions.append(get);
+  }
   if (app.repo) actions.append(link(app.repo, 'app-btn', 'GitHub ↗'));
-  const title = el('h1', 'app-title', app.title);
-  if (app.stage) title.append(el('span', 'app-stage', app.stage));
-  text.append(title, el('p', 'app-subtitle', app.subtitle), actions);
-  hero.append(window.labAppIcon(app), text);
+  // the title takes the full width; under it, the line about the app and
+  // its buttons on the left, the release facts on the right
+  const lead = el('div', 'app-hero-main');
+  lead.append(el('p', 'app-subtitle', app.subtitle), actions);
 
-  // ---- strip of facts ----
+  // ---- release facts: version, platform and so on, listed beside the title ----
   const stats = el('dl', 'app-stats');
   (app.stats || []).forEach(([label, value]) => {
     const item = el('div');
     item.append(el('dt', '', label), el('dd', '', value));
     stats.append(item);
   });
+  const under = el('div', 'app-hero-row');
+  under.append(lead);
+  if (stats.children.length) under.append(stats);
+  hero.append(kicker, el('h1', 'app-title', app.title), under);
+
+  // ---- the app itself: one wide picture; a click opens the screenshots ----
+  const shots = app.shots || [];
+  const coverSrc = app.cover || (shots[0] && shots[0][0]);
+  let cover = null;
+  if (coverSrc) {
+    cover = el('figure', 'app-cover');
+    const img = el('img');
+    Object.assign(img, { src: coverSrc, alt: `${app.title}: the app's interface`, decoding: 'async' });
+    cover.append(img);
+    const pictures = shots.length ? shots : [[coverSrc, app.title]];
+    const at = Math.max(0, pictures.findIndex(([src]) => src === coverSrc));
+    img.addEventListener('click', () => openViewer(pictures, at));
+  }
 
   const back = el('a', 'app-back', '← Lab');
   back.href = 'lab.html';
-  root.replaceChildren(back, hero, stats);
+  root.replaceChildren(...[back, hero, cover, body].filter(Boolean));
 
-  // ---- screenshots ----
-  if (app.shots && app.shots.length) {
-    const strip = figures(app.shots, 'app-shots is-wide');
-    const sec = section('Preview');
+  // ---- more screenshots: a strip to drag through (the first is the cover) ----
+  if (shots.length > 1) {
+    const strip = figures(shots, 'app-shots is-wide');
+    const sec = section('Screens');
     sec.append(strip);
-    if (app.shots.length > 1) {
-      const row = dots(strip);
-      sec.append(row);
-      row.sync();
-    }
+    const row = dots(strip);
+    sec.append(row);
+    row.sync();
   }
 
   // ---- description + headline figures ----
@@ -254,17 +307,17 @@
     about.append(grid);
   }
 
-  // ---- a closer look: big cards, a picture with an icon, a name and a line ----
+  // ---- a closer look: a picture and what it shows, side by side ----
   if (app.spotlights && app.spotlights.length) {
     const grid = el('div', 'app-spots');
     const pictures = app.spotlights.map(([name, , image]) => [image, name]);
-    app.spotlights.forEach(([name, line, image, hint], i) => {
+    app.spotlights.forEach(([name, line, image], i) => {
       const card = el('figure');
       const img = el('img');
       Object.assign(img, { src: image, alt: `${app.title}: ${name}`, loading: 'lazy', decoding: 'async' });
       img.addEventListener('click', () => openViewer(pictures, i));
       const caption = el('figcaption');
-      caption.append(icon(name, hint), el('strong', '', name), el('span', '', line));
+      caption.append(el('i', '', String(i + 1).padStart(2, '0')), el('strong', '', name), el('span', '', line));
       card.append(img, caption);
       grid.append(card);
     });
@@ -275,7 +328,7 @@
     const list = el('ol', 'app-steps');
     app.steps.forEach(([name, line], i) => {
       const item = el('li');
-      item.append(el('span', 'app-step-no', String(i + 1)), el('strong', '', name), el('span', '', line));
+      item.append(el('span', 'app-step-no', String(i + 1).padStart(2, '0')), el('strong', '', name), el('span', '', line));
       list.append(item);
     });
     section('How it works').append(list);
@@ -283,8 +336,7 @@
 
   // ---- features: one grid, or a grid per group ----
   if (app.featureGroups && app.featureGroups.length) {
-    const count = app.featureGroups.reduce((n, group) => n + group.items.length, 0);
-    const sec = section('Features', String(count));
+    const sec = section('Features');
     app.featureGroups.forEach((group) => {
       const head = el('h3', 'app-group');
       head.append(el('span', '', group.title));
@@ -295,7 +347,7 @@
     section('Features').append(featureGrid(app.features));
   }
 
-  if (app.gallery && app.gallery.length) section(app.galleryTitle || 'Gallery', String(app.gallery.length)).append(figures(app.gallery, 'app-shots'));
+  if (app.gallery && app.gallery.length) section(app.galleryTitle || 'Gallery').append(figures(app.gallery, 'app-shots'));
 
   if (app.start) {
     const sec = section('Get started');
@@ -311,7 +363,7 @@
 
   // ---- changelog: newest first, the latest with its tagged changes ----
   if (app.changelog && app.changelog.versions.length) {
-    const sec = section('Changelog', app.changelog.link ? link(app.changelog.link, 'app-more', 'Full changelog ↗') : null);
+    const sec = section('Changelog');
     const list = el('ol', 'app-log');
     app.changelog.versions.forEach((entry) => {
       const item = el('li');
@@ -319,8 +371,8 @@
       head.append(el('strong', '', `v${entry.version}`));
       if (entry.latest) head.append(el('em', '', 'Latest'));
       if (entry.date) head.append(el('span', '', entry.date));
-      const body = el('div', 'app-log-body');
-      body.append(el('p', '', entry.summary));
+      const notes = el('div', 'app-log-body');
+      notes.append(el('p', '', entry.summary));
       if (entry.items && entry.items.length) {
         const changes = el('ul');
         entry.items.forEach(([tag, line]) => {
@@ -328,15 +380,16 @@
           change.append(el('b', `is-${tag.toLowerCase()}`, tag), el('span', '', line));
           changes.append(change);
         });
-        body.append(changes);
+        notes.append(changes);
       }
-      item.append(head, body);
+      item.append(head, notes);
       list.append(item);
     });
     sec.append(list);
+    if (app.changelog.link) sec.append(link(app.changelog.link, 'app-more', 'Full changelog ↗'));
   }
 
-  if (app.whatsNew) section("What's new", `Version ${app.whatsNew.version}`).append(el('p', 'app-text', app.whatsNew.text));
+  if (app.whatsNew) section("What's new").append(el('p', 'app-text', `Version ${app.whatsNew.version}. ${app.whatsNew.text}`));
 
   if (app.info && app.info.length) {
     const table = el('dl', 'app-info');
@@ -347,4 +400,19 @@
     });
     section('Information').append(table);
   }
+
+  // ---- the pile of labels: how many there are, and which one is being read ----
+  body.style.setProperty('--n', rows.length);
+  // (a handful of measurements per scroll event: cheap enough to do directly)
+  let current = -1;
+  const mark = () => {
+    const line = window.innerHeight * 0.4;
+    let now = 0;
+    rows.forEach(({ cell }, i) => { if (cell.getBoundingClientRect().top <= line) now = i; });
+    if (now === current) return;
+    current = now;
+    rows.forEach(({ label }, i) => label.classList.toggle('is-current', i === now));
+  };
+  window.addEventListener('scroll', mark, { passive: true });
+  mark();
 })();

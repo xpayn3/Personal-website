@@ -148,6 +148,25 @@
     .pg .t span { color:var(--muted); font-size:13px; }
     .note { color:var(--muted); font-size:14px; max-width:60ch; }
     .big { font-size:15px; margin:0 0 6px; }
+    /* originals (local file manager) */
+    .crumbs { display:flex; align-items:center; gap:4px; flex-wrap:wrap; margin:-12px 0 18px; font-size:14px; }
+    .crumbs button { color:var(--blue); font-weight:500; padding:2px 4px; border-radius:6px; } .crumbs button:last-child { color:var(--ink); pointer-events:none; }
+    .crumbs i { color:var(--muted); font-style:normal; }
+    .fm .thumb { cursor:pointer; }
+    .fm.is-sel .thumb { box-shadow:0 0 0 3px var(--blue); }
+    .sel { position:absolute; top:8px; left:8px; width:24px; height:24px; border-radius:50%; background:rgba(0,0,0,.35); border:2px solid #fff; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); display:grid; place-items:center; opacity:0; transition:opacity .15s; }
+    .fm:hover .sel, .fm.is-sel .sel, .selmode .sel { opacity:1; }
+    .fm.is-sel .sel { background:var(--blue); border-color:var(--blue); }
+    .fm.is-sel .sel::after { content:"✓"; color:#fff; font-size:13px; font-weight:700; line-height:1; }
+    .files.list .sel { width:18px; height:18px; top:3px; left:3px; opacity:1; border-width:1.5px; }
+    .files.list .fm.is-sel .sel::after { font-size:10px; }
+    .files.list .fm .thumb { position:relative; }
+    .fmempty { max-width:520px; margin:40px auto; text-align:center; }
+    .fmempty .lock { margin-bottom:18px; }
+    #fmbar, #flbar { position:fixed; left:50%; bottom:22px; transform:translateX(-50%); z-index:40; display:none; align-items:center; gap:12px; padding:10px 10px 10px 20px; border-radius:99px; background:var(--glass); backdrop-filter:saturate(180%) blur(22px); -webkit-backdrop-filter:saturate(180%) blur(22px); box-shadow:0 8px 30px rgba(0,0,0,.18),0 0 0 1px var(--line); max-width:calc(100% - 24px); }
+    body.on-fm #fmbar.on, body.on-fl #flbar.on { display:flex; animation:in .25s cubic-bezier(.2,.8,.2,1); }
+    #fmbar .t, #flbar .t { font-size:14px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    #fmbar .t span, #flbar .t span { color:var(--muted); font-weight:400; }
     /* editor sheet */
     #ed { position:fixed; inset:0; z-index:60; display:none; flex-direction:column; background:var(--bg); }
     #ed.on { display:flex; animation:in .3s cubic-bezier(.2,.8,.2,1); }
@@ -194,6 +213,7 @@
     <div class="seg" role="tablist" id="tabs">
       <button role="tab" data-v="overview" aria-selected="true">Overview</button>
       <button role="tab" data-v="files" aria-selected="false">Files</button>
+      <button role="tab" data-v="originals" aria-selected="false">Originals</button>
       <button role="tab" data-v="pages" aria-selected="false">Pages</button>
       <button role="tab" data-v="health" aria-selected="false">Health</button>
       <button role="tab" data-v="traffic" aria-selected="false">Traffic</button>
@@ -219,10 +239,16 @@
         <label class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="Search files" aria-label="Search files" /></label>
         <div class="chips" id="kinds"></div>
         <select id="sort" aria-label="Sort"><option value="size">Largest</option><option value="name">Name</option></select>
-        <div class="chips"><button class="chip" id="view" aria-pressed="false">List</button></div>
+        <div class="chips"><button class="chip" id="view" aria-pressed="false">List</button><button class="chip" id="flall">Select all</button></div>
       </div>
       <div class="files" id="files"></div>
       <button class="more" id="more" hidden>Show more</button>
+    </section>
+
+    <section class="view" id="v-originals">
+      <h1 class="title">Originals</h1>
+      <p class="sub" id="fmsub">High-resolution source files on your computer, for sending to clients.</p>
+      <div id="fmstage"></div>
     </section>
 
     <section class="view" id="v-pages">
@@ -247,6 +273,10 @@
     <p class="note" style="margin-top:56px">Numbers come from <code>admin-data.js</code> — regenerate with <code>node tools/build-admin.js</code> before each push.</p>
   </main>
 </div>
+
+<div id="flbar"><div class="t" id="flsel"></div><button class="btn2" id="flclear">Clear</button><button class="btn2" id="flcopy">Copy links</button><button class="btn2" id="flshare" hidden>Share</button><button class="btn" id="fldl">Download</button></div>
+
+<div id="fmbar"><div class="t" id="fmsel"></div><button class="btn2" id="fmclear">Clear</button><button class="btn" id="fmdl">Download</button></div>
 
 <div id="ed" role="dialog" aria-modal="true" aria-label="Edit page">
   <div class="ed-bar">
@@ -312,6 +342,8 @@
     if (!$('v-' + v)) v = 'overview';
     Array.prototype.forEach.call(document.querySelectorAll('#tabs button'), function (b) { b.setAttribute('aria-selected', b.dataset.v === v); });
     Array.prototype.forEach.call(document.querySelectorAll('.view'), function (s) { s.classList.toggle('on', s.id === 'v-' + v); });
+    document.body.classList.toggle('on-fm', v === 'originals'); document.body.classList.toggle('on-fl', v === 'files');
+    if (v === 'originals' && window.fmStart) window.fmStart();
     if (location.hash !== '#' + v) history.replaceState(null, '', '#' + v);
     window.scrollTo(0, 0);
   }
@@ -329,7 +361,7 @@
       ? '<img src="' + enc(f.thumb) + '" alt="" loading="lazy" decoding="async">'
       : icon(f.kind, e);
     var cls = 'thumb' + (f.thumb && (e === 'svg' || e === 'ico') ? ' contain' : '');
-    return '<div class="' + cls + '">' + inner + (f.kind === 'video' ? '<span class="badge">▶ ' + e + '</span>' : '') + '</div>';
+    return '<div class="' + cls + '">' + inner + (f.kind === 'video' ? '<span class="badge">▶ ' + e + '</span>' : '') + '<span class="sel" data-s title="Select"></span></div>';
   }
 
   /* quick look */
@@ -355,18 +387,35 @@
     if (st.sort === 'name') l = l.slice().sort(function (a, b) { return a.path.localeCompare(b.path); });
     return l;
   }
+  var fsel = new Map();
+  function flBar() {
+    var n = fsel.size, bytes = 0; fsel.forEach(function (f) { bytes += f.bytes; });
+    $('flbar').classList.toggle('on', n > 0);
+    $('flsel').innerHTML = n + ' selected <span>· ' + size(bytes) + '</span>';
+    $('fldl').textContent = n === 1 ? 'Download' : 'Download ZIP';
+    $('flshare').hidden = !navigator.share;
+  }
+  function flToggle(f, el) {
+    if (fsel.has(f.path)) fsel.delete(f.path); else fsel.set(f.path, f);
+    el.classList.toggle('is-sel', fsel.has(f.path)); flBar();
+  }
   function renderFiles(reset) {
     if (reset) shown = PAGE;
     var l = filtered(), vis = l.slice(0, shown);
     $('fcount').textContent = num(l.length) + ' files · ' + size(l.reduce(function (s, f) { return s + f.bytes; }, 0));
     $('files').className = 'files' + (st.list ? ' list' : '');
     $('files').innerHTML = vis.length ? vis.map(function (f, i) {
-      return '<button class="f" data-i="' + i + '">' + thumbHtml(f) + '<div class="meta"><div class="nm">' + esc(base(f.path)) + '</div><div class="sz">' + size(f.bytes) + '</div></div></button>';
+      return '<button class="f fm' + (fsel.has(f.path) ? ' is-sel' : '') + '" data-i="' + i + '">' + thumbHtml(f) + '<div class="meta"><div class="nm">' + esc(base(f.path)) + '</div><div class="sz">' + size(f.bytes) + '</div></div></button>';
     }).join('') : '<div class="empty" style="grid-column:1/-1">No files match.</div>';
     $('more').hidden = l.length <= shown;
-    $('files')._list = vis;
+    $('files')._list = vis; flBar();
   }
-  $('files').addEventListener('click', function (e) { var b = e.target.closest('.f'); if (b) look($('files')._list[+b.dataset.i]); });
+  $('files').addEventListener('click', function (e) {
+    var b = e.target.closest('.f'); if (!b) return;
+    var f = $('files')._list[+b.dataset.i];
+    if (e.target.closest('[data-s]') || e.shiftKey || e.metaKey || e.ctrlKey) return flToggle(f, b);
+    look(f);
+  });
   $('more').addEventListener('click', function () { shown += PAGE * 2; renderFiles(); });
   var qt; $('q').addEventListener('input', function () { clearTimeout(qt); qt = setTimeout(function () { st.q = $('q').value; renderFiles(true); }, 120); });
   $('sort').addEventListener('change', function () { st.sort = this.value; renderFiles(true); });
@@ -460,6 +509,240 @@
         '<p class="note">Updated ' + esc(tr.updated || '') + '</p>'
       : '<div class="card" style="max-width:560px"><p class="big"><b>Not connected yet</b></p><p class="note" style="margin:0 0 14px">A static site has no server to count visits, and Google Analytics (G-RXZ65KVMCQ) keeps its numbers behind a Google login. Add a free counter such as Cloudflare Web Analytics or GoatCounter and this page can show it.</p><a href="https://analytics.google.com/" target="_blank" rel="noopener">Open Google Analytics →</a></div>';
   }
+
+  /* file selection actions (files come from the site itself) */
+  $('flall').addEventListener('click', function () {
+    var l = filtered(), all = l.length && l.every(function (f) { return fsel.has(f.path); });
+    l.forEach(function (f) { if (all) fsel.delete(f.path); else fsel.set(f.path, f); });
+    renderFiles();
+  });
+  $('flclear').addEventListener('click', function () { fsel.clear(); renderFiles(); });
+  var siteUrl = function (p) { return new URL(enc(p), location.href).href; };
+  var fetchFile = function (f) { return fetch(siteUrl(f.path)).then(function (r) { if (!r.ok) throw new Error(f.path + ' (' + r.status + ')'); return r.blob(); }); };
+  $('flcopy').addEventListener('click', function () {
+    var txt = Array.from(fsel.values()).map(function (f) { return siteUrl(f.path); }).join('\n'), b = this;
+    (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { b.textContent = 'Copied ✓'; }, function () { prompt('Copy these links:', txt); b.textContent = 'Copy links'; });
+    setTimeout(function () { b.textContent = 'Copy links'; }, 1600);
+  });
+  $('flshare').addEventListener('click', async function () {
+    var b = this, label = b.textContent; b.disabled = true; b.textContent = 'Preparing…';
+    try {
+      var files = await Promise.all(Array.from(fsel.values()).map(async function (f) { var bl = await fetchFile(f); return new File([bl], base(f.path), { type: bl.type }); }));
+      if (navigator.canShare && navigator.canShare({ files: files })) await navigator.share({ files: files });
+      else await navigator.share({ title: 'Files', text: Array.from(fsel.values()).map(function (f) { return siteUrl(f.path); }).join('\n') });
+    } catch (e) { if (e.name !== 'AbortError') alert('Could not share: ' + e.message); }
+    finally { b.disabled = false; b.textContent = label; }
+  });
+  $('fldl').addEventListener('click', async function () {
+    var b = this, label = b.textContent, list = Array.from(fsel.values()); b.disabled = true; b.textContent = 'Preparing…';
+    try {
+      if (list.length === 1) saveBlob(await fetchFile(list[0]), base(list[0].path));
+      else {
+        var items = list.map(function (f) { return { path: f.path.replace(/^Images\//, ''), handle: { getFile: async function () { return new File([await fetchFile(f)], base(f.path)); } } }; });
+        var zip = await makeZip(items, function (n) { b.textContent = 'Zipping ' + n + '/' + items.length; });
+        saveBlob(zip, 'portfolio-files-' + new Date().toISOString().slice(0, 10) + '.zip');
+      }
+    } catch (e) { alert('Download failed: ' + e.message); }
+    finally { b.disabled = false; b.textContent = label; }
+  });
+
+  /* ---------- originals: local file manager (File System Access API) ----------
+     Reads a folder on this computer; nothing is uploaded anywhere. */
+  var fm = { root: null, stack: [], items: [], view: [], sel: new Map(), q: '', sort: 'name', list: false, shown: 80, urls: [], qurl: null, started: false };
+  var FSA = !!window.showDirectoryPicker;
+  var IMGX = /^(webp|png|jpe?g|gif|svg|avif|bmp)$/i, VIDX = /^(webm|mp4|mov|m4v)$/i;
+  var FOLDER = '<svg width="52%" viewBox="0 0 64 52" fill="none"><path d="M4 10a6 6 0 0 1 6-6h14l6 7h24a6 6 0 0 1 6 6v25a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6z" fill="#0a84ff" opacity=".9"/><path d="M4 18h56v21a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6z" fill="#64b5ff"/></svg>';
+  var date = function (t) { return new Date(t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); };
+
+  function idb(mode, fn) {
+    return new Promise(function (res, rej) {
+      var o = indexedDB.open('lg-admin', 1);
+      o.onupgradeneeded = function () { o.result.createObjectStore('kv'); };
+      o.onerror = function () { rej(o.error); };
+      o.onsuccess = function () {
+        var tx = o.result.transaction('kv', mode), r = fn(tx.objectStore('kv'));
+        tx.oncomplete = function () { res(r && r.result); }; tx.onerror = function () { rej(tx.error); };
+      };
+    });
+  }
+  var cur = function () { return fm.stack[fm.stack.length - 1]; };
+  var pathOf = function (name) { return fm.stack.slice(1).map(function (s) { return s.name; }).concat(name).join('/'); };
+  function freeUrls() { fm.urls.forEach(function (u) { URL.revokeObjectURL(u); }); fm.urls = []; }
+
+  function fmStart() {
+    if (fm.started) return; fm.started = true;
+    var st = $('fmstage');
+    if (!FSA) { st.innerHTML = '<div class="card fmempty"><p class="big"><b>Needs Chrome, Edge or Brave</b></p><p class="note" style="margin:0 auto">Reading a folder from your computer is not supported in this browser. Open the admin in Chrome or Edge.</p></div>'; return; }
+    idb('readonly', function (s) { return s.get('root'); }).then(function (h) { chooser(h); }, function () { chooser(null); });
+  }
+  window.fmStart = fmStart;
+  function chooser(saved) {
+    $('fmstage').innerHTML = '<div class="card fmempty"><div class="lock" style="margin:0 auto 18px"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>' +
+      '<p class="big"><b>' + (saved ? 'Open "' + esc(saved.name) + '"' : 'Choose your originals folder') + '</b></p>' +
+      '<p class="note" style="margin:0 auto 18px">Pick the folder with your high-resolution files. It is only read in this browser — nothing is uploaded.</p>' +
+      (saved ? '<button class="btn" id="fmreopen">Open folder</button> <button class="btn2" id="fmpick">Choose another</button>' : '<button class="btn" id="fmpick">Choose folder</button>') + '</div>';
+    if (saved) $('fmreopen').onclick = async function () {
+      try { if ((await saved.requestPermission({ mode: 'read' })) === 'granted') return openRoot(saved); } catch (e) {}
+      pickFolder();
+    };
+    $('fmpick').onclick = pickFolder;
+  }
+  async function pickFolder() {
+    try {
+      var h = await window.showDirectoryPicker({ mode: 'read' });
+      try { await idb('readwrite', function (s) { return s.put(h, 'root'); }); } catch (e) {}
+      openRoot(h);
+    } catch (e) { /* cancelled */ }
+  }
+  function openRoot(h) { fm.root = h; fm.stack = [{ name: h.name, handle: h }]; fm.sel.clear(); fm.q = ''; load(); }
+
+  async function load() {
+    freeUrls(); fm.shown = 80;
+    $('fmstage').innerHTML = '<p class="note">Reading folder…</p>';
+    var dir = cur().handle, hs = [];
+    try { for await (var h of dir.values()) if (h.name[0] !== '.') hs.push(h); }
+    catch (e) { return chooser(null); }
+    fm.items = await Promise.all(hs.map(async function (h) {
+      if (h.kind === 'directory') return { name: h.name, dir: true, handle: h, bytes: 0, mod: 0, ext: '' };
+      var f = await h.getFile();
+      return { name: h.name, dir: false, handle: h, file: f, bytes: f.size, mod: f.lastModified, ext: ext(h.name) };
+    }));
+    shell(); draw();
+  }
+  function shell() {
+    var crumbs = fm.stack.map(function (s, i) { return '<button data-c="' + i + '">' + esc(s.name) + '</button>'; }).join('<i>›</i>');
+    $('fmstage').innerHTML = '<div class="crumbs" id="fmcr">' + crumbs + '</div>' +
+      '<div class="tools"><label class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="fmq" type="search" placeholder="Search this folder" aria-label="Search this folder" value="' + esc(fm.q) + '" /></label>' +
+      '<select id="fmsort" aria-label="Sort"><option value="name">Name</option><option value="size">Largest</option><option value="date">Newest</option></select>' +
+      '<div class="chips"><button class="chip" id="fmview" aria-pressed="' + fm.list + '">' + (fm.list ? 'Grid' : 'List') + '</button><button class="chip" id="fmall">Select all</button><button class="chip" id="fmchg">Change folder</button></div></div>' +
+      '<div class="files" id="fmgrid"></div><button class="more" id="fmmore" hidden>Show more</button>';
+    $('fmsort').value = fm.sort;
+  }
+  function draw() {
+    var q = fm.q.toLowerCase(), l = fm.items.filter(function (i) { return !q || i.name.toLowerCase().indexOf(q) > -1; });
+    l.sort(function (a, b) {
+      if (a.dir !== b.dir) return a.dir ? -1 : 1;
+      if (fm.sort === 'size') return b.bytes - a.bytes;
+      if (fm.sort === 'date') return b.mod - a.mod;
+      return a.name.localeCompare(b.name, undefined, { numeric: true });
+    });
+    fm.view = l.slice(0, fm.shown);
+    var g = $('fmgrid'); g.className = 'files' + (fm.list ? ' list' : '');
+    freeUrls();
+    g.innerHTML = fm.view.length ? fm.view.map(function (it, i) {
+      var inner, sub;
+      if (it.dir) { inner = FOLDER; sub = 'Folder'; }
+      else if (IMGX.test(it.ext)) { var u = URL.createObjectURL(it.file); fm.urls.push(u); inner = '<img src="' + u + '" alt="" loading="lazy" decoding="async">'; sub = size(it.bytes); }
+      else { inner = icon(VIDX.test(it.ext) ? 'video' : it.ext === 'pdf' ? 'documents' : 'other', it.ext || 'file'); sub = size(it.bytes); }
+      var key = pathOf(it.name);
+      return '<div class="f fm' + (fm.sel.has(key) ? ' is-sel' : '') + '" data-i="' + i + '"><div class="thumb">' + inner + '<span class="sel" data-s title="Select"></span></div>' +
+        '<div class="meta"><div class="nm" title="' + esc(it.name) + '">' + esc(it.name) + '</div><div class="sz">' + sub + '</div></div></div>';
+    }).join('') : '<div class="empty" style="grid-column:1/-1">Nothing here.</div>';
+    $('fmmore').hidden = l.length <= fm.shown;
+    $('fmsub').textContent = fm.items.filter(function (i) { return !i.dir; }).length + ' files · ' + fm.items.filter(function (i) { return i.dir; }).length + ' folders in this folder';
+    bar();
+  }
+  function bar() {
+    var n = fm.sel.size, b = $('fmbar'), bytes = 0, dirs = 0;
+    fm.sel.forEach(function (i) { if (i.dir) dirs++; else bytes += i.bytes; });
+    b.classList.toggle('on', n > 0);
+    $('fmsel').innerHTML = n + ' selected <span>· ' + (bytes ? size(bytes) : '') + (dirs ? (bytes ? ' + ' : '') + dirs + ' folder' + (dirs > 1 ? 's' : '') : '') + '</span>';
+    $('fmdl').textContent = n === 1 && !dirs ? 'Download' : 'Download ZIP';
+  }
+  function toggle(it, el) {
+    var key = pathOf(it.name);
+    if (fm.sel.has(key)) fm.sel.delete(key); else fm.sel.set(key, it);
+    el.classList.toggle('is-sel', fm.sel.has(key)); bar();
+  }
+
+  $('fmstage').addEventListener('click', function (e) {
+    var c = e.target.closest('[data-c]');
+    if (c) { fm.stack = fm.stack.slice(0, +c.dataset.c + 1); fm.q = ''; return load(); }
+    if (e.target.id === 'fmview') { fm.list = !fm.list; shell(); return draw(); }
+    if (e.target.id === 'fmchg') { fm.started = false; return pickFolder(); }
+    if (e.target.id === 'fmmore') { fm.shown += 160; return draw(); }
+    if (e.target.id === 'fmall') {
+      var all = fm.view.length && fm.view.every(function (i) { return fm.sel.has(pathOf(i.name)); });
+      fm.view.forEach(function (i) { var k = pathOf(i.name); if (all) fm.sel.delete(k); else fm.sel.set(k, i); });
+      return draw();
+    }
+    var t = e.target.closest('.fm'); if (!t) return;
+    var it = fm.view[+t.dataset.i];
+    if (e.target.closest('[data-s]') || (e.shiftKey || e.metaKey || e.ctrlKey)) return toggle(it, t);
+    if (it.dir) { fm.stack.push({ name: it.name, handle: it.handle }); fm.q = ''; return load(); }
+    fmLook(it);
+  });
+  var fqt;
+  $('fmstage').addEventListener('input', function (e) { if (e.target.id !== 'fmq') return; clearTimeout(fqt); var v = e.target.value; fqt = setTimeout(function () { fm.q = v; fm.shown = 80; draw(); }, 120); });
+  $('fmstage').addEventListener('change', function (e) { if (e.target.id === 'fmsort') { fm.sort = e.target.value; draw(); } });
+  // dimensions of full-size pictures, shown once each image has loaded
+  $('fmstage').addEventListener('load', function (e) {
+    var im = e.target; if (im.tagName !== 'IMG') return;
+    var f = im.closest('.fm'); if (f) f.querySelector('.sz').textContent += ' · ' + im.naturalWidth + '×' + im.naturalHeight;
+  }, true);
+  $('fmclear').addEventListener('click', function () { fm.sel.clear(); draw(); });
+
+  function fmLook(it) {
+    if (fm.qurl) URL.revokeObjectURL(fm.qurl);
+    fm.qurl = URL.createObjectURL(it.file);
+    var media = IMGX.test(it.ext) ? '<img src="' + fm.qurl + '" alt="" id="fmqi">' : VIDX.test(it.ext) ? '<video src="' + fm.qurl + '" controls muted playsinline></video>' : '<div style="padding:40px;width:140px">' + icon(it.ext === 'pdf' ? 'documents' : 'other', it.ext || 'file') + '</div>';
+    $('qcard').innerHTML = '<div class="qprev">' + media + '</div><div class="qinfo"><b>' + esc(it.name) + '</b><div class="r"><span id="fmqd">' + size(it.bytes) + '</span><span>' + (it.ext || 'file').toUpperCase() + '</span><span>' + date(it.mod) + '</span></div>' +
+      '<div class="act"><button class="btn" id="fmqdl">Download</button><button class="btn2" id="qx">Close</button></div></div>';
+    $('ql').classList.add('on');
+    var im = $('fmqi'); if (im) im.onload = function () { $('fmqd').textContent = size(it.bytes) + ' · ' + im.naturalWidth + '×' + im.naturalHeight; };
+    $('fmqdl').onclick = function () { saveBlob(it.file, it.name); };
+  }
+
+  function saveBlob(blob, name) {
+    var a = document.createElement('a'), u = URL.createObjectURL(blob);
+    a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(u); }, 60000);
+  }
+  var T = (function () { var t = [], c, n, k; for (n = 0; n < 256; n++) { c = n; for (k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+  async function crcOf(file) {
+    var c = -1, r = file.stream().getReader();
+    for (;;) { var x = await r.read(); if (x.done) break; var b = x.value; for (var i = 0; i < b.length; i++) c = T[(c ^ b[i]) & 255] ^ (c >>> 8); }
+    return (c ^ -1) >>> 0;
+  }
+  // store-only ZIP (pictures are already compressed); File parts are referenced, not copied into memory
+  async function makeZip(list, onp) {
+    var parts = [], cen = [], off = 0, te = new TextEncoder(), n = new Date();
+    var dt = ((n.getFullYear() - 1980) << 9) | ((n.getMonth() + 1) << 5) | n.getDate(), tm = (n.getHours() << 11) | (n.getMinutes() << 5) | (n.getSeconds() >> 1);
+    for (var i = 0; i < list.length; i++) {
+      var f = await list[i].handle.getFile(), nm = te.encode(list[i].path), crc = await crcOf(f);
+      var h = new DataView(new ArrayBuffer(30));
+      h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(10, tm, true); h.setUint16(12, dt, true);
+      h.setUint32(14, crc, true); h.setUint32(18, f.size, true); h.setUint32(22, f.size, true); h.setUint16(26, nm.length, true);
+      parts.push(h.buffer, nm, f);
+      var c = new DataView(new ArrayBuffer(46));
+      c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(12, tm, true); c.setUint16(14, dt, true);
+      c.setUint32(16, crc, true); c.setUint32(20, f.size, true); c.setUint32(24, f.size, true); c.setUint16(28, nm.length, true); c.setUint32(42, off, true);
+      cen.push(c.buffer, nm); off += 30 + nm.length + f.size; onp(i + 1);
+    }
+    var cd = cen.reduce(function (s, p) { return s + p.byteLength; }, 0), e = new DataView(new ArrayBuffer(22));
+    e.setUint32(0, 0x06054b50, true); e.setUint16(8, list.length, true); e.setUint16(10, list.length, true); e.setUint32(12, cd, true); e.setUint32(16, off, true);
+    return new Blob(parts.concat(cen, [e.buffer]), { type: 'application/zip' });
+  }
+  async function collect() {
+    var out = [];
+    async function walk(h, pre) { for await (var e of h.values()) { if (e.name[0] === '.') continue; if (e.kind === 'directory') await walk(e, pre + e.name + '/'); else out.push({ path: pre + e.name, handle: e }); } }
+    for (var it of fm.sel.values()) { if (it.dir) await walk(it.handle, it.name + '/'); else out.push({ path: it.name, handle: it.handle }); }
+    return out;
+  }
+  $('fmdl').addEventListener('click', async function () {
+    var btn = this, label = btn.textContent;
+    if (fm.sel.size === 1) { var one = fm.sel.values().next().value; if (!one.dir) return saveBlob(one.file, one.name); }
+    btn.disabled = true; btn.textContent = 'Preparing…';
+    try {
+      var list = await collect(), total = 0;
+      for (var i = 0; i < list.length; i++) total += (await list[i].handle.getFile()).size;
+      if (total > 3.9 * 1073741824) { alert('That is ' + size(total) + ' — over the 4 GB a ZIP can hold. Download in smaller batches.'); return; }
+      var zip = await makeZip(list, function (n) { btn.textContent = 'Zipping ' + n + '/' + list.length; });
+      var d = new Date().toISOString().slice(0, 10);
+      saveBlob(zip, (fm.sel.size === 1 ? Array.from(fm.sel.values())[0].name : 'portfolio-originals') + '-' + d + '.zip');
+    } catch (e) { alert('Could not build the ZIP: ' + e.message); }
+    finally { btn.disabled = false; btn.textContent = label; }
+  });
 
   /* ---------- page editor (commits through the GitHub API) ---------- */
   var REPO = 'xpayn3/Personal-website', BRANCH = 'main', TK = 'lg-gh-token';

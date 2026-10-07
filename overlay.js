@@ -423,7 +423,7 @@
       const dark = !!galleryLabel && galleryLabelArrived();
       if (dark !== document.body.classList.contains('project-dark')) {
         document.body.classList.toggle('project-dark', dark);
-        setThemeColor(dark ? '#000000' : pageBg());
+        setThemeColor(dark ? '#0d0d0f' : pageBg());
       }
     };
     window.addEventListener('scroll', onScroll, { passive: true });

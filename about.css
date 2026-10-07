@@ -10,13 +10,22 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg: #ffffff;
-  --ink: #0b0b0c;
-  --muted: #6b6b70;
-  --line: rgba(11, 11, 12, 0.14);
+  /* colours: the site palette in tokens.css */
+  --bg: var(--paper);
+  --ink: var(--paper-ink);
+  --muted: var(--paper-muted);
+  --line: var(--paper-line);
   --fade: 600ms cubic-bezier(.4, 0, .2, 1);
   --gutter: clamp(16px, 3vw, 40px);
-  --font-about: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  --font-about: var(--font-grotesk);
+}
+
+/* dark theme (the nav's Dark / Light button, theme.js): the site's dark set */
+html[data-theme="dark"] {
+  --bg: var(--dark);
+  --ink: var(--dark-ink);
+  --muted: var(--dark-muted);
+  --line: var(--dark-line);
 }
 
 /* Reserve the scrollbar so the page doesn't shift between short and long views. */

@@ -10,7 +10,8 @@
      work/<id>.html   one page per project: the same view the site opens
                       in place, already in the HTML, with its own title,
                       description, share image and structured data
-     sitemap.xml      the four main pages plus every project page
+     sitemap.xml      the four main pages, every project page and every
+                      Lab app page
 
    The project markup comes from project-template.js, the same function
    the browser uses, so the static pages cannot drift from the live view.
@@ -91,7 +92,7 @@ function pageFor(id) {
   <meta property="og:url" content="${url}" />
   <meta property="og:type" content="article" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="${versioned('tokens.css')}" />
   <link rel="stylesheet" href="${versioned('overlay.css')}" />
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -133,6 +134,10 @@ fs.readdirSync(path.join(ROOT, 'work')).forEach((file) => {
 ids.forEach(id => fs.writeFileSync(path.join(ROOT, 'work', id + '.html'), pageFor(id)));
 
 // ---- sitemap ----
+// The Lab's app pages (apps/<id>.html) are written by hand, but they are
+// listed here from apps.js so regenerating never drops them.
+require(path.join(ROOT, 'apps.js'));
+const apps = global.window.labApps || [];
 const today = new Date().toISOString().slice(0, 10);
 const xml = text => String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;');
 const imageTag = file => `    <image:image>\n      <image:loc>${xml(absolute(file))}</image:loc>\n    </image:image>\n`;
@@ -146,6 +151,7 @@ const sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n' +
   urlTag('grid.html', 'weekly', '0.9') +
   ids.map(id => urlTag('work/' + id, 'monthly', '0.8', stills(projects[id]).map(imageTag).join(''))).join('') +
   urlTag('lab.html', 'monthly', '0.7', projects.lab ? imageTag(Template.posterOf(projects.lab.images[0])) : '') +
+  apps.map(app => urlTag('apps/' + app.id, 'monthly', '0.7', app.cover ? imageTag(app.cover) : '')).join('') +
   urlTag('about.html', 'monthly', '0.8') +
   '</urlset>\n';
 fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), sitemap);

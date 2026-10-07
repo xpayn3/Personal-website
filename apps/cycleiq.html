@@ -4,6 +4,15 @@
   <meta charset="UTF-8" />
   <base href="../" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <script>
+    // Theme before first paint: the visitor's saved choice, else this page's
+    // own default (dark). theme.js wires the Dark / Light button in the nav.
+    (function () {
+      var saved = null;
+      try { saved = localStorage.getItem('lg-theme'); } catch (e) {}
+      document.documentElement.dataset.theme = saved === 'light' || saved === 'dark' ? saved : 'dark';
+    })();
+  </script>
   <title>CycleIQ — cycling training dashboard | Luka Grčar</title>
   <meta name="robots" content="noai, noimageai" />
   <link rel="icon" type="image/png" href="favicon.png" />
@@ -18,13 +27,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="tokens.css" />
-  <link rel="stylesheet" href="lab.css?v=7" />
-  <link rel="stylesheet" href="gallery.css?v=7" />
-  <link rel="stylesheet" href="apps.css?v=11" />
-  <link rel="stylesheet" href="overlay.css?v=32" />
-  <link rel="stylesheet" href="footer.css?v=4" />
-  <link rel="stylesheet" href="floating-nav.css?v=13" />
+  <link rel="stylesheet" href="tokens.css?v=4" />
+  <link rel="stylesheet" href="lab.css?v=13" />
+  <link rel="stylesheet" href="gallery.css?v=16" />
+  <link rel="stylesheet" href="apps.css?v=21" />
+  <link rel="stylesheet" href="overlay.css?v=35" />
+  <link rel="stylesheet" href="footer.css?v=5" />
+  <link rel="stylesheet" href="floating-nav.css?v=16" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -35,7 +44,7 @@
     <a class="app-back" href="lab.html">← Lab</a>
     <h1 class="app-title">CycleIQ</h1>
     <p class="app-subtitle">A cycling training dashboard, powered by intervals.icu.</p>
-    <p class="app-text" style="margin-top:20px">CycleIQ is a cycling training dashboard powered by intervals.icu. Track fitness, power and heart rate zones, and plan your training.</p>
+    <p class="app-text" style="margin-top:20px">A training dashboard for cycling, built on intervals.icu: training load, power analysis, goals, weather, a garage for the bikes, and builders for workouts and routes.</p>
     <p class="app-text"><a href="https://xpayn3.github.io/cyclingHUB/">Open app</a> · <a href="https://github.com/xpayn3/cyclingHUB">GitHub</a></p>
   </main>
 
@@ -59,24 +68,25 @@
   <header class="site-nav">
     <a href="index.html" class="floating-name">Luka Grčar</a>
     <nav class="floating-nav" aria-label="Sections">
-      <a href="index.html" class="floating-nav-link">Home</a>
       <a href="grid.html" class="floating-nav-link">Work</a>
       <a href="lab.html" class="floating-nav-link is-active">Lab</a>
       <a href="about.html" class="floating-nav-link">About</a>
     </nav>
     <div class="site-nav-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch between the dark and light theme">Light</button>
       <a href="about.html#contact" class="site-nav-cta">Start a project <span class="site-nav-cta-arrow">↗</span></a>
     </div>
   </header>
 
   <script>window.APP_PAGE = "cycleiq";</script>
   <script src="motion.js"></script>
-  <script defer src="projects.js?v=5"></script>
+  <script defer src="projects.js?v=6"></script>
   <script defer src="project-template.js"></script>
-  <script defer src="overlay.js?v=42"></script>
-  <script defer src="apps.js?v=5"></script>
-  <script defer src="app-page.js?v=8"></script>
-  <script src="floating-nav.js?v=11" defer></script>
+  <script defer src="overlay.js?v=43"></script>
+  <script defer src="apps.js?v=8"></script>
+  <script defer src="app-page.js?v=15"></script>
+  <script src="floating-nav.js?v=14" defer></script>
+  <script src="theme.js?v=1" defer></script>
   <script src="brand.js" defer></script>
 </body>
 </html>

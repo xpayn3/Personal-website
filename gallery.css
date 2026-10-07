@@ -1,21 +1,45 @@
 /* ===================================================================
    gallery.css — the shared "gallery wall" look of the Work and Lab pages.
    Loaded after style.css / lab.css and overrides their tile styling, so
-   both pages hang their pieces the same way: a black wall, uniform square
-   tiles with air between them, and a quiet numbered caption under each.
+   both pages hang their pieces the same way: a soft black wall, uniform square
+   tiles with air between them, and a quiet caption under each.
    Colours match the project view's gallery (dark) mode in overlay.css.
    =================================================================== */
 .page-grid,
 .page-lab {
-  --g-bg: #000000;
-  --g-ink: #f4f4f5;
-  --g-muted: #8e8e95;
-  --g-line: rgba(244, 244, 245, 0.18);
+  /* colours: the site palette in tokens.css. Dark is how these pages come;
+     the nav's Dark / Light button (theme.js) swaps in the light set below. */
+  --g-bg: var(--dark);
+  --g-ink: var(--dark-ink);
+  --g-muted: var(--dark-muted);
+  --g-line: var(--dark-line);
+  --g-lift: var(--dark-lift);              /* the faint glow at the top of the screen */
+  --g-well: var(--dark-well);              /* behind pictures while they load */
+  --g-card: var(--dark-card);
+  --g-card-hover: var(--dark-card-hover);
+  --g-text: color-mix(in srgb, var(--g-ink) 72%, transparent);   /* running text */
   --g-gutter: clamp(20px, 4vw, 64px);
-  background: var(--g-bg);
+  /* soft black, a touch lighter towards the top of the screen (tokens.css) */
+  background: radial-gradient(140vw 90vh at 50% 0%, var(--g-lift) 0%, transparent 70%) fixed, var(--g-bg);
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 html:has(body.page-grid),
-html:has(body.page-lab) { background: #000000; }
+html:has(body.page-lab) { background: var(--dark); }
+
+/* ---- light theme ---- */
+html[data-theme="light"] .page-grid,
+html[data-theme="light"] .page-lab {
+  --g-bg: var(--paper);
+  --g-ink: var(--paper-ink);
+  --g-muted: var(--paper-muted);
+  --g-line: var(--paper-line);
+  --g-lift: transparent;
+  --g-well: var(--paper-well);
+  --g-card: var(--paper-card);
+  --g-card-hover: var(--paper-card-hover);
+}
+html[data-theme="light"]:has(body.page-grid),
+html[data-theme="light"]:has(body.page-lab) { background: var(--paper); }
 
 /* ---- page title: a single row of small print, the page's name leading it ---- */
 .page-head {
@@ -44,6 +68,18 @@ html:has(body.page-lab) { background: #000000; }
 }
 .page-head-row > :last-child { flex: none; white-space: nowrap; }
 
+/* a page title kept for screen readers and search engines, not drawn */
+.page-title-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+/* Work has no title row: the wall itself starts clear of the site nav */
+body.page-grid .grid { padding-top: clamp(104px, 15vh, 160px); }
+
 /* ---- the wall ---- */
 .grid:not(.list-view),
 .lab-grid {
@@ -54,7 +90,6 @@ html:has(body.page-lab) { background: #000000; }
   max-width: 1800px;
   margin: 0 auto;
   padding: clamp(28px, 5vh, 56px) var(--g-gutter) clamp(80px, 12vh, 160px);
-  counter-reset: piece;
 }
 @media (max-width: 1200px) { .lab-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 768px) {
@@ -75,7 +110,6 @@ html:has(body.page-lab) { background: #000000; }
   padding: 0;
   border-radius: 0;
   background: none;
-  counter-increment: piece;
 }
 .grid:not(.list-view) > .grid-item { transition: opacity 0.45s ease; }
 .grid:not(.list-view) > .grid-item:hover { background: none; }
@@ -87,7 +121,7 @@ html:has(body.page-lab) { background: #000000; }
   height: auto;
   aspect-ratio: 1 / 1;
   border-radius: 0;
-  background: #0c0c0d;
+  background: var(--g-well);
 }
 .grid:not(.list-view) > .grid-item > img,
 .lab-card .media-wrap > img,
@@ -119,7 +153,7 @@ html:has(body.page-lab) { background: #000000; }
   inset: 0 0 auto 0;
   aspect-ratio: 1 / 1;
   border-radius: 0;
-  background: #0c0c0d;
+  background: var(--g-well);
   animation: none;
 }
 
@@ -144,7 +178,7 @@ html:has(body.page-lab) { background: #000000; }
   display: block;
   aspect-ratio: 3 / 2;
   overflow: hidden;
-  background: #0c0c0d;
+  background: var(--g-well);
   /* wipes open from its outer edge as the block scrolls in */
   clip-path: inset(0 100% 0 0);
   transition: clip-path 1.1s cubic-bezier(0.22, 1, 0.36, 1);
@@ -231,11 +265,11 @@ html:has(body.page-lab) { background: #000000; }
   .wall-feature-text > * { opacity: 1; translate: 0 0; transition: none; }
 }
 
-/* ---- caption: number · name ........ year / type ---- */
+/* ---- caption: name ........ year / type ---- */
 :is(.grid:not(.list-view) > .grid-item, .lab-card) .item-label {
   position: static;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   column-gap: 10px;
   align-items: baseline;
   width: auto;
@@ -255,13 +289,8 @@ html:has(body.page-lab) { background: #000000; }
   color: var(--g-muted);
   pointer-events: none;
 }
-:is(.grid:not(.list-view) > .grid-item, .lab-card) .item-label::before {
-  content: counter(piece, decimal-leading-zero);
-  grid-column: 1;
-  grid-row: 1;
-}
 :is(.grid:not(.list-view) > .grid-item, .lab-card) .item-label-name {
-  grid-column: 2;
+  grid-column: 1;
   grid-row: 1;
   display: block;
   font: inherit;
@@ -272,11 +301,52 @@ html:has(body.page-lab) { background: #000000; }
   text-overflow: ellipsis;
 }
 :is(.grid:not(.list-view) > .grid-item, .lab-card) .item-label-tag {
-  grid-column: 3;
+  grid-column: 2;
   grid-row: 1;
   font: inherit;
   letter-spacing: inherit;
   color: inherit;
+}
+
+/* ---- reel bar: a thin playbar along the bottom of a clip's picture while
+   it plays on hover, like the one on a phone's short videos (script.js
+   fills it). It lives in the clip's layer, so it fades in and out with it. ---- */
+.reel-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.24);
+  pointer-events: none;
+}
+.reel-bar i {
+  display: block;
+  height: 100%;
+  background: #ffffff;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+/* ---- the year: out of sight until the tile is hovered, then each digit
+   rolls up into place like an odometer, one after the other. script.js
+   builds the digit columns on the first hover and marks the tag .is-in
+   while the pointer is over the tile. Without a mouse (touch screens) and in
+   the list view the year is simply shown as text. ---- */
+.grid:not(.list-view) .item-label-tag.is-year:not(.is-roll) { visibility: hidden; }
+.item-label-tag.is-roll { display: flex; align-self: start; }
+.yr-slot { display: block; height: 1.4em; overflow: hidden; }
+.yr-roll {
+  display: block;
+  transform: translateY(1.4em);                 /* parked below its window */
+  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--i, 0) * 60ms);
+}
+.yr-roll b { display: block; height: 1.4em; line-height: 1.4em; font-weight: inherit; }
+.item-label-tag.is-in .yr-roll { transform: translateY(-2.8em); }
+.grid.list-view .yr-roll { transform: translateY(-2.8em); transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .yr-roll { transition: none; }
 }
 
 /* ---- Work's list view, on the black wall ---- */
@@ -285,7 +355,7 @@ html:has(body.page-lab) { background: #000000; }
   padding: clamp(28px, 5vh, 56px) var(--g-gutter) clamp(80px, 12vh, 160px);
 }
 .grid.list-view .grid-item { border-bottom-color: var(--g-line); }
-.grid.list-view .grid-item:hover { background: rgba(244, 244, 245, 0.04); }
+.grid.list-view .grid-item:hover { background: color-mix(in srgb, var(--g-ink) 4%, transparent); }
 .grid.list-view .grid-item .item-meta { color: var(--g-muted); }
 
 /* ---- Lab cards keep their rise-in; only the look above is shared ---- */

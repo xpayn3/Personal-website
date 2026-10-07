@@ -16,13 +16,25 @@
   --nav-cta-bg-hover: #ffffff;
 }
 
-/* Light-page opt-in (kept for any future light-background page). */
-body.nav-light {
+/* Light pages. A page is light when it carries body.nav-light, or when its
+   theme says so (<html data-theme="light">, set before first paint and by
+   the Dark / Light button). A page in its dark theme always gets the dark
+   palette, whatever its body class says. */
+body.nav-light,
+html[data-theme="light"] body {
   --nav-fg: #17150f;
   --nav-fg-dim: rgba(0, 0, 0, 0.6);
   --nav-cta-bg: #14140f;
   --nav-cta-fg: #f4f2ec;
   --nav-cta-bg-hover: #000000;
+}
+html[data-theme="dark"] body,
+html[data-theme="dark"] body.nav-light {
+  --nav-fg: rgba(255, 255, 255, 0.95);
+  --nav-fg-dim: rgba(255, 255, 255, 0.6);
+  --nav-cta-bg: #f4f2ec;
+  --nav-cta-fg: #14140f;
+  --nav-cta-bg-hover: #ffffff;
 }
 
 .site-nav {
@@ -81,7 +93,7 @@ body.nav-light {
 .site-nav .floating-nav-link {
   position: relative;
   font-family: var(--font-body, sans-serif);
-  font-size: 0.95rem;
+  font-size: calc(0.95rem + 2px);
   font-weight: 500;
   letter-spacing: 0;
   text-transform: none;
@@ -94,6 +106,15 @@ body.nav-light {
   transform: none;
   animation: none;
   transition: color 0.2s ease;
+}
+/* The words are small; the area that takes a click is not. An invisible
+   pad around each one reaches out to half-way to its neighbours and most of
+   the bar's height, without changing the word's own box (the hover morph
+   measures that). */
+.site-nav .floating-nav-link::before {
+  content: '';
+  position: absolute;
+  inset: -22px clamp(-36px, -2.25vw, -20px);
 }
 .site-nav .floating-nav-link:hover { color: var(--nav-fg); letter-spacing: 0; }
 .site-nav .floating-nav-link.is-active { color: var(--nav-fg); font-weight: 600; }
@@ -192,6 +213,25 @@ body.page-home .services {
 .nav-burger.is-open span:nth-child(2) { opacity: 0; }
 .nav-burger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
+/* ---------- Dark / Light button (theme.js; smoke.js on the home page) ---------- */
+.theme-toggle {
+  padding: 9px 14px;
+  border: 1px solid var(--nav-fg-dim);
+  border-radius: var(--radius-pill, 999px);
+  background: transparent;
+  color: var(--nav-fg);
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color var(--duration-fast, 0.2s) ease;
+}
+.theme-toggle:hover { border-color: var(--nav-fg); }
+.theme-toggle:focus-visible { outline: 2px solid var(--nav-fg); outline-offset: 3px; }
+body.scroll-locked .theme-toggle { display: none; }
+@media (max-width: 760px) { .theme-toggle { padding: 7px 11px; font-size: 0.76rem; } }
+
 /* ---------- Fullscreen mobile menu (injected by floating-nav.js) ---------- */
 .mobile-menu {
   position: fixed;
@@ -211,7 +251,9 @@ body.page-home .services {
   transform: translateY(-8px);
   transition: opacity 0.32s ease, transform 0.32s cubic-bezier(0.16,1,0.3,1), visibility 0s 0.32s;
 }
-body.nav-light .mobile-menu { background: #ececea; color: #16150f; }
+body.nav-light .mobile-menu,
+html[data-theme="light"] .mobile-menu { background: #ececea; color: #16150f; }
+html[data-theme="dark"] body.nav-light .mobile-menu { background: #121214; color: #f4f4f0; }
 .mobile-menu.open {
   opacity: 1;
   visibility: visible;

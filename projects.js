@@ -14,8 +14,10 @@ const projects = {
     collab: 'Studio ENKI',
     location: 'Slovenia, Ljubljana',
     desc: [
-      'With over 30 years of experience in bridge weigh-in-motion measurements, bridge assessments and traffic data, Cestel is one of the world\'s leading companies in the fields of high-speed weigh-in-motion and traffic analysis.',
-      'Animation that showcases CESTEL measurement process in an abstract way that is engaging for the watchers. Animation will be used for informational purposes and showcase of their system.'
+      "With over 30 years of experience in bridge weigh-in-motion measurements, bridge assessments and traffic data, Cestel is one of the world's leading companies in the fields of high-speed weigh-in-motion and traffic analysis.",
+      "The brief was a system nobody ever sees: sensors bolted under a bridge, quietly weighing every truck that drives over it. We decided not to explain it like a manual. The film treats the hardware as product design, with slow macro passes over brushed aluminium, the red sensor housing and the cable gland, and then pulls back to show what those parts are for.",
+      "Everything sits in one restrained palette: cool, overcast greys with Cestel's red as the only accent, so the eye always knows where the measurement is happening. Red is the signal. It glows under the axle as a truck crosses, travels down the cable, and becomes the readout and the bars of the traffic chart.",
+      "The abstraction is deliberate. A bridge is reduced to a portal, traffic to coloured blocks, weight to a stack of discs pressing on a plate. That let us keep the engineering honest while staying readable for someone who has never heard of weigh-in-motion. Sound design carries the rest: each cut lands on a mechanical click or a low pass of tyres.",
     ],
     brief: 'Visualize a complex measurement system in an engaging, accessible way.',
     tools: ['Cinema 4D', 'Redshift', 'Sound Design', 'Photoshop', 'AfterEffects'],
@@ -55,7 +57,11 @@ const projects = {
     year: 2022,
     client: 'Pritličje',
     theme: 'Responsibility',
-    desc: ['A bold visual system built from the ground up for Grounded 2022. We developed the complete identity through 3D renders, animated teasers, and projection-mapped visuals — crafting every element to feel immersive and unmistakably Grounded.'],
+    desc: [
+      "The 2022 theme was responsibility, Odgovornost. We asked where responsibility usually ends up in everyday life, and the answer was packaging: the warning label, the tamper seal, the small print nobody reads. So the identity is built from objects that promise to look after you.",
+      "A pill bottle sealed with a holographic sticker. A scratched disc in a jewel case, carrying every certification logo we could fit on it. A fuel-brand badge redrawn as Grounded Premium. Each one is modelled and lit like a product shot on pure black, so the only colour comes from the hologram foil shifting as the object turns.",
+      "The typography follows the objects. The wordmark runs around the rim of the disc and the seal, set tight in a wide grotesque, and the Slovenian and English words cross each other like a target. From there the system stretched across posters, animated teasers and projection visuals without ever needing a new idea, only a new object.",
+    ],
     brief: 'Create a complete visual identity for the 2022 festival edition.',
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects', 'Photoshop'],
     images: [
@@ -93,7 +99,11 @@ const projects = {
     name: 'Festival Grounded 2021: The State',
     year: 2021,
     client: 'Pritličje',
-    desc: ['We shaped the entire visual world of Grounded 2021 — from poster series and sticker packs to social media templates and animated Instagram stories. Every asset was designed to feel cohesive, kinetic, and alive.'],
+    desc: [
+      "Država, The State. For this edition we wanted an image with the weight of a public monument and none of its certainty. The key visual is a single sculpture: figures piled on a rock in the sea, scales in one hand, a halo of swords behind the head, chains and smoke around the base. It borrows the language of official statuary and lets it come apart.",
+      "We rendered it twice, once in soft dusk colour and once in polished chrome on black, and those two moods became the whole system. A custom-feeling display face with sharp, ceremonial letterforms does the announcing; a plain geometric sans carries line-ups and dates. Pink against black keeps it loud on a wall and legible on a phone.",
+      "The frame with notched corners holds every format together: posters, stickers, the website header, the artist announcements and the animated stories. A black flag reading Država, planted in a red field under the moon, closes the set. It is the same world, just quieter.",
+    ],
     brief: 'Design every visual touchpoint — from posters to animated stories.',
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects', 'Photoshop'],
     images: [
@@ -130,7 +140,11 @@ const projects = {
     year: 2021,
     client: "The Athlete's Foot",
     type: '#worldsneakerday',
-    desc: ["We brought sneaker culture to life through high-energy 3D animation and motion graphics for The Athlete's Foot. Every frame was crafted to stop the scroll — bold compositions, dynamic camera work, and product renders that make you want to reach through the screen."],
+    desc: [
+      "Sneaker posts all look the same: one shoe, three-quarter view, a drop shadow. For World Sneaker Day we wanted the opposite of a catalogue shot, so we stacked the shoes. A tower of pairs balancing on each other, soles pressed into uppers, turning slowly on a soft pastel gradient.",
+      "To make that believable the shoes had to be real. Each pair was captured with photogrammetry, cleaned up and retopologised, then textured so the leather grain, the mesh and the stitching hold up in close-up. The process shots in the gallery show the stages: camera positions around the shoe, the raw point cloud, the sculpt.",
+      "The lighting is deliberately gentle. Large soft sources, a hint of pink and blue from the backdrop, nothing dramatic, so the colourways of the shoes do the talking. The stack loosens, tumbles and resolves into The Athlete's Foot wordmark. We cut it for landscape, square and vertical so it could run everywhere the campaign did.",
+    ],
     brief: 'Make sneaker product launches stop the scroll on social media.',
     tools: ['Cinema 4D', 'AfterEffects', 'Photoshop', 'Substance 3D'],
     images: [
@@ -163,8 +177,10 @@ const projects = {
     client: 'Pritličje',
     link: 'https://www.grounded.si',
     desc: [
-      'Solidarity, elimination of inequality and peaceful co-existence assume the existence of truth, and truthfulness as the value of public action. In the post-truth world, these assumptions no longer exist.',
-      'Those in positions of power often lie without legal or other social sanction. The ruling party-owned media spreads lies about those who resist them. Social networks increase the reach of conspiracy theories, while platforms are placed in the role of arbiters of truth.'
+      "Solidarity, elimination of inequality and peaceful co-existence assume the existence of truth, and truthfulness as the value of public action. In the post-truth world, these assumptions no longer exist.",
+      "Those in positions of power often lie without legal or other social sanction. The ruling party-owned media spreads lies about those who resist them. Social networks increase the reach of conspiracy theories, while platforms are placed in the role of arbiters of truth.",
+      "We turned that into a set of still lifes about how information is made, carried and silenced. An old television leaking something green and synthetic. A microphone wrapped in chain. A police baton lying among opened hard drives. Letter dice spelling the word on a crowd barrier. Each object is ordinary; the staging is what makes it uneasy.",
+      "The look is forensic: near-black backgrounds, hard directional light, and two signal colours, an acid green and an alarm red, used the way a terminal uses them. Type is set like evidence labels, small, monospaced and precise, with the artist and speaker lists stacked in colour over the renders. The same objects carry the poster, the banners and the vertical formats.",
     ],
     brief: 'Build an identity around truth and resistance in a post-truth era.',
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects', 'Photoshop'],
@@ -193,7 +209,11 @@ const projects = {
     name: 'Festival Grounded 2018',
     year: 2018,
     client: 'Pritličje',
-    desc: ['The second edition of Grounded explored intimacy in the digital age. We translated that tension into a visual identity — layered renders, glowing textures, and a typographic system that felt both human and synthetic.'],
+    desc: [
+      "The second edition of Grounded asked about intimacy in the age of artificial intelligence. We answered with one gesture: a mechanical hand holding something soft. A brain, an eye, a block of bright silicone. The hand is jointed brass and carbon fibre, the thing it holds is glossy and vulnerable, and the whole tension of the theme is in how carefully it is being held.",
+      "We kept the colour flat and confident, cyan, magenta and violet backdrops with no gradients to hide behind, so the objects read instantly at poster size and from across a street. The materials do the storytelling: polished metal against rubbery pink, a hard machine being gentle.",
+      "Typography is a monospaced face for the title, a nod to the machine doing the talking, paired with a friendly rounded sans for dates and the festival mark. The system ran across the poster, a series of square variations for each object, and the printed tickets.",
+    ],
     brief: 'Translate the tension of digital intimacy into a festival identity.',
     tools: ['Cinema 4D', 'Photoshop', 'Illustrator'],
     images: [
@@ -216,7 +236,11 @@ const projects = {
     name: 'Mesta pešcem — TamTam',
     year: 2018,
     award: 'Mestni plakat leta — TamTam 2018',
-    desc: ['A poster that won City Poster of the Year at TamTam 2018. We combined bold typography with layered urban imagery to deliver a message about pedestrian-first cities — a single sheet that sparked conversation across Ljubljana.'],
+    desc: [
+      "A poster for pesec.si with one job: make the case for cities that belong to people on foot. We wanted a single image you understand from the other side of the street, before you have read a word.",
+      "So the city stands on a shoe. A worn canvas high-top is tipped on its heel, and a whole skyline, towers, blocks and a strip of green, grows out of the sole. The scuffed toe cap matters as much as the buildings; it says this shoe has done the walking. Everything floats on a calm sky blue with a soft shadow, and the line Mesta pešcem! sits small at the bottom, because the picture has already said it.",
+      "The poster won City Poster of the Year at TamTam 2018 and ran on street displays across Ljubljana.",
+    ],
     brief: 'Design a city poster that sparks conversation about pedestrian rights.',
     tools: ['Photoshop', 'Illustrator'],
     images: [
@@ -231,7 +255,11 @@ const projects = {
     category: ['Motion', '3D'],
     name: 'AppointMENT 4.0',
     year: 2019,
-    desc: ['We designed the complete visual identity for AppointMENT 4.0 — a music and arts event where every visual element, from posters to digital assets, was built around abstract 3D forms and experimental typography.'],
+    desc: [
+      "The visual for AppointMENT 4.0 started from a feeling more than a brief: being the one lit thing in a dark room. We built a figure standing in a forest at night, wearing a puffer jacket that glows from the inside, the only light source in the frame.",
+      "Then we broke it. The arms run long, past the knees, down to the ground, and end in red hands resting on the forest floor. It is a small wrong detail that turns a fashion image into something stranger, and it gave the event a character people remembered.",
+      "The palette is nearly monochrome, deep violet trunks and black, so the white of the jacket and the red of the arms carry everything. Lighting is practical: what the jacket throws on the trees is all there is.",
+    ],
     brief: 'Build a visual identity for a music and arts event from scratch.',
     tools: ['Cinema 4D', 'Photoshop', 'Illustrator'],
     images: [
@@ -247,7 +275,12 @@ const projects = {
     name: "Halloween — The Athlete's Foot",
     year: 2021,
     client: "The Athlete's Foot",
-    desc: ['For The Athlete\'s Foot Halloween campaign, we built an entire dark universe from scratch — grotesque characters, fog-drenched environments, and cinematic product shots that turned a seasonal retail push into something people actually wanted to watch.', 'The technical backbone of this project was photogrammetry. Every sneaker was hand-scanned using a DSLR rig — roughly 200–300 photos per shoe, shot from every conceivable angle under controlled lighting. Those images were then processed into raw point clouds, millions of vertices that captured every stitch, crease, and texture detail of the physical product.', 'From there, the real work began. Each point cloud was imported into ZBrush for cleanup — removing noise, filling gaps, rebuilding topology into something render-ready. The poly counts were enormous. A single shoe could easily hit 8–10 million polygons before decimation, and the full scenes with characters and environments pushed workstations to their absolute limits.'],
+    desc: [
+      "Halloween campaigns tend to reach for cobwebs. We went for a haunted candy shop instead: a velvet throne in an ultraviolet jungle with a pumpkin glowing in the leaves, a pit of striped sweets with a sneaker sunk into it, a cave lined with blue fur that opens around the shoe like something breathing. Sweet at first glance, a little off at the second.",
+      "The technical backbone of this project was photogrammetry. Every sneaker was hand-scanned using a DSLR rig, roughly 200–300 photos per shoe, shot from every conceivable angle under controlled lighting. Those images were then processed into raw point clouds, millions of vertices that captured every stitch, crease, and texture detail of the physical product.",
+      "From there, the real work began. Each point cloud was imported into ZBrush for cleanup: removing noise, filling gaps, rebuilding topology into something render-ready. The poly counts were enormous. A single shoe could easily hit 8–10 million polygons before decimation, and the full scenes pushed workstations to their absolute limits.",
+      "Having true-to-life scans is what let us be reckless with everything around them. The shoes stay photographic while the worlds go saturated and synthetic, lit in magenta, violet and electric blue. That contrast, a real product in an unreal place, is the whole look of the campaign.",
+    ],
     brief: 'Turn a seasonal retail campaign into something cinematic and shareable.',
     tools: ['Cinema 4D', 'ZBrush', 'Redshift', 'AfterEffects', 'Substance 3D'],
     images: [
@@ -282,7 +315,11 @@ const projects = {
     name: "Black Friday — The Athlete's Foot",
     year: 2021,
     client: "The Athlete's Foot",
-    desc: ['High-impact 3D animation for The Athlete\'s Foot Black Friday campaign. We created explosive product reveals and kinetic type sequences — everything engineered for maximum visual punch in a crowded retail moment.'],
+    desc: [
+      "Black Friday is the loudest week in retail, so we took the colour out. The whole film is white shoes in a white room, and one black material.",
+      "The black is a liquid. It pours over a clean white sneaker, drips off the sole and pools on a sheet of glass, then fills a clear display case until the shoe is sitting in it. We spent most of the time on how it moves: thick and glossy, slow enough to read, with highlights that keep its shape visible against grey. The title is cast from the same stuff and sealed under clear film like a product label.",
+      "A wall of tumbling white trainers gives the cut its one busy moment, then it settles back to a single object. Everything ends on the red wing of The Athlete's Foot, the only colour in the piece.",
+    ],
     brief: 'Maximum visual impact for a crowded Black Friday retail moment.',
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects', 'Substance 3D'],
     images: [
@@ -302,7 +339,11 @@ const projects = {
     category: ['Print', 'Branding'],
     name: 'LargaVida Limited Edition',
     year: 2022,
-    desc: ['We designed the complete visual language for LargaVida\'s limited edition release — from packaging to digital presence. Clean, premium, and built to stand out on shelf and screen alike.'],
+    desc: [
+      "LargaVida is an XO rum with the sea on its label: a sunset, a dolphin, hand-drawn lettering. For the limited edition the bottle needed a finishing piece, something you would keep after the rum was gone. We designed the stopper as a small sculpture, a speedboat cutting across a disc of waves.",
+      "The work was mostly form. The boat had to read as a boat at the size of a thumb, so the hull lines are simplified and the wake is exaggerated into a few bold ridges. We sculpted it, then rebuilt the surface into clean, even geometry so it could be produced without losing the edges, and the gallery shows that step: the wireframe, the remesh, the flow of the surface.",
+      "It is finished in gold to sit with the collar of the bottle, and lit in the final image the way spirits are photographed: a soft key, a bright rim, the amber doing the rest.",
+    ],
     brief: 'Design premium packaging and digital presence for a limited release.',
     tools: ['Photoshop', 'Illustrator'],
     images: [
@@ -323,7 +364,11 @@ const projects = {
     category: ['Print'],
     name: 'NewEdge Magazine',
     year: 2020,
-    desc: ['We crafted the editorial design system for NewEdge — a magazine that bridges digital culture and print craft. Every spread was treated as a composition, balancing bold imagery with refined typography.'],
+    desc: [
+      "For issue XI of NewEdge we built the cover and its opening images as sets rather than illustrations. Small staged rooms, each one a little too perfect: a bathtub on a checkerboard floor in front of orange tile, a staircase leading to a figure taking a selfie against a blue circle, green velvet curtains, gold taps, a rubber duck.",
+      "The mood is a shop window. Saturated colour blocking, orange against green against sky blue, glossy materials, plants placed like props. The figures are mannequins on purpose; the scenes are about performing a life for a camera, and the phone is in every one of them.",
+      "The masthead is part of the set. NewEdge is spelled in inflated gold balloon letters and matte black bars, standing in the scene and lit by the same lights, so the type and the image are one object. On the printed cover it sits tight to the spine with the issue number set small above.",
+    ],
     brief: 'Create an editorial design system bridging digital culture and print.',
     tools: ['InDesign', 'Photoshop', 'Illustrator'],
     images: [
@@ -346,7 +391,11 @@ const projects = {
     name: 'Festival Grounded 2023',
     year: 2023,
     client: 'Pritličje',
-    desc: ['Visual identity, 3D animation and motion design for the Grounded festival 2023 edition.'],
+    desc: [
+      "The 2023 identity is built on a contradiction: the language of jewellery used to talk about violence. The hero object is an ornate chrome egg, set with blue stones and wrapped in fine filigree, the kind of thing made to be kept behind glass. Next to it, a heap of brass cartridges.",
+      "We modelled everything as if for a jeweller's catalogue. Polished metal on a soft lavender gradient, a peace sign worked into a pendant with hanging globes, the word PEACE bent into a chrome emblem around the festival name. The reflections are the hard part of a scene like this, so the lighting is a few large, clean shapes that describe the form without clutter.",
+      "A sharp lime green is the one loud colour, used for frames and for the torn shapes that reveal the egg in the animated formats. Type is a high-contrast serif for dates, small and confident, and it leaves the object alone.",
+    ],
     brief: 'Visual identity and 3D animation for the 2023 festival edition.',
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects'],
     images: [
@@ -372,7 +421,11 @@ const projects = {
     name: 'Festival Grounded 2026',
     year: 2026,
     client: 'Pritličje',
-    desc: ['Visual identity and motion design for the Grounded festival 2026 edition.'],
+    desc: [
+      "Grounded turned ten, and we marked it with toys. A water pistol built like a real weapon, feeding out a till receipt. A pocket pet whose little screen shows a mushroom cloud. A cash register with MONEYYY on its display and a drawer full of gold. Everything is moulded in translucent neon plastic, the kind you can see the batteries through.",
+      "The idea is in the material. Injection-moulded green, hot pink and blue, with visible screws, seams and circuit boards inside, lit hard against black so the plastic glows at its edges. It looks harmless and collectible, which is exactly why the subjects sit so uncomfortably in it.",
+      "The system is a kit of parts: a red cog-shaped label carrying the festival text, a pressed metal token for the mark, and a big serif 10 embossed into the shells. We designed it so each object could carry a poster on its own, and so the animations could simply turn the object over in the hand.",
+    ],
     brief: 'Visual identity and motion design for the 2026 festival edition.',
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects'],
     images: [
@@ -400,7 +453,11 @@ const projects = {
     name: 'Festival Grounded 2025',
     year: 2025,
     client: 'Pritličje',
-    desc: ['Visual identity and motion design for the Grounded festival 2025 edition.'],
+    desc: [
+      "This edition went close. The visuals are macro studies of something growing on dark rock: soft, folded forms in pink and deep red, somewhere between coral, fungus and tissue. We wanted an image that feels alive before it means anything.",
+      "The surfaces were the design problem. Light passes into the forms and comes back out warm, so the folds glow from within, while the rock stays matte and cold. A shallow depth of field keeps only a slice in focus, the way a real macro lens would, and the camera barely moves.",
+      "The motion pieces are slow on purpose. They breathe rather than animate, and they work as backdrops on stage as much as posts in a feed.",
+    ],
     brief: 'Visual identity and motion design for the 2025 festival edition.',
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects'],
     images: [
@@ -422,7 +479,11 @@ const projects = {
     name: 'Festival Grounded 2024',
     year: 2024,
     client: 'Pritličje',
-    desc: ['Visual identity and motion design for the Grounded festival 2024 edition.'],
+    desc: [
+      "The 2024 key visual happens underwater. A skull drifts in deep blue, caught in fishing nets, and a translucent tentacle rises through it and wraps around it, dotted with suckers and trailing bubbles.",
+      "We built it as a sequence rather than a single poster. Across the series the tentacle climbs, coils and tightens, so the posters read like frames from one slow movement, and the animated versions simply play it. The skull picks up algae along the way.",
+      "The palette is two colours: the blue of deep water and a milky pink for the creature, with light scattering inside it so it looks soft and wet, not solid. Fine particles and bubbles give the water its depth. Typography stays small in a corner; the image is tall, quiet and a little menacing, and it did not need help.",
+    ],
     brief: 'Visual identity and motion design for the 2024 festival edition.',
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects', 'Photoshop'],
     images: [
@@ -454,7 +515,12 @@ const projects = {
     category: ['Motion'],
     name: 'Radenci — Prostorska Projekcija',
     year: 2026,
-    desc: ['An immersive projection mapping installation in Radenci — transforming architectural surfaces into living canvases. We designed and rendered every visual sequence, syncing light, motion, and space into a single experience.'],
+    desc: [
+      "A spatial projection for children in Radenci: a room where the walls become the story. The audience stands inside it and follows a small gnome in a red hat on a journey that starts in the forest, drops underground and ends under water.",
+      "We designed it as a film that has no single screen. The scenes had to hold up across corners and uneven surfaces, so compositions are built around one clear point of attention, usually the gnome and a light he is following, with the rest of the frame kept dark enough to melt into the room. A lantern in the undergrowth, a glowing orb in a cave, a giant eye opening in the rock.",
+      "The look is closer to stop-motion than to a cartoon. Textures are tactile, moss, wet stone, felt, and the lighting is warm and practical, which makes the world feel like a set you could touch. For a young audience that matters: the scary moments, the cave, the warning signs, the big fish, stay gentle.",
+      "The photos from the room are the real result. Children reaching for the orb on the wall is the interaction we were designing for.",
+    ],
     brief: 'Transform architectural surfaces into a living projection experience.',
     tools: ['Cinema 4D', 'AfterEffects'],
     images: Array.from({ length: 31 }, (_, i) => {
@@ -571,7 +637,11 @@ const projects = {
     category: ['Print', 'Branding'],
     name: 'Kersnikova',
     year: 2021,
-    desc: ['We developed the visual identity and print collateral for Kersnikova — posters, brochures, and spatial graphics that translate the institution\'s experimental spirit into bold, accessible design.'],
+    desc: [
+      "Kersnikova is an institution where art meets science and the lab is part of the gallery. For the HAIP live programme we made the poster out of its tools: a white moulded shell, a funnel, connectors and clamps, tied together by one long red tube that loops around everything like a drawing.",
+      "It is a two-colour job by design. White objects on white paper, with red for the tube, the type and the times, so the print is cheap to produce and impossible to miss. The object is shot soft and shadowless, which makes it feel clinical; the red line gives it a pulse.",
+      "The grid is simple and repeatable: title and date top left, the programme set in two time blocks, the institution's name turned up the right edge. The same parts carry over to the folded programme, where the red line continues across the spread, and the poster held its own pasted on a wall full of graffiti.",
+    ],
     brief: 'Translate an experimental institution\'s spirit into accessible design.',
     tools: ['Photoshop', 'Illustrator', 'InDesign'],
     images: [
@@ -591,7 +661,11 @@ const projects = {
     category: ['3D'],
     name: 'Natureta Product Renders',
     year: 2023,
-    desc: ['Photorealistic 3D product renders for Natureta — each jar, label, and surface rendered with obsessive attention to material and light. We created visuals that blur the line between photography and CGI.'],
+    desc: [
+      "A library of product renders for Natureta, built so the brand never has to book a studio for a new jar. Every product exists as a 3D model: the glass, the lid, the label, and what is inside.",
+      "What is inside was the challenge. A pepper spread has to look thick and flecked, pickles have to sit in clear brine, and the glass has to bend all of it the way a real jar does. We spent the time on those materials and on a lighting setup that behaves like a product photographer's: a big soft key, a bright edge on the lid, a clean falloff on the backdrop.",
+      "From one setup we produced single packshots on white, grouped line-ups on brand green, a styled scene on slate with garlic and herbs, and loose, floating compositions for social. Because it is all the same light and the same camera logic, anything rendered later sits next to the first images without a seam.",
+    ],
     brief: 'Create photorealistic product renders that rival studio photography.',
     tools: ['Cinema 4D', 'Redshift', 'Photoshop'],
     images: [
@@ -618,7 +692,11 @@ const projects = {
     category: ['3D', 'Branding'],
     name: 'Natureta 100 Let',
     year: 2023,
-    desc: ['Visual design celebrating 100 years of Natureta — we crafted a campaign that honors the brand\'s heritage while feeling fresh and contemporary. From concept to final delivery, every detail was considered.'],
+    desc: [
+      "Natureta turned one hundred. The campaign line is Stoletje ustvarjanja slastne hrane, a century of making delicious food, signed off with Hvala, narava: thank you, nature.",
+      "We took the thank-you literally and composed each poster as a bouquet. The jar stands in the middle and the arrangement around it is made of produce and flowers, a romanesco, kale, a head of garlic, ginger flowers and a bird of paradise, set against a calm grey or a deep violet. It is a still life, formal and a little celebratory, and the jar is the guest of honour.",
+      "The layout is built for the street. White type top left, the logo locked to the corner, the anniversary mark bottom right, and plenty of quiet space so it reads from a passing car. It ran on city-light displays.",
+    ],
     brief: 'Celebrate 100 years of heritage while feeling fresh and modern.',
     tools: ['Photoshop', 'Cinema 4D'],
     images: [
@@ -637,7 +715,11 @@ const projects = {
     name: 'AccountingBox',
     year: 2024,
     client: 'AccountingBox',
-    desc: ['Motion graphics system for AccountingBox — a suite of short product animations built to explain features across social, web, and in-app surfaces. Each loop is crafted to feel part of the same world: consistent timing, color, and motion language so the product tells one story wherever it shows up.'],
+    desc: [
+      "AccountingBox needed to explain software features without showing screens that would be out of date in a year. We gave the product a body instead: a blue cube. Everything the software does is something the cube does.",
+      "It sorts a grid of scattered shapes into order. It pulls a storm of loose paper into itself. It grows out of a pot, block by block, like a plant. It sits on the sofa as a cushion and on the wall as a picture. Each animation is one idea, a few seconds long, and loops cleanly.",
+      "The system is strict so the loops feel like one family: a periwinkle world, the brand blue for the cube, and small accents of coral, green and yellow. Soft, even light, rounded furniture, and the same easing on every move. We built a handful of room sets, a living room, a home office, a larger office, so the cube always turns up somewhere familiar.",
+    ],
     brief: 'Explain accounting software features through a consistent motion system.',
     tools: ['Cinema 4D', 'Redshift', 'AfterEffects'],
     images: [

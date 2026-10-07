@@ -10,6 +10,8 @@
 //   stage     how finished it is, shown as a small tag by its name: 'Alpha',
 //             'Beta', 'Experimental' (optional)
 //   repo      GitHub link            url   where it runs (optional)
+//   download  file the Download button fetches (optional; without it the
+//             button gets the repo's current code as a zip)
 //   icon      image URL (optional; without one the tile shows the initial)
 //   stats     the strip under the header: [label, value] pairs
 //   cover     wide picture for its post in the Lab feed
@@ -47,9 +49,9 @@ window.labApps = [
     ],
     stats: [['Version', '0.8.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
     about: [
-      'Drop a STEP file in. Get a Meshopt-compressed GLB and an interactive viewer out. A self-hosted take on the Pixyz preprocessor: Python and your browser, no licence server.',
-      'CAD assemblies are big. A real-world STEP file might contain 400 identical bolts, 80 duplicate brackets and half a million degenerate triangles, and still expect your GPU to render it. The pipeline collapses what it can: identical parts become one mesh and a list of transforms, bad triangles are re-tessellated, and the tiny stuff is culled by size.',
-      'A CAD preprocessor, viewer, hierarchy editor and exporter, in one local app.',
+      "A tool for getting heavy CAD assemblies into the browser.",
+      "The problem it works on is a practical one. A real-world STEP file can hold 400 identical bolts, 80 duplicate brackets and half a million degenerate triangles, and a browser is still expected to draw it. MeshOptimiser reads the assembly, recognises the parts that are the same and keeps one mesh with a list of positions, re-tessellates the bad geometry, and drops what is too small to see.",
+      "What comes out is a compressed GLB and a viewer to look at it in: the assembly tree, section cuts, recolouring, export. It runs locally, with Python and a browser, as an open, self-hosted take on what preprocessors like Pixyz do.",
     ],
     highlights: [
       ['320 MB → 11 MB', 'The README’s example: a STEP assembly down to a Meshopt-compressed GLB.'],
@@ -156,14 +158,27 @@ window.labApps = [
     shots: [
       ['Images/apps/windytree-editor.webp', 'The editor: a cherry tree with its trunk, shape and branching controls'],
       ['Images/apps/windytree-oak.webp', 'The oak preset'],
+      ['Images/apps/windytree-japanese-maple-leaves.webp', 'Leaf count, size, season and material, on a red Japanese maple'],
+      ['Images/apps/windytree-pine-conifer.webp', 'Conifers get their own crown and needle controls'],
+      ['Images/apps/windytree-bark-closeup.webp', 'Procedural bark, from presets down to fissure depth'],
+      ['Images/apps/windytree-leaf-closeup.webp', 'Close in on branches and individual leaves'],
+      ['Images/apps/windytree-wind.webp', 'Wind: strength, gusts, direction and turbulence'],
+      ['Images/apps/windytree-lighting-presets.webp', 'Eight lighting presets, here on moonlight'],
+      ['Images/apps/windytree-light-theme-scale.webp', 'A light studio backdrop, with a 1.8 m figure for scale'],
+      ['Images/apps/windytree-wireframe.webp', 'Wireframe view shows the generated mesh'],
+      ['Images/apps/windytree-spline-view.webp', 'Spline view shows the branch skeleton'],
+      ['Images/apps/windytree-command-palette.webp', 'Find any slider or command from the palette'],
+      ['Images/apps/windytree-context-menu.webp', 'Right-click the canvas for quick actions'],
+      ['Images/apps/windytree-export-mesh.webp', 'Export the tree as OBJ, STL, GLB or glTF'],
     ],
     galleryTitle: 'Species presets',
     stats: [['Category', '3D tool'], ['Platform', 'Web'], ['Presets', '35'], ['Engine', 'WebGPU']],
     gallery: ['oak', 'willow', 'palm', 'baobab', 'japanesemaple', 'birch', 'pine', 'cherry', 'olive', 'redwood', 'ginkgo', 'cypress']
       .map(name => [`https://xpayn3.github.io/webtree/presets/${name}.png`, name === 'japanesemaple' ? 'Japanese maple' : name]),
     about: [
-      'A real-time procedural tree generator. Sculpt branches, swap species, tune wind and light, then export your tree.',
-      'Nothing is modelled by hand. Trunk, bark, branching, leaves, moss and vines all come from parameters, and every one of them can be found from a single search box. It is built on WebGPU and Three.js and runs in the browser.',
+      "An experiment in growing trees from numbers.",
+      "Nothing in it is modelled by hand. Trunk, bark, branching, leaves, moss and vines all come from parameters, and a tree is shaped by changing them: pick a species, sculpt the branches, set the wind and the light. Every parameter can be found from a single search box.",
+      "It is built on WebGPU and Three.js and runs in the browser. A finished tree can be exported.",
     ],
     highlights: [
       ['35', 'Species presets, in three families: broadleaf, conifer and bush.'],
@@ -248,8 +263,9 @@ window.labApps = [
     ],
     stats: [['Category', 'Fitness'], ['Platform', 'Web · installable'], ['Pages', '22'], ['Badges', '28']],
     about: [
-      'Track fitness, power and heart rate zones, and plan your training.',
-      'CycleIQ reads your rides from intervals.icu (and Strava) and turns them into a dashboard: training load, power analysis, goals and streaks, weather, a garage for your bikes, and builders for workouts and routes. Your credentials stay in your own browser.',
+      "A training dashboard for cycling, built on intervals.icu.",
+      "It reads rides from intervals.icu (and Strava) and lays them out in one place: training load, power analysis, goals and streaks, weather, a garage for the bikes, and builders for workouts and routes.",
+      "Everything runs in the browser, and the account details never leave it.",
     ],
     highlights: [
       ['22', 'Pages, from the dashboard to a lifetime heatmap of everywhere you have ridden.'],

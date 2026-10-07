@@ -10,6 +10,8 @@ const gridItems = window.gridItems;
 
 // ========== RENDER GRID ==========
 const gridEl = document.getElementById('grid');
+// a mouse or trackpad: hover effects are worth building
+const canHoverFine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 function renderGrid() {
   const frag = document.createDocumentFragment();
@@ -51,6 +53,15 @@ function renderGrid() {
     if (isVideo && !isMobile) {
       let vid = null;
       let hoverTimer = null;
+      // a thin playbar along the bottom of the picture while the clip plays
+      // (gallery.css: "reel bar"); filled from the clip's own clock each frame
+      let fill = null;
+      let barFrame = 0;
+      const drawBar = () => {
+        const done = vid && vid.duration ? vid.currentTime / vid.duration : 0;
+        fill.style.transform = `scaleX(${done.toFixed(4)})`;
+        barFrame = requestAnimationFrame(drawBar);
+      };
       // Preload video element on hover with slight delay to avoid drive-by loads
       let wrap = null;
       div.addEventListener('mouseenter', () => {
@@ -66,18 +77,27 @@ function renderGrid() {
             vid.preload = 'metadata';
             vid.className = 'hover-video';
             wrap.appendChild(vid);
+            const bar = document.createElement('span');
+            bar.className = 'reel-bar';
+            fill = document.createElement('i');
+            bar.appendChild(fill);
+            wrap.appendChild(bar);
             div.appendChild(wrap);
           }
           vid.play().catch(() => {});
           wrap.style.opacity = '1';
+          cancelAnimationFrame(barFrame);
+          drawBar();
         }, 150);
       });
       div.addEventListener('mouseleave', () => {
         clearTimeout(hoverTimer);
+        cancelAnimationFrame(barFrame);
         if (vid) {
           vid.pause();
           vid.currentTime = 0;
           wrap.style.opacity = '0';
+          fill.style.transform = 'scaleX(0)';
         }
       });
     }
@@ -105,7 +125,44 @@ function renderGrid() {
     // Caption under the picture: project name + year (gallery.css).
     const tag = document.createElement('span');
     tag.className = 'item-label-tag';
-    tag.textContent = item.year || '';
+    // The year stays out of sight until the tile is hovered, then rolls in
+    // like an odometer (gallery.css: "the year"). Each digit is a little
+    // column that ends on the real digit, with the two before it above, so
+    // it counts up into place. The columns are only built the first time a
+    // tile is hovered: across the whole wall they would add thousands of
+    // elements that most visitors never see.
+    const year = String(item.year || '');
+    tag.textContent = year;
+    if (/^\d+$/.test(year) && canHoverFine) {
+      tag.classList.add('is-year');
+      const buildRoll = () => {
+        tag.textContent = '';
+        tag.classList.add('is-roll');
+        tag.setAttribute('role', 'img');
+        tag.setAttribute('aria-label', year);
+        [...year].forEach((digit, i) => {
+          const slot = document.createElement('span');
+          slot.className = 'yr-slot';
+          slot.setAttribute('aria-hidden', 'true');
+          const roll = document.createElement('span');
+          roll.className = 'yr-roll';
+          roll.style.setProperty('--i', i);
+          [2, 1, 0].forEach((back) => {
+            const cell = document.createElement('b');
+            cell.textContent = (Number(digit) + 10 - back) % 10;
+            roll.appendChild(cell);
+          });
+          slot.appendChild(roll);
+          tag.appendChild(slot);
+        });
+        void tag.offsetWidth;                              // let the parked digits register before they roll
+      };
+      div.addEventListener('mouseenter', () => {
+        if (!tag.classList.contains('is-roll')) buildRoll();
+        tag.classList.add('is-in');
+      });
+      div.addEventListener('mouseleave', () => tag.classList.remove('is-in'));
+    }
     const name = document.createElement('span');
     name.className = 'item-label-name';
     name.textContent = item.projectName;

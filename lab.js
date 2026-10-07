@@ -214,7 +214,7 @@
     const row = el('span', 'app-card');
     const text = el('span', 'app-card-text');
     const name = el('span', 'app-card-name', app.title);
-    if (app.stage) name.append(el('span', 'app-stage', app.stage));
+    if (app.stage) name.append(el('span', 'app-stage is-' + app.stage.toLowerCase(), app.stage));
     text.append(name, el('span', 'app-card-sub', app.subtitle));
     row.append(window.labAppIcon(app), text, el('span', 'app-card-get', 'View'));
     page.append(row);

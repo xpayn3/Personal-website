@@ -142,7 +142,7 @@ html:has(body.scroll-locked) {
 .overlay.open {
   display: block;
   min-height: 100vh;
-  background: var(--bg, #ffffff);
+  background: var(--bg, var(--paper));
   transition: background-color 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -150,13 +150,13 @@ html:has(body.scroll-locked) {
    surface, like the home page's controls. --bg/--ink/--line come from
    home.css when present. */
 .overlay-close {
-  font-family: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  font-family: var(--font-grotesk);
   font-size: 12px;
   line-height: 1;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ink, #0b0b0c);
-  background: color-mix(in srgb, var(--bg, #ffffff) 78%, transparent);
+  color: var(--ink, var(--paper-ink));
+  background: color-mix(in srgb, var(--bg, var(--paper)) 78%, transparent);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   border: 1px solid var(--line, rgba(11, 11, 12, 0.14));
@@ -192,9 +192,9 @@ html:has(body.scroll-locked) {
   transform: scale(1);
   pointer-events: auto;
 }
-.overlay-close:hover { border-color: var(--ink, #0b0b0c); }
+.overlay-close:hover { border-color: var(--ink, var(--paper-ink)); }
 .overlay-close:hover svg { rotate: 90deg; }
-.overlay-close:focus-visible { outline: 2px solid var(--ink, #0b0b0c); outline-offset: 3px; }
+.overlay-close:focus-visible { outline: 2px solid var(--ink, var(--paper-ink)); outline-offset: 3px; }
 
 .overlay-inner { padding-bottom: env(safe-area-inset-bottom); }
 /* a project arrives with a short fade and rise */
@@ -288,7 +288,7 @@ html:has(body.scroll-locked) {
   height: 100vh;
   height: 100dvh;
   z-index: 300;
-  background: #000;
+  background: var(--dark);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -611,16 +611,16 @@ html:has(body.scroll-locked) {
    (brief / about / tools) → 12-column gallery → next project.
    Follows the home page theme when its --bg/--ink are set, else white. */
 .pv {
-  --pv-bg: var(--bg, #ffffff);
-  --pv-ink: var(--ink, #0b0b0c);
-  --pv-muted: var(--muted, #6b6b70);
-  --pv-line: var(--line, rgba(11, 11, 12, 0.14));
+  --pv-bg: var(--bg, var(--paper));
+  --pv-ink: var(--ink, var(--paper-ink));
+  --pv-muted: var(--muted, var(--paper-muted));
+  --pv-line: var(--line, var(--paper-line));
   --pv-gutter: clamp(16px, 3vw, 40px);
   min-height: 100dvh;
   padding: 0 var(--pv-gutter);
   background: var(--pv-bg);
   color: var(--pv-ink);
-  font-family: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  font-family: var(--font-grotesk);
   -webkit-font-smoothing: antialiased;
   cursor: auto;
 }
@@ -643,7 +643,7 @@ body.project-page > :not(#overlay):not(#overlayClose):not(#lightbox):not(.lb-fly
   display: none !important;
 }
 body.project-page {
-  background: var(--bg, #ffffff) !important;   /* also what the browser bars pick up */
+  background: var(--bg, var(--paper)) !important;   /* also what the browser bars pick up */
   overflow-x: hidden;
   /* clip, not hidden: where <html> has its own overflow set (the Work page),
      hidden would turn <body> into a scroll box of its own and the sticky
@@ -670,23 +670,26 @@ html:has(body.project-page) { scrollbar-gutter: stable; }
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 body.project-dark .pv {
-  --pv-bg: #000000;
-  --pv-ink: #f4f4f5;
-  --pv-muted: #8e8e95;
-  --pv-line: rgba(244, 244, 245, 0.18);
+  --pv-bg: var(--dark);
+  --pv-ink: var(--dark-ink);
+  --pv-muted: var(--dark-muted);
+  --pv-line: var(--dark-line);
 }
 body.project-dark .overlay-close,
 body.project-dark .overlay:has(.pv) {
-  --bg: #000000;
-  --ink: #f4f4f5;
-  --line: rgba(244, 244, 245, 0.18);
+  --bg: var(--dark);
+  --ink: var(--dark-ink);
+  --line: var(--dark-line);
 }
-body.project-page.project-dark { background: #000000 !important; }
+body.project-page.project-dark { background: var(--dark) !important; }
 body.project-page { transition: background-color 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
 
 /* The site nav would sit on top of the project view; tuck it away. */
 .site-nav { transition: opacity var(--duration-normal, 0.3s) ease, visibility 0s; }
-body.project-open .site-nav {
+/* ...and behind the lightbox, on every page that opens one (Lab, the app
+   pages): only the picture and the lightbox's own controls show. */
+body.project-open .site-nav,
+body:has(.lightbox.open) .site-nav {
   opacity: 0;
   visibility: hidden;
   transition: opacity var(--duration-normal, 0.3s) ease, visibility 0s var(--duration-normal, 0.3s);

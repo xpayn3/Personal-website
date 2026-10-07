@@ -4,12 +4,14 @@
    gallery.css, shared with the Work page. Entries are built by lab.js. */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-:root {
-  --lab-panel:     #15151a;
-  --lab-line:      rgba(255, 255, 255, 0.08);
-  --lab-ink:       #f4f4f6;
-  --lab-ink-dim:   rgba(244, 244, 246, 0.55);
-  --lab-ink-mute:  rgba(244, 244, 246, 0.32);
+/* the Lab's own names, all derived from the page colours in gallery.css so
+   they follow the Dark / Light theme */
+.page-lab {
+  --lab-panel:     var(--g-card);
+  --lab-line:      var(--g-line);
+  --lab-ink:       var(--g-ink);
+  --lab-ink-dim:   color-mix(in srgb, var(--g-ink) 60%, transparent);
+  --lab-ink-mute:  color-mix(in srgb, var(--g-ink) 36%, transparent);
 }
 
 html { scrollbar-gutter: stable; }
@@ -124,7 +126,7 @@ body {
   margin-top: 18px;
   border-radius: 4px;
   overflow: hidden;
-  background: #0c0c0d;
+  background: var(--g-well);
 }
 .entry-track {
   display: flex;

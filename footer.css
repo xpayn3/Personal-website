@@ -4,9 +4,9 @@
    contact links) and a row of small print. Colours come from gallery.css
    (--g-*) with the dark values as fallbacks. */
 .site-footer {
-  --f-ink: var(--g-ink, #f4f4f5);
-  --f-muted: var(--g-muted, #8e8e95);
-  --f-line: var(--g-line, rgba(244, 244, 245, 0.18));
+  --f-ink: var(--g-ink, var(--dark-ink));
+  --f-muted: var(--g-muted, var(--dark-muted));
+  --f-line: var(--g-line, var(--dark-line));
   --f-gutter: var(--g-gutter, clamp(20px, 4vw, 64px));
   max-width: 1800px;
   margin: 0 auto;

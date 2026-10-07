@@ -27,24 +27,7 @@ body.smoke-dragging {
 [data-smoke].smoke-live { color: transparent; }
 .hero h1.smoke-live em { -webkit-text-stroke-color: transparent; }
 
-/* ---------------- THEME TOGGLE (nav) ---------------- */
-.theme-toggle {
-  padding: 9px 14px;
-  border: 1px solid var(--nav-fg-dim);
-  border-radius: var(--radius-pill, 999px);
-  background: transparent;
-  color: var(--nav-fg);
-  font-family: var(--font-body, sans-serif);
-  font-size: 0.82rem;
-  font-weight: 600;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: border-color var(--duration-fast, 0.2s) ease;
-}
-.theme-toggle:hover { border-color: var(--nav-fg); }
-.theme-toggle:focus-visible { outline: 2px solid var(--nav-fg); outline-offset: 3px; }
-body.scroll-locked .theme-toggle { display: none; }
-@media (max-width: 760px) { .theme-toggle { padding: 7px 11px; font-size: 0.76rem; } }
+/* The Dark / Light button in the nav is styled in floating-nav.css. */
 
 /* ---------------- TUNING PANEL (?controls) ---------------- */
 .smoke-panel {

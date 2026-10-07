@@ -16,7 +16,6 @@
 html {
   scroll-behavior: smooth;
   scrollbar-width: thin;
-  scrollbar-color: rgba(0,0,0,0.15) transparent;
 }
 
 body {

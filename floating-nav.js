@@ -45,8 +45,8 @@
   });
 })();
 
-// Subtle on-hover letter scramble — shared across pages for the floating
-// nav, wordmark, and footer links/titles.
+// On-hover letter morph — shared across pages for the floating nav,
+// wordmark, and footer links/titles.
 (function () {
   const LOWER = 'abcdefghijklmnopqrstuvwxyz';
   const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -93,37 +93,63 @@
       return slot;
     });
   }
-  function start(el) {
-    const original = el.dataset.label || el.textContent;
-    if (!el.dataset.label) el.dataset.label = original;
+  // Morph the word into `text`, or back into its own label without one.
+  // The letters arrive one after another, left to right. Each one first
+  // flickers through a few random letters, dimmed, as if being decoded, then
+  // lands: the real letter rises into place out of a blur and sharpens.
+  const STAGGER = 30;      // ms between one letter starting and the next
+  const DECODE = 170;      // ms a letter spends flickering
+  const SWAP = 45;         // ms between flickers
+  const LAND = 420;        // ms a letter takes to rise and sharpen
+  const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function start(el, text) {
+    if (!el.dataset.label) el.dataset.label = el.textContent;
+    const original = text || el.dataset.label;
     const prev = state.get(el);
-    if (prev) cancelAnimationFrame(prev.raf);
+    if (prev) { prev.alive = false; cancelAnimationFrame(prev.raf); }
+    lockWidth(el);                       // before the text changes: the box keeps the label's width
     el.textContent = original;
-    lockWidth(el);
+    // showing another word: stay at the label's width so nothing beside it moves
+    const settle = () => { el.textContent = original; if (original === el.dataset.label) unlockWidth(el); };
+    if (calm) { settle(); return; }
     const slots = makeSlots(el, original);
     const len = original.length;
-    const startTimes = new Array(len);
-    const total = 260;
-    for (let i = 0; i < len; i++) {
-      startTimes[i] = (i / Math.max(len - 1, 1)) * 140;
-    }
+    const swapped = new Array(len).fill(-Infinity);   // when each slot last flickered
+    const landed = new Array(len).fill(false);
+    slots.forEach((slot) => { slot.style.opacity = '0'; });
     const t0 = performance.now();
+    const total = (len - 1) * STAGGER + DECODE + LAND;
     const s = { raf: 0, alive: true };
     function tick(now) {
       if (!s.alive) return;
       const elapsed = now - t0;
-      let done = true;
       for (let i = 0; i < len; i++) {
-        const settled = elapsed - startTimes[i] >= 100;
-        slots[i].textContent = settled ? original[i] : pickGlyphFor(original[i]);
-        if (!settled) done = false;
+        if (landed[i]) continue;
+        const local = elapsed - i * STAGGER;
+        if (local < 0) continue;                           // not its turn yet
+        const slot = slots[i];
+        if (local < DECODE && original[i] !== ' ') {
+          if (now - swapped[i] >= SWAP) {
+            swapped[i] = now;
+            slot.textContent = pickGlyphFor(original[i]);
+            slot.style.opacity = '0.45';
+          }
+        } else {
+          landed[i] = true;
+          slot.textContent = original[i];
+          slot.style.opacity = '';
+          slot.animate(
+            [
+              { transform: 'translateY(0.42em)', filter: 'blur(4px)', opacity: 0.15 },
+              { transform: 'translateY(-0.04em)', filter: 'blur(0)', opacity: 1, offset: 0.7 },
+              { transform: 'none', filter: 'blur(0)', opacity: 1 },
+            ],
+            { duration: LAND, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' }
+          );
+        }
       }
-      if (!done && elapsed < total + 100) {
-        s.raf = requestAnimationFrame(tick);
-      } else {
-        el.textContent = original;
-        unlockWidth(el);
-      }
+      if (elapsed < total) s.raf = requestAnimationFrame(tick);
+      else settle();
     }
     s.raf = requestAnimationFrame(tick);
     state.set(el, s);
@@ -139,8 +165,12 @@
   );
   targets.forEach((el) => {
     if (!el.dataset.label) el.dataset.label = el.textContent;
-    el.addEventListener('mouseenter', () => start(el));
-    el.addEventListener('mouseleave', () => stop(el));
+    // A word can turn into another while hovered (data-hover). The wordmark in
+    // the bar does: the name becomes "Home", which is where it leads, and
+    // scrambles back to the name when the pointer leaves.
+    const other = el.dataset.hover || (el.matches('.site-nav .floating-name') ? 'Home' : '');
+    el.addEventListener('mouseenter', () => start(el, other));
+    el.addEventListener('mouseleave', () => (other ? start(el) : stop(el)));
   });
 })();
 
@@ -173,6 +203,12 @@
   menu.setAttribute('aria-hidden', 'true');
   let html = '<button type="button" class="mobile-menu-close" aria-label="Close menu">×</button>';
   html += '<nav class="mobile-menu-links" aria-label="Menu">';
+  // The bar has no Home link (the wordmark is the way home on desktop). On a
+  // phone the wordmark opens this menu instead, so the menu needs one.
+  if (brand) {
+    const onHome = /(^|\/)(index\.html)?$/.test(location.pathname);
+    html += '<a href="' + brand.getAttribute('href') + '" class="mobile-menu-link' + (onHome ? ' is-active' : '') + '">Home</a>';
+  }
   links.forEach((a) => {
     const active = a.classList.contains('is-active') ? ' is-active' : '';
     html += '<a href="' + a.getAttribute('href') + '" class="mobile-menu-link' + active + '">' + a.textContent + '</a>';

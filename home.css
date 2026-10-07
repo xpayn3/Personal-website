@@ -8,19 +8,26 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg: #ffffff;
-  --ink: #0b0b0c;
-  --muted: #6b6b70;
-  --line: rgba(11, 11, 12, 0.14);
+  /* colours: the site palette in tokens.css */
+  --bg: var(--paper);
+  --ink: var(--paper-ink);
+  --muted: var(--paper-muted);
+  --line: var(--paper-line);
   --fade: 600ms cubic-bezier(.4, 0, .2, 1);
   --gutter: clamp(16px, 3vw, 40px);
-  --font-home: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  --font-home: var(--font-grotesk);
 }
 html[data-theme="dark"] {
-  --bg: #000000;
-  --ink: #f4f4f5;
-  --muted: #8e8e95;
-  --line: rgba(244, 244, 245, 0.18);
+  --bg: var(--dark);
+  --ink: var(--dark-ink);
+  --muted: var(--dark-muted);
+  --line: var(--dark-line);
+}
+
+/* dark theme: a touch lighter towards the top of the screen (tokens.css) */
+html[data-theme="dark"] body.page-home {
+  background-image: radial-gradient(140vw 90vh at 50% 0%, var(--dark-lift) 0%, transparent 70%);
+  background-attachment: fixed;
 }
 
 /* Reserve the scrollbar so locking scroll for the overlay doesn't shift the page. */

@@ -12,7 +12,7 @@
   aspect-ratio: 1 / 1;
   border-radius: 22.5%;
   overflow: hidden;
-  background: #131316;
+  background: var(--g-card);
   box-shadow: inset 0 0 0 1px var(--g-line);
 }
 .app-icon img { display: block; width: 100%; height: 100%; object-fit: cover; }
@@ -21,8 +21,8 @@
   font-size: calc(var(--icon, 72px) * 0.46);
   font-weight: 600;
   line-height: 1;
-  color: var(--g-ink);
-  background: linear-gradient(160deg, #26262b, #0d0d0f);
+  color: var(--dark-ink);                  /* the tile is dark in either theme */
+  background: linear-gradient(160deg, #26262b, #17171a);
 }
 
 /* ---- how finished it is (apps.js: stage): a small tag after the name ---- */
@@ -41,6 +41,16 @@
   vertical-align: middle;
   color: var(--g-muted);
 }
+/* each stage has its colour from the site palette (tokens.css): a tinted
+   pill with the colour on its edge and text */
+.app-stage:is(.is-alpha, .is-beta, .is-experimental) {
+  border-color: color-mix(in srgb, var(--stage) 55%, transparent);
+  background: color-mix(in srgb, var(--stage) 16%, transparent);
+  color: color-mix(in srgb, var(--stage) 78%, var(--g-ink));
+}
+.app-stage.is-alpha { --stage: var(--c-orange); }
+.app-stage.is-beta { --stage: var(--c-blue); }
+.app-stage.is-experimental { --stage: var(--c-purple); }
 
 /* ---- an app's post in the Lab feed (lab.js): cover picture, then a row
    with its icon, name and a View button; the whole post is one link ---- */
@@ -50,7 +60,7 @@
   aspect-ratio: 16 / 10;
   border-radius: 4px;
   overflow: hidden;
-  background: #0c0c0d;
+  background: var(--g-well);
 }
 .app-entry-cover img {
   display: block;
@@ -100,19 +110,22 @@
 .app-entry-link:hover .app-card-get,
 .app-btn:hover,
 .app-btn.is-primary { background: var(--g-ink); border-color: var(--g-ink); color: var(--g-bg); }
-.app-btn.is-primary:hover { background: #ffffff; border-color: #ffffff; }
+.app-btn.is-primary:hover { background: color-mix(in srgb, var(--g-ink) 82%, var(--g-bg)); border-color: transparent; }
 .app-btn:focus-visible { outline: 1px solid var(--g-ink); outline-offset: 4px; }
 
-/* ---- an app's own page ---- */
+/* ---- an app's own page (app-page.js) ----
+   A product presentation rather than a shop listing: big type, the app as a
+   wide picture, then sections with a small label in the left margin and the
+   content beside it, separated by hairlines instead of boxed into cards. */
 .app-page {
-  max-width: 980px;
+  max-width: 1320px;
   margin: 0 auto;
   padding: clamp(104px, 15vh, 160px) var(--g-gutter) clamp(80px, 12vh, 160px);
   color: var(--g-ink);
 }
 .app-back {
   display: inline-block;
-  margin-bottom: clamp(28px, 5vh, 48px);
+  margin-bottom: clamp(36px, 7vh, 72px);
   font-size: 13px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -122,219 +135,291 @@
 }
 .app-back:hover { color: var(--g-ink); }
 
-.app-hero { display: flex; align-items: center; gap: clamp(20px, 3vw, 36px); }
-.app-hero .app-icon { --icon: clamp(96px, 14vw, 148px); }
-.app-hero-text { min-width: 0; }
-.app-title {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 4.4vw, 3.25rem);
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: -0.035em;
+/* Pictures have no outline. They are lifted off the page by a soft shadow
+   instead: a tight one right under the edge and a wide, faint one further
+   down, so they seem to float a little above it. */
+.app-page {
+  --float: 0 1px 2px rgba(0, 0, 0, 0.5), 0 18px 40px -12px rgba(0, 0, 0, 0.7), 0 50px 110px -30px rgba(0, 0, 0, 0.75);
+  --float-small: 0 1px 2px rgba(0, 0, 0, 0.45), 0 12px 28px -10px rgba(0, 0, 0, 0.7), 0 30px 60px -24px rgba(0, 0, 0, 0.6);
 }
-.app-subtitle {
-  margin-top: 10px;
-  font-size: clamp(1rem, 1.4vw, 1.2rem);
-  line-height: 1.35;
-  color: var(--g-muted);
-}
-.app-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
-.app-btn { padding: 11px 22px; }
 
-.app-stats {
-  display: flex;
-  margin-top: clamp(32px, 5vw, 56px);
-  border-top: 1px solid var(--g-line);
-  border-bottom: 1px solid var(--g-line);
-  overflow-x: auto;
-  scrollbar-width: none;
+/* light theme: the same lift with a much lighter touch, and the changelog's
+   tag colours deepened so they still read on white */
+html[data-theme="light"] .app-page {
+  --float: 0 1px 2px rgba(11, 11, 12, 0.06), 0 18px 40px -12px rgba(11, 11, 12, 0.16), 0 50px 110px -30px rgba(11, 11, 12, 0.22);
+  --float-small: 0 1px 2px rgba(11, 11, 12, 0.06), 0 12px 28px -10px rgba(11, 11, 12, 0.16), 0 30px 60px -24px rgba(11, 11, 12, 0.18);
 }
-.app-stats::-webkit-scrollbar { display: none; }
-.app-stats > div {
-  flex: 1 0 auto;
-  display: grid;
-  gap: 6px;
-  justify-items: center;
-  padding: 18px clamp(16px, 2.4vw, 28px);
-  text-align: center;
-}
-.app-stats > div + div { border-left: 1px solid var(--g-line); }
+html[data-theme="light"] .app-log-body b { color: color-mix(in srgb, currentColor 62%, var(--g-ink)); }
+
+/* small print: labels, kickers, counts */
+.app-kicker,
 .app-stats dt,
-.app-info dt,
-.app-section-head span {
-  font-size: 11px;
+.app-info dt {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 400;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
   color: var(--g-muted);
 }
-.app-stats dd { font-size: 1.05rem; font-weight: 500; white-space: nowrap; }
 
-.app-section { margin-top: clamp(40px, 6vw, 72px); }
-.app-section-head {
+/* ---- opening: the kicker, then the title across the full width; under
+   it a row with the line about the app and its buttons on the left and the
+   release facts on the right, ending on the same line ---- */
+.app-hero-row {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(260px, 3fr);
+  gap: clamp(32px, 6vw, 96px);
+  align-items: end;
+  margin-top: clamp(28px, 4vw, 56px);
+}
+.app-hero-main { min-width: 0; }
+.app-kicker { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 0; }
+.app-kicker > span:not(.app-stage) + span:not(.app-stage)::before { content: '·'; margin: 0 10px; }
+.app-kicker .app-stage { margin-left: 14px; }
+.app-title {
+  margin-top: clamp(18px, 2.4vw, 30px);
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 10vw, 8.5rem);
+  font-weight: 500;
+  line-height: 0.92;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+}
+.app-subtitle {
+  max-width: 26ch;
+  font-size: clamp(1.25rem, 2.3vw, 2rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--g-text);
+  text-wrap: balance;
+}
+.app-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: clamp(28px, 3.4vw, 44px); }
+.app-btn { padding: 12px 24px; }
+
+/* the app itself */
+.app-cover { margin-top: clamp(56px, 8vw, 120px); }
+.app-cover img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: clamp(10px, 1.4vw, 20px);
+  background: var(--g-well);
+  box-shadow: var(--float);
+  cursor: zoom-in;
+}
+
+/* release facts: a short spec list beside the title, the way a release
+   page lists version and platform. Label on the left, value on the right,
+   a hairline under each. */
+.app-stats { border-top: 1px solid var(--g-line); }
+.app-stats > div {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 16px;
-  margin-bottom: 18px;
+  gap: 20px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--g-line);
 }
-.app-section-head h2 {
-  font-family: var(--font-display);
-  font-size: clamp(1.35rem, 2vw, 1.6rem);
-  font-weight: 600;
-  letter-spacing: -0.02em;
+.app-stats dd { font-size: 1rem; line-height: 1.3; text-align: right; }
+
+/* ---- sections: one grid for all of them (app-page.js: section). Each
+   numbered label sits in the left column, is sticky, and spans from its own
+   row to the last, so it stays pinned for the rest of the page; staggered
+   `top` offsets make the labels pile up into a list as you scroll, the way
+   they do on the project pages. The content sits beside, on a hairline. ---- */
+.app-body {
+  --pad: clamp(56px, 9vw, 130px);          /* air above each section */
+  --step: 30px;                            /* vertical pitch of the piled labels */
+  --pin: 96px;                             /* where the pile starts: clear of the site nav */
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(0, 4fr);
+  column-gap: clamp(20px, 3vw, 40px);
 }
+.app-body > .app-row {
+  grid-column: 2;
+  grid-row: var(--r);
+  min-width: 0;
+  margin-top: var(--pad);
+  padding-top: 20px;
+  border-top: 1px solid var(--g-line);
+}
+.app-body > .app-label {
+  grid-column: 1;
+  grid-row: var(--r) / span calc(var(--n) - var(--r) + 1);
+  align-self: start;
+  position: sticky;
+  top: calc(var(--pin) + (var(--r) - 1) * var(--step));
+  margin-top: calc(var(--pad) + 20px);
+  /* keeps the pile intact when the page's end pushes the labels out */
+  margin-bottom: calc((var(--n) - var(--r)) * var(--step));
+  font-size: 12px;
+  font-weight: 400;
+  line-height: var(--step);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+/* each label is a button: click to glide to its section; the one being read is lit */
+.app-jump {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--g-muted);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.app-jump i { font-style: normal; opacity: 0.6; }
+.app-jump:hover,
+.app-label.is-current .app-jump { color: var(--g-ink); }
+.app-jump:focus-visible { outline: 1px solid var(--g-ink); outline-offset: 4px; }
+
 .app-text {
-  max-width: 68ch;
-  font-size: 1.05rem;
+  max-width: 62ch;
+  font-size: clamp(1.02rem, 1.25vw, 1.15rem);
   line-height: 1.6;
-  color: rgba(244, 244, 245, 0.78);
+  color: var(--g-text);
 }
 .app-text + .app-text { margin-top: 14px; }
-
 .app-lead {
-  max-width: 30ch;
-  font-size: clamp(1.6rem, 3.2vw, 2.6rem);
+  max-width: 24ch;
+  font-size: clamp(1.7rem, 3.8vw, 3.4rem);
   font-weight: 500;
-  line-height: 1.12;
-  letter-spacing: -0.03em;
-  margin-bottom: clamp(18px, 2.4vw, 28px);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  margin-bottom: clamp(22px, 3vw, 36px);
   text-wrap: balance;
 }
-.app-more { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g-muted); text-decoration: none; transition: color 0.25s ease; }
+.app-more { display: inline-block; margin-top: 22px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g-muted); text-decoration: none; transition: color 0.25s ease; }
 .app-more:hover { color: var(--g-ink); }
 
-/* shared card surface for the tiles below */
-.app-highlights > div,
-.app-steps > li,
-.app-features > li,
-.app-commands {
-  border-radius: 20px;
-  background: #0e0e10;
-  box-shadow: inset 0 0 0 1px rgba(244, 244, 245, 0.07);
-}
-
-/* headline figures: a few big numbers */
+/* headline figures: big numbers on a hairline, no boxes */
 .app-highlights {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: clamp(24px, 3vw, 40px);
+  gap: clamp(28px, 4vw, 48px) clamp(20px, 3vw, 40px);
+  margin-top: clamp(40px, 6vw, 80px);
 }
-.app-highlights > div { display: grid; gap: 10px; align-content: start; padding: clamp(20px, 2.6vw, 30px); }
+.app-highlights > div { display: grid; gap: 12px; align-content: start; padding-top: 16px; border-top: 1px solid var(--g-line); }
 .app-highlights strong {
   font-family: var(--font-display);
-  font-size: clamp(1.7rem, 3.4vw, 2.75rem);
+  font-size: clamp(2rem, 4.6vw, 4rem);
   font-weight: 400;
   line-height: 1;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.04em;
 }
 .app-highlights span,
 .app-steps li > span:last-child,
-.app-features li > span:last-child { font-size: 0.95rem; line-height: 1.5; color: var(--g-muted); }
+.app-features li > span:last-child { max-width: 44ch; font-size: 0.98rem; line-height: 1.5; color: var(--g-muted); }
 
-/* a closer look: picture cards, one to a row so each screenshot gets the
-   full width of the column; a click opens it full screen */
-.app-spots { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+/* a closer look: a picture and its text side by side, swapping sides down the
+   page; a click on the picture opens it full screen */
+.app-spots { display: grid; gap: clamp(56px, 9vw, 130px); }
 .app-spots figure {
-  display: flex;
-  flex-direction: column;
-  border-radius: 20px;
-  overflow: hidden;
-  background: #0e0e10;
-  box-shadow: inset 0 0 0 1px rgba(244, 244, 245, 0.07);
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+  gap: clamp(24px, 5vw, 80px);
+  align-items: center;
 }
+.app-spots figure:nth-child(even) { grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); }
+.app-spots figure:nth-child(even) img { order: 2; }
 .app-spots img {
   display: block;
   width: 100%;
+  height: auto;
   aspect-ratio: 16 / 10;
   object-fit: cover;
-  border-bottom: 1px solid rgba(244, 244, 245, 0.07);
-  background: #0c0c0d;
+  border-radius: clamp(8px, 1vw, 14px);
+  background: var(--g-well);
+  box-shadow: var(--float);
   cursor: zoom-in;
 }
-.app-spots figcaption { display: grid; gap: 6px; align-content: start; padding: clamp(20px, 2.6vw, 30px); }
-.app-spots strong { font-size: 1.15rem; font-weight: 500; letter-spacing: -0.01em; }
-.app-spots figcaption > span:last-child { font-size: 0.95rem; line-height: 1.5; color: var(--g-muted); }
-
-/* how it works: numbered cards in a row */
-.app-steps { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.app-steps > li { display: grid; gap: 8px; align-content: start; padding: clamp(20px, 2.4vw, 28px); }
-.app-steps strong { font-size: 1.15rem; font-weight: 500; letter-spacing: -0.01em; }
-.app-step-no {
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  margin-bottom: 10px;
-  border-radius: 50%;
-  background: var(--g-ink);
-  color: var(--g-bg);
-  font-size: 13px;
-  font-weight: 600;
+.app-spots figcaption { display: grid; gap: 12px; align-content: start; }
+.app-spots figcaption i {
+  font-style: normal;
+  font-size: 12px;
+  letter-spacing: 0.08em;
   font-variant-numeric: tabular-nums;
+  color: var(--g-muted);
 }
+.app-spots strong {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.6vw, 2.4rem);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.app-spots figcaption > span:last-child { max-width: 40ch; font-size: clamp(1rem, 1.2vw, 1.1rem); line-height: 1.55; color: var(--g-muted); }
 
-/* features: tiles with an icon, grouped under small headings */
+/* how it works: numbered columns on a hairline */
+.app-steps { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 4vw, 48px) clamp(20px, 3vw, 40px); }
+.app-steps > li { display: grid; gap: 10px; align-content: start; padding-top: 16px; border-top: 1px solid var(--g-line); }
+.app-steps strong { font-size: clamp(1.2rem, 1.8vw, 1.5rem); font-weight: 500; letter-spacing: -0.02em; }
+.app-step-no { font-size: 12px; letter-spacing: 0.08em; font-variant-numeric: tabular-nums; color: var(--g-muted); }
+
+/* features: a two-column list under group headings. Each row is a small
+   line icon, the feature's name, and a line about it, on a hairline. */
 .app-group {
   display: flex;
   align-items: baseline;
   gap: 12px;
-  margin: clamp(28px, 4vw, 44px) 0 14px;
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  margin: clamp(56px, 7vw, 96px) 0 clamp(18px, 2vw, 26px);
+  font-size: clamp(1.3rem, 2vw, 1.7rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
   color: var(--g-ink);
 }
-.app-section-head + .app-group { margin-top: 0; }
-.app-group i { font-style: normal; color: var(--g-muted); }
-.app-features { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.app-row > .app-group:first-child { margin-top: 0; }
+.app-group i { font-style: normal; font-size: 12px; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g-muted); }
+.app-features { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(32px, 5vw, 80px); }
 .app-features > li {
   display: grid;
-  gap: 6px;
-  align-content: start;
-  padding: 22px;
-  transition: background-color 0.3s ease, translate 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  grid-template-columns: 22px minmax(0, 5fr) minmax(0, 7fr);
+  gap: 6px clamp(14px, 1.6vw, 22px);
+  align-items: start;
+  padding: clamp(20px, 2.2vw, 28px) 0 clamp(22px, 2.4vw, 30px);
+  border-top: 1px solid var(--g-line);
 }
-.app-features > li:hover { background: #151518; translate: 0 -3px; }
-.app-features strong { font-size: 1.02rem; font-weight: 500; letter-spacing: -0.01em; }
-.app-feature-icon {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  margin-bottom: 14px;
-  border-radius: 12px;
-  background: linear-gradient(160deg, #2a2a30, #131316);
-  box-shadow: inset 0 0 0 1px rgba(244, 244, 245, 0.1);
-  color: var(--g-ink);
-}
+.app-features strong { font-size: 1rem; font-weight: 500; line-height: 1.4; letter-spacing: -0.01em; }
+.app-features li > span:last-child { line-height: 1.55; }
+.app-feature-icon { display: block; width: 22px; height: 22px; margin-top: 1px; color: var(--g-muted); transition: color 0.3s ease; }
+.app-features > li:hover .app-feature-icon { color: var(--g-ink); }
 .app-feature-icon svg {
-  width: 22px;
-  height: 22px;
+  display: block;
+  width: 100%;
+  height: 100%;
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.5;
+  stroke-width: 1.4;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 /* how to start: label + command, monospaced */
-.app-commands { margin-top: 18px; padding: 6px 22px; }
+.app-commands { margin-top: 22px; border-top: 1px solid var(--g-line); }
 .app-commands > div {
   display: grid;
   grid-template-columns: minmax(110px, 1fr) 3fr;
   gap: 16px;
   align-items: baseline;
   padding: 14px 0;
+  border-bottom: 1px solid var(--g-line);
 }
-.app-commands > div + div { border-top: 1px solid var(--g-line); }
-.app-commands dt { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g-muted); }
+.app-commands dt { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g-muted); }
 .app-commands dd { font-family: var(--font-mono); font-size: 0.9rem; overflow-wrap: anywhere; }
 
 /* changelog: version on the left, what changed on the right */
-.app-log { list-style: none; border-top: 1px solid var(--g-line); }
+.app-log { list-style: none; }
 .app-log > li {
   display: grid;
   grid-template-columns: minmax(120px, 1fr) 4fr;
@@ -342,6 +427,7 @@
   padding: 22px 0;
   border-bottom: 1px solid var(--g-line);
 }
+.app-log > li:first-child { padding-top: 0; }
 .app-log-head { display: flex; flex-wrap: wrap; align-items: baseline; align-content: start; gap: 6px 10px; }
 .app-log-head strong { font-size: 1.05rem; font-weight: 500; font-variant-numeric: tabular-nums; }
 .app-log-head em {
@@ -356,7 +442,7 @@
   text-transform: uppercase;
 }
 .app-log-head span { flex-basis: 100%; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g-muted); }
-.app-log-body p { max-width: 68ch; font-size: 0.98rem; line-height: 1.55; color: rgba(244, 244, 245, 0.78); }
+.app-log-body p { max-width: 68ch; font-size: 0.98rem; line-height: 1.55; color: var(--g-text); }
 .app-log-body ul { list-style: none; display: grid; gap: 10px; margin-top: 16px; }
 .app-log-body li { display: grid; grid-template-columns: 76px 1fr; gap: 12px; align-items: baseline; font-size: 0.92rem; line-height: 1.5; color: var(--g-muted); }
 .app-log-body b {
@@ -378,48 +464,39 @@
 /* pictures: a row you scroll sideways, bleeding to the right edge on phones */
 .app-shots {
   display: flex;
-  gap: 14px;
+  gap: clamp(12px, 1.6vw, 20px);
   overflow-x: auto;
   scroll-snap-type: x proximity;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
+  /* a sideways scroller clips what sticks out of it; this room (taken back
+     by the margins) is where the pictures' shadows fall */
+  padding: 16px 24px 64px;
+  margin: -16px -24px -44px;
 }
 .app-shots::-webkit-scrollbar { display: none; }
+.app-shots img { box-shadow: var(--float-small); }
 /* with a mouse the strip is dragged (app-page.js); snapping is for touch
    only, since it would yank a dragged strip back when the mouse lets go */
 @media (hover: hover) and (pointer: fine) {
   .app-shots { cursor: grab; user-select: none; -webkit-user-select: none; scroll-snap-type: none; }
   .app-shots.is-held { cursor: grabbing; }
 }
-.app-shots figure { flex: none; width: clamp(180px, 24vw, 240px); scroll-snap-align: start; }
+.app-shots figure { flex: none; width: clamp(180px, 24vw, 260px); scroll-snap-align: start; }
 .app-shots img {
   display: block;
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
-  border-radius: 18px;
-  background: #0c0c0d;
+  border-radius: 14px;
+  background: var(--g-well);
+  cursor: zoom-in;
 }
 /* screenshots: wide, most of the column each */
-.app-shots.is-wide figure { width: min(86%, 760px); }
-.app-shots.is-wide img { aspect-ratio: 16 / 10; border-radius: 14px; box-shadow: inset 0 0 0 1px var(--g-line); }
-
-/* ---- page dots (app-page.js: dots): one per picture, under a strip.
-   Indicators only ---- */
-.app-dots { display: flex; justify-content: center; gap: 8px; margin-top: 18px; }
-.app-dots[hidden] { display: none; }
-.app-dots i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgba(244, 244, 245, 0.22);
-  transition: background-color 0.3s ease;
-}
-.app-dots i.is-active { background: var(--g-ink); }
-.app-shots img { cursor: zoom-in; }
-
+.app-shots.is-wide figure { width: min(78%, 980px); }
+.app-shots.is-wide img { aspect-ratio: 16 / 10; border-radius: clamp(8px, 1vw, 14px); }
 .app-shots figcaption {
-  margin-top: 10px;
+  margin-top: 12px;
   font-size: 11px;
   line-height: 1.5;
   letter-spacing: 0.08em;
@@ -427,7 +504,19 @@
   color: var(--g-muted);
 }
 
-.app-info { border-top: 1px solid var(--g-line); }
+/* ---- page dots (app-page.js: dots): one per picture, under a strip.
+   Indicators only ---- */
+.app-dots { display: flex; justify-content: center; gap: 8px; margin-top: 22px; }
+.app-dots[hidden] { display: none; }
+.app-dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--g-ink) 22%, transparent);
+  transition: background-color 0.3s ease;
+}
+.app-dots i.is-active { background: var(--g-ink); }
+
 .app-info > div {
   display: grid;
   grid-template-columns: minmax(120px, 1fr) 3fr;
@@ -436,24 +525,32 @@
   padding: 14px 0;
   border-bottom: 1px solid var(--g-line);
 }
-.app-info dd { font-size: 0.95rem; line-height: 1.5; }
+.app-info > div:first-child { padding-top: 0; }
+.app-info dd { font-size: 0.98rem; line-height: 1.5; }
 
 @media (max-width: 900px) {
-  .app-features { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .app-hero-row { grid-template-columns: minmax(0, 1fr); gap: clamp(32px, 7vw, 48px); }
+  /* no room for a margin column: each label sits above its section, unpinned */
+  .app-body { display: block; }
+  .app-body > .app-label { position: static; margin: var(--pad) 0 0; padding-top: 18px; border-top: 1px solid var(--g-line); }
+  .app-body > .app-row { margin-top: 14px; padding-top: 0; border-top: 0; }
+  .app-features { grid-template-columns: minmax(0, 1fr); }
+  .app-spots figure,
+  .app-spots figure:nth-child(even) { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .app-spots figure:nth-child(even) img { order: 0; }
 }
 @media (max-width: 768px) {
   .app-steps,
-  .app-spots,
   .app-highlights { grid-template-columns: 1fr; }
   .app-log > li { grid-template-columns: 1fr; gap: 10px; }
   .app-log-body li { grid-template-columns: 1fr; gap: 4px; }
   .app-commands > div { grid-template-columns: 1fr; gap: 4px; }
   .app-shots.is-wide figure { width: 88%; }
-  .app-hero { align-items: flex-start; }
-  .app-stats > div { flex: 0 0 auto; }
-  .app-shots { margin-right: calc(var(--g-gutter) * -1); padding-right: var(--g-gutter); }
+  .app-shots { margin-right: calc(var(--g-gutter) * -1); padding-right: var(--g-gutter); margin-left: -16px; padding-left: 16px; }
   .app-info > div { grid-template-columns: 1fr; gap: 4px; }
 }
 @media (max-width: 520px) {
-  .app-features { grid-template-columns: 1fr; }
+  /* icon beside the name, the line underneath */
+  .app-features > li { grid-template-columns: 22px minmax(0, 1fr); }
+  .app-features li > span:last-child { grid-column: 2; }
 }
