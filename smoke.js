@@ -187,7 +187,16 @@
 
   // ---------- presets ----------
   const PRESETS = {
-    // the page default: soft, lit billows, kept light so they sit over the page
+    // the page default: tall, fast-rising plumes that tear apart and vanish quickly
+    'Original': {
+      size: 1, density: 2.95, curl: 1, turbulence: 25, buoyancy: 66,
+      dragForce: 0.08, flickForce: 0.84, velocityDecay: 1.2,
+      dyeDecay: 4.2, dyeFade: 0.16, patchy: 2, dyeDiffuse: 0.6,
+      opacity: 1, shading: 1.96, colorMode: 'custom',
+      edgeColor: [0.8, 1, 0.95], coreColor: [0.02, 0.02, 0.12],
+      textFeed: 6, textHeal: 0.9,
+    },
+    // the earlier default: soft, lit billows, kept light so they sit over the page
     // without covering it. They leave the brush hot and climb, then cool, slow
     // down, fold over in a few broad curls and thin out over a few seconds.
     // (Swirl and turbulence are low on purpose: high values break the smoke
@@ -197,15 +206,6 @@
       dragForce: 0.13, flickForce: 0.7, velocityDecay: 0.7,
       dyeDecay: 0.5, dyeFade: 0.03, patchy: 0.7, dyeDiffuse: 0.045,
       opacity: 1.0, shading: 1.4, colorMode: 'custom',
-      edgeColor: [0.8, 1, 0.95], coreColor: [0.02, 0.02, 0.12],
-      textFeed: 6, textHeal: 0.9,
-    },
-    // the earlier default: tall, fast-rising plumes that tear apart and vanish quickly
-    'Original': {
-      size: 1, density: 2.95, curl: 1, turbulence: 25, buoyancy: 66,
-      dragForce: 0.08, flickForce: 0.84, velocityDecay: 1.2,
-      dyeDecay: 4.2, dyeFade: 0.16, patchy: 2, dyeDiffuse: 0.6,
-      opacity: 1, shading: 1.96, colorMode: 'custom',
       edgeColor: [0.8, 1, 0.95], coreColor: [0.02, 0.02, 0.12],
       textFeed: 6, textHeal: 0.9,
     },
