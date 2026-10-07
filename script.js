@@ -233,7 +233,7 @@ function buildFeature(id, index, total) {
     el('span', 'wall-feature-brief', p.brief || ''),
     el('span', 'wall-feature-about', about.length > 240 ? about.slice(0, 238).trim() + '…' : about),
     el('span', 'wall-feature-meta', [p.client, p.year].filter(Boolean).join(' · ')),
-    el('span', 'wall-feature-cta', 'Open project →'),
+    el('span', 'wall-feature-cta', 'Open project'),
   );
 
   block.append(media, text);

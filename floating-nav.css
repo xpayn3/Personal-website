@@ -148,7 +148,6 @@ html[data-theme="dark"] body.nav-light {
   transition: background 0.2s ease, transform 0.2s ease;
 }
 .site-nav-cta:hover { background: var(--nav-cta-bg-hover); transform: translateY(-1px); }
-.site-nav-cta-arrow { font-size: 0.9em; line-height: 1; }
 
 /* Hide the "Start a project" CTA while a project overlay / lightbox is open
    (body gets .scroll-locked) — no CTA over an open project view. */

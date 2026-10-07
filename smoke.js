@@ -192,8 +192,8 @@
       size: 1, density: 2.95, curl: 1, turbulence: 25, buoyancy: 66,
       dragForce: 0.08, flickForce: 0.84, velocityDecay: 1.2,
       dyeDecay: 4.2, dyeFade: 0.16, patchy: 2, dyeDiffuse: 0.6,
-      opacity: 1, shading: 1.96, colorMode: 'custom',
-      edgeColor: [0.8, 1, 0.95], coreColor: [0.02, 0.02, 0.12],
+      opacity: 1.25, shading: 1.96, colorMode: 'custom',
+      edgeColor: [0.8, 1, 0.95], coreColor: [0.005, 0.005, 0.04],
       textFeed: 6, textHeal: 0.9,
     },
     // the earlier default: soft, lit billows, kept light so they sit over the page

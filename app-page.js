@@ -246,7 +246,7 @@
   kicker.append(el('span', '', 'App'), el('span', '', app.category));
   if (app.stage) kicker.append(el('span', 'app-stage is-' + app.stage.toLowerCase(), app.stage));
   const actions = el('div', 'app-actions');
-  if (app.url) actions.append(link(app.url, 'app-btn is-primary', 'Open app ↗'));
+  if (app.url) actions.append(link(app.url, 'app-btn is-primary', 'Open app'));
   // Download: the app's source as a zip, straight from its GitHub repository.
   // "HEAD" is whatever the repository's main branch is called, so the link
   // always gives the current code. An app can name another file with
@@ -259,7 +259,7 @@
     get.rel = 'noopener';
     actions.append(get);
   }
-  if (app.repo) actions.append(link(app.repo, 'app-btn', 'GitHub ↗'));
+  if (app.repo) actions.append(link(app.repo, 'app-btn', 'GitHub'));
   // the title takes the full width; under it, the line about the app and
   // its buttons on the left, the release facts on the right
   const lead = el('div', 'app-hero-main');
@@ -405,7 +405,7 @@
       list.append(item);
     });
     sec.append(list);
-    if (app.changelog.link) sec.append(link(app.changelog.link, 'app-more', 'Full changelog ↗'));
+    if (app.changelog.link) sec.append(link(app.changelog.link, 'app-more', 'Full changelog'));
   }
 
   if (app.whatsNew) section("What's new").append(el('p', 'app-text', `Version ${app.whatsNew.version}. ${app.whatsNew.text}`));
