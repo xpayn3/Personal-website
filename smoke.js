@@ -2,7 +2,10 @@
    smoke.js — home page smoke.
    A small WebGL2 fluid solver drawn on a fixed full-viewport canvas
    (#smoke) above the page content. Dragging lays down smoke that rises,
-   curls and fades; it travels with the page on scroll. Elements marked
+   curls and fades; it travels with the page on scroll. New smoke is hot:
+   the heat is what lifts it, and as it cools the plume slows, spreads and
+   hangs. It is drawn lit from the upper left, with the smoke shadowing
+   itself, so billows read as volume and not as flat ink. Elements marked
    [data-smoke] (max 2) are rasterised into the canvas so the smoke can
    dissolve them and let them reassemble.
    Falls back to 2D puff particles when WebGL2 float targets are missing.
@@ -48,10 +51,11 @@
   const TUNE = {
     simRes: COARSE ? 96 : 144,          // velocity grid, short side
     dyeRes: COARSE ? 384 : 640,          // smoke density grid, short side
-    pressureIters: 18,
+    pressureIters: 22,
     curl: 2,             // vorticity confinement: how hard eddies curl up
     turbulence: 12.5,       // ambient churn applied where there is smoke
-    buoyancy: 10,         // smoke rises
+    buoyancy: 10,         // how hard heat lifts the smoke
+    cooling: 0,           // per second; how fast new smoke loses its heat (0 = it rises for as long as it lasts)
     velocityDecay: 1.2,   // per second; higher = pushes die out sooner
     dyeDecay: 1.5,        // per second, proportional thinning
     dyeFade: 0.03,        // per second, constant loss so wisps fully vanish
@@ -100,6 +104,7 @@
     ['curl', 'Swirl', 0, 150, 1],
     ['turbulence', 'Turbulence', 0, 120, 0.5],
     ['buoyancy', 'Rise', -40, 80, 0.5],
+    ['cooling', 'Cooling', 0, 8, 0.05],
     ['dragForce', 'Drag push', 0, 3, 0.01],
     ['flickForce', 'Flick', 0, 5, 0.01],
     ['velocityDecay', 'Air resistance', 0, 10, 0.05],
@@ -175,7 +180,20 @@
 
   // ---------- presets ----------
   const PRESETS = {
-    // the page default: tall, fast-rising plumes that tear apart and vanish quickly
+    // the page default: soft, lit billows, kept light so they sit over the page
+    // without covering it. They leave the brush hot and climb, then cool, slow
+    // down, fold over in a few broad curls and thin out over a few seconds.
+    // (Swirl and turbulence are low on purpose: high values break the smoke
+    // into lots of small tight curls.)
+    'Smoke': {
+      size: 1.6, density: 1.0, curl: 5, turbulence: 3.5, buoyancy: 34, cooling: 1.5,
+      dragForce: 0.13, flickForce: 0.7, velocityDecay: 0.7,
+      dyeDecay: 0.5, dyeFade: 0.03, patchy: 0.7, dyeDiffuse: 0.045,
+      opacity: 1.0, shading: 1.4, colorMode: 'custom',
+      edgeColor: [0.8, 1, 0.95], coreColor: [0.02, 0.02, 0.12],
+      textFeed: 6, textHeal: 0.9,
+    },
+    // the earlier default: tall, fast-rising plumes that tear apart and vanish quickly
     'Original': {
       size: 1, density: 2.95, curl: 1, turbulence: 25, buoyancy: 66,
       dragForce: 0.08, flickForce: 0.84, velocityDecay: 1.2,
@@ -286,7 +304,7 @@
       advect: `${HEAD}
         uniform sampler2D uVelocity, uSource;
         uniform vec2 simTexel, shift;
-        uniform float dt, rate, fade, diffuse, patchy, time, aspect;
+        uniform float dt, rate, fade, diffuse, patchy, time, aspect, cooling;
         float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
         float noise(vec2 p) {
           vec2 i = floor(p), f = fract(p);
@@ -315,7 +333,11 @@
             local = max(mix(1.0, 0.05 + 2.6 * smoothstep(0.38, 0.72, f), patchy), 0.0);
           }
           float decay = 1.0 / (1.0 + rate * local * dt);
-          gl_FragColor = sign(c) * max(abs(c) * decay - fade * local, 0.0);
+          vec4 o = sign(c) * max(abs(c) * decay - fade * local, 0.0);
+          // smoke field only (cooling is 0 for the velocity field): y holds the
+          // smoke's heat, which fades faster than the smoke itself
+          o.y /= 1.0 + cooling * dt;
+          gl_FragColor = o;
         }`,
       curl: `${HEAD}
         uniform sampler2D uVelocity;
@@ -337,14 +359,16 @@
           force *= curl * C;
           force.y *= -1.0;
 
-          float d = min(texture2D(uDye, vUv).x, 1.5);
+          vec2 dh = texture2D(uDye, vUv).xy;
+          float d = min(dh.x, 1.5);            // how much smoke is here
+          float heat = min(dh.y, 1.5);         // how hot it still is
           vec2 p = vUv * vec2(aspect, 1.0);
           vec2 churn = vec2(
             sin(p.y * 19.0 + time * 1.3) + sin(p.y * 43.0 - time * 2.3 + p.x * 15.0) + 0.6 * sin(p.y * 91.0 + time * 3.1 - p.x * 37.0),
             sin(p.x * 23.0 - time * 1.1) + sin(p.x * 47.0 + time * 1.9 + p.y * 13.0) + 0.6 * sin(p.x * 97.0 - time * 2.7 + p.y * 41.0));
 
           vec2 vel = texture2D(uVelocity, vUv).xy;
-          vel += (force + churn * turbulence * d + vec2(0.0, buoyancy * d)) * dt;
+          vel += (force + churn * turbulence * d + vec2(0.0, buoyancy * heat)) * dt;
           gl_FragColor = vec4(clamp(vel, -1000.0, 1000.0), 0.0, 1.0);
         }`,
       divergence: `${HEAD}
@@ -408,22 +432,52 @@
         float textAt(vec2 uv) {
           return max(layer(uText0, textRect0, uv), layer(uText1, textRect1, uv));
         }
+        // The smoke grid is coarser than the screen. Reading it with a cubic
+        // (B-spline) filter instead of the GPU's linear one removes the faint
+        // diamond pattern linear filtering leaves in soft gradients. Four
+        // linear taps do the work of sixteen.
+        float density(vec2 uv) {
+          vec2 tx = vec2(vR.x - vUv.x, vT.y - vUv.y);
+          vec2 st = uv / tx - 0.5;
+          vec2 i = floor(st), f = st - i;
+          vec2 f2 = f * f, f3 = f2 * f;
+          vec2 w0 = (1.0 - f) * (1.0 - f) * (1.0 - f) / 6.0;
+          vec2 w1 = (3.0 * f3 - 6.0 * f2 + 4.0) / 6.0;
+          vec2 w3 = f3 / 6.0;
+          vec2 w2 = 1.0 - w0 - w1 - w3;
+          vec2 g0 = w0 + w1, g1 = w2 + w3;
+          vec2 p0 = (i + w1 / g0 - 0.5) * tx, p1 = (i + w3 / g1 + 1.5) * tx;
+          return g0.y * (g0.x * texture2D(uDye, vec2(p0.x, p0.y)).x + g1.x * texture2D(uDye, vec2(p1.x, p0.y)).x)
+               + g1.y * (g0.x * texture2D(uDye, vec2(p0.x, p1.y)).x + g1.x * texture2D(uDye, vec2(p1.x, p1.y)).x);
+        }
         void main() {
-          float d = texture2D(uDye, vUv).x;
+          float d = density(vUv);
           float a = 1.0 - exp(-d * opacity);
 
           // thin smoke takes the edge colour, thick smoke the core colour
           vec3 smoke = mix(edgeCol, coreCol, smoothstep(0.1, 0.9, a));
           if (shading > 0.0) {
-            // light from the upper left: the side where density falls away
-            // towards the light is brightened, the far side darkened
-            vec2 ox = (vR - vUv) * 3.0, oy = (vT - vUv) * 3.0;
-            // work on opacity rather than raw density so thick smoke doesn't band
-            vec4 nb = vec4(texture2D(uDye, vUv + ox).x, texture2D(uDye, vUv - ox).x,
-                           texture2D(uDye, vUv + oy).x, texture2D(uDye, vUv - oy).x);
-            nb = 1.0 - exp(-nb * opacity);
-            float lit = clamp(-dot(vec2(nb.x - nb.y, nb.z - nb.w), vec2(-0.6, 0.8)) * 1.6, -1.0, 1.0);
-            smoke = clamp(smoke + lit * shading * 0.22, 0.0, 1.0);
+            // Light from the upper left. Walk a short way from this point
+            // towards the light and add up the smoke in between: that is how
+            // much of the light is blocked before it gets here. The side of a
+            // billow facing the light stays bright, the far side and the folds
+            // between billows fall into shadow, which is what gives it volume.
+            vec2 toLight = normalize(vec2(-0.55, 0.83)) * vec2(1.0 / aspect, 1.0) * 0.011;
+            float blocked = 0.0;
+            for (int i = 0; i < 8; i++) {
+              float t = float(i) * 0.8 + 0.6;
+              blocked += texture2D(uDye, vUv + toLight * t).x * (1.0 - t / 7.0);
+            }
+            float through = exp(-blocked * opacity * 0.42);  // 1 = fully lit, 0 = in deep shadow
+            float lit = (through - 0.5) * 2.0;
+            // Shade mostly away from the page: on the light page the smoke is
+            // dark, so shadows deepen it and highlights are kept small (a bright
+            // highlight would read as a hole); on the dark page it is the
+            // other way round.
+            float onDark = step(0.5, dot(ink, vec3(0.3333)));
+            lit = lit > 0.0 ? lit * mix(0.3, 1.0, onDark) : lit * mix(1.0, 0.3, onDark);
+            // only where there is enough smoke to carry a shade; wisps stay plain
+            smoke = clamp(smoke + lit * shading * 0.26 * smoothstep(0.04, 0.6, a), 0.0, 1.0);
           }
 
           float textA = 0.0;
@@ -663,11 +717,30 @@
         // 0 = lingering, 1 = fast: fast strokes are wider, thinner and more ragged
         const fast = Math.min(speed / TUNE.fastSpeed, 1);
         const j = 8 + 34 * fast;
+        // Each step draws a soft capsule from a to b, and `amount` is how dense
+        // that capsule is at its core, whatever its length. So the density a
+        // stroke leaves should not depend on how the pointer's path happens to
+        // be chopped into steps:
+        // - A step shorter than the brush overlaps the ones before it, so it
+        //   gets a proportionally smaller share. This is what keeps a click,
+        //   a held button and the slow first pixels of a drag from swelling
+        //   into a blob.
+        // - A long step (a fast drag) is already one long capsule; it gets the
+        //   same core density as any other, not more for being long.
+        // A fast stroke is also laid thinner, and only a little wider, so a
+        // quick swipe or scribble leaves a light veil instead of a heavy band.
+        // A trickle for the time that passed keeps a held pointer smouldering.
+        const radius = 0.011 * (1 + 0.5 * fast) * rand(0.8, 1.25) * TUNE.size * LIGHT.size;   // of the viewport height
+        const travelled = Math.hypot(bx - ax, by - ay);          // css px
+        const share = Math.min(travelled / (1.6 * radius * H), 1);
+        // a slow pointer's smoke has time to gather before it drifts off, so it needs less
+        const unhurried = 0.4 + 0.6 * Math.min(speed / 500, 1);
+        const laid = (0.44 * share * unhurried + Math.min(1.0 * dt, 0.03)) * (1 - 0.4 * fast);
         queue.push({
           ax: ax / W, ay: 1 - ay / H, bx: bx / W, by: 1 - by / H,
           vx: vx * k + rand(-j, j), vy: -vy * k + rand(-j, j),
-          amount: Math.min(0.22 + 5 * dt, 0.6) * (1 - 0.45 * fast) * TUNE.density * LIGHT.density,
-          dyeR: 0.011 * (1 + 1.4 * fast) * rand(0.8, 1.25) * TUNE.size * LIGHT.size,
+          amount: laid * TUNE.density * LIGHT.density,
+          dyeR: radius,
           velR: 0.028 * (1 + fast),
         });
         if (queue.length > 64) queue.shift();
@@ -727,7 +800,9 @@
         if (!idle) {
           for (const s of queue) {
             splat(velocity, s, [s.vx, s.vy, 0], s.velR, 1000);
-            if (s.amount > 0) splat(dye, s, [s.amount, 0, 0], s.dyeR, 6);
+            // x: smoke, y: its heat. The ceiling stops strokes that cross and
+            // re-cross the same place from piling up into a solid mass.
+            if (s.amount > 0) splat(dye, s, [s.amount, s.amount, 0], s.dyeR, 1.5);
           }
           queue.length = 0;
 
@@ -776,6 +851,7 @@
           gl.uniform1f(cur.u.fade, 0);
           gl.uniform1f(cur.u.diffuse, 0);
           gl.uniform1f(cur.u.patchy, 0);
+          gl.uniform1f(cur.u.cooling, 0);
           draw(velocity.write);
           velocity.swap();
 
@@ -789,6 +865,7 @@
           gl.uniform1f(cur.u.fade, TUNE.dyeFade * dt);
           gl.uniform1f(cur.u.diffuse, TUNE.dyeDiffuse);
           gl.uniform1f(cur.u.patchy, TUNE.patchy);
+          gl.uniform1f(cur.u.cooling, TUNE.cooling);
           gl.uniform1f(cur.u.time, time);
           gl.uniform1f(cur.u.aspect, aspect);
           draw(dye.write);

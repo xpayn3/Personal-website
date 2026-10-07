@@ -347,6 +347,9 @@
     section('Features').append(featureGrid(app.features));
   }
 
+  // ---- the same app on a phone: tall screenshots in a strip of their own ----
+  if (app.phone && app.phone.length) section('On a phone').append(figures(app.phone, 'app-shots is-phone'));
+
   if (app.gallery && app.gallery.length) section(app.galleryTitle || 'Gallery').append(figures(app.gallery, 'app-shots'));
 
   if (app.start) {

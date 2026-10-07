@@ -171,6 +171,25 @@ body.page-plain {
   letter-spacing: -0.02em;
   font-weight: 500;
 }
+/* "respond" responds: hover it and its "o" stretches sideways and wobbles
+   to rest like something springy, pushing the letters on either side apart.
+   The stretch is a transform, so the word keeps its place in the line and
+   nothing re-wraps. The wobble is the easing: it overshoots and swings back
+   a few times before settling, on the way out and on the way back. */
+.respond { display: inline-block; white-space: nowrap; cursor: pointer; }
+.respond > span {
+  display: inline-block;
+  transition: transform 0.75s cubic-bezier(0.3, 2.1, 0.5, 1);      /* one overshoot, for browsers without linear() */
+  transition: transform 1s linear(0, 0.62 8%, 1.22 18%, 0.82 29%, 1.12 41%, 0.93 53%, 1.04 66%, 0.98 80%, 1);
+}
+.respond:hover .respond-o { transform: scaleX(1.6); }
+/* each side moves out by half of what the "o" gained */
+.respond:hover .respond-a { transform: translateX(-0.165em); }
+.respond:hover .respond-b { transform: translateX(0.165em); }
+@media (prefers-reduced-motion: reduce) {
+  .respond > span { transition: none; }
+}
+
 .statement + p {
   margin-top: 28px;
   max-width: 52ch;

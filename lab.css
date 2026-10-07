@@ -176,7 +176,7 @@ body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
-  color: var(--g-ink);
+  color: var(--dark-ink);                 /* on a dark pill over the picture, in either theme */
   pointer-events: none;
 }
 .entry-badge { left: 12px; transition: opacity 0.25s ease; }
@@ -199,7 +199,7 @@ body {
   backdrop-filter: blur(8px);
   font: inherit;
   font-size: 14px;
-  color: var(--g-ink);
+  color: var(--dark-ink);                 /* on a dark disc over the picture, in either theme */
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.25s ease, background-color 0.25s ease;
@@ -246,7 +246,7 @@ body {
   cursor: pointer;
   transition: background-color 0.25s ease, scale 0.25s ease;
 }
-.entry-dots button.is-active { background: var(--g-ink); scale: 1.25; }
+.entry-dots button.is-active { background: var(--dark-ink); scale: 1.25; }   /* on a dark pill, in either theme */
 .entry-dots button:focus-visible { outline: 1px solid var(--g-ink); outline-offset: 3px; }
 
 @media (max-width: 1100px) {

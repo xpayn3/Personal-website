@@ -16,6 +16,8 @@
 //   stats     the strip under the header: [label, value] pairs
 //   cover     wide picture for its post in the Lab feed
 //   shots     screenshots: [image, caption] pairs (optional)
+//   phone     screenshots taken on a phone, shown tall: [image, caption]
+//             pairs (optional)
 //   gallery   small square pictures: [image, caption] pairs, titled by
 //             galleryTitle (optional)
 //   spotlights  "a closer look": big cards, each [name, a line about it,
@@ -40,6 +42,19 @@ window.labApps = [
     cover: 'Images/apps/meshoptimiser-viewer.webp',
     shots: [
       ['Images/apps/meshoptimiser-viewer.webp', 'The viewer: assembly tree, viewport, properties and actions'],
+      ['Images/apps/meshoptimiser-assembly-inspect.webp', 'A 67-part drive unit with one gear selected: triangles, bounding box and volume in the properties panel'],
+      ['Images/apps/meshoptimiser-isolate.webp', 'One sub-assembly isolated, the rest of the tree hidden'],
+      ['Images/apps/meshoptimiser-exploded.webp', 'Exploded view, with a slider per axis'],
+      ['Images/apps/meshoptimiser-xray.webp', 'X-ray view: the whole assembly as translucent shells'],
+      ['Images/apps/meshoptimiser-heatmap.webp', 'Heatmap: parts coloured by triangle density, beside the ranked heavy-parts list'],
+      ['Images/apps/meshoptimiser-materials.webp', 'The materials panel, with a rendered preview of each material'],
+      ['Images/apps/meshoptimiser-recolour.webp', 'Recolouring every part that shares a material, from the material editor'],
+      ['Images/apps/meshoptimiser-studio-hdri.webp', 'Studio lighting from an HDRI environment'],
+      ['Images/apps/meshoptimiser-path-tracer.webp', 'The GPU path tracer, after 256 samples'],
+      ['Images/apps/meshoptimiser-batch-rename.webp', 'Batch rename: find and replace with a live preview'],
+      ['Images/apps/meshoptimiser-context-menu.webp', 'Right-click a part to frame, isolate, select similar, copy or delete'],
+      ['Images/apps/meshoptimiser-export.webp', 'Export: format on the left, units, axis, origin and compression on the right'],
+      ['Images/apps/meshoptimiser-shortcuts.webp', 'The keyboard shortcuts overlay'],
     ],
     spotlights: [
       ['Command palette', 'Every action in the app, searchable, with its shortcut beside it. Open it with Ctrl / ⌘ + K.', 'Images/apps/meshoptimiser-palette.webp', 'command'],
@@ -260,6 +275,20 @@ window.labApps = [
     shots: [
       ['Images/apps/cycleiq-workouts.webp', 'Workout Builder: recommended, indoor and outdoor sessions'],
       ['Images/apps/cycleiq-routes.webp', 'Route Builder: plan a ride on a 3D terrain map'],
+      ['Images/apps/cycleiq-workout-editor.webp', 'The workout editor: an interval session with its power profile'],
+      ['Images/apps/cycleiq-workout-editor-light.webp', 'The same editor in the light theme'],
+      ['Images/apps/cycleiq-weather-forecast.webp', 'Weather: saved locations, the hourly forecast and the temperature curve'],
+      ['Images/apps/cycleiq-weather-ride-score.webp', 'Seven-day forecast with a ride score for today, in the Tour de France theme'],
+      ['Images/apps/cycleiq-weather-day-detail.webp', 'A forecast day opened: hourly wind, rain and the best window to ride'],
+      ['Images/apps/cycleiq-tire-pressure.webp', 'The tire pressure calculator in My Garage'],
+      ['Images/apps/cycleiq-themes.webp', 'Settings: app theme and map style'],
+      ['Images/apps/cycleiq-accent-color.webp', 'Accent colour: twelve presets or any custom colour'],
+    ],
+    phone: [
+      ['Images/apps/cycleiq-weather-phone.webp', 'Weather'],
+      ['Images/apps/cycleiq-workout-editor-phone.webp', 'Workout editor'],
+      ['Images/apps/cycleiq-badge-card-phone.webp', 'An achievement badge as a 3D card'],
+      ['Images/apps/cycleiq-tire-pressure-phone.webp', 'Tire pressure calculator'],
     ],
     stats: [['Category', 'Fitness'], ['Platform', 'Web · installable'], ['Pages', '22'], ['Badges', '28']],
     about: [
