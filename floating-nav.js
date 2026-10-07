@@ -219,3 +219,25 @@
     });
   }
 })();
+
+// Hide the top bar while scrolling down, bring it back on any scroll up.
+// It stays put near the top of the page, while the mobile menu is open and
+// while a project/lightbox locks the page.
+(function () {
+  const nav = document.querySelector('.site-nav');
+  if (!nav) return;
+  let last = window.scrollY;
+  const check = () => {
+    const y = window.scrollY;
+    const dy = y - last;
+    if (Math.abs(dy) < 6) return;                    // ignore jitter
+    last = y;
+    const menuOpen = document.querySelector('.mobile-menu.open');
+    const locked = document.body.classList.contains('scroll-locked');
+    const hide = dy > 0 && y > 120 && !menuOpen && !locked;
+    nav.classList.toggle('is-hidden', hide);
+    document.documentElement.classList.toggle('nav-away', hide);   // lets sticky side panels move up
+  };
+  window.addEventListener('scroll', check, { passive: true });  // reads scrollY only, so no frame queue
+  nav.addEventListener('focusin', () => nav.classList.remove('is-hidden'));
+})();

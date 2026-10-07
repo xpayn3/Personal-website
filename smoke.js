@@ -187,7 +187,18 @@
 
   // ---------- presets ----------
   const PRESETS = {
-    // the page default: tall, fast-rising plumes that tear apart and vanish quickly
+    // the page default: faint, soft blobs that drift up, swell and melt away.
+    // Low opacity keeps the page readable through them; the high diffusion
+    // rounds their edges into blobs instead of streaks.
+    'Faint blobs': {
+      size: 1.8, density: 0.9, curl: 3, turbulence: 4, buoyancy: 28, cooling: 1.5,
+      dragForce: 0.12, flickForce: 0.5, velocityDecay: 0.9,
+      dyeDecay: 0.7, dyeFade: 0.04, patchy: 0.6, dyeDiffuse: 0.14,
+      opacity: 0.7, shading: 0.9, colorMode: 'custom',
+      edgeColor: [0.8, 1, 0.95], coreColor: [0.02, 0.02, 0.12],
+      textFeed: 6, textHeal: 0.9,
+    },
+    // the earlier default: tall, fast-rising plumes that tear apart and vanish quickly
     'Original': {
       size: 1, density: 2.95, curl: 1, turbulence: 25, buoyancy: 66,
       dragForce: 0.08, flickForce: 0.84, velocityDecay: 1.2,

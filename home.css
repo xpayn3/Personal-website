@@ -200,6 +200,8 @@ body.page-plain {
   border-top: 1px solid var(--line);
   transition: border-color var(--fade);
 }
+/* the hero's own foot line already closes the cover: no second rule under it */
+.hero + .content > section:first-child { border-top: 0; }
 .label {
   font-size: 13px;
   font-weight: 400;

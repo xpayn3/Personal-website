@@ -29,11 +29,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="tokens.css?v=4" />
-  <link rel="stylesheet" href="lab.css?v=14" />
+  <link rel="stylesheet" href="lab.css?v=25" />
   <link rel="stylesheet" href="gallery.css?v=16" />
-  <link rel="stylesheet" href="apps.css?v=23" />
+  <link rel="stylesheet" href="apps.css?v=29" />
   <link rel="stylesheet" href="overlay.css?v=37" />
-  <link rel="stylesheet" href="floating-nav.css?v=18" />
+  <link rel="stylesheet" href="floating-nav.css?v=20" />
   <link rel="stylesheet" href="footer.css?v=5" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
@@ -45,15 +45,19 @@
     <aside class="journal-rail">
       <!-- page title: lives in the rail, above the small print -->
       <header class="journal-head">
-        <span><h1 class="page-head-label">Lab</h1> — journal of sketches, renders and works in progress</span>
-        <span><span id="labCount">—</span> entries</span>
+        <span><h1 class="page-head-label">Lab</h1></span>
       </header>
-      <p>A workshop where ideas go before they become projects. 3D sketches, half-baked renders, loops, weird stuff. Updated whenever I make a mess.</p>
+      <p>A workshop where ideas go before they become projects: 3D sketches, half-baked renders, loops, small apps and weird stuff. Updated whenever I make a mess.</p>
+      <label class="journal-search">
+        <span class="visually-hidden">Search the Lab</span>
+        <input type="search" id="labSearch" placeholder="Search" autocomplete="off" spellcheck="false" />
+        <kbd aria-hidden="true">/</kbd>
+      </label>
       <div class="journal-filter" role="group" aria-label="Show">
-        <button type="button" class="is-active" data-show="all">All</button>
-        <button type="button" data-show="still">Stills</button>
-        <button type="button" data-show="clip">Clips</button>
-        <button type="button" data-show="app">Apps &amp; web</button>
+        <button type="button" class="is-active" data-show="all">All <i></i></button>
+        <button type="button" data-show="still">Stills <i></i></button>
+        <button type="button" data-show="clip">Clips <i></i></button>
+        <button type="button" data-show="app">Apps &amp; web <i></i></button>
       </div>
     </aside>
     <div class="journal-main">
@@ -61,6 +65,16 @@
         <p class="journal-empty" id="labEmpty" hidden>Nothing posted here yet. Apps, small tools and web experiments will be listed here, each with a page of its own.</p>
       </div>
     </div>
+    <aside class="journal-side">
+      <section class="journal-apps" aria-label="Apps" id="labApps" hidden>
+        <h2>Apps</h2>
+        <ul id="labAppList"></ul>
+      </section>
+      <nav class="journal-index" aria-label="Entries">
+        <h2>Index</h2>
+        <ol id="labIndex"></ol>
+      </nav>
+    </aside>
   </main>
 
   <!-- Floating top-left nav (shared component) -->
@@ -97,10 +111,10 @@
   <script src="motion.js"></script>
   <script defer src="projects.js?v=7"></script>
   <script defer src="project-template.js?v=4"></script>
-  <script defer src="overlay.js?v=46"></script>
-  <script defer src="apps.js?v=11"></script>
-  <script defer src="lab.js?v=15"></script>
-  <script src="floating-nav.js?v=15" defer></script>
+  <script defer src="overlay.js?v=48"></script>
+  <script defer src="apps.js?v=12"></script>
+  <script defer src="lab.js?v=22"></script>
+  <script src="floating-nav.js?v=18" defer></script>
   <script src="theme.js?v=2" defer></script>
   <script src="brand.js" defer></script>
 </body>

@@ -172,6 +172,7 @@
     const total = entry.media.length;
     const article = el('article', 'entry');
     article.id = `entry-${idx + 1}`;
+    article.dataset.title = entry.title;
     if (clips) article.dataset.clip = '';
     if (clips < total) article.dataset.still = '';
 
@@ -201,6 +202,8 @@
   function makeAppEntry(app) {
     const article = el('article', 'entry app-entry');
     article.dataset.app = '';
+    article.dataset.title = app.title;
+    article.id = `app-${app.id}`;
     const head = el('header', 'entry-head');
     head.append(el('span', '', 'App'), el('span', '', app.category));
 
@@ -228,27 +231,120 @@
   apps.forEach(app => appFrag.appendChild(makeAppEntry(app)));
   feed.prepend(appFrag);
 
-  const countEl = document.getElementById('labCount');
-  if (countEl) countEl.textContent = String(entries.length + apps.length);
+  // ---- Apps shelf in the right-hand rail: an icon, a name and what it is ----
+  const appList = document.getElementById('labAppList');
+  if (appList && apps.length && typeof window.labAppIcon === 'function') {
+    apps.forEach((app) => {
+      const li = el('li');
+      const a = el('a', 'rail-app');
+      a.href = `apps/${app.id}.html`;
+      const icon = window.labAppIcon(app);
+      icon.style.setProperty('--icon', '44px');
+      const text = el('span', 'rail-app-text');
+      text.append(el('span', 'rail-app-name', app.title), el('span', 'rail-app-sub', app.category));
+      a.append(icon, text);
+      li.append(a);
+      appList.append(li);
+    });
+    document.getElementById('labApps').hidden = false;
+  }
+
 
   // ---- Show: all / stills / clips / apps ---------------------------------
+  // ---- Rail: filter + search, counts, index ---------------
   const filterBtns = document.querySelectorAll('.journal-filter button');
   const emptyNote = document.getElementById('labEmpty');
+  const searchEl = document.getElementById('labSearch');
+  const indexEl = document.getElementById('labIndex');
+  const allEntries = [...feed.querySelectorAll('.entry')];
+  let show = 'all';
+  let query = '';
+
+  const scrollToY = (y) => {
+    if (window.pageLenis) window.pageLenis.scrollTo(y, { immediate: reducedMotion });
+    else window.scrollTo({ top: y, behavior: reducedMotion ? 'auto' : 'smooth' });
+  };
+  const jumpTo = (entry) => scrollToY(entry.getBoundingClientRect().top + window.scrollY - 110);
+
+  // counts beside each filter, for the whole feed
+  filterBtns.forEach((btn) => {
+    const key = btn.dataset.show;
+    const n = key === 'all' ? allEntries.length : allEntries.filter(e => key in e.dataset).length;
+    btn.querySelector('i').textContent = n;
+  });
+
+  // the index: one line per entry; hidden lines follow the filter
+  const indexItems = allEntries.map((entry, i) => {
+    const li = el('li');
+    const a = el('a');
+    a.href = `#${entry.id}`;
+    a.textContent = entry.dataset.title;
+    a.addEventListener('click', (ev) => { ev.preventDefault(); jumpTo(entry); });
+    li.append(a);
+    indexEl.append(li);
+    return { entry, li, a };
+  });
+
+  function applyFilters(toTop) {
+    let shown = 0;
+    allEntries.forEach((entry, i) => {
+      const okType = show === 'all' || show in entry.dataset;
+      const okText = !query || entry.dataset.title.toLowerCase().includes(query);
+      entry.hidden = !(okType && okText);
+      indexItems[i].li.hidden = entry.hidden;
+      if (!entry.hidden) shown++;
+    });
+    if (emptyNote) {
+      emptyNote.hidden = shown > 0;
+      if (shown === 0 && query) emptyNote.textContent = `Nothing matches “${searchEl.value.trim()}”.`;
+    }
+    if (toTop) scrollToY(0);       // a new list starts at its top
+  }
   filterBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
-      const show = btn.dataset.show;
-      let shown = 0;
+      show = btn.dataset.show;
       filterBtns.forEach(b => b.classList.toggle('is-active', b === btn));
-      feed.querySelectorAll('.entry').forEach((entry) => {
-        entry.hidden = show !== 'all' && !(show in entry.dataset);
-        if (!entry.hidden) shown++;
-      });
-      if (emptyNote) emptyNote.hidden = shown > 0;
-      // a new list starts at its top (through the smooth scroller when it runs)
-      if (window.pageLenis) window.pageLenis.scrollTo(0, { immediate: reducedMotion });
-      else window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
+      applyFilters(true);
     });
   });
+  searchEl.addEventListener('input', () => { query = searchEl.value.trim().toLowerCase(); applyFilters(false); });
+  document.addEventListener('keydown', (ev) => {
+    if (ev.key === '/' && !/^(input|textarea)$/i.test(document.activeElement.tagName)) {
+      ev.preventDefault();
+      searchEl.focus();
+    } else if (ev.key === 'Escape' && document.activeElement === searchEl) {
+      searchEl.value = ''; query = ''; applyFilters(false); searchEl.blur();
+    }
+  });
+
+  // the index follows the page: the entry nearest the top is the current one
+  let current = null;
+  const follow = () => {
+    spyQueued = false;
+    const line = window.innerHeight * 0.35;
+    let best = null;
+    for (const item of indexItems) {
+      if (item.entry.hidden) continue;
+      if (item.entry.getBoundingClientRect().top <= line) best = item;
+    }
+    best = best || indexItems.find(item => !item.entry.hidden) || null;
+    if (best === current) return;
+    if (current) current.a.classList.remove('is-current');
+    current = best;
+    if (current) {
+      current.a.classList.add('is-current');
+      const a = current.a;
+      const list = indexEl;       // keep the line in view without moving the page
+      if (a.offsetTop < list.scrollTop) list.scrollTop = a.offsetTop;
+      else if (a.offsetTop + a.offsetHeight > list.scrollTop + list.clientHeight) list.scrollTop = a.offsetTop + a.offsetHeight - list.clientHeight;
+    }
+  };
+  // runs only while the page is scrolling (one frame per scroll event burst)
+  let spyQueued = false;
+  window.addEventListener('scroll', () => {
+    if (!spyQueued) { spyQueued = true; requestAnimationFrame(follow); }
+  }, { passive: true });
+  follow();
 
   // ---- Clips play while they are the thing on screen (mouse only) -------
   if (canHover && !reducedMotion) {

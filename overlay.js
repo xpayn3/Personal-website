@@ -31,7 +31,7 @@
       closeBtn.className = 'overlay-close';
       closeBtn.id = 'overlayClose';
       closeBtn.setAttribute('aria-label', 'Close');
-      closeBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="1" y1="1" x2="17" y2="17"/><line x1="17" y1="1" x2="1" y2="17"/></svg>';
+      closeBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="17" y2="17"/><line x1="17" y1="1" x2="1" y2="17"/></svg>';
       document.body.appendChild(closeBtn);
 
       const ov = document.createElement('div');
@@ -45,16 +45,16 @@
       lb.className = 'lightbox';
       lb.id = 'lightbox';
       lb.innerHTML = `
-        <button class="lightbox-close" id="lightboxClose"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="1" y1="1" x2="17" y2="17"/><line x1="17" y1="1" x2="1" y2="17"/></svg></button>
+        <button class="lightbox-close" id="lightboxClose"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="17" y2="17"/><line x1="17" y1="1" x2="1" y2="17"/></svg></button>
         <div class="lightbox-content" id="lightboxContent"></div>
         <div class="lightbox-info" id="lightboxInfo"></div>
         <canvas class="lightbox-histogram" id="lightboxHistogram" width="200" height="80"></canvas>
         <div class="lightbox-bottom">
           <div class="lightbox-strip" id="lightboxStrip"></div>
           <div class="lightbox-controls">
-            <button class="lb-ctrl-btn" id="lightboxPrev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15,4 7,12 15,20"/></svg></button>
+            <button class="lb-ctrl-btn" id="lightboxPrev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,4 7,12 15,20"/></svg></button>
             <span class="lightbox-counter" id="lightboxCounter"></span>
-            <button class="lb-ctrl-btn" id="lightboxNext"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9,4 17,12 9,20"/></svg></button>
+            <button class="lb-ctrl-btn" id="lightboxNext"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,4 17,12 9,20"/></svg></button>
           </div>
         </div>`;
       document.body.appendChild(lb);
@@ -65,7 +65,7 @@
       mpl.id = 'mobileProjList';
       mpl.innerHTML = `
         <div class="mobile-proj-bg" id="mobileProjBg"></div>
-        <button class="mobile-proj-close" id="mobileProjClose"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="1" y1="1" x2="17" y2="17"/><line x1="17" y1="1" x2="1" y2="17"/></svg></button>
+        <button class="mobile-proj-close" id="mobileProjClose"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="17" y2="17"/><line x1="17" y1="1" x2="1" y2="17"/></svg></button>
         <div class="mobile-proj-scroll" id="mobileProjScroll"></div>`;
       document.body.appendChild(mpl);
     }
@@ -75,6 +75,9 @@
   const overlay = document.getElementById('overlay');
   const overlayInner = document.getElementById('overlayInner');
   const overlayClose = document.getElementById('overlayClose');
+  let keyboardUser = false;
+  addEventListener('keydown', () => { keyboardUser = true; }, true);
+  addEventListener('pointerdown', () => { keyboardUser = false; }, true);
   const lightbox = document.getElementById('lightbox');
   const lightboxContent = document.getElementById('lightboxContent');
   const lightboxCounter = document.getElementById('lightboxCounter');
@@ -552,7 +555,9 @@
     overlayClose.classList.add('visible');
     document.body.classList.add('project-open');
     jumpTo(0);
-    if (!STANDALONE) overlayClose.focus({ preventScroll: true });
+    // move focus to Close for keyboard users only; after a mouse or touch
+    // open it would just draw a focus ring around the button
+    if (!STANDALONE && keyboardUser) overlayClose.focus({ preventScroll: true });
     setThemeColor(pageBg());
 
     // Page meta for sharing (a static project page already carries its own)

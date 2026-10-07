@@ -39,6 +39,7 @@ window.labApps = [
     category: 'CAD tool',
     stage: 'Beta',
     repo: 'https://github.com/xpayn3/MeshOptimiser',
+    icon: 'Images/apps/meshoptimiser-icon.svg',
     cover: 'Images/apps/meshoptimiser-viewer.webp',
     shots: [
       ['Images/apps/meshoptimiser-viewer.webp', 'The viewer: assembly tree, viewport, properties and actions'],
