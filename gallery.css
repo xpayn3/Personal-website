@@ -41,32 +41,13 @@ html[data-theme="light"] .page-lab {
 html[data-theme="light"]:has(body.page-grid),
 html[data-theme="light"]:has(body.page-lab) { background: var(--paper); }
 
-/* ---- page title: a single row of small print, the page's name leading it ---- */
-.page-head {
-  max-width: 1800px;
-  margin: 0 auto;
-  padding: clamp(104px, 15vh, 160px) var(--g-gutter) 0;
-  color: var(--g-ink);
-}
+/* ---- page title (the Lab rail's heading) ---- */
 .page-head-label {
   display: inline;
   font: inherit;
   letter-spacing: inherit;
   color: var(--g-ink);
 }
-.page-head-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 24px;
-  padding-bottom: 14px;
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-variant-numeric: tabular-nums;
-  color: var(--g-muted);
-}
-.page-head-row > :last-child { flex: none; white-space: nowrap; }
 
 /* a page title kept for screen readers and search engines, not drawn */
 .page-title-hidden {
@@ -81,8 +62,7 @@ html[data-theme="light"]:has(body.page-lab) { background: var(--paper); }
 body.page-grid .grid { padding-top: clamp(104px, 15vh, 160px); }
 
 /* ---- the wall ---- */
-.grid:not(.list-view),
-.lab-grid {
+.grid:not(.list-view) {
   display: grid;
   grid-template-columns: repeat(3, 1fr);  /* Work: the COLS slider overrides this inline */
   column-count: initial;
@@ -91,14 +71,12 @@ body.page-grid .grid { padding-top: clamp(104px, 15vh, 160px); }
   margin: 0 auto;
   padding: clamp(28px, 5vh, 56px) var(--g-gutter) clamp(80px, 12vh, 160px);
 }
-@media (max-width: 1200px) { .lab-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 768px) {
-  .grid:not(.list-view),
-  .lab-grid { grid-template-columns: repeat(2, 1fr); gap: 24px 10px; }
+  .grid:not(.list-view) { grid-template-columns: repeat(2, 1fr); gap: 24px 10px; }
 }
 
 /* ---- a piece: square picture, caption underneath ---- */
-:is(.grid:not(.list-view) > .grid-item, .lab-card) {
+.grid:not(.list-view) > .grid-item {
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -115,35 +93,19 @@ body.page-grid .grid { padding-top: clamp(104px, 15vh, 160px); }
 .grid:not(.list-view) > .grid-item:hover { background: none; }
 .grid:not(.list-view) > .grid-item::after { display: none; }
 
-.grid:not(.list-view) > .grid-item > img,
-.lab-card .media-wrap {
+.grid:not(.list-view) > .grid-item > img {
   width: 100%;
   height: auto;
   aspect-ratio: 1 / 1;
   border-radius: 0;
   background: var(--g-well);
 }
-.grid:not(.list-view) > .grid-item > img,
-.lab-card .media-wrap > img,
-.lab-card .media-wrap > video {
+.grid:not(.list-view) > .grid-item > img {
   object-fit: cover;
 }
-.lab-card .media-wrap > img,
-.lab-card .media-wrap > video { height: 100%; }
-/* Lab clips: the tile shows the poster; lab.js lays a <video> over it only
-   while a mouse hovers, faded in once it is actually playing. */
-.lab-card .media-wrap > video {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-.lab-card .media-wrap > video.is-playing { opacity: 1; }
 /* no zoom on hover: the picture stays put */
 .grid:not(.list-view) > .grid-item:hover > img,
-.grid:not(.list-view) > .grid-item:hover .hover-video,
-.lab-card:hover .media-wrap > img,
-.lab-card:hover .media-wrap > video { transform: none; }
+.grid:not(.list-view) > .grid-item:hover .hover-video { transform: none; }
 .grid:not(.list-view) .hover-video-wrap {
   inset: 0 0 auto 0;
   aspect-ratio: 1 / 1;
@@ -266,7 +228,7 @@ body.page-grid .grid { padding-top: clamp(104px, 15vh, 160px); }
 }
 
 /* ---- caption: name ........ year / type ---- */
-:is(.grid:not(.list-view) > .grid-item, .lab-card) .item-label {
+.grid:not(.list-view) > .grid-item .item-label {
   position: static;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -289,7 +251,7 @@ body.page-grid .grid { padding-top: clamp(104px, 15vh, 160px); }
   color: var(--g-muted);
   pointer-events: none;
 }
-:is(.grid:not(.list-view) > .grid-item, .lab-card) .item-label-name {
+.grid:not(.list-view) > .grid-item .item-label-name {
   grid-column: 1;
   grid-row: 1;
   display: block;
@@ -300,7 +262,7 @@ body.page-grid .grid { padding-top: clamp(104px, 15vh, 160px); }
   overflow: hidden;
   text-overflow: ellipsis;
 }
-:is(.grid:not(.list-view) > .grid-item, .lab-card) .item-label-tag {
+.grid:not(.list-view) > .grid-item .item-label-tag {
   grid-column: 2;
   grid-row: 1;
   font: inherit;
@@ -358,15 +320,7 @@ body.page-grid .grid { padding-top: clamp(104px, 15vh, 160px); }
 .grid.list-view .grid-item:hover { background: color-mix(in srgb, var(--g-ink) 4%, transparent); }
 .grid.list-view .grid-item .item-meta { color: var(--g-muted); }
 
-/* ---- Lab cards keep their rise-in; only the look above is shared ---- */
-.lab-card {
-  transition:
-    opacity 0.45s ease,
-    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
 @media (max-width: 768px) {
-  .page-head-row { font-size: 11px; }
   .grid:not(.list-view) > .grid-item > img { border-radius: 0; }
-  :is(.grid:not(.list-view) > .grid-item, .lab-card) .item-label { font-size: 10px; column-gap: 8px; }
+  .grid:not(.list-view) > .grid-item .item-label { font-size: 10px; column-gap: 8px; }
 }

@@ -1,7 +1,8 @@
 // ========== GRID / FILTERS / LAYOUT (grid.html) ==========
 // Project data + overlay/lightbox/mobile-list live in projects.js + overlay.js.
-// This file owns the grid render, filter dropdowns, list-view toggle, grid
-// slider, watermark rotation, and the #project=X auto-open handoff.
+// This file owns the grid render, the featured blocks, filter dropdowns,
+// list-view toggle, grid slider and the control panel's sort / search.
+// (grid.html#project=X deep links are opened by overlay.js.)
 
 // Data lives in projects.js (wrapped in an IIFE) and is exposed via window.*
 const projects = window.projects;
@@ -273,16 +274,6 @@ function placeFeatures() {
   });
 }
 
-// Page title small print: piece count and the span of years on show.
-(function fillPageHead() {
-  const shown = gridItems.filter(i => i.project !== 'lab');
-  const years = shown.map(i => parseInt(i.year, 10)).filter(Boolean);
-  const countEl = document.getElementById('workCount');
-  const yearsEl = document.getElementById('workYears');
-  if (countEl) countEl.textContent = shown.length;
-  if (yearsEl && years.length) yearsEl.textContent = `${Math.min(...years)} — ${Math.max(...years)}`;
-})();
-
 // ========== STRUCTURED DATA ==========
 // Tells search engines what is on this page: one CreativeWork per project,
 // built from the same data as the wall so it can't drift out of date.
@@ -466,7 +457,7 @@ function applyFilters() {
   // Hide items instantly
   toHide.forEach(item => {
     item.classList.add('hidden');
-    item.classList.remove('hiding', 'showing');
+    item.classList.remove('showing');
   });
 
   // Show items with staggered bounce
@@ -485,17 +476,13 @@ function applyFilters() {
   // Show/hide no results
   const visibleCount = gridEl.querySelectorAll('.grid-item:not(.hidden)').length;
   const noMatch = visibleCount === 0;
-  const countEl = document.getElementById('workCount');
-  if (countEl) countEl.textContent = visibleCount;
   document.getElementById('noResults').classList.toggle('visible', noMatch);
   const footer = document.querySelector('.site-footer');
   if (footer) footer.style.display = noMatch ? 'none' : '';
 
-  // Update toggle button states (skip nav)
+  // Update toggle button states
   document.querySelectorAll('.bar-toggle').forEach(btn => {
-    const menu = btn.dataset.menu;
-    if (menu === 'nav') return;
-    btn.classList.toggle('has-filter', activeFilters[menu] !== null);
+    btn.classList.toggle('has-filter', activeFilters[btn.dataset.menu] !== null);
   });
 
   // Update dropdown active states
@@ -536,20 +523,11 @@ function applyFilters() {
   const yearText = document.getElementById('yearToggleText');
   if (yearText) yearText.textContent = activeFilters.year ? String(activeFilters.year) : 'Any';
 
-  // Color button text mirrors color name
-  const colorText = document.getElementById('colorToggleText');
-  if (colorText) colorText.textContent = activeFilters.color || 'Any';
-
   // Show/hide reset button
   const hasAnyFilter = !!(activeFilters.project || activeFilters.year || activeFilters.color || activeFilters.category || (activeFilters.search && activeFilters.search.length));
   const resetBtn = document.getElementById('resetFilters');
   if (resetBtn) resetBtn.style.display = hasAnyFilter ? 'inline-block' : 'none';
 
-  // Live counts in the control-panel meter
-  const cpVisible = document.getElementById('cpVisible');
-  const cpTotal = document.getElementById('cpTotal');
-  if (cpVisible) cpVisible.textContent = String(visibleCount).padStart(3, '0');
-  if (cpTotal) cpTotal.textContent = String(items.length).padStart(3, '0');
   const cpStatus = document.getElementById('cpStatus');
   if (cpStatus) cpStatus.textContent = hasAnyFilter ? '// FILTER' : '// IDLE';
 
@@ -743,55 +721,6 @@ layoutListBtn.addEventListener('click', () => {
   if (gridEl.classList.contains('list-view')) return;
   switchLayout(true);
 });
-
-// ========== WATERMARK LETTER ROTATION ==========
-const wmEl = document.getElementById('watermarkText');
-if (wmEl) {
-  const text = wmEl.textContent;
-  wmEl.innerHTML = '';
-  const letters = [];
-  for (const char of text) {
-    const span = document.createElement('span');
-    span.className = 'wm-letter';
-    span.textContent = char === ' ' ? '\u00A0' : char;
-    wmEl.appendChild(span);
-    letters.push(span);
-  }
-
-  const MAX_ROT = 35;
-  let lastScroll = 0;
-  let resetTimer = null;
-
-  let wmTick = false;
-  window.addEventListener('scroll', () => {
-    if (wmTick) return;
-    wmTick = true;
-    requestAnimationFrame(() => {
-      const scrollY = window.scrollY;
-      const delta = scrollY - lastScroll;
-      lastScroll = scrollY;
-
-      for (let i = 0; i < letters.length; i++) {
-        const raw = delta * -(1.2 + i * 0.12);
-        const rot = Math.max(-MAX_ROT, Math.min(MAX_ROT, raw));
-        letters[i].style.transition = 'none';
-        letters[i].style.transform = `rotate(${rot}deg)`;
-      }
-
-      clearTimeout(resetTimer);
-      resetTimer = setTimeout(() => {
-        for (let i = 0; i < letters.length; i++) {
-          letters[i].style.transition = 'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)';
-          letters[i].style.transform = 'rotate(0deg)';
-        }
-      }, 80);
-      wmTick = false;
-    });
-  }, { passive: true });
-}
-
-
-// (grid.html#project=X deep links are opened by overlay.js, on every page.)
 
 // ========== CONTROL PANEL — sort / search / collapse =================
 (function initControlPanelExtras() {

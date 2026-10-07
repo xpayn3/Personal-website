@@ -4,13 +4,8 @@
 :root {
   --bg: var(--color-bg);
   --text: var(--color-text);
-  --text-dim: var(--color-text-dim);
-  --glass-bg: var(--color-hover);
-  --glass-border: var(--color-border-strong);
-  --glass-bg-hover: var(--color-hover-strong);
   --accent: var(--color-accent);
   --radius: var(--radius-lg);
-  --bar-h: 56px;
 }
 
 html {
@@ -176,85 +171,6 @@ body.scroll-locked .site-footer {
   transform: translateY(0);
 }
 
-.grid-item .item-label.lab-label {
-  background: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  border: none;
-  border-radius: 0;
-  font-family: var(--font-display);
-  font-size: 30cqi;
-  font-weight: 800;
-  font-style: italic;
-  letter-spacing: 0.02em;
-  text-transform: none;
-  color: #fff;
-  text-shadow: 0 2px 20px rgba(0,0,0,0.5);
-  padding: 16px;
-  min-width: auto;
-  max-width: none;
-  width: calc(100% - 32px);
-  text-align: center;
-}
-
-/* divider & slider in bar */
-.bar-divider {
-  width: 1px;
-  height: 24px;
-  background: rgba(0,0,0,0.1);
-  margin: 0 6px;
-  flex-shrink: 0;
-}
-
-.bar-slider {
-  display: flex;
-  align-items: center;
-  padding: 0 8px;
-  position: relative;
-}
-
-.bar-slider input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 110px;
-  height: 4px;
-  background: rgba(0,0,0,0.15);
-  border-radius: 2px;
-  outline: none;
-  cursor: pointer;
-  position: relative;
-  z-index: 2;
-}
-
-.bar-slider input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 14px;
-  height: 14px;
-  background: #111;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-  position: relative;
-  z-index: 3;
-}
-
-
-.bar-slider input[type="range"]::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
-  background: #111;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.bar-slider input[type="range"]::-moz-range-track {
-  background: rgba(0,0,0,0.15);
-  height: 4px;
-  border-radius: 2px;
-}
-
 /* dots for each step */
 .slider-dots {
   position: absolute;
@@ -301,10 +217,6 @@ body.scroll-locked .site-footer {
 }
 
 /* filtered-out state */
-.grid-item.hiding {
-  animation: gridItemOut 0.35s cubic-bezier(0.32,0.72,0,1) forwards;
-}
-
 .grid-item.showing {
   animation: gridItemIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
 }
@@ -313,20 +225,13 @@ body.scroll-locked .site-footer {
   display: none !important;
 }
 
-@keyframes gridItemOut {
-  0% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(0.85); opacity: 0; }
-}
-
 @keyframes gridItemIn {
   0% { transform: scale(0.85); opacity: 0; }
   60% { transform: scale(1.03); }
   100% { transform: scale(1); opacity: 1; }
 }
 
-/* ========== FLOATING BOTTOM BAR ========== */
-
-/* Grid-specific bar overrides */
+/* ========== FILTER BUTTONS & DROPDOWNS (used by the control panel) ========== */
 .bar-toggle.active {
   background: rgba(0,0,0,0.05);
   color: #000;
@@ -426,37 +331,11 @@ body.scroll-locked .site-footer {
 }
 
 /* color swatches in dropdown */
-#menu-nav,
 #menu-category,
 .bar-dropdown.color-grid {
   max-height: none;
   overflow: visible;
 }
-
-/* nav links in dropdown */
-.bar-nav-link {
-  display: block;
-  color: #222;
-  text-decoration: none;
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  padding: 8px 14px;
-  border-radius: 8px;
-  transition: background 0.15s, color 0.15s;
-}
-
-.bar-nav-link:hover {
-  background: rgba(0,0,0,0.05);
-  color: #111;
-}
-
-.bar-nav-link.active {
-  background: rgba(0,0,0,0.08);
-  color: #111;
-  font-weight: 600;
-}
-
-
 
 /* project filter buttons with thumbnails */
 .proj-filter-btn {
@@ -504,11 +383,6 @@ body.scroll-locked .site-footer {
 @keyframes barItemOut {
   0% { transform: scale(1); opacity: 1; max-width: 200px; padding: 12px 16px; }
   100% { transform: scale(0); opacity: 0; max-width: 0; padding: 12px 0; }
-}
-
-.bottom-bar {
-  transition: padding 0.35s cubic-bezier(0.34,1.56,0.64,1),
-              gap 0.35s cubic-bezier(0.34,1.56,0.64,1);
 }
 
 .bar-toggle, .bar-reset {
@@ -633,144 +507,13 @@ body.scroll-locked .site-footer {
 
 
 
-/* ========== MOBILE TOP SLIDER ========== */
-.mobile-slider-pill {
-  display: none;
-}
-
+/* ========== MOBILE ========== */
 @media (max-width: 768px) {
-  .mobile-slider-pill {
-    display: flex;
-    position: fixed;
-    top: 50%;
-    right: 8px;
-    transform: translateY(-50%);
-    z-index: 90;
-    align-items: center;
-    justify-content: center;
-    padding: 70px 14px;
-    background: #fff;
-    border: 1px solid var(--color-border);
-    border-radius: 0;
-    box-shadow: var(--shadow-sm);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: none;
-  }
-
-  .mobile-slider-pill input[type="range"] {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 120px;
-    transform: rotate(-90deg);
-    margin: 0 -50px;
-    height: 6px;
-    background: rgba(0,0,0,0.08);
-    border-radius: 3px;
-    outline: none;
-    cursor: pointer;
-    position: relative;
-    z-index: 2;
-    touch-action: none;
-  }
-
-  .mobile-slider-pill input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 28px;
-    height: 28px;
-    background: #fff;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.04);
-  }
-
-
-  .mobile-slider-pill input[type="range"]::-moz-range-thumb {
-    width: 28px;
-    height: 28px;
-    background: #fff;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-  }
-
-
-
-  .mobile-slider-pill .slider-dots {
-    display: flex;
-    position: absolute;
-    top: 70px;
-    bottom: 70px;
-    left: 50%;
-    transform: translateX(-50%);
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .mobile-slider-pill .slider-dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: rgba(0,0,0,0.15);
-  }
-
-  /* hide desktop slider on mobile */
-  .bottom-bar .bar-slider {
-    display: none;
-  }
-  .bottom-bar .bar-divider,
-  .bottom-bar .bar-reset {
-    display: none !important;
-  }
-
-
   /* nav text on mobile — match home/about */
   .bar-toggle, .bar-reset {
     font-size: 0.9rem !important;
     padding: 12px 16px !important;
   }
-}
-
-/* ========== LAYOUT TOGGLE — sharp, mono, no glass ========== */
-.layout-toggle {
-  position: fixed;
-  top: 20px;
-  right: 24px;
-  z-index: 90;
-  display: flex;
-  background: #fff;
-  border: 1px solid var(--color-border);
-  border-radius: 0;
-  padding: 0;
-  gap: 0;
-  box-shadow: var(--shadow-sm);
-}
-
-.layout-btn {
-  background: none;
-  border: none;
-  color: rgba(0,0,0,0.4);
-  padding: 8px 10px;
-  cursor: pointer;
-  border-radius: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.18s ease, color 0.18s ease;
-}
-
-.layout-btn:hover {
-  color: #000;
-}
-
-.layout-btn.active {
-  background: #000;
-  color: #fff;
 }
 
 /* list view mode */
@@ -907,32 +650,6 @@ body.scroll-locked .site-footer {
   border-color: #000;
 }
 
-/* ========== WATERMARK ========== */
-.watermark {
-  position: fixed;
-  top: 20px;
-  left: 24px;
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: #111;
-  z-index: 90;
-  text-decoration: none;
-  cursor: pointer;
-  height: 36px;
-  display: flex;
-  align-items: center;
-}
-
-.watermark .wm-letter {
-  display: inline-block;
-  transform-origin: bottom center;
-  transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
-  will-change: transform;
-}
-
-
 /* ========== RESPONSIVE ========== */
 @media (max-width: 1200px) {
   .grid { grid-template-columns: repeat(4, 1fr); }
@@ -943,7 +660,6 @@ body.scroll-locked .site-footer {
   .grid-item { border-radius: 10px; padding: 4px; }
   .grid-item img, .grid-item video { border-radius: 8px; }
   .hover-video-wrap { top: 4px; left: 4px; right: 4px; bottom: 4px; border-radius: 8px; }
-  .bottom-bar { max-width: calc(100vw - 24px); width: auto; }
   .bar-toggle, .bar-reset { font-size: 0.9rem; padding: 10px 16px; }
 }
 
@@ -1063,30 +779,6 @@ body.scroll-locked .site-footer {
   border-color: rgba(255, 255, 255, 0.4);
 }
 .cp-collapse-glyph { display: block; transform: translateY(-1px); }
-
-.cp-meter {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-  padding: 4px 0 6px;
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.10);
-}
-.cp-meter-num {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: #fff;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.02em;
-}
-.cp-meter-total { color: rgba(255, 255, 255, 0.35); }
-.cp-meter-sep { color: rgba(255, 255, 255, 0.3); }
-.cp-meter-label {
-  font-size: 0.6rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
-  margin-left: auto;
-}
 
 .cp-section {
   display: flex;
@@ -1263,8 +955,8 @@ body.scroll-locked .site-footer {
 .cp-filter-btn .color-indicator.visible { display: block; }
 
 /* dropdown opens BELOW the trigger button, right-aligned to its section.
-   Override every property the .bar-dropdown base rule sets so it doesn't
-   try to fly upward like the old bottom-bar dropdowns. */
+   Override every property the .bar-dropdown base rule sets, which opens
+   upward. */
 .cp-dropdown {
   position: absolute;
   top: calc(100% + 4px);
@@ -1288,7 +980,7 @@ body.scroll-locked .site-footer {
   pointer-events: none;
   transition: visibility 0s 0.2s, opacity 0.18s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.cp-dropdown::before { display: none; } /* kill the upward bridge from old dropdown */
+.cp-dropdown::before { display: none; } /* kill the hover bridge the base dropdown draws above itself */
 .cp-dropdown.open {
   visibility: visible;
   opacity: 1;
@@ -1533,12 +1225,6 @@ body.scroll-locked .site-footer {
 .cp-collapse { border-color: rgba(0, 0, 0, 0.2); color: rgba(20, 20, 18, 0.65); }
 .cp-collapse:hover { background: rgba(0, 0, 0, 0.05); color: #111; border-color: rgba(0, 0, 0, 0.4); }
 
-.cp-meter { border-bottom-color: rgba(0, 0, 0, 0.1); }
-.cp-meter-num { color: #1e1e1c; }
-.cp-meter-total { color: rgba(20, 20, 18, 0.4); }
-.cp-meter-sep { color: rgba(20, 20, 18, 0.35); }
-.cp-meter-label { color: rgba(20, 20, 18, 0.5); }
-
 .cp-row-label { color: rgba(20, 20, 18, 0.5); }
 
 .cp-toggle-pair { border-color: rgba(0, 0, 0, 0.18); }
@@ -1622,6 +1308,26 @@ body.scroll-locked .site-footer {
   .cp-section { gap: 6px; }
   .cp-row-label { width: 38px; font-size: 0.54rem; }
 }
+
+/* Base look of the panel's filter buttons (.bar-toggle). Last in the file so it
+   still wins ties against the .cp-filter-btn rules above, as it did when it
+   lived in bar.css. */
+.bar-toggle {
+  background: none;
+  border: none;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  padding: var(--space-md) var(--space-lg);
+  cursor: pointer;
+  border-radius: var(--radius-pill);
+  transition: background var(--duration-fast), color var(--duration-fast);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+
+.bar-toggle:hover { background: var(--color-hover); }
 
 /* The control panel is switched off (the `hidden` attribute in grid.html).
    Its own rules set `display`, which would otherwise win over `hidden`. */

@@ -373,16 +373,6 @@ html:has(body.scroll-locked) {
   100% { transform: translateX(0); opacity: 1; }
 }
 
-@keyframes lbSlideOutLeft {
-  0% { transform: translateX(0); opacity: 1; }
-  100% { transform: translateX(-80px); opacity: 0; }
-}
-
-@keyframes lbSlideOutRight {
-  0% { transform: translateX(0); opacity: 1; }
-  100% { transform: translateX(80px); opacity: 0; }
-}
-
 .lightbox-content.slide-right img,
 .lightbox-content.slide-right video {
   animation: lbSlideInRight 0.35s cubic-bezier(0.16,1,0.3,1) both;

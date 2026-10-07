@@ -7,8 +7,6 @@
 /* the Lab's own names, all derived from the page colours in gallery.css so
    they follow the Dark / Light theme */
 .page-lab {
-  --lab-panel:     var(--g-card);
-  --lab-line:      var(--g-line);
   --lab-ink:       var(--g-ink);
   --lab-ink-dim:   color-mix(in srgb, var(--g-ink) 60%, transparent);
   --lab-ink-mute:  color-mix(in srgb, var(--g-ink) 36%, transparent);
@@ -354,16 +352,3 @@ html.nav-away .journal-index ol { max-height: 28vh; }
 @media (prefers-reduced-motion: reduce) {
   .entry { opacity: 1; transform: none; transition: none; }
 }
-
-/* ========== BOTTOM BAR overrides for dark lab ========== */
-.bottom-bar {
-  background: var(--lab-panel);
-  border: 1px solid var(--lab-line);
-  color: var(--lab-ink);
-}
-.bar-link { color: var(--lab-ink-dim); }
-.bar-link:hover,
-.bar-link.active { color: var(--lab-ink); }
-.bar-project-label { color: var(--lab-ink); }
-.bar-counter { color: var(--lab-ink-mute); }
-.bar-divider { background: var(--lab-line); }

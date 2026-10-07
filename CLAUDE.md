@@ -13,7 +13,7 @@ Static portfolio served from GitHub Pages (repo `xpayn3/Personal-website`, domai
 | Page | HTML | CSS | JS |
 |------|------|-----|-----|
 | Home | `index.html` | `home.css`, `smoke.css`, `overlay.css` | `smoke.js`, `projects.js`, `project-template.js`, `overlay.js` + inline |
-| Work | `grid.html` | `style.css`, `gallery.css`, `overlay.css`, `footer.css`, `bar.css` | `projects.js`, `project-template.js`, `overlay.js`, `script.js` |
+| Work | `grid.html` | `style.css`, `gallery.css`, `overlay.css`, `footer.css` | `projects.js`, `project-template.js`, `overlay.js`, `script.js` |
 | Lab | `lab.html` | `lab.css`, `gallery.css`, `overlay.css`, `footer.css` | `projects.js`, `project-template.js`, `overlay.js`, `lab.js` |
 | About | `about.html` | `about.css` | inline (contact form) |
 | Admin | `admin.html` (noindex, password gate) | inline | inline, reads `admin-data.js` |
@@ -92,5 +92,4 @@ All pages also load `tokens.css`; pages with the site nav load `floating-nav.css
 ## Known gaps
 - No imprint page (needs the owner's legal details).
 - Analytics runs without a consent prompt.
-- The inline script in `about.html` still has handlers for controls that are no longer on the page.
 - Not yet verified on a real iPhone: bars after closing the lightbox, battery use, Lab tiles.
