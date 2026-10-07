@@ -207,7 +207,18 @@ body.page-about {
 }
 
 @media (max-width: 720px) {
-  .about-row { grid-template-columns: 1fr; }
+  /* phones: a shorter opening, so the profile starts within the first screen,
+     and less air between a section's label and what it labels */
+  .about-hero { min-height: 46vh; min-height: 46svh; padding-bottom: 32px; }
+  .about-role { margin-top: 14px; }
+  .about-row { grid-template-columns: 1fr; gap: 18px; padding: 56px 0; }
+  /* bigger type on a phone: it is read at arm's length on a small screen */
+  .about-role { font-size: 18px; }
+  .about-label { font-size: 14px; }
+  .about-statement { font-size: clamp(30px, 8.2vw, 38px); line-height: 1.13; }
+  .about-text { font-size: 18px; line-height: 1.55; }
+  .about-statement + .about-text { margin-top: 32px; }
+  .about-links { gap: 14px 24px; font-size: 17px; }
   .approach-list { grid-template-columns: 1fr; }
   .about-colophon { flex-direction: column; gap: 6px; }
 }

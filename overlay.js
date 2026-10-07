@@ -852,12 +852,7 @@
       const item = document.createElement('div');
       item.className = 'lightbox-strip-item' + (i === lightboxIndex ? ' active' : '') + (isVid ? ' is-film' : '');
       item.innerHTML = `<img src="${thumbSrc}" alt="" />`;
-      item.addEventListener('click', () => {
-        lbDirection = i > lightboxIndex ? 'right' : 'left';
-        lightboxIndex = i;
-        renderLightbox();
-        updateStripActive();
-      });
+      item.addEventListener('click', () => lbGo(i, i > lightboxIndex ? 1 : -1));
       lightboxStrip.appendChild(item);
     });
   }
@@ -1199,6 +1194,7 @@
 
   function closeLightbox() {
     if (!lightbox.classList.contains('open')) return;
+    lbSettleNow();                               // a slide still in flight lands first
     const src = lightboxItems[lightboxIndex];
     const real = lightboxContent.querySelector('img, video');
     const full = real && containedRect(real);   // measured before it is torn down
@@ -1236,9 +1232,11 @@
       endFlight();
       lightbox.classList.remove('lb-zoom');
     }
+    lbPoseReset();
   }
 
   function renderLightbox() {
+    lbPoseReset();                               // a new picture starts unzoomed
     // Pause any playing video before switching
     const oldVid = lightboxContent.querySelector('video');
     if (oldVid) { oldVid.pause(); oldVid.removeAttribute('src'); }
@@ -1312,8 +1310,38 @@
 
   document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
 
-  // Swipe in lightbox — reactive drag down to close
-  let lbTouchX = 0, lbTouchY = 0, lbDragging = false, lbDragY = 0;
+  // ---- Lightbox gestures ------------------------------------------------------
+  // The picture is handled the way a phone's photo app handles it:
+  // - drag sideways and it follows the finger while the next (or previous)
+  //   picture comes in beside it; let go past a fifth of the screen, or with
+  //   a flick, and the new one slides into place, otherwise it springs back.
+  //   At either end of the set it resists and springs back.
+  // - pinch to zoom in (up to 4x), drag to move around while zoomed, and
+  //   double-tap to zoom in on a spot or back out.
+  // - drag down to put the picture away.
+  // A mouse can drag sideways and double-click to zoom. The arrows, the
+  // keys, the wheel and the thumbnails use the same slide (lbGo).
+  //
+  // How it is built: #lightboxContent always holds the picture that is
+  // "current" (the rest of this file measures it there). The neighbour that
+  // slides in is a stand-in laid over the same spot (.lb-peek); when a slide
+  // lands, the index changes, the real picture is rendered in place, and the
+  // stand-in stays on top until the real one can paint, so nothing blinks.
+  const LB_GAP = 24;                      // px between two pictures while sliding
+  const LB_MAX_ZOOM = 4;
+  const lbPose = { s: 1, x: 0, y: 0 };    // zoom and offset of the current picture
+  let lbPeek = null;                      // { el, dir, index }: the neighbour being dragged in
+  let lbHold = null;                      // a landed stand-in waiting for the real picture
+  let lbPending = null;                   // finishes the slide or spring-back in progress, now
+  let lbPendingTimer = 0;
+  let lbGesture = null;                   // the touch or mouse gesture in progress
+  let lbLastTap = null;                   // { t, x, y } of the last tap, for double-tap
+
+  const lbMedia = () => lightboxContent.querySelector('img, video');
+  const lbWidth = () => lightbox.clientWidth + LB_GAP;
+  const lbClamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  // past a limit the picture still moves, but only a third as far
+  const lbRubber = (v, max) => (Math.abs(v) <= max ? v : Math.sign(v) * (max + (Math.abs(v) - max) * 0.33));
 
   // "Swipe down to close" hint behind the content
   const lbSwipeHint = document.createElement('div');
@@ -1321,77 +1349,377 @@
   lbSwipeHint.innerHTML = '<span>↓</span> Swipe to close';
   lightbox.appendChild(lbSwipeHint);
 
-  lightboxContent.addEventListener('touchstart', (e) => {
-    lbTouchX = e.touches[0].clientX;
-    lbTouchY = e.touches[0].clientY;
-    lbDragging = true;
-    lbDragY = 0;
+  // -- zoom ------------------------------------------------------------------
+  function lbApplyPose(animate) {
+    const m = lbMedia();
+    if (!m) return;
+    const plain = lbPose.s === 1 && !lbPose.x && !lbPose.y;
+    m.style.animation = 'none';          // the slide-in animation would otherwise keep its last frame on top
+    m.style.transition = animate ? 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)' : 'none';
+    m.style.transform = plain ? 'none' : `translate3d(${lbPose.x}px, ${lbPose.y}px, 0) scale(${lbPose.s})`;
+    lightbox.classList.toggle('lb-zoomed', lbPose.s > 1.01);
+  }
+  function lbPoseReset() {
+    lbPose.s = 1; lbPose.x = 0; lbPose.y = 0;
+    lightbox.classList.remove('lb-zoomed');
+  }
+  // the picture's own size on screen at 1x (its box is wider than the picture when it is letterboxed)
+  function lbBaseSize(m) {
+    const bw = m.offsetWidth || 1, bh = m.offsetHeight || 1;
+    const ar = aspectOf(m) || bw / bh;
+    const w = bw / bh > ar ? bh * ar : bw;
+    return { w, h: w / ar };
+  }
+  // where the picture's centre sits when it is not moved
+  function lbCentre(m) {
+    const r = m.getBoundingClientRect();
+    return { x: r.left + r.width / 2 - lbPose.x, y: r.top + r.height / 2 - lbPose.y };
+  }
+  // How far the zoomed picture may be moved. Sideways it is symmetric. Up and
+  // down it is not: the picture rests above the middle of the screen (the
+  // thumbnails sit under it), so zoomed in it is allowed down far enough to
+  // fill the screen, or to sit in the middle of it if it is still shorter.
+  function lbLimits(m, s) {
+    const base = lbBaseSize(m);
+    const H = lightbox.clientHeight, half = base.h * s / 2, cy = lbCentre(m).y;
+    const tall = half * 2 >= H;
+    return {
+      x: Math.max(0, (base.w * s - lightbox.clientWidth) / 2),
+      yMin: tall ? H - half - cy : H / 2 - cy,
+      yMax: tall ? half - cy : H / 2 - cy,
+    };
+  }
+  const lbRubberY = (v, lim) => (v < lim.yMin ? lim.yMin - (lim.yMin - v) * 0.33 : v > lim.yMax ? lim.yMax + (v - lim.yMax) * 0.33 : v);
+  // bring zoom and offset back inside what is allowed
+  function lbSettlePose(animate) {
+    const m = lbMedia();
+    if (!m) return;
+    if (lbPose.s < 1.02) { lbPose.s = 1; lbPose.x = 0; lbPose.y = 0; }
+    else {
+      lbPose.s = Math.min(lbPose.s, LB_MAX_ZOOM);
+      const lim = lbLimits(m, lbPose.s);
+      lbPose.x = lbClamp(lbPose.x, -lim.x, lim.x);
+      lbPose.y = lbClamp(lbPose.y, lim.yMin, lim.yMax);
+    }
+    lbApplyPose(animate);
+  }
+  // zoom to `s` keeping the point (x, y) of the screen under the finger
+  function lbZoomAbout(x, y, s, animate) {
+    const m = lbMedia();
+    if (!m) return;
+    const c = lbCentre(m);
+    const px = (x - c.x - lbPose.x) / lbPose.s, py = (y - c.y - lbPose.y) / lbPose.s;
+    lbPose.s = s;
+    lbPose.x = x - c.x - px * s;
+    lbPose.y = y - c.y - py * s;
+    lbSettlePose(animate);
+  }
+  function lbToggleZoom(x, y) {
+    if (lbPose.s > 1.01) { lbPoseReset(); lbApplyPose(true); }
+    else lbZoomAbout(x, y, 2.5, true);
+  }
+
+  // -- sliding ---------------------------------------------------------------
+  function lbRemovePeek() {
+    if (lbPeek) { lbPeek.el.remove(); lbPeek = null; }
+  }
+  function lbDropHold() {
+    if (lbHold) { lbHold.remove(); lbHold = null; }
+  }
+  function lbMakePeek(index, dir) {
+    lbRemovePeek();
+    const el = document.createElement('div');
+    el.className = 'lightbox-content lb-peek';
+    const img = document.createElement('img');
+    img.alt = '';
+    img.draggable = false;
+    img.src = posterOf(lightboxItems[index]);
+    el.appendChild(img);
+    lightbox.appendChild(el);
+    lbPeek = { el, dir, index };
+  }
+  // put the current picture `dx` px off its place, and the stand-in beside it
+  function lbSetSlide(dx, ms) {
+    const t = ms ? `transform ${ms}ms cubic-bezier(0.22, 1, 0.36, 1)` : 'none';
+    lightboxContent.style.transition = t;
+    lightboxContent.style.transform = dx ? `translate3d(${dx}px, 0, 0)` : 'none';
+    if (lbPeek) {
+      lbPeek.el.style.transition = t;
+      lbPeek.el.style.transform = `translate3d(${dx + lbPeek.dir * lbWidth()}px, 0, 0)`;
+    }
+  }
+  function lbClearSlide() {
+    // drop the offset with transitions off first: the stylesheet gives this
+    // box a transform transition on touch screens, which would otherwise
+    // replay the slide backwards
     lightboxContent.style.transition = 'none';
-  }, { passive: true });
-
-  lightboxContent.addEventListener('touchmove', (e) => {
-    if (!lbDragging) return;
-    const dy = e.touches[0].clientY - lbTouchY;
-    const dx = e.touches[0].clientX - lbTouchX;
-    // Only track vertical drag downward
-    if (dy > 0 && Math.abs(dy) > Math.abs(dx)) {
-      lbDragY = dy;
-      const progress = Math.min(dy / 200, 1);
-      const scale = 1 - progress * 0.1;
-      lightboxContent.style.transform = `translateY(${dy}px) scale(${scale})`;
-      lightboxContent.style.opacity = 1 - progress * 0.3;
-      lbSwipeHint.style.opacity = progress;
-    }
-  }, { passive: true });
-
-  lightboxContent.addEventListener('touchend', (e) => {
-    if (!lbDragging) return;
-    lbDragging = false;
-    const diffX = lbTouchX - e.changedTouches[0].clientX;
-
-    if (lbDragY > 100 && zoomTarget()) {
-      // Let go far enough down: the picture flies from where the finger left
-      // it straight back into its gallery cell.
-      closeLightbox();
-      lightboxContent.style.transition = '';
-      lightboxContent.style.transform = '';
-      lightboxContent.style.opacity = '';
-      lbSwipeHint.style.opacity = '0';
-      lbDragY = 0;
-      return;
-    }
-
-    if (lbDragY > 100) {
-      // Commit close — animate out
-      lightboxContent.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-      lightboxContent.style.transform = 'translateY(100vh) scale(0.8)';
-      lightboxContent.style.opacity = '0';
-      lbSwipeHint.style.opacity = '0';
-      setTimeout(() => {
-        closeLightbox();
-        lightboxContent.innerHTML = '';   // already swiped away: don't let it show again during the fade
-        lightboxContent.style.transform = '';
-        lightboxContent.style.opacity = '';
-        lightboxContent.style.transition = '';
-      }, 300);
-      return;
-    }
-
-    // Snap back
-    lightboxContent.style.transition = 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s ease';
+    lightboxContent.style.transform = '';
+    void lightboxContent.offsetWidth;
+    lightboxContent.style.transition = '';
     lightboxContent.style.transform = '';
     lightboxContent.style.opacity = '';
-    lbSwipeHint.style.opacity = '0';
-    setTimeout(() => { lightboxContent.style.transition = ''; }, 300);
-
-    // Horizontal swipe for prev/next (only if no vertical drag)
-    if (lbDragY < 20 && Math.abs(diffX) > 50) {
-      if (diffX > 0) { lbDirection = 'right'; lightboxIndex = (lightboxIndex + 1) % lightboxItems.length; }
-      else { lbDirection = 'left'; lightboxIndex = (lightboxIndex - 1 + lightboxItems.length) % lightboxItems.length; }
+  }
+  // run `done` after `ms`, or at once if anything needs the slide finished first
+  function lbAfter(ms, done) {
+    const run = () => {
+      if (lbPending !== run) return;
+      lbPending = null;
+      clearTimeout(lbPendingTimer);
+      done();
+    };
+    lbPending = run;
+    lbPendingTimer = setTimeout(run, ms);
+  }
+  function lbSettleNow() {
+    if (lbPending) lbPending();
+    lbRemovePeek();
+    lbDropHold();
+    if (lbGesture) { lbGesture = null; lbSwipeHint.style.opacity = '0'; }
+    lbClearSlide();
+  }
+  // The stand-in for picture `index` (already made, sitting `fromDx` px into
+  // its journey) slides the rest of the way in, then becomes the real picture.
+  function lbCommit(index, dir, fromDx, speed) {
+    const left = lbWidth() - Math.abs(fromDx);
+    // a flick finishes at the speed it was thrown; a slow release takes its time
+    const ms = Math.round(lbClamp(left / Math.max(Math.abs(speed), 1.4), 150, 340));
+    lbSetSlide(-dir * lbWidth(), ms);
+    lbAfter(ms + 20, () => {
+      const peek = lbPeek;
+      lbPeek = null;
+      lightboxIndex = index;
+      lbDirection = 'none';                        // rendered in place: the slide was the animation
+      lbClearSlide();
       renderLightbox();
+      if (!peek) return;
+      // The stand-in now lies exactly over the real picture. Keep it there
+      // until the real one can paint, so there is no blank frame between.
+      peek.el.style.transition = 'none';
+      peek.el.style.transform = 'none';
+      lbHold = peek.el;
+      const real = lbMedia();
+      const ready = !real ? Promise.resolve()
+        : real.tagName === 'IMG' ? (real.decode ? real.decode().catch(() => {}) : Promise.resolve())
+        : new Promise(res => (real.readyState >= 2 ? res() : real.addEventListener('loadeddata', res, { once: true })));
+      const patience = new Promise(res => setTimeout(res, 1200));
+      Promise.race([ready, patience]).then(() => requestAnimationFrame(() => {
+        if (lbHold === peek.el) lbHold = null;
+        peek.el.remove();
+      }));
+    });
+  }
+  // Step to picture `index` with a slide (dir: 1 = it comes from the right).
+  // Used by the arrows, the keys, the wheel and the thumbnails; wraps round.
+  function lbGo(index, dir) {
+    const n = lightboxItems.length;
+    if (!n) return;
+    lbSettleNow();
+    index = ((index % n) + n) % n;
+    if (index === lightboxIndex) return;
+    if (reducedMotion.matches || !lightbox.classList.contains('open')) {
+      lightboxIndex = index;
+      lbDirection = 'none';
+      renderLightbox();
+      return;
     }
-    lbDragY = 0;
+    lbPoseReset();
+    lbApplyPose(false);
+    lbMakePeek(index, dir);
+    lbSetSlide(0, 0);
+    void lightbox.offsetWidth;                     // the stand-in must be drawn at its start before it moves
+    lbCommit(index, dir, 0, 0);
+  }
+
+  // -- one finger, or the mouse ----------------------------------------------
+  function lbBegin(x, y, kind) {
+    lbSettleNow();
+    const m = lbMedia();
+    if (m) m.style.animation = 'none';
+    lbGesture = { mode: 'pending', kind, x0: x, y0: y, t0: performance.now(), lastX: x, lastT: performance.now(), vx: 0, px: lbPose.x, py: lbPose.y, eff: 0, dy: 0, want: 0, target: -1 };
+  }
+  function lbMove(x, y) {
+    const g = lbGesture;
+    if (!g || g.mode === 'pinch' || g.mode === 'ignore') return;
+    const dx = x - g.x0, dy = y - g.y0;
+    const now = performance.now();
+    if (now > g.lastT) {
+      g.vx = 0.6 * g.vx + 0.4 * ((x - g.lastX) / (now - g.lastT));   // px per ms, smoothed
+      g.lastX = x; g.lastT = now;
+    }
+    if (g.mode === 'pending') {
+      if (Math.hypot(dx, dy) < 8) return;                            // still a tap
+      if (lbPose.s > 1.01) g.mode = 'pan';
+      else if (Math.abs(dx) > Math.abs(dy)) g.mode = 'slide';
+      else if (dy > 0 && g.kind === 'touch') g.mode = 'dismiss';
+      else { g.mode = 'ignore'; return; }
+      if (g.mode === 'dismiss') lightboxContent.style.transition = 'none';
+    }
+    if (g.mode === 'pan') {
+      const m = lbMedia();
+      if (!m) return;
+      const lim = lbLimits(m, lbPose.s);
+      lbPose.x = lbRubber(g.px + dx, lim.x);
+      lbPose.y = lbRubberY(g.py + dy, lim);
+      lbApplyPose(false);
+    } else if (g.mode === 'slide') {
+      const want = dx < 0 ? 1 : -1;                                  // 1: the next picture comes from the right
+      const target = lightboxIndex + want;
+      const exists = target >= 0 && target < lightboxItems.length;
+      if (exists) { if (!lbPeek || lbPeek.index !== target) lbMakePeek(target, want); }
+      else lbRemovePeek();
+      g.want = want;
+      g.target = exists ? target : -1;
+      g.eff = exists ? dx : dx * 0.3;                                // nothing that way: resist
+      lbSetSlide(g.eff, 0);
+    } else if (g.mode === 'dismiss') {
+      g.dy = Math.max(0, dy);
+      const progress = Math.min(g.dy / 200, 1);
+      lightboxContent.style.transform = `translate3d(0, ${g.dy}px, 0) scale(${1 - progress * 0.1})`;
+      lightboxContent.style.opacity = String(1 - progress * 0.3);
+      lbSwipeHint.style.opacity = String(progress);
+    }
+  }
+  function lbEnd(x, y) {
+    const g = lbGesture;
+    lbGesture = null;
+    if (!g) return;
+    if (g.mode === 'pending') {
+      // a tap: two close together zoom in on that spot, or back out
+      const now = performance.now();
+      if (g.kind === 'touch' && lbLastTap && now - lbLastTap.t < 320 && Math.hypot(x - lbLastTap.x, y - lbLastTap.y) < 36) {
+        lbLastTap = null;
+        lbToggleZoom(x, y);
+      } else lbLastTap = { t: now, x, y };
+      return;
+    }
+    if (g.mode === 'pan' || g.mode === 'pinch') { lbSettlePose(true); return; }
+    if (g.mode === 'slide') {
+      const w = lightbox.clientWidth;
+      const flick = Math.abs(g.vx) > 0.4 && Math.sign(g.vx) === -g.want;   // thrown the way it was dragged
+      const far = Math.abs(g.eff) > w * 0.2 && Math.sign(g.eff) === -g.want;
+      if (g.target >= 0 && lbPeek && lbPeek.index === g.target && (flick || far)) {
+        lbCommit(g.target, g.want, g.eff, g.vx);
+      } else {
+        lbSetSlide(0, 260);                                          // spring back
+        lbAfter(280, () => { lbRemovePeek(); lbClearSlide(); });
+      }
+      return;
+    }
+    if (g.mode === 'dismiss') {
+      lbSwipeHint.style.opacity = '0';
+      if (g.dy > 100 && zoomTarget()) {
+        // let go far enough down: the picture flies from where the finger
+        // left it straight back into its gallery cell
+        closeLightbox();
+        lbClearSlide();
+      } else if (g.dy > 100) {
+        lightboxContent.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+        lightboxContent.style.transform = 'translate3d(0, 100vh, 0) scale(0.8)';
+        lightboxContent.style.opacity = '0';
+        lbAfter(300, () => {
+          closeLightbox();
+          lightboxContent.innerHTML = '';   // already swiped away: don't let it show again during the fade
+          lbClearSlide();
+        });
+      } else {
+        lightboxContent.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease';
+        lightboxContent.style.transform = 'none';
+        lightboxContent.style.opacity = '';
+        lbAfter(300, lbClearSlide);
+      }
+    }
+  }
+
+  // -- two fingers -----------------------------------------------------------
+  const lbSpread = (t) => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+  const lbMid = (t) => ({ x: (t[0].clientX + t[1].clientX) / 2, y: (t[0].clientY + t[1].clientY) / 2 });
+  function lbPinchBegin(touches) {
+    lbSettleNow();
+    const m = lbMedia();
+    if (!m) return;
+    m.style.animation = 'none';
+    const c = lbCentre(m), f = lbMid(touches);
+    lbGesture = {
+      mode: 'pinch', kind: 'touch', d0: lbSpread(touches) || 1, s0: lbPose.s, c,
+      px: (f.x - c.x - lbPose.x) / lbPose.s, py: (f.y - c.y - lbPose.y) / lbPose.s,   // the spot under the fingers
+    };
+  }
+  function lbPinchMove(touches) {
+    const g = lbGesture;
+    let s = g.s0 * lbSpread(touches) / g.d0;
+    // it gives a little beyond the limits, and settles back on release
+    if (s < 1) s = 1 - (1 - s) * 0.5;
+    if (s > LB_MAX_ZOOM) s = LB_MAX_ZOOM + (s - LB_MAX_ZOOM) * 0.3;
+    const f = lbMid(touches);
+    lbPose.s = s;
+    lbPose.x = f.x - g.c.x - g.px * s;
+    lbPose.y = f.y - g.c.y - g.py * s;
+    lbApplyPose(false);
+  }
+
+  // -- wiring ----------------------------------------------------------------
+  // Touches are taken anywhere on the lightbox, not only on the picture: the
+  // picture is off to one side while a slide lands, and the next swipe must
+  // still count. The thumbnails, arrows and close button keep their own.
+  const lbOwnsTouch = (e) => !e.target.closest('.lightbox-bottom, .lightbox-close, .lightbox-info, .lightbox-histogram');
+  let lbTouchAt = 0;                      // when a finger last touched, to tell real double-clicks from double-taps
+  lightbox.addEventListener('touchstart', (e) => {
+    if (!lightbox.classList.contains('open') || !lbOwnsTouch(e)) return;
+    lbTouchAt = performance.now();
+    if (e.touches.length >= 2) lbPinchBegin(e.touches);
+    else lbBegin(e.touches[0].clientX, e.touches[0].clientY, 'touch');
   }, { passive: true });
+  lightbox.addEventListener('touchmove', (e) => {
+    if (!lbGesture) return;
+    if (e.cancelable) e.preventDefault();          // the gesture is ours: no page scroll or browser zoom
+    if (e.touches.length >= 2) {
+      if (lbGesture.mode !== 'pinch') lbPinchBegin(e.touches);   // a second finger joined
+      if (lbGesture && lbGesture.mode === 'pinch') lbPinchMove(e.touches);
+    } else if (lbGesture.mode !== 'pinch') {
+      lbMove(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: false });
+  lightbox.addEventListener('touchend', (e) => {
+    lbTouchAt = performance.now();
+    if (!lbGesture) return;
+    if (e.touches.length === 0) {
+      const t = e.changedTouches[0];
+      lbEnd(t.clientX, t.clientY);
+    } else if (lbGesture.mode === 'pinch' && e.touches.length === 1) {
+      // one finger lifted out of a pinch: tidy the zoom, and let the finger
+      // that is still down carry on as a drag
+      lbSettlePose(true);
+      lbGesture = null;
+      lbBegin(e.touches[0].clientX, e.touches[0].clientY, 'touch');
+    }
+  }, { passive: true });
+  lightbox.addEventListener('touchcancel', () => {
+    if (!lbGesture) return;
+    const zooming = lbGesture.mode === 'pan' || lbGesture.mode === 'pinch';
+    lbSettleNow();
+    if (zooming) lbSettlePose(true);
+  }, { passive: true });
+
+  // mouse: drag sideways to slide (or to move around when zoomed), double-click to zoom
+  lightboxContent.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0 || !lightbox.classList.contains('open')) return;
+    lbBegin(e.clientX, e.clientY, 'mouse');
+    try { lightboxContent.setPointerCapture(e.pointerId); } catch (err) { /* released already */ }
+  });
+  lightboxContent.addEventListener('pointermove', (e) => {
+    if (e.pointerType === 'mouse' && lbGesture && lbGesture.kind === 'mouse') lbMove(e.clientX, e.clientY);
+  });
+  const lbMouseUp = (e) => {
+    if (e.pointerType === 'mouse' && lbGesture && lbGesture.kind === 'mouse') lbEnd(e.clientX, e.clientY);
+  };
+  lightboxContent.addEventListener('pointerup', lbMouseUp);
+  lightboxContent.addEventListener('pointercancel', lbMouseUp);
+  lightboxContent.addEventListener('dblclick', (e) => {
+    if (performance.now() - lbTouchAt < 700) return;      // a double-tap, already handled as touches
+    if (lightbox.classList.contains('open')) lbToggleZoom(e.clientX, e.clientY);
+  });
+  lightboxContent.addEventListener('dragstart', (e) => e.preventDefault());   // no ghost image when dragging a picture
+
   lightbox.addEventListener('click', (e) => {
     if (e.target === lightbox) closeLightbox();
   });
@@ -1406,27 +1734,16 @@
     const now = performance.now();
     if (Math.abs(e.deltaY) < 4 || now - lbWheelAt < 280) return;
     lbWheelAt = now;
-    if (e.deltaY > 0) { lbDirection = 'right'; lightboxIndex = (lightboxIndex + 1) % lightboxItems.length; }
-    else { lbDirection = 'left'; lightboxIndex = (lightboxIndex - 1 + lightboxItems.length) % lightboxItems.length; }
-    renderLightbox();
+    lbGo(lightboxIndex + (e.deltaY > 0 ? 1 : -1), e.deltaY > 0 ? 1 : -1);
   }, { passive: false });
 
-  document.getElementById('lightboxPrev').addEventListener('click', () => {
-    lbDirection = 'left';
-    lightboxIndex = (lightboxIndex - 1 + lightboxItems.length) % lightboxItems.length;
-    renderLightbox();
-  });
-
-  document.getElementById('lightboxNext').addEventListener('click', () => {
-    lbDirection = 'right';
-    lightboxIndex = (lightboxIndex + 1) % lightboxItems.length;
-    renderLightbox();
-  });
+  document.getElementById('lightboxPrev').addEventListener('click', () => lbGo(lightboxIndex - 1, -1));
+  document.getElementById('lightboxNext').addEventListener('click', () => lbGo(lightboxIndex + 1, 1));
 
   document.addEventListener('keydown', (e) => {
     if (!lightbox.classList.contains('open')) return;
-    if (e.key === 'ArrowRight') { lbDirection = 'right'; lightboxIndex = (lightboxIndex + 1) % lightboxItems.length; renderLightbox(); }
-    if (e.key === 'ArrowLeft') { lbDirection = 'left'; lightboxIndex = (lightboxIndex - 1 + lightboxItems.length) % lightboxItems.length; renderLightbox(); }
+    if (e.key === 'ArrowRight') lbGo(lightboxIndex + 1, 1);
+    if (e.key === 'ArrowLeft') lbGo(lightboxIndex - 1, -1);
   });
 
   // ---- Expose API ---------------------------------------------------------

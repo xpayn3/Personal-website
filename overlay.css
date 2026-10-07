@@ -312,8 +312,46 @@ html:has(body.scroll-locked) {
   align-items: center;
   justify-content: center;
   margin-bottom: 120px;
-  touch-action: pan-x;
+  /* every touch on the picture is a gesture handled in overlay.js ("Lightbox
+     gestures"): slide, pinch, drag down. The browser must not scroll or zoom. */
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
+.lightbox-content img,
+.lightbox-content video { -webkit-user-drag: none; -webkit-touch-callout: none; }
+@media (hover: hover) and (pointer: fine) {
+  .lightbox-content { cursor: grab; }
+  .lightbox-content:active { cursor: grabbing; }
+}
+
+/* The neighbour that slides in beside the current picture while it is
+   dragged (overlay.js: lbMakePeek). It is laid over the very spot the
+   current picture occupies, so when the slide lands it sits exactly where
+   the real picture is then rendered. */
+.lightbox-content.lb-peek {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 120px;
+  max-height: none;
+  margin: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+/* a picture rendered where a slide just landed needs no entrance of its own */
+.lightbox-content.slide-none img,
+.lightbox-content.slide-none video,
+.lightbox-content.lb-peek img { animation: none; }
+
+/* zoomed in: the picture has the screen to itself */
+.lightbox-bottom,
+.lightbox-info,
+.lightbox-histogram { transition: opacity 0.25s ease; }
+.lightbox.lb-zoomed .lightbox-bottom,
+.lightbox.lb-zoomed .lightbox-info,
+.lightbox.lb-zoomed .lightbox-histogram { opacity: 0; pointer-events: none; }
 
 .lightbox-content img,
 .lightbox-content video {

@@ -14,6 +14,7 @@
   --nav-cta-bg: #f4f2ec;
   --nav-cta-fg: #14140f;
   --nav-cta-bg-hover: #ffffff;
+  --nav-veil: rgba(13, 13, 15, 0.74);    /* phones: what sits behind the bar (see below) */
 }
 
 /* Light pages. A page is light when it carries body.nav-light, or when its
@@ -27,6 +28,7 @@ html[data-theme="light"] body {
   --nav-cta-bg: #14140f;
   --nav-cta-fg: #f4f2ec;
   --nav-cta-bg-hover: #000000;
+  --nav-veil: rgba(255, 255, 255, 0.8);
 }
 html[data-theme="dark"] body,
 html[data-theme="dark"] body.nav-light {
@@ -35,6 +37,7 @@ html[data-theme="dark"] body.nav-light {
   --nav-cta-bg: #f4f2ec;
   --nav-cta-fg: #14140f;
   --nav-cta-bg-hover: #ffffff;
+  --nav-veil: rgba(13, 13, 15, 0.74);
 }
 
 .site-nav {
@@ -180,6 +183,23 @@ body.page-home .services {
   }
   .site-nav .floating-nav { display: none; }
   .site-nav .floating-name { margin: 0 auto 0 0; }  /* push the CTA to the right */
+  .site-nav .site-nav-actions { display: flex; align-items: center; gap: 8px; }
+  /* On a phone the bar takes up a real share of the screen, and with nothing
+     behind it the page's text runs straight through the name and buttons as
+     you scroll. So here the bar gets a veil of the page's own colour, blurred,
+     which fades out along its bottom edge instead of ending in a line. */
+  .site-nav::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 -16px 0;
+    z-index: -1;
+    background: var(--nav-veil);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent);
+    mask-image: linear-gradient(to bottom, #000 62%, transparent);
+    pointer-events: none;
+  }
   .site-nav-cta { font-size: 0.8rem; padding: 8px 14px; }
   .nav-burger { display: inline-flex; }
 }
