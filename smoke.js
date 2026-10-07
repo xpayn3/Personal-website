@@ -37,6 +37,13 @@
   // else the system setting); bring the nav and the button in line with it.
   setTheme(isDark() ? 'dark' : 'light', false);
   if (themeBtn) themeBtn.addEventListener('click', () => setTheme(isDark() ? 'light' : 'dark', true));
+  // a page restored by the Back button: catch up with a theme chosen elsewhere meanwhile
+  addEventListener('pageshow', (e) => {
+    if (!e.persisted) return;
+    let saved = null;
+    try { saved = localStorage.getItem('lg-theme'); } catch (err) { /* keep what is showing */ }
+    if (saved === 'light' || saved === 'dark') setTheme(saved, false);
+  });
 
   // =====================================================================
   // Fluid smoke (WebGL2): a small Navier–Stokes solver. Smoke density is

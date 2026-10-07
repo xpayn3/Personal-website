@@ -677,9 +677,15 @@ for (let i = 0; i < sliderSteps; i++) {
   sliderDotsEl.appendChild(dot);
 }
 
+// The control panel is switched off when grid.html marks it `hidden`. Then the
+// columns slider must not set the wall's column count: an inline value would
+// pin it for the life of the page and override the stylesheet, which changes
+// the count with the width of the window (gallery.css).
+const panelOff = () => { const p = document.getElementById('controlPanel'); return !p || p.hidden; };
+
 function updateSlider() {
   const val = parseInt(gridSlider.value);
-  gridEl.style.gridTemplateColumns = `repeat(${val}, 1fr)`;
+  gridEl.style.gridTemplateColumns = panelOff() ? '' : `repeat(${val}, 1fr)`;
   placeFeatures();
 
   // Fill dots and track
@@ -694,6 +700,9 @@ function updateSlider() {
 
 gridSlider.addEventListener('input', updateSlider);
 updateSlider();
+// with the stylesheet in charge of the columns, re-weave the feature blocks
+// when the window crosses the width where the count changes
+window.matchMedia('(max-width: 768px)').addEventListener('change', () => { if (panelOff()) placeFeatures(); });
 
 // ========== LIST VIEW TOGGLE ==========
 const layoutGridBtn = document.getElementById('layoutGrid');

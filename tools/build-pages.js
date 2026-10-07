@@ -117,7 +117,7 @@ ${JSON.stringify(structured, null, 2)}
   <script>window.PROJECT_PAGE = ${JSON.stringify(id)};</script>
   <script src="motion.js"></script>
   <script defer src="${versioned('projects.js')}"></script>
-  <script defer src="project-template.js"></script>
+  <script defer src="${versioned('project-template.js')}"></script>
   <script defer src="${versioned('overlay.js')}"></script>
 </body>
 </html>

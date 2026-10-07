@@ -19,7 +19,7 @@
   const TOOL_ICONS = {
     'Cinema 4D': 'Images/tools/Cinema4D-Logo-Icon-Small.png',
     'Redshift': 'Images/tools/Redshift-Logo-Icon-Small.png',
-    'AfterEffects': 'Images/tools/after-effects-1.svg',
+    'After Effects': 'Images/tools/after-effects-1.svg',
     'Photoshop': 'Images/tools/adobe-photoshop.svg',
     'InDesign': 'Images/tools/adobe-indesign-cc-icon.svg',
     'Illustrator': 'Images/tools/adobe-illustrator-cc-3.svg',

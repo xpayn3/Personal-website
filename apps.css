@@ -151,6 +151,9 @@ html[data-theme="light"] .app-page {
 }
 html[data-theme="light"] .app-log-body b { color: color-mix(in srgb, currentColor 62%, var(--g-ink)); }
 
+/* pictures that open full screen can be reached with the keyboard */
+.app-page img[role="button"]:focus-visible { outline: 2px solid var(--g-ink); outline-offset: 4px; }
+
 /* small print: labels, kickers, counts */
 .app-kicker,
 .app-stats dt,

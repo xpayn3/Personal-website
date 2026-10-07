@@ -33,4 +33,13 @@
       setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark', true);
     });
   }
+  // A page brought back by the browser's Back button is restored as it was
+  // left, without running any of this again. If the theme was changed on
+  // another page in the meantime, catch up with the saved choice.
+  window.addEventListener('pageshow', function (e) {
+    if (!e.persisted) return;
+    var saved = null;
+    try { saved = localStorage.getItem('lg-theme'); } catch (err) { /* keep what is showing */ }
+    if (saved === 'light' || saved === 'dark') setTheme(saved, false);
+  });
 })();

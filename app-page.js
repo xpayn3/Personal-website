@@ -117,6 +117,19 @@
     tile.append(svg);
     return tile;
   }
+  // A picture that opens full screen on a click must also be reachable and
+  // operable from the keyboard: focusable, announced as a button, and opened
+  // by Enter or Space.
+  function opens(img, label, open) {
+    img.tabIndex = 0;
+    img.setAttribute('role', 'button');
+    img.setAttribute('aria-label', label);
+    img.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      open();
+    });
+  }
   function featureGrid(items) {
     const list = el('ul', 'app-features');
     items.forEach(([name, line, hint]) => {
@@ -133,6 +146,7 @@
       figure.dataset.index = i;
       const img = el('img');
       Object.assign(img, { src, alt: `${app.title}: ${alt || caption}`, loading: 'lazy', decoding: 'async', draggable: false });
+      opens(img, `${caption}: open full screen`, () => openViewer(items, i));
       figure.append(img, el('figcaption', '', caption));
       strip.append(figure);
     });
@@ -153,13 +167,13 @@
   function dragToScroll(strip) {
     let startX = 0, startLeft = 0, lastX = 0, lastT = 0, speed = 0, held = false, moved = false, glide = 0;
     strip.addEventListener('pointerdown', (e) => {
+      delete strip.dataset.dragged;          // any new press, by mouse, finger or pen, starts clean
       if (e.pointerType !== 'mouse' || e.button !== 0) return;
       cancelAnimationFrame(glide);
       held = true;
       moved = false;
       startX = lastX = e.clientX;
       lastT = e.timeStamp;
-      delete strip.dataset.dragged;
       startLeft = strip.scrollLeft;
       speed = 0;
     });
@@ -275,6 +289,7 @@
     const pictures = shots.length ? shots : [[coverSrc, app.title]];
     const at = Math.max(0, pictures.findIndex(([src]) => src === coverSrc));
     img.addEventListener('click', () => openViewer(pictures, at));
+    opens(img, `${app.title}: open the screenshots full screen`, () => openViewer(pictures, at));
   }
 
   const back = el('a', 'app-back', '← Lab');
@@ -316,6 +331,7 @@
       const img = el('img');
       Object.assign(img, { src: image, alt: `${app.title}: ${name}`, loading: 'lazy', decoding: 'async' });
       img.addEventListener('click', () => openViewer(pictures, i));
+      opens(img, `${name}: open full screen`, () => openViewer(pictures, i));
       const caption = el('figcaption');
       caption.append(el('i', '', String(i + 1).padStart(2, '0')), el('strong', '', name), el('span', '', line));
       card.append(img, caption);

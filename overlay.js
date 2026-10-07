@@ -934,18 +934,18 @@
   // real picture is actually drawn in the cell (cover crop, parallax scale and
   // offset included), so both ends line up exactly and nothing pops.
   const ZOOM = { duration: 480, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' };
-  // The move and the un-crop run as two animations so they can be eased
-  // apart. Both are a plain ease-out for now: quick off the mark, a long
-  // soft landing, no overshoot either way.
-  const SPRING_OPEN = ZOOM.easing;
-  const SPRING_CLOSE = ZOOM.easing;
-  function fling(fly, from, to, spring) {
+  // Opening: the move and the un-crop run as two web animations on the
+  // stand-in (the page is locked, so nothing moves under them).
+  function fling(fly, from, to) {
     const clip = fly.animate([{ clipPath: from.clipPath }, { clipPath: to.clipPath }], ZOOM);
-    const anim = fly.animate([{ transform: from.transform }, { transform: to.transform }], { ...ZOOM, easing: spring });
+    const anim = fly.animate([{ transform: from.transform }, { transform: to.transform }], ZOOM);
     return { anim, clip };
   }
+  // the same curve as ZOOM.easing, as a function (ease-out quint)
+  const easeOut = (t) => 1 - Math.pow(1 - t, 5);
   const FULL_POSE = { transform: 'translate(0px, 0px) scale(1)', clipPath: 'inset(0px 0px 0px 0px round 0px)' };
-  // The flight in progress, if any: { fly, media, anim, clip, src, full, ar }.
+  // The flight in progress, if any: { fly, media, src, full, ar }, plus
+  // { anim, clip } while opening or { pose } (where it has got to) while closing.
   // There is only ever one; a new one takes over from or replaces the old.
   let flight = null;
 
@@ -998,10 +998,39 @@
     const dy = top + h / 2 - (full.top + full.height / 2);
     const inset = [c.top - top, left + w - c.right, top + h - c.bottom, c.left - left].map(v => Math.max(0, v / k));
     const radius = (parseFloat(getComputedStyle(cell).borderTopLeftRadius) || 0) / k;
+    return poseStyle({ dx, dy, k, inset, radius });
+  }
+  // A pose as numbers (dx, dy, k, inset[4], radius) and as the two CSS values
+  // that draw it. The numbers ride along on the style object.
+  function poseStyle(n) {
     return {
-      transform: `translate(${dx}px, ${dy}px) scale(${k})`,
-      clipPath: `inset(${inset.map(v => v + 'px').join(' ')} round ${radius}px)`,
+      n,
+      transform: `translate(${n.dx}px, ${n.dy}px) scale(${n.k})`,
+      clipPath: `inset(${n.inset.map(v => v + 'px').join(' ')} round ${n.radius}px)`,
     };
+  }
+  const FULL_N = { dx: 0, dy: 0, k: 1, inset: [0, 0, 0, 0], radius: 0 };
+  const mixPose = (a, b, t) => ({
+    dx: a.dx + (b.dx - a.dx) * t, dy: a.dy + (b.dy - a.dy) * t, k: a.k + (b.k - a.k) * t,
+    inset: a.inset.map((v, i) => v + (b.inset[i] - v) * t), radius: a.radius + (b.radius - a.radius) * t,
+  });
+  const poseOk = (n) => [n.dx, n.dy, n.k, n.radius, ...n.inset].every(Number.isFinite) && n.k > 0;
+  // Where a stand-in is right now, read back from how it is being drawn
+  // (used to turn an opening flight around part-way).
+  function poseOf(fly) {
+    const cs = getComputedStyle(fly);
+    const m = (cs.transform.match(/matrix\(([^)]+)\)/) || [, '1,0,0,1,0,0'])[1].split(',').map(parseFloat);
+    const clip = cs.clipPath.match(/inset\(([^)]*)\)/);
+    let inset = [0, 0, 0, 0], radius = 0;
+    if (clip) {
+      const [sides, round] = clip[1].split('round');
+      const v = sides.trim().split(/\s+/).map(parseFloat);
+      // CSS shorthand: 1, 2, 3 or 4 values
+      inset = [v[0], v.length > 1 ? v[1] : v[0], v.length > 2 ? v[2] : v[0], v.length > 3 ? v[3] : (v.length > 1 ? v[1] : v[0])];
+      radius = round ? parseFloat(round) || 0 : 0;
+    }
+    const n = { dx: m[4], dy: m[5], k: m[0], inset, radius };
+    return poseOk(n) ? n : FULL_N;
   }
 
   function makeFlyer(src, rect, pose) {
@@ -1018,52 +1047,16 @@
       transform: pose.transform, clipPath: pose.clipPath,
     });
     document.body.appendChild(fly);
-    // where it was laid out, and where the page stood then (see homeIn)
+    // where it was laid out, and where the page stood then (see zoomOut)
     fly.home = { rect, page };
     return fly;
-  }
-
-  // While a picture flies back to its cell the page is free to scroll, and
-  // the gallery's parallax keeps sliding the picture inside the cell. A
-  // landing spot measured once at the start would be stale by the end, and
-  // the picture would jump as the real one takes over. So re-measure the
-  // cell every frame and re-aim the flight at where it is now.
-  //
-  // The stand-in and the cell are measured in the same breath, so the aim is
-  // right relative to each other whatever the page scrolls to afterwards.
-  // Returns the aiming function, so the landing can take one last reading in
-  // the very frame the real picture is shown again.
-  function homeIn(mine, cell, start) {
-    const { rect, page } = mine.fly.home;
-    const aim = () => {
-      if (!cell.isConnected || !mine.fly.isConnected) return;
-      try {
-        const now = document.body.getBoundingClientRect();
-        const full = {
-          left: rect.left + now.left - page.left, top: rect.top + now.top - page.top,
-          width: rect.width, height: rect.height,
-        };
-        const pose = cellPose(cell, full, mine.ar);
-        // a cell that is hidden or has no size measures as nonsense: keep the last good aim
-        if (/NaN|Infinity/.test(pose.transform + pose.clipPath)) return;
-        mine.anim.effect.setKeyframes([{ transform: start.transform }, { transform: pose.transform }]);
-        mine.clip.effect.setKeyframes([{ clipPath: start.clipPath }, { clipPath: pose.clipPath }]);
-      } catch (err) { /* keep flying to the last good aim */ }
-    };
-    const step = () => {
-      if (flight !== mine) return;
-      aim();
-      requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-    return aim;
   }
 
   // Drop the current flight where it stands and put its cell back to normal.
   function endFlight() {
     if (!flight) return;
-    flight.anim.cancel();
-    flight.clip.cancel();
+    if (flight.anim) flight.anim.cancel();
+    if (flight.clip) flight.clip.cancel();
     flight.media.style.visibility = '';
     flight.fly.remove();
     flight = null;
@@ -1079,7 +1072,7 @@
     const full = containedRect(real) || expectedRect(ar);
     const from = cellPose(cell, full, ar);
     const fly = makeFlyer(src, full, from);
-    const { anim, clip } = fling(fly, from, FULL_POSE, SPRING_OPEN);
+    const { anim, clip } = fling(fly, from, FULL_POSE);
     const mine = flight = { fly, media, anim, clip, src, full, ar };
     media.style.visibility = 'hidden';
     lightboxContent.style.visibility = 'hidden';
@@ -1100,42 +1093,79 @@
 
   // `full` is where the picture was in the lightbox, measured before closing.
   // Returns false when there is nothing sensible to fly to.
+  //
+  // Closing is steered by hand, one frame at a time, instead of handed to the
+  // browser as an animation. While the picture flies back the page is free to
+  // scroll, and the gallery's parallax keeps sliding the picture inside its
+  // cell; a landing spot measured once at the start would be stale by the
+  // end, and the picture would jump as the real one takes over. So every
+  // frame the cell is measured again and the stand-in is drawn part-way
+  // between where it started and where the cell is now. (Re-aiming a browser
+  // animation every frame does the same on paper, but can leave it waiting
+  // to start for ever, with the cell's own picture hidden.)
   function zoomOut(cell, src, full, ar) {
-    // Closed while still flying open: turn that same stand-in around from
+    // Closed while still flying: carry on with that same stand-in from
     // wherever it has got to, rather than starting a second one.
     const turning = flight && flight.src === src ? flight : null;
     if (turning) { full = turning.full; ar = turning.ar; }
     if (!full || !ar || !onScreen(cell.getBoundingClientRect())) return false;
 
     const media = cell.querySelector('img, video');
-    let fly, start = FULL_POSE;
+    let fly, start = FULL_N;
     if (turning) {
-      const now = getComputedStyle(turning.fly);
-      start = { transform: now.transform, clipPath: now.clipPath };
       fly = turning.fly;
-      turning.anim.cancel();
-      turning.clip.cancel();
+      start = turning.pose || poseOf(fly);
+      // freeze it where it is, then let go of whatever was moving it
+      const frozen = poseStyle(start);
+      fly.style.transform = frozen.transform;
+      fly.style.clipPath = frozen.clipPath;
+      if (turning.anim) turning.anim.cancel();
+      if (turning.clip) turning.clip.cancel();
       if (turning.media !== media) turning.media.style.visibility = '';
       flight = null;
     } else {
       endFlight();
       fly = makeFlyer(src, full, FULL_POSE);
     }
-    const { anim, clip } = fling(fly, start, cellPose(cell, full, ar), SPRING_CLOSE);
-    const mine = flight = { fly, media, anim, clip, src, full, ar };
+    const mine = flight = { fly, media, src, full, ar, pose: start };
     media.style.visibility = 'hidden';
-    const aim = homeIn(mine, cell, start);
-    anim.finished.then(() => {
+
+    const { rect, page } = fly.home;           // where it was laid out, and where the page stood then
+    let target = null;
+    const aim = () => {
+      if (!cell.isConnected) return;
+      try {
+        const now = document.body.getBoundingClientRect();
+        const pose = cellPose(cell, {
+          left: rect.left + now.left - page.left, top: rect.top + now.top - page.top,
+          width: rect.width, height: rect.height,
+        }, ar).n;
+        // a cell that is hidden or has no size measures as nonsense: keep the last good aim
+        if (poseOk(pose)) target = pose;
+      } catch (err) { /* keep the last good aim */ }
+    };
+    const land = () => {
       if (flight !== mine) return;
       flight = null;
-      aim();                                               // land exactly where the cell is now
-      // Swap in the same frame: the cell's own picture never left, it was
-      // only hidden, so there is nothing to wait for and no frame in which
-      // a stale stand-in could sit over it.
+      // the cell's own picture never left, it was only hidden: swap in the same frame
       media.style.visibility = '';
       fly.remove();
       if (!lightbox.classList.contains('open')) lightbox.classList.remove('lb-zoom');
-    }, () => {});
+    };
+    const t0 = performance.now();
+    const step = (now) => {
+      if (flight !== mine) return;                        // closed, reopened or replaced meanwhile
+      aim();
+      if (!target) { land(); return; }                    // nowhere to go: just put the picture back
+      const t = Math.min((now - t0) / ZOOM.duration, 1);
+      mine.pose = mixPose(start, target, easeOut(t));
+      const drawn = poseStyle(mine.pose);
+      fly.style.transform = drawn.transform;
+      fly.style.clipPath = drawn.clipPath;
+      if (t < 1) requestAnimationFrame(step);
+      else land();
+    };
+    requestAnimationFrame(step);
     return true;
   }
 
@@ -1173,7 +1203,11 @@
     const real = lightboxContent.querySelector('img, video');
     const full = real && containedRect(real);   // measured before it is torn down
     const ar = aspectOf(real);
-    const cell = zoomTarget();
+    // It can only fly back if there is a cell on screen AND the picture's
+    // place and shape are known (or it is still flying and carries them).
+    // Otherwise it fades out with the lightbox, picture and all.
+    const target = zoomTarget();
+    const cell = target && ((flight && flight.src === src) || (full && ar)) ? target : null;
     lightbox.classList.toggle('lb-zoom', !!cell);
 
     lightbox.classList.remove('open');

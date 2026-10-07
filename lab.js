@@ -38,6 +38,8 @@
   ];
   const NOTES = {
     // 'gold.webm': { title: 'Gold', date: '2024-11-02', note: 'First try at …' },
+    'scandianvian.[0000-0244].webm': { title: 'Scandinavian' },   // the file name is misspelt
+    'lab_sandunes.webm': { title: 'Sand dunes' },
   };
 
   // width / height of each file, so an entry holds its place before its

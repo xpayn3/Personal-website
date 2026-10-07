@@ -273,10 +273,11 @@ html[data-theme="dark"] .pw-cube i {
 
 /* ---- legible: under a magnifying glass ----
    A round lens follows the pointer over the word (statement.js: "the
-   lens"). It holds a second set of the word's letters, which the script
-   draws magnified and bent as glass would bend them; the word underneath
-   stays as it is. This is only how the glass and its letters look. */
-.pw-zoom { z-index: 2; cursor: zoom-in; }
+   lens"). It holds an enlarged second copy of the word, and the script bends
+   that copy the way a dome of glass would (an SVG displacement filter driven
+   by a normal map; letter by letter where that filter is not dependable).
+   The word underneath stays as it is. This is only how the glass looks. */
+.pw-zoom { z-index: 2; cursor: none; }                 /* the lens stands in for the pointer */
 .pw-zoom i { display: inline-block; font-style: normal; }
 .pw-lens {
   position: absolute;
@@ -288,28 +289,48 @@ html[data-theme="dark"] .pw-cube i {
   overflow: hidden;
   border-radius: 50%;
   border: 0.028em solid color-mix(in srgb, currentColor 80%, transparent);
-  /* nearly opaque glass with a soft highlight: what is behind it only ghosts through */
-  background:
-    radial-gradient(circle at 30% 22%, color-mix(in srgb, #ffffff 70%, transparent) 0, transparent 36%),
-    color-mix(in srgb, var(--bg) 93%, transparent);
-  -webkit-backdrop-filter: blur(0.1em);
-  backdrop-filter: blur(0.1em);
   box-shadow:
     0 0.18em 0.55em color-mix(in srgb, currentColor 18%, transparent),
-    inset 0 -0.16em 0.36em color-mix(in srgb, currentColor 10%, transparent),
-    inset 0 0 0 0.05em color-mix(in srgb, var(--bg) 70%, transparent);
+    0 0.03em 0.1em color-mix(in srgb, currentColor 22%, transparent);
   opacity: 0;
   pointer-events: none;
   will-change: transform, opacity;
 }
-/* a magnified letter: sized and placed by the script */
-.pw-lens span {
+/* what the glass shows: the page colour with the enlarged word on it. With
+   the glass filter it is twice the lens across, so the rim has picture to
+   pull in from beyond its own edge; the lens clips it back to a circle. */
+.pw-lens-view {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--bg);
+}
+.pw-lens.is-glass .pw-lens-view { inset: -50%; }
+/* the dome of glass (statement.js builds the filter) */
+.pw-lens.is-glass .pw-lens-view { filter: url(#pw-lens-glass); }
+.pw-lens-word { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+/* an enlarged letter: sized and placed by the script */
+.pw-lens-word span {
   position: absolute;
   left: 0;
   top: 0;
   text-align: center;
   white-space: pre;
-  will-change: transform;
+}
+/* over the picture: a soft highlight top left, a darker rim bottom right,
+   and a thin bright inner edge, which is what makes it read as curved glass */
+.pw-lens::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 22%, color-mix(in srgb, #ffffff 62%, transparent) 0, transparent 34%),
+    radial-gradient(circle at 50% 50%, transparent 58%, color-mix(in srgb, currentColor 9%, transparent) 100%);
+  box-shadow:
+    inset 0 -0.16em 0.36em color-mix(in srgb, currentColor 12%, transparent),
+    inset 0 0 0 0.05em color-mix(in srgb, var(--bg) 60%, transparent);
+  pointer-events: none;
 }
 
 /* ---- trustworthy: a padlock slides in and clicks shut ---- */

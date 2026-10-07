@@ -29,7 +29,7 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Jost:wght@500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="tokens.css?v=4" />
   <link rel="stylesheet" href="about.css?v=7" />
-  <link rel="stylesheet" href="statement.css?v=6" />
+  <link rel="stylesheet" href="statement.css?v=8" />
   <link rel="stylesheet" href="floating-nav.css?v=16" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" media="print" onload="this.media='all'" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
@@ -133,7 +133,7 @@
     </section>
 
     <footer class="about-colophon">
-      <span>&copy; 2025 Luka Grčar. All rights reserved.</span>
+      <span>&copy; 2026 Luka Grčar. All rights reserved.</span>
     </footer>
 
   </main>
@@ -194,7 +194,7 @@
           <label class="form-chip form-chip-radio"><input type="radio" name="timeline" value="1 month" /><span>1 month</span></label>
           <label class="form-chip form-chip-radio"><input type="radio" name="timeline" value="Flexible" /><span>Flexible</span></label>
         </div>
-        <textarea name="message" placeholder="Tell me about your project... *" rows="4" required></textarea>
+        <textarea name="message" placeholder="Tell me about your project… *" rows="4" required></textarea>
         <button type="submit" class="form-submit">Send message</button>
       </form>
       <p class="contact-note" id="contactNote"></p>
@@ -247,7 +247,7 @@
     const form = e.target;
     const note = document.getElementById('contactNote');
     const btn = form.querySelector('.form-submit');
-    btn.textContent = 'Sending...';
+    btn.textContent = 'Sending…';
     btn.disabled = true;
     try {
       const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } });
@@ -268,9 +268,9 @@
   });
   </script>
   <script src="motion.js"></script>
-  <script src="statement.js?v=2" defer></script>
-  <script src="floating-nav.js?v=14" defer></script>
-  <script src="theme.js?v=1" defer></script>
+  <script src="statement.js?v=5" defer></script>
+  <script src="floating-nav.js?v=15" defer></script>
+  <script src="theme.js?v=2" defer></script>
   <script src="brand.js" defer></script>
 
 </body>

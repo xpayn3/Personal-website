@@ -59,7 +59,7 @@ window.labApps = [
     spotlights: [
       ['Command palette', 'Every action in the app, searchable, with its shortcut beside it. Open it with Ctrl / ⌘ + K.', 'Images/apps/meshoptimiser-palette.webp', 'command'],
       ['Parametric shapes and fasteners', 'Add cubes, tori and capsules, or DIN bolts, nuts, screws and washers, each with editable dimensions.', 'Images/apps/meshoptimiser-add.webp', 'cube'],
-      ['Open almost anything', 'Drop a STEP, GLB, GLTF, FBX, OBJ, 3MF or STL file, or start from an empty scene.', 'Images/apps/meshoptimiser-open.webp', 'upload'],
+      ['Open almost anything', 'Drop a STEP, GLB, glTF, FBX, OBJ, 3MF or STL file, or start from an empty scene.', 'Images/apps/meshoptimiser-open.webp', 'upload'],
       ['Tree, viewport, properties', 'Parts on the left, the model in the middle, and what is selected on the right: triangles, size, volume, shape parameters.', 'Images/apps/meshoptimiser-viewer.webp', 'tree'],
     ],
     stats: [['Version', '0.8.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
@@ -107,13 +107,13 @@ window.labApps = [
         ['Right-click menu', 'Hide, isolate, recolour, rename and focus the camera in one click.'],
       ] },
       { title: 'Export', items: [
-        ['GLB / GLTF', 'Draco and Meshopt compression toggles, optional embedded textures.'],
+        ['GLB / glTF', 'Draco and Meshopt compression toggles, optional embedded textures.'],
         ['FBX / USDZ / OBJ / STL', 'Common DCC and AR formats, with scale presets (mm, cm, m, in) or custom.'],
         ['Save Scene', 'A snapshot of view, selection and recolours in a sidecar .scene.json.'],
       ] },
       { title: 'Interface', items: [
         ['Welcome screen', 'Drag and drop, browse, or reopen recent files.'],
-        ['Command palette (⌘K)', 'Every menu item, one keystroke away.'],
+        ['Command palette (Ctrl / ⌘ + K)', 'Every menu item, one keystroke away.'],
         ['Shortcuts overlay', 'A searchable cheatsheet with live key bindings.'],
         ['Resumable sessions', 'File handles and saved scenes persist across reloads.'],
         ['Non-destructive', 'Original geometry is never changed until you export.'],
@@ -135,8 +135,8 @@ window.labApps = [
           summary: 'The plumbing feels modern: a ray-marched floor grid, one keycap chip across every shortcut surface, undo rebuilt as a flat command registry, and all runtime-injected CSS lifted into the stylesheet.',
           items: [
             ['New', 'Ray-marched ground grid: no vertex precision loss at distance, no sub-pixel jitter under orbit, no coplanar Z-fight.'],
-            ['New', 'Redesigned Shortcuts window: sticky search, category headers, two-column grid, multi-key combos as separate keycaps. Opens with ?.'],
-            ['Polish', 'One shared keycap style on the hint strip, tooltips, command palette, brand menu and Shortcuts window.'],
+            ['New', 'Redesigned Shortcuts overlay: sticky search, category headers, two-column grid, multi-key combos as separate keycaps. Opens with ?.'],
+            ['Polish', 'One shared keycap style on the hint strip, tooltips, command palette, brand menu and Shortcuts overlay.'],
             ['Polish', 'Smart fit and its caret merged into one control; its sliders now match the sidebar’s Threshold scrubber.'],
             ['Refactor', 'Eight runtime style injections (about 490 lines) moved into the stylesheet; eleven undo patches collapsed into one registry covering 21 operation types.'],
             ['Fix', 'Tree summary stuck at “1 parts” after delete, a stranded group origin dot, the group button asking for a name, path tracer errors on an empty scene, and confusing material-panel prompts.'],
@@ -144,7 +144,7 @@ window.labApps = [
         { version: '0.7.0', summary: 'GPU path tracer with a sample-accumulating render window, a contextual hint strip, a long-hold add-primitive picker, a standalone Cloner you can drag parts into, and Revert to source.' },
         { version: '0.6.0', summary: 'A C4D-style live Cloner, a Ctrl-click measure tool, per-group origin markers, a two-panel Export window, simplification and Meshopt by default in the pipeline, and CAD-correct mouse mapping.' },
         { version: '0.5.0', summary: 'Scene management (New scene, Import-merge, Scene settings), parametric primitives with editable mm-snapped inputs, unit-aware transforms, banding-free dithered backgrounds, and a clean shutdown.' },
-        { version: '0.4.0', summary: 'HDRI environment lighting, an infinite floor grid with fog, parametric primitive insertion, a camera-view pill with Ctrl/⌘ + 1–4, a borderless popup language, and a blue accent refresh.' },
+        { version: '0.4.0', summary: 'HDRI environment lighting, an infinite floor grid with fog, parametric primitive insertion, a camera-view pill with Ctrl / ⌘ + 1–4, a borderless popup language, and a blue accent refresh.' },
         { version: '0.3.0', summary: 'A full material editor with shader-ball previews, a scale gizmo with Shift-snap and a live HUD, screenshots at custom resolutions, orthographic Top / Front / Side views, and FBX legacy rescue.' },
         { version: '0.2.0', summary: 'The editing surface: welcome screen, command palette, shortcuts overlay, settings, section planes, renderer hot-swap, batch rename, flatten / dissolve / ungroup, undo and redo, Save Scene. Tree expand and collapse on 10K+ nodes went from about a second to under 10 ms.' },
         { version: '0.1.0', date: '5 May 2026', summary: 'First public commit: the STEP → GLB pipeline, the WebGPU viewer with tree, picking, hide / isolate and per-group colouring, the local server, one-click launchers, and vendored Draco and Assimp decoders.' },
@@ -234,7 +234,7 @@ window.labApps = [
         ['Command search', 'Fuzzy-search every parameter, species and action.', 'command'],
       ] },
       { title: 'Export', items: [
-        ['Mesh export', 'OBJ, or GLB / GLTF for the full mesh and scene.', 'download'],
+        ['Mesh export', 'OBJ, or GLB / glTF for the full mesh and scene.', 'download'],
         ['LOD bundle', 'A chain of lower-detail versions in one .glb.', 'layers'],
         ['Presets', 'Save your own with thumbnails, or copy a preset as JSON.', 'bookmark'],
         ['PNG screenshot', 'Save the current view as a picture.', 'aperture'],
@@ -257,7 +257,7 @@ window.labApps = [
     info: [
       ['Platform', 'Chrome, Edge or Safari 18+ (needs WebGPU)'],
       ['Built with', 'WebGPU, Three.js'],
-      ['Exports', 'OBJ, GLB / GLTF, PNG, preset JSON'],
+      ['Exports', 'OBJ, GLB / glTF, PNG, preset JSON'],
       ['First published', 'April 2026'],
       ['Source', 'github.com/xpayn3/webtree'],
     ],
@@ -278,7 +278,7 @@ window.labApps = [
       ['Images/apps/cycleiq-workout-editor.webp', 'The workout editor: an interval session with its power profile'],
       ['Images/apps/cycleiq-workout-editor-light.webp', 'The same editor in the light theme'],
       ['Images/apps/cycleiq-weather-forecast.webp', 'Weather: saved locations, the hourly forecast and the temperature curve'],
-      ['Images/apps/cycleiq-weather-ride-score.webp', 'Seven-day forecast with a ride score for today, in the Tour de France theme'],
+      ['Images/apps/cycleiq-weather-ride-score.webp', '7-day forecast with a ride score for today, in the Tour de France theme'],
       ['Images/apps/cycleiq-weather-day-detail.webp', 'A forecast day opened: hourly wind, rain and the best window to ride'],
       ['Images/apps/cycleiq-tire-pressure.webp', 'The tire pressure calculator in My Garage'],
       ['Images/apps/cycleiq-themes.webp', 'Settings: app theme and map style'],
@@ -309,7 +309,7 @@ window.labApps = [
     ],
     featureGroups: [
       { title: 'Training', items: [
-        ['Dashboard', 'Weekly stats, a fitness snapshot and recent rides in widgets you can reorder, hide and rearrange.', 'grid'],
+        ['Dashboard', 'Weekly stats, a fitness snapshot and recent rides in widgets you can reorder and hide.', 'grid'],
         ['Fitness and training load', 'CTL, ATL and TSB over any date range, FTP history, wellness insights and race prediction.', 'pulse'],
         ['Power analysis', 'Power curve, time in zones, a power profile radar and W′ balance.', 'spark'],
         ['Activity detail', 'A 3D terrain map with power, heart rate, cadence, speed and elevation charts, intervals and climbs detected.', 'globe'],

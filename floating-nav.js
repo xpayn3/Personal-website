@@ -1,52 +1,5 @@
-// Hover hooks — on the home page, hovering a link asks the cover canvas
-// to morph particles into the link text. Falls back silently on other pages.
-(function () {
-  const links = document.querySelectorAll('.floating-nav-link');
-  if (!links.length) return;
-  const descEl = document.getElementById('coverDesc');
-  let descHideTimer = null;
-
-  links.forEach((link) => {
-    // `data-cover-shape` (e.g. "tree") overrides the text morph and forms
-    // a procedural shape. Otherwise `data-cover-text` overrides the visible
-    // label; both fall back to textContent. `data-cover-desc` sets the
-    // small bottom-left description.
-    const coverShape = (link.getAttribute('data-cover-shape') || '').trim();
-    const coverText = (link.getAttribute('data-cover-text') || link.textContent || '').trim();
-    const coverDesc = (link.getAttribute('data-cover-desc') || '').trim();
-
-    link.addEventListener('mouseenter', () => {
-      if (coverShape && typeof window.__coverShape === 'function') {
-        window.__coverShape(coverShape);
-      } else if (typeof window.__coverMorph === 'function') {
-        window.__coverMorph(coverText);
-      }
-      if (descEl && coverDesc) {
-        if (descHideTimer != null) { clearTimeout(descHideTimer); descHideTimer = null; }
-        descEl.innerHTML = coverDesc;
-        descEl.classList.add('is-visible');
-      }
-    });
-    link.addEventListener('mouseleave', () => {
-      if (coverShape && typeof window.__coverShape === 'function') {
-        window.__coverShape(null);
-      } else if (typeof window.__coverMorph === 'function') {
-        window.__coverMorph(null);
-      }
-      if (descEl) {
-        // Same 220ms grace window as the particle release — moving from
-        // one link to another keeps the description visible without flicker.
-        descHideTimer = setTimeout(() => {
-          descEl.classList.remove('is-visible');
-          descHideTimer = null;
-        }, 220);
-      }
-    });
-  });
-})();
-
-// On-hover letter morph — shared across pages for the floating nav,
-// wordmark, and footer links/titles.
+// On-hover letter morph — shared across pages for the nav links and the
+// wordmark.
 (function () {
   const LOWER = 'abcdefghijklmnopqrstuvwxyz';
   const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -160,9 +113,7 @@
     if (el.dataset.label) el.textContent = el.dataset.label;
     unlockWidth(el);
   }
-  const targets = document.querySelectorAll(
-    '.floating-nav-link, .floating-name, .footer-col-link, .footer-col-title'
-  );
+  const targets = document.querySelectorAll('.floating-nav-link, .floating-name');
   targets.forEach((el) => {
     if (!el.dataset.label) el.dataset.label = el.textContent;
     // A word can turn into another while hovered (data-hover). The wordmark in
@@ -242,6 +193,18 @@
   menu.querySelector('.mobile-menu-close').addEventListener('click', close);
   menu.addEventListener('click', (e) => { if (e.target === menu) close(); });
   menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
+  // The menu's "Start a project" stands in for the one in the bar. On some
+  // pages that one is not a plain link but opens the contact form through a
+  // click handler (its href is just "#"), so pass the click on to it rather
+  // than follow a copied href that goes nowhere.
+  const menuCta = menu.querySelector('.mobile-menu-cta');
+  if (menuCta && cta) {
+    menuCta.addEventListener('click', (e) => {
+      e.preventDefault();
+      close();
+      cta.click();
+    });
+  }
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && menu.classList.contains('open')) close();
   });

@@ -12,7 +12,7 @@ const projects = {
     year: 2023,
     client: 'Cestel',
     collab: 'Studio ENKI',
-    location: 'Slovenia, Ljubljana',
+    location: 'Ljubljana, Slovenia',
     desc: [
       "With over 30 years of experience in bridge weigh-in-motion measurements, bridge assessments and traffic data, Cestel is one of the world's leading companies in the fields of high-speed weigh-in-motion and traffic analysis.",
       "The brief was a system nobody ever sees: sensors bolted under a bridge, quietly weighing every truck that drives over it. We decided not to explain it like a manual. The film treats the hardware as product design, with slow macro passes over brushed aluminium, the red sensor housing and the cable gland, and then pulls back to show what those parts are for.",
@@ -20,7 +20,7 @@ const projects = {
       "The abstraction is deliberate. A bridge is reduced to a portal, traffic to coloured blocks, weight to a stack of discs pressing on a plate. That let us keep the engineering honest while staying readable for someone who has never heard of weigh-in-motion. Sound design carries the rest: each cut lands on a mechanical click or a low pass of tyres.",
     ],
     brief: 'Visualize a complex measurement system in an engaging, accessible way.',
-    tools: ['Cinema 4D', 'Redshift', 'Sound Design', 'Photoshop', 'AfterEffects'],
+    tools: ['Cinema 4D', 'Redshift', 'Sound Design', 'Photoshop', 'After Effects'],
     images: [
       `${IMG}/Cestel_project/cestel_anim_01_v.webm`,
       `${IMG}/Cestel_project/Cestel_image_01.webp`,
@@ -63,7 +63,7 @@ const projects = {
       "The typography follows the objects. The wordmark runs around the rim of the disc and the seal, set tight in a wide grotesque, and the Slovenian and English words cross each other like a target. From there the system stretched across posters, animated teasers and projection visuals without ever needing a new idea, only a new object.",
     ],
     brief: 'Create a complete visual identity for the 2022 festival edition.',
-    tools: ['Cinema 4D', 'Redshift', 'AfterEffects', 'Photoshop'],
+    tools: ['Cinema 4D', 'Redshift', 'After Effects', 'Photoshop'],
     images: [
       `${IMG}/Grounded_2022/Grounded_2022_01.webp`,
       `${IMG}/Grounded_2022/Grounded_2022_02.webp`,
@@ -105,7 +105,7 @@ const projects = {
       "The frame with notched corners holds every format together: posters, stickers, the website header, the artist announcements and the animated stories. A black flag reading Država, planted in a red field under the moon, closes the set. It is the same world, just quieter.",
     ],
     brief: 'Design every visual touchpoint — from posters to animated stories.',
-    tools: ['Cinema 4D', 'Redshift', 'AfterEffects', 'Photoshop'],
+    tools: ['Cinema 4D', 'Redshift', 'After Effects', 'Photoshop'],
     images: [
       `${IMG}/Grounded_2021/Grounded_IG.webm`,
       `${IMG}/Grounded_2021/Grounded_SerijaPlakatov.webp`,
@@ -146,7 +146,7 @@ const projects = {
       "The lighting is deliberately gentle. Large soft sources, a hint of pink and blue from the backdrop, nothing dramatic, so the colourways of the shoes do the talking. The stack loosens, tumbles and resolves into The Athlete's Foot wordmark. We cut it for landscape, square and vertical so it could run everywhere the campaign did.",
     ],
     brief: 'Make sneaker product launches stop the scroll on social media.',
-    tools: ['Cinema 4D', 'AfterEffects', 'Photoshop', 'Substance 3D'],
+    tools: ['Cinema 4D', 'After Effects', 'Photoshop', 'Substance 3D'],
     images: [
       `${IMG}/Athletesfoot/taf_anim_v.webm`,
       `${IMG}/Athletesfoot/taf_image_01.webp`,
@@ -172,7 +172,7 @@ const projects = {
   grounded2020: {
     color: 'black',
     category: ['Motion', '3D'],
-    name: 'Festival Grounded: Truth',
+    name: 'Festival Grounded 2020: Truth',
     year: 2020,
     client: 'Pritličje',
     link: 'https://www.grounded.si',
@@ -183,7 +183,7 @@ const projects = {
       "The look is forensic: near-black backgrounds, hard directional light, and two signal colours, an acid green and an alarm red, used the way a terminal uses them. Type is set like evidence labels, small, monospaced and precise, with the artist and speaker lists stacked in colour over the renders. The same objects carry the poster, the banners and the vertical formats.",
     ],
     brief: 'Build an identity around truth and resistance in a post-truth era.',
-    tools: ['Cinema 4D', 'Redshift', 'AfterEffects', 'Photoshop'],
+    tools: ['Cinema 4D', 'Redshift', 'After Effects', 'Photoshop'],
     images: [
       `${IMG}/Grounded_2020/Grounded_poster_2.webp`,
       `${IMG}/Grounded_2020/Artboard-26.webp`,
@@ -282,7 +282,7 @@ const projects = {
       "Having true-to-life scans is what let us be reckless with everything around them. The shoes stay photographic while the worlds go saturated and synthetic, lit in magenta, violet and electric blue. That contrast, a real product in an unreal place, is the whole look of the campaign.",
     ],
     brief: 'Turn a seasonal retail campaign into something cinematic and shareable.',
-    tools: ['Cinema 4D', 'ZBrush', 'Redshift', 'AfterEffects', 'Substance 3D'],
+    tools: ['Cinema 4D', 'ZBrush', 'Redshift', 'After Effects', 'Substance 3D'],
     images: [
       `${IMG}/Athletesfoot_halloween/Athletesfoot_halloween_01.webp`,
       `${IMG}/Athletesfoot_halloween/Athletesfoot_halloween_02.webp`,
@@ -321,7 +321,7 @@ const projects = {
       "A wall of tumbling white trainers gives the cut its one busy moment, then it settles back to a single object. Everything ends on the red wing of The Athlete's Foot, the only colour in the piece.",
     ],
     brief: 'Maximum visual impact for a crowded Black Friday retail moment.',
-    tools: ['Cinema 4D', 'Redshift', 'AfterEffects', 'Substance 3D'],
+    tools: ['Cinema 4D', 'Redshift', 'After Effects', 'Substance 3D'],
     images: [
       `${IMG}/Athletesfoot_blackfriday/Athletesfoot_blackfriday_anim_01.webp`,
       `${IMG}/Athletesfoot_blackfriday/Athletesfoot_blackfriday_anim_02.webp`,
@@ -397,7 +397,7 @@ const projects = {
       "A sharp lime green is the one loud colour, used for frames and for the torn shapes that reveal the egg in the animated formats. Type is a high-contrast serif for dates, small and confident, and it leaves the object alone.",
     ],
     brief: 'Visual identity and 3D animation for the 2023 festival edition.',
-    tools: ['Cinema 4D', 'Redshift', 'AfterEffects'],
+    tools: ['Cinema 4D', 'Redshift', 'After Effects'],
     images: [
       `${IMG}/Grounded_2023/Grounded_2023_01.webm`,
       `${IMG}/Grounded_2023/Grounded_2023_02.webm`,
@@ -427,7 +427,7 @@ const projects = {
       "The system is a kit of parts: a red cog-shaped label carrying the festival text, a pressed metal token for the mark, and a big serif 10 embossed into the shells. We designed it so each object could carry a poster on its own, and so the animations could simply turn the object over in the hand.",
     ],
     brief: 'Visual identity and motion design for the 2026 festival edition.',
-    tools: ['Cinema 4D', 'Redshift', 'AfterEffects'],
+    tools: ['Cinema 4D', 'Redshift', 'After Effects'],
     images: [
       `${IMG}/Grounded_2026/Render_still_01_CC.webp`,   // hero — wide landscape render
       `${IMG}/Grounded_2026/Grounded_2026_web.webm`,    // 16:9 web film: first, full-width gallery row
@@ -459,7 +459,7 @@ const projects = {
       "The motion pieces are slow on purpose. They breathe rather than animate, and they work as backdrops on stage as much as posts in a feed.",
     ],
     brief: 'Visual identity and motion design for the 2025 festival edition.',
-    tools: ['Cinema 4D', 'Redshift', 'AfterEffects'],
+    tools: ['Cinema 4D', 'Redshift', 'After Effects'],
     images: [
       `${IMG}/Grounded 2025/gr2025cover.webp`,
       `${IMG}/Grounded 2025/Grounded_2025_web.webm`,
@@ -485,7 +485,7 @@ const projects = {
       "The palette is two colours: the blue of deep water and a milky pink for the creature, with light scattering inside it so it looks soft and wet, not solid. Fine particles and bubbles give the water its depth. Typography stays small in a corner; the image is tall, quiet and a little menacing, and it did not need help.",
     ],
     brief: 'Visual identity and motion design for the 2024 festival edition.',
-    tools: ['Cinema 4D', 'Redshift', 'AfterEffects', 'Photoshop'],
+    tools: ['Cinema 4D', 'Redshift', 'After Effects', 'Photoshop'],
     images: [
       `${IMG}/Grounded_2024/Grounded_2024_01.webp`,
       `${IMG}/Grounded_2024/Grounded_2024_02.webp`,
@@ -513,7 +513,7 @@ const projects = {
   radenci: {
     color: 'orange',
     category: ['Motion'],
-    name: 'Radenci — Prostorska Projekcija',
+    name: 'Radenci — Prostorska projekcija',
     year: 2026,
     desc: [
       "A spatial projection for children in Radenci: a room where the walls become the story. The audience stands inside it and follows a small gnome in a red hat on a journey that starts in the forest, drops underground and ends under water.",
@@ -522,7 +522,7 @@ const projects = {
       "The photos from the room are the real result. Children reaching for the orb on the wall is the interaction we were designing for.",
     ],
     brief: 'Transform architectural surfaces into a living projection experience.',
-    tools: ['Cinema 4D', 'AfterEffects'],
+    tools: ['Cinema 4D', 'After Effects'],
     images: Array.from({ length: 31 }, (_, i) => {
       const names = [
         'P1_S1_K01_0323.webp','P1_S1_K02_0533.webp','P1_S1_K02_i1_0460.webp',
@@ -690,7 +690,7 @@ const projects = {
   natureta: {
     color: 'orange',
     category: ['3D', 'Branding'],
-    name: 'Natureta 100 Let',
+    name: 'Natureta 100 let',
     year: 2023,
     desc: [
       "Natureta turned one hundred. The campaign line is Stoletje ustvarjanja slastne hrane, a century of making delicious food, signed off with Hvala, narava: thank you, nature.",
@@ -721,7 +721,7 @@ const projects = {
       "The system is strict so the loops feel like one family: a periwinkle world, the brand blue for the cube, and small accents of coral, green and yellow. Soft, even light, rounded furniture, and the same easing on every move. We built a handful of room sets, a living room, a home office, a larger office, so the cube always turns up somewhere familiar.",
     ],
     brief: 'Explain accounting software features through a consistent motion system.',
-    tools: ['Cinema 4D', 'Redshift', 'AfterEffects'],
+    tools: ['Cinema 4D', 'Redshift', 'After Effects'],
     images: [
       `${IMG}/AccountingBox/4_loop.webm`,
       `${IMG}/AccountingBox/intro.webm`,
