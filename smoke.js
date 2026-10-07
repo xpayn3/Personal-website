@@ -415,7 +415,7 @@
           // only reasonably dense smoke eats text, so the effect stays under the smoke
           float s = min(w.z + max(texture2D(uDye, vUv).x - 0.12, 0.0) * feed * dt, 1.3);
           s = max(s / (1.0 + heal * dt) - 0.04 * dt, 0.0);
-          vec2 d = (w.xy + step) / (1.0 + 1.5 * heal * dt);
+          vec2 d = (w.xy + step) / (1.0 + 0.8 * heal * dt);
           gl_FragColor = vec4(d, s, 1.0);
         }`,
       display: `${HEAD}
@@ -493,10 +493,22 @@
             float s = w.z;
             vec2 inv = vec2(1.0 / aspect, 1.0);
             vec2 p = vUv * vec2(aspect, 1.0);
-            // letters ripple along with the air, easing back as they heal
-            vec2 base = vUv - w.xy * smoothstep(0.2, 0.7, s);
-            // blur grows with dissolve so letters soften into puffs
-            float r = smoothstep(0.15, 0.8, s) * 0.016;
+            // The letters are seen through the smoke, and bend with it twice
+            // over. Like heat haze: wherever the smoke thickens or thins, the
+            // text behind is pushed sideways down that slope, so every curl
+            // and edge of a billow drags the strokes with it at once. And the
+            // moving air carries the letters along (the warp buffer keeps
+            // how far), so they stretch and smear in the direction of the
+            // flow and swim back as it settles.
+            vec2 e = vec2(vR.x - vUv.x, vT.y - vUv.y) * 2.5;
+            vec2 slope = vec2(density(vUv + vec2(e.x, 0.0)) - density(vUv - vec2(e.x, 0.0)),
+                              density(vUv + vec2(0.0, e.y)) - density(vUv - vec2(0.0, e.y)));
+            vec2 haze = slope / (1.0 + 1.2 * length(slope)) * inv * 0.05;
+            vec2 carried = w.xy * 2.6 * smoothstep(0.02, 0.35, s);
+            vec2 base = vUv - carried - haze;
+            // a little softness where the letters are bent hard (it hides the
+            // stair-steps of the stretch), more as they finally dissolve
+            float r = min(length((carried + haze) / inv) * 0.06, 0.004) + smoothstep(0.45, 1.1, s) * 0.012;
             float t = textAt(base);
             for (int i = 0; i < 8; i++) {
               float fi = float(i);
@@ -509,7 +521,8 @@
             // per-pixel twinkle so the edge reads as drifting dust
             float grain = hash(floor(gl_FragCoord.xy / 1.5) + floor(time * 10.0));
             float n = 0.4 * noise(p * 14.0 + time * 0.2) + 0.3 * noise(p * 70.0 - time * 0.5) + 0.3 * grain;
-            float keep = 1.0 - smoothstep(0.0, 1.0, (s - 0.25 - 0.7 * n) / 0.45);
+            // (late: the letters are bent well out of shape before they start to go)
+            float keep = 1.0 - smoothstep(0.0, 1.0, (s - 0.55 - 0.7 * n) / 0.5);
             textA = t * keep;
           }
 
@@ -626,8 +639,17 @@
           const box = range.getClientRects()[0];
           if (!box) continue;
           const x = box.left - r.left + pad, y = box.top - r.top + pad + ascent;
-          if (outline > 0) g.strokeText(text[i], x, y);
-          else g.fillText(text[i], x, y);
+          if (outline > 0) {
+            g.strokeText(text[i], x, y);
+            // an outline whose fill is painted over the stroke (paint-order:
+            // stroke): cut the inside of the letter back out, which leaves
+            // the outer half of the stroke and none of the joins inside
+            if (/^stroke/.test(cs.paintOrder)) {
+              g.globalCompositeOperation = 'destination-out';
+              g.fillText(text[i], x, y);
+              g.globalCompositeOperation = 'source-over';
+            }
+          } else g.fillText(text[i], x, y);
         }
       }
       gl.bindTexture(gl.TEXTURE_2D, layer.tex);

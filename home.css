@@ -86,7 +86,11 @@ body.page-plain {
   }
 }
 
-/* ---------------- HERO ---------------- */
+/* ---------------- HERO ----------------
+   The headline is set very large and very light, and sits low: it spans the
+   width of the page along the bottom and leaves the upper part of the screen
+   open, which is where smoke drawn over it rises. The introduction and the
+   button sit to the right of the short first line. */
 .hero {
   min-height: 100vh;
   min-height: 100svh;
@@ -96,31 +100,59 @@ body.page-plain {
   padding-top: calc(var(--gutter) + 56px);
 }
 .hero-main {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  max-width: 1100px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: end;
+  padding-bottom: clamp(28px, 5vh, 64px);
+  /* the headline's size: as wide as the page allows, but never so tall that it crowds a short window */
+  --hs: clamp(48px, min(16.6vw, 30vh), 360px);
 }
 .hero h1 {
-  font-size: clamp(48px, 11vw, 168px);
+  grid-area: 1 / 1;
+  font-family: 'Inter Tight', var(--font-home);
+  font-size: var(--hs);
   line-height: 0.9;
-  letter-spacing: -0.045em;
-  font-weight: 700;
+  letter-spacing: -0.035em;
+  font-weight: 200;
+  margin-left: -0.045em;        /* the M's side bearing: line its stem up with the page edge */
+  white-space: nowrap;
 }
-.hero h1 em { font-style: normal; color: transparent; -webkit-text-stroke: 1.5px var(--ink); }
+/* The second line is an outline. The stroke is drawn first and the letter
+   then filled with the page colour over its inner half: the font's shapes
+   overlap inside the letters (the bar of a t crosses its stem), and a bare
+   stroke would show those joins. smoke.js draws it the same way. */
+.hero h1 em {
+  font-style: normal;
+  color: var(--bg);
+  -webkit-text-stroke: 2.4px var(--ink);
+  paint-order: stroke fill;
+}
+.hero-aside {
+  grid-area: 1 / 1;
+  justify-self: end;
+  align-self: start;
+  z-index: 1;
+  width: min(34ch, 30vw);
+  /* its foot stands on the baseline of the first line, however tall it is */
+  transform: translateY(calc(var(--hs) * 0.81 - 100%));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: clamp(16px, 1.25vw, 20px);
+}
 .lede {
-  margin-top: clamp(20px, 3vw, 36px);
-  max-width: 44ch;
-  font-size: clamp(16px, 1.5vw, 20px);
+  font-size: inherit;
   line-height: 1.5;
   color: var(--muted);
   transition: color var(--fade);
 }
 .cta {
-  margin-top: clamp(24px, 3vw, 40px);
-  align-self: flex-start;
-  padding: 16px 28px;
-  font-size: 14px;
+  margin-top: clamp(20px, 2.4vw, 32px);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 14px 24px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -130,18 +162,41 @@ body.page-plain {
   border-radius: var(--radius-pill, 999px);
   transition: background-color var(--fade), color var(--fade), transform 150ms;
 }
+.cta span { transition: transform 200ms var(--ease-out, ease); }
 .cta:hover { transform: translateY(-2px); }
+.cta:hover span { transform: translate(2px, -2px); }
 .cta:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 .hero-foot {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
   font-size: 13px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
-  transition: color var(--fade);
+  transition: color var(--fade), border-color var(--fade);
+}
+.hero-foot > :last-child { justify-self: end; }
+.hero-status { display: inline-flex; align-items: center; gap: 0.7em; }
+.hero-status::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--c-green);
+}
+/* narrower screens: the introduction goes under the headline */
+@media (max-width: 1000px) {
+  .hero-main { --hs: clamp(44px, 16.6vw, 200px); }
+  .hero-aside { grid-area: auto; transform: none; justify-self: start; width: auto; max-width: 40ch; margin-top: clamp(20px, 4vw, 36px); }
+}
+@media (max-width: 720px) {
+  .hero-foot { grid-template-columns: 1fr auto; font-size: 12px; letter-spacing: 0.06em; white-space: nowrap; }
+  .hero-foot > :first-child { display: none; }
+  .hero h1 em { -webkit-text-stroke-width: 1.8px; }
 }
 
 /* ---------------- SECTIONS ---------------- */
