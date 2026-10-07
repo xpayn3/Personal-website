@@ -16,6 +16,7 @@
 //   stats     the strip under the header: [label, value] pairs
 //   cover     wide picture for its post in the Lab feed
 //   shots     screenshots: [image, caption] pairs (optional)
+//   clips     short silent loops: [name, line, clip.webm] (optional); the poster is <clip>_thumb.webp
 //   phone     screenshots taken on a phone, shown tall: [image, caption]
 //             pairs (optional)
 //   gallery   small square pictures: [image, caption] pairs, titled by
@@ -43,6 +44,12 @@ window.labApps = [
     cover: 'Images/apps/meshoptimiser-viewer.webp',
     shots: [
       ['Images/apps/meshoptimiser-viewer.webp', 'The viewer: a 1,583-part assembly, its tree on the left and the scene’s totals on the right'],
+      ['Images/apps/meshoptimiser-library.webp', 'The library drawer: a pillow block and a handwheel already placed, and a stepper motor on its way in, shown where it will stand'],
+      ['Images/apps/meshoptimiser-blocks.webp', 'Smart fit with Blocks on every part: the same assembly at 18% of its triangles, outline kept'],
+      ['Images/apps/meshoptimiser-clay.webp', 'Clay: every part in one plain material, so only the form is left'],
+      ['Images/apps/meshoptimiser-align.webp', 'Align to floor: turn the model in steps and choose which side of it sits at zero; Fit to budget and the report below'],
+      ['Images/apps/meshoptimiser-select-hidden.webp', 'Select hidden parts: finds what cannot be seen from outside, from any direction'],
+      ['Images/apps/meshoptimiser-search.webp', 'Search for “bolt”: the parts in the scene by name, and the bolts in the library ready to add'],
       ['Images/apps/meshoptimiser-assembly-inspect.webp', 'One part selected: its triangle count leads the Properties card, with its share of the scene and its rank by weight'],
       ['Images/apps/meshoptimiser-fill-holes.webp', 'Fill holes: the command panel beside the viewport, and what the fill saved'],
       ['Images/apps/meshoptimiser-fill-holes-closeup.webp', 'Before and after: the holes in flat faces closed, everything else left as it was'],
@@ -60,10 +67,18 @@ window.labApps = [
       ['Images/apps/meshoptimiser-shortcuts.webp', 'The keyboard shortcuts overlay'],
     ],
     spotlights: [
-      ['Search', 'Every action in the app, searchable, with its shortcut beside it and suggestions that follow what is selected. It also finds parts by name, adds parts from the library, and works out a sum or a length. Open it with Ctrl / ⌘ + K.', 'Images/apps/meshoptimiser-palette.webp', 'command'],
-      ['An object library', '86 parametric parts on six shelves: shapes, fasteners, nuts, pipes and flanges, profiles and plates, machine parts. Drag one into the scene and it stands on what it is dropped on. Every dimension is a number you can drag.', 'Images/apps/meshoptimiser-add.webp', 'cube'],
+      ['A drawer full of parts', 'Hex bolts, wing nuts, pillow blocks, I-beams, gears, a stepper motor: 86 parametric parts on six shelves. Drag one out and a see-through copy shows where it will stand, square to the face under the pointer. Let go and it is there.', 'Images/apps/meshoptimiser-library.webp', 'cube'],
+      ['82% lighter, still recognisable', 'Smart fit used to turn a bracket into a brick. Blocks rebuilds each part from a coarse grid, with its steps, arms and openings where they were. This assembly went from 16,812 triangles to 3,048 in one command.', 'Images/apps/meshoptimiser-blocks.webp', 'cube'],
+      ['Clay', 'One key and the colours are gone. Every part in the same plain material, lit by a headlight that follows the view, so edges, curvature and what stands in front of what are all that is left. Porcelain, steel and red wax on a right-click.', 'Images/apps/meshoptimiser-clay.webp', 'cube'],
+      ['Search that finds everything', 'Type “bolt” and get the six foot bolts in the scene and every bolt in the library. Enter selects and frames a part, or adds a new one. It also works out 12*25.4 and 2 in.', 'Images/apps/meshoptimiser-search.webp', 'command'],
       ['Open almost anything', 'Drop a STEP, GLB, glTF, FBX, OBJ, 3MF or STL file, or start from an empty scene.', 'Images/apps/meshoptimiser-open.webp', 'upload'],
       ['Tree, viewport, properties', 'Parts on the left, the model in the middle, and what is selected on the right: triangles, what was saved, size, volume.', 'Images/apps/meshoptimiser-viewer.webp', 'tree'],
+    ],
+    clips: [
+      ['Fill holes', 'Bolt holes, slots and pockets in flat faces close a few at a time; everything else is left as it was.', 'Images/apps/meshoptimiser-clip-fill-holes.webm'],
+      ['Split', 'A mesh that was fused on export comes apart into the solids it was made of.', 'Images/apps/meshoptimiser-clip-split.webm'],
+      ['Select hidden parts', 'The screws, bearings and brackets inside a housing light up: everything that cannot be seen from outside.', 'Images/apps/meshoptimiser-clip-select-hidden.webm'],
+      ['Smart fit', 'A dense part becomes a box, a cylinder, a few boxes or blocks that keep its outline.', 'Images/apps/meshoptimiser-clip-smart-fit.webm'],
     ],
     stats: [['Version', '0.12.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
     about: [
@@ -150,14 +165,16 @@ window.labApps = [
       link: 'https://github.com/xpayn3/MeshOptimiser/blob/main/CHANGELOG.md',
       versions: [
         { version: '0.12.0', latest: true,
-          summary: 'The app builds as well as reduces. A library of 86 parametric parts is dragged into the scene, a model that arrives on its side is stood on the floor in one card, a whole scene is brought down to a triangle budget, and dark parts finally have a shape.',
+          summary: 'The biggest release yet. Until now MeshOptimiser opened a model and made it lighter; from this version it also builds. A drawer of 86 real parts to drag onto the model, a file on its side stood up on the floor from one card, a whole scene brought down to the triangle budget you type, and dark parts that finally look like something.',
           items: [
-            ['New', 'Object library: shapes, fasteners, nuts, pipes and flanges, profiles and plates, machine parts. Drag one over the viewport and a see-through copy shows where it will stand, square to the surface under the pointer. Bolts can carry their own nut.'],
-            ['New', 'Align to floor: turn the model in steps and choose which side of it goes to zero on each axis. A run of adjustments is one undo step, and it can run each time a file is opened.'],
-            ['New', 'Select hidden parts finds what cannot be seen from outside. Fit to budget reduces the whole scene to a triangle target, densest meshes first, with a preview and Cancel.'],
-            ['New', 'Smart fit gains Boxes (a handful of boxes, each fitted to one piece of the part) and Blocks (a coarse grid that keeps the part’s steps, arms and openings).'],
-            ['New', 'Clay view (5): every part in one plain material, to read the shape, with porcelain, steel and red wax looks. A studio to reflect and a headlight that follows the view give dark parts an edge.'],
-            ['New', 'Search finds parts by name and library parts, and works out sums and lengths. Every number field drags. An optimisation report compares the scene as opened with the scene now.'],
+            ['New', 'The library drawer: 86 parametric parts on six shelves. Hex bolts, Allen screws, carriage bolts and U-bolts; wing, castle, lock and T-slot nuts; pipe tees, elbows and flanges; I-beams, box tube and T-slot extrusion; gears, sprockets, bearings, pillow blocks, a linear rail and a stepper motor.'],
+            ['New', 'Drag a part out of the drawer and a see-through copy follows the pointer, already standing where it will land: square to the face under it, or upright on the floor. Pick M6 × 24 once and every fastener comes out in it.'],
+            ['New', 'A bolt that brings its own nut: tick it on, choose a wing nut or a castle nut, and set how far from the head it sits. One part, one undo step, and it cannot run off the end of the thread.'],
+            ['New', 'Align to floor: files arrive anywhere and any way up. Turn the model in steps, say which side goes to zero on each axis, and watch it move. Switch it on for every file and never open a model lying down again.'],
+            ['New', 'Select hidden parts finds the screws inside a housing and the board under a cover. Fit to budget takes a triangle count for the whole scene and reduces the densest meshes first, with a preview and Cancel.'],
+            ['New', 'Smart fit learned shapes: Boxes turns a levelling foot into a slab and a bar; Blocks rebuilds a part from a coarse grid with its steps, arms and openings in place. A 16,812-triangle drive unit comes out at 3,048.'],
+            ['New', 'Clay view (5) strips the colours so only form is left, in clay, porcelain, steel or red wax. A studio to reflect and a headlight that follows the view give dark parts an edge and a sheen.'],
+            ['New', 'Search finds parts by name and library parts (“add flange”), and works out 12*25.4 or 2 in. Every number field drags. An optimisation report puts the scene as opened beside the scene now.'],
             ['Fix', 'Parts no longer show through thin covers when zoomed out: the camera’s near plane follows it away from the model.'],
             ['Polish', 'The right sidebar is grouped into Inspect, Clean up and Reduce; the selected row in the tree is easier to find. The section plane is removed.'],
           ] },

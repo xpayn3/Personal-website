@@ -340,6 +340,43 @@
     section('A closer look').append(grid);
   }
 
+  // ---- in motion: short silent loops of a tool at work, as cards ----
+  // A clip is only fetched and played while its card is on screen, and stops
+  // when it leaves. On touch devices and with reduced motion it stays a
+  // poster until the card is tapped (the performance rules for phones).
+  if (app.clips && app.clips.length) {
+    const grid = el('div', 'app-clips');
+    const auto = window.matchMedia('(hover: hover) and (pointer: fine)').matches
+      && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const start = (v) => { const p = v.play(); if (p && p.catch) p.catch(() => {}); };
+    const watch = auto && 'IntersectionObserver' in window
+      ? new IntersectionObserver((entries) => entries.forEach((e) => {
+          if (e.isIntersecting) start(e.target); else e.target.pause();
+        }), { threshold: 0.35 })
+      : null;
+    app.clips.forEach(([name, line, src], i) => {
+      const card = el('figure');
+      const video = el('video');
+      Object.assign(video, { src, poster: src.replace(/\.(webm|mp4)$/, '_thumb.webp'), muted: true, loop: true, playsInline: true, preload: 'none', disablePictureInPicture: true });
+      video.setAttribute('aria-label', `${app.title}: ${name}`);
+      if (watch) watch.observe(video);
+      else {
+        card.classList.add('is-tap');
+        const toggle = () => {
+          if (video.paused) start(video); else video.pause();
+          card.classList.toggle('is-playing', !video.paused);
+        };
+        video.addEventListener('click', toggle);
+        opens(video, `${name}: play the clip`, toggle);
+      }
+      const caption = el('figcaption');
+      caption.append(el('i', '', String(i + 1).padStart(2, '0')), el('strong', '', name), el('span', '', line));
+      card.append(video, caption);
+      grid.append(card);
+    });
+    section('In motion').append(grid);
+  }
+
   if (app.steps && app.steps.length) {
     const list = el('ol', 'app-steps');
     app.steps.forEach(([name, line], i) => {

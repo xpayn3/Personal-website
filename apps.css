@@ -364,6 +364,33 @@ html[data-theme="light"] .app-log-body b { color: color-mix(in srgb, currentColo
 }
 .app-spots figcaption > span:last-child { max-width: 40ch; font-size: clamp(1rem, 1.2vw, 1.1rem); line-height: 1.55; color: var(--g-muted); }
 
+/* in motion: short loops of a tool at work, two to a row; a clip plays while
+   its card is on screen (a tap starts it on touch devices) */
+.app-clips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(32px, 5vw, 64px) clamp(20px, 3vw, 40px); }
+.app-clips figure { display: grid; gap: 18px; align-content: start; }
+.app-clips video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: clamp(8px, 1vw, 14px);
+  background: var(--g-well);
+  box-shadow: var(--float-small);
+}
+.app-clips figure.is-tap video { cursor: pointer; }
+.app-clips figure.is-tap:not(.is-playing) figcaption i::after { content: ' · tap to play'; }
+.app-clips figcaption { display: grid; gap: 8px; align-content: start; }
+.app-clips figcaption i {
+  font-style: normal;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  color: var(--g-muted);
+}
+.app-clips strong { font-size: clamp(1.2rem, 1.8vw, 1.5rem); font-weight: 500; letter-spacing: -0.02em; }
+.app-clips figcaption > span:last-child { max-width: 40ch; font-size: 0.98rem; line-height: 1.5; color: var(--g-muted); }
+
 /* how it works: numbered columns on a hairline */
 .app-steps { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 4vw, 48px) clamp(20px, 3vw, 40px); }
 .app-steps > li { display: grid; gap: 10px; align-content: start; }   /* the section's own rule sits above them */
@@ -547,6 +574,7 @@ html[data-theme="light"] .app-log-body b { color: color-mix(in srgb, currentColo
 }
 @media (max-width: 768px) {
   .app-steps,
+  .app-clips,
   .app-highlights { grid-template-columns: 1fr; }
   .app-log > li { grid-template-columns: 1fr; gap: 10px; }
   .app-log-body li { grid-template-columns: 1fr; gap: 4px; }
