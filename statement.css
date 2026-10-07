@@ -317,19 +317,36 @@ html[data-theme="dark"] .pw-cube i {
   text-align: center;
   white-space: pre;
 }
-/* over the picture: a soft highlight top left, a darker rim bottom right,
-   and a thin bright inner edge, which is what makes it read as curved glass */
+/* over the picture: a faint tint so the glass shows on a white page, a
+   darker rim, and a thin bright inner edge, which make it read as curved */
 .pw-lens::after {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 30% 22%, color-mix(in srgb, #ffffff 62%, transparent) 0, transparent 34%),
-    radial-gradient(circle at 50% 50%, transparent 58%, color-mix(in srgb, currentColor 9%, transparent) 100%);
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--c-blue) 5%, transparent) 0, color-mix(in srgb, var(--c-blue) 7%, transparent) 56%, color-mix(in srgb, currentColor 20%, transparent) 100%);
   box-shadow:
-    inset 0 -0.16em 0.36em color-mix(in srgb, currentColor 12%, transparent),
+    inset 0 -0.16em 0.36em color-mix(in srgb, currentColor 14%, transparent),
     inset 0 0 0 0.05em color-mix(in srgb, var(--bg) 60%, transparent);
+  pointer-events: none;
+}
+/* the glare: a bright streak following the curve of the rim top left with a
+   small hot spot in it, and a faint bounce of it bottom right. The script
+   nudges it (--glare-x, --glare-y, each -1 to 1) against the lens's movement. */
+.pw-lens::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse 9% 6% at 27% 21%, #fff 0, color-mix(in srgb, #fff 70%, transparent) 45%, transparent 100%),
+    radial-gradient(ellipse 30% 15% at 31% 20%, color-mix(in srgb, #fff 80%, transparent) 0, transparent 100%),
+    radial-gradient(circle at 60% 62%, transparent 0 58%, color-mix(in srgb, #fff 34%, transparent) 66%, transparent 71%),
+    radial-gradient(ellipse 22% 9% at 70% 83%, color-mix(in srgb, #fff 26%, transparent) 0, transparent 100%);
+  transform: translate(calc(var(--glare-x, 0) * 0.14em), calc(var(--glare-y, 0) * 0.14em)) rotate(-12deg);
+  filter: blur(0.012em);
   pointer-events: none;
 }
 

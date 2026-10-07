@@ -118,14 +118,11 @@
   // sideways, green = how far it leans up or down) is fed to an SVG
   // displacement filter, which shifts every pixel of the enlarged copy by
   // what the map says. The middle of the dome is flat, so the centre is a
-  // clean enlargement; the surface leans more and more towards the rim, so
-  // the picture curves and crowds in there. (Red, green and blue can be bent
+  // clean enlargement; the surface leans sharply towards the rim, so the
+  // picture curves and crowds in hard there. (Red, green and blue can be bent
   // by slightly different amounts for a colour fringe at the rim; FRINGE is
-  // 0, so they are not.)
-  // What the glass magnifies is drawn as a screen seen up close: the enlarged
-  // word is first broken into square pixels (a mosaic step at the start of
-  // the same filter), so the letters come out blocky, as if zoomed far into a
-  // display. There are no grid lines; only the letters' edges show it.
+  // 0, so they are not.) A glare lies over the glass (statement.css) and
+  // shifts a little against the lens's movement, as a reflection would.
   // Where that filter is not dependable (Safari), each letter is instead
   // moved and stretched through the same kind of curve, which is coarser but
   // reads the same. The word itself underneath is never touched. On touch
@@ -153,7 +150,7 @@
 
     var POWER = 2.4;                      // magnification at the centre of the lens
     var BEND = 0.12;                      // letter-by-letter fallback: how strongly the picture curves in towards the rim
-    var DOME = 0.46;                      // filter: how far the rim pulls the picture in, as a share of the radius
+    var DOME = 0.8;                       // filter: how far the rim pulls the picture in, as a share of the radius
     var FRINGE = 0;                       // filter: how differently red and blue bend (a colour fringe at the rim; off)
     var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
     var ua = navigator.userAgent;
@@ -165,7 +162,7 @@
 
     // ---- the glass: a normal map of a dome, and the filter that applies it
     var SVG = 'http://www.w3.org/2000/svg';
-    var mapImages = [], bends = [], mosaic = null, cell = 0, gridAt = [NaN, NaN];
+    var mapImages = [], bends = [];
     if (glass) {
       var svg = document.createElementNS(SVG, 'svg');
       svg.setAttribute('aria-hidden', 'true');
@@ -183,20 +180,12 @@
         filter.appendChild(node);
         return node;
       };
-      // the screen's pixels: keep one sample per cell, then grow it to fill the cell
-      mosaic = {
-        dot: add('feFlood', { 'flood-color': '#000', result: 'dot' }),
-        cell: add('feComposite', { 'in': 'dot', in2: 'dot', operator: 'over', result: 'cell' }),
-        tile: add('feTile', { 'in': 'cell', result: 'grid' }),
-        pick: add('feComposite', { 'in': 'SourceGraphic', in2: 'grid', operator: 'in', result: 'samples' }),
-        grow: add('feMorphology', { 'in': 'samples', operator: 'dilate', result: 'pixels' }),
-      };
       mapImages.push(add('feImage', { result: 'map', x: 0, y: 0, preserveAspectRatio: 'none' }));
       // one bend per colour channel, each keeping only its own channel...
       [['r', '1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0'],
        ['g', '0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0'],
        ['b', '0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0']].forEach(function (ch) {
-        bends.push(add('feDisplacementMap', { 'in': 'pixels', in2: 'map', xChannelSelector: 'R', yChannelSelector: 'G', result: 'bent-' + ch[0] }));
+        bends.push(add('feDisplacementMap', { 'in': 'SourceGraphic', in2: 'map', xChannelSelector: 'R', yChannelSelector: 'G', result: 'bent-' + ch[0] }));
         add('feColorMatrix', { 'in': 'bent-' + ch[0], type: 'matrix', values: ch[1], result: 'only-' + ch[0] });
       });
       // ...then added back together
@@ -206,8 +195,8 @@
       document.body.appendChild(svg);
       lens.classList.add('is-glass');
     }
-    // Draw the dome's normal map. The dome's height is a smooth bump that is
-    // flat in the middle and steepest near the rim; each pixel stores which
+    // Draw the dome's normal map. The dome is nearly flat across the middle
+    // and falls away steeply in the outer third; each pixel stores which
     // way the surface leans there. The map covers the whole view, which is
     // twice the lens across so that pixels pulled in from beyond the rim have
     // something to come from; the dome sits in its middle and everything
@@ -221,7 +210,7 @@
         for (var x = 0; x < size; x++) {
           var nx = ((x + 0.5) / size * 2 - 1) * 2, ny = ((y + 0.5) / size * 2 - 1) * 2;   // ±1 at the lens's rim
           var r = Math.sqrt(nx * nx + ny * ny), k = 0;
-          if (r < 1 && r > 0) k = r * r * (1.35 - 0.35 * r) / r;       // lean: 0 in the middle, 1 at the rim
+          if (r < 1 && r > 0) k = (0.12 * r + 0.88 * r * r * r * r) / r;   // lean: slight in the middle, 1 at the rim, most of it in the outer third
           var i = (y * size + x) * 4;
           d[i] = Math.round(128 + nx * k * 127);
           d[i + 1] = Math.round(128 + ny * k * 127);
@@ -246,18 +235,6 @@
         return { x: g.offsetLeft + w / 2, y: g.offsetTop + h / 2, w: w, h: h };
       });
       mid = [zoom.offsetWidth / 2, zoom.offsetHeight / 2];
-      // one screen pixel, in css px: an odd number so a cell has a middle sample
-      var px = Math.max(3, Math.round(parseFloat(getComputedStyle(zoom).fontSize) * 0.1));
-      if (px % 2 === 0) px += 1;
-      if (px !== cell) {
-        cell = px;
-        if (mosaic) {
-          mosaic.dot.setAttribute('width', 1); mosaic.dot.setAttribute('height', 1);
-          mosaic.cell.setAttribute('width', px); mosaic.cell.setAttribute('height', px);
-          mosaic.grow.setAttribute('radius', (px - 1) / 2);
-          gridAt = [NaN, NaN];                                // placed by draw()
-        }
-      }
       if (glass) {
         var size = Math.max(8, Math.round(view.offsetWidth));
         if (size !== mapSize) {                             // the type size changed: redraw the map to fit
@@ -286,31 +263,12 @@
       return [at[0] + dx * k, at[1] + dy * k];
     };
 
-    // The pixels belong to the screen being looked at, not to the glass: their
-    // grid is anchored to the enlarged word, so each letter keeps the same
-    // blocky shape as the lens moves over it instead of shimmering. `ox`,
-    // `oy` is where the word's origin sits in the view; the grid starts there
-    // (wrapped to one cell).
-    var placeGrid = function (ox, oy) {
-      if (!cell || !mosaic) return;
-      var gx = ((ox % cell) + cell) % cell, gy = ((oy % cell) + cell) % cell;
-      gx = Math.round(gx * 2) / 2; gy = Math.round(gy * 2) / 2;
-      if (gx === gridAt[0] && gy === gridAt[1]) return;
-      gridAt = [gx, gy];
-      var half = (cell - 1) / 2;
-      // The first cell must lie inside the picture (a cell that starts off
-      // its edge has no sample and the whole view comes out empty); tiling
-      // repeats it in every direction from there, so the edges are covered.
-      mosaic.cell.setAttribute('x', gx); mosaic.cell.setAttribute('y', gy);
-      mosaic.dot.setAttribute('x', gx + half); mosaic.dot.setAttribute('y', gy + half);
-    };
     var draw = function () {
       if (glass) {
         // one move for the whole enlarged word: the point under the pointer goes to the lens's centre
         var c = view.offsetWidth / 2;                       // the view is centred on the lens
         var ox = c - at[0] * POWER, oy = c - at[1] * POWER;
         word.style.transform = 'translate(' + ox.toFixed(2) + 'px,' + oy.toFixed(2) + 'px) scale(' + POWER + ')';
-        placeGrid(ox, oy);
       } else {
         var left = at[0] - radius + edge, top = at[1] - radius + edge;
         boxes.forEach(function (b, i) {
@@ -322,6 +280,9 @@
             'scale(' + sx.toFixed(3) + ',' + sy.toFixed(3) + ')';
         });
       }
+      // the glare leans away from where the lens is heading, and settles when it rests
+      lens.style.setProperty('--glare-x', Math.max(-1, Math.min(1, (at[0] - goal[0]) / radius)).toFixed(3));
+      lens.style.setProperty('--glare-y', Math.max(-1, Math.min(1, (at[1] - goal[1]) / radius)).toFixed(3));
       lens.style.opacity = amount.toFixed(3);
       lens.style.transform = 'translate(' + (at[0] - radius).toFixed(2) + 'px,' + (at[1] - radius).toFixed(2) + 'px) ' +
         'scale(' + (0.6 + 0.4 * amount).toFixed(3) + ')';
