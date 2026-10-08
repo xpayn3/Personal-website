@@ -56,8 +56,11 @@ const pages = files.filter(f => f.ext === '.html' && f.rel !== 'admin.html').map
   const title = (html.match(/<title>([^<]*)<\/title>/i) || [])[1] || '';
   const desc = /<meta[^>]+name=["']description["'][^>]+content=["'][^"']+/i.test(html);
   const section = f.rel.includes('/') ? f.rel.split('/')[0] : 'main';
-  const url = f.rel === 'index.html' ? '' : f.rel;
-  return { path: f.rel, section, title: title.trim(), hasDescription: desc,
+  // a folder's index.html is listed by the folder's address
+  const url = f.rel === 'index.html' ? '' : f.rel.replace(/\/index\.html$/, '/');
+  // a page that only forwards to another (noindex) needs neither a description nor a sitemap entry
+  const forwards = /<meta[^>]+name=["']robots["'][^>]+noindex/i.test(html) && /http-equiv=["']refresh["']/i.test(html);
+  return { path: f.rel, section, title: title.trim(), hasDescription: desc, forwards,
     inSitemap: sitemap.includes('<loc>https://lukagrcar.com/' + url + '</loc>') || sitemap.includes('<loc>https://lukagrcar.com/' + url.replace(/.html$/, '') + '</loc>') || (f.rel === 'index.html' && /lukagrcar\.com\/?<\/loc>/.test(sitemap)),
     bytes: f.bytes };
 }).sort((a, b) => a.path.localeCompare(b.path));
@@ -110,8 +113,8 @@ const health = {
   missingAssets: missing,
   orphanedImages: orphans,
   largeFiles: large,
-  pagesWithoutDescription: pages.filter(p => !p.hasDescription).map(p => p.path),
-  pagesNotInSitemap: pages.filter(p => !p.inSitemap).map(p => p.path),
+  pagesWithoutDescription: pages.filter(p => !p.hasDescription && !p.forwards).map(p => p.path),
+  pagesNotInSitemap: pages.filter(p => !p.inSitemap && !p.forwards).map(p => p.path),
   imagesWithoutMobileCopy: noMobile,
 };
 

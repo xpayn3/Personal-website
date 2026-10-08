@@ -12,6 +12,8 @@
                       description, share image and structured data
      sitemap.xml      the four main pages, every project page and every
                       Lab app page
+     apps/<id>/       the site of an app that has one, by way of
+                      tools/build-app-site.js
 
    The project markup comes from project-template.js, the same function
    the browser uses, so the static pages cannot drift from the live view.
@@ -135,8 +137,10 @@ ids.forEach(id => fs.writeFileSync(path.join(ROOT, 'work', id + '.html'), pageFo
 
 // ---- sitemap ----
 // The Lab's app pages (apps/<id>.html) are written by hand, but they are
-// listed here from apps.js so regenerating never drops them.
-require(path.join(ROOT, 'apps.js'));
+// listed here from apps.js so regenerating never drops them. An app with a
+// site of its own (apps.js: site) has its pages written now and listed.
+const AppSite = require('./build-app-site.js');
+AppSite.build();
 const apps = global.window.labApps || [];
 const today = new Date().toISOString().slice(0, 10);
 const xml = text => String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;');
@@ -151,7 +155,9 @@ const sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n' +
   urlTag('grid.html', 'weekly', '0.9') +
   ids.map(id => urlTag('work/' + id, 'monthly', '0.8', stills(projects[id]).map(imageTag).join(''))).join('') +
   urlTag('lab.html', 'monthly', '0.7', projects.lab ? imageTag(Template.posterOf(projects.lab.images[0])) : '') +
-  apps.map(app => urlTag('apps/' + app.id, 'monthly', '0.7', app.cover ? imageTag(app.cover) : '')).join('') +
+  apps.map(app => (app.site
+    ? AppSite.urlsFor(app).map((loc, i) => urlTag(loc, 'monthly', i ? '0.6' : '0.8', !i && app.cover ? imageTag(app.cover) : '')).join('')
+    : urlTag('apps/' + app.id, 'monthly', '0.7', app.cover ? imageTag(app.cover) : ''))).join('') +
   urlTag('about.html', 'monthly', '0.8') +
   '</urlset>\n';
 fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), sitemap);

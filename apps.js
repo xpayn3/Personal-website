@@ -32,6 +32,12 @@
 //   changelog { link, versions: [{ version, date, latest, summary,
 //             items: [[tag, text], …] }, …] }, newest first (optional)
 //   info      the table at the bottom: [label, value] pairs
+//   site      an app with a site of its own instead of one page: { path, … }.
+//             Its pages (home, features, screenshots, docs, download,
+//             changelog) are written into `path` by tools/build-app-site.js
+//             from this entry; re-run it after editing. The other keys are
+//             what only the site shows: lead, collapse, requirements.
+//             Its docs are in <path>docs-content.js
 window.labApps = [
   {
     id: 'meshoptimiser',
@@ -41,8 +47,9 @@ window.labApps = [
     stage: 'Beta',
     repo: 'https://github.com/xpayn3/MeshOptimiser',
     icon: 'Images/apps/meshoptimiser-icon.svg',
-    cover: 'Images/apps/meshoptimiser-viewer.webp',
+    cover: 'Images/apps/meshoptimiser-hero.webp',
     shots: [
+      ['Images/apps/meshoptimiser-hero.webp', 'Mid clean-up on a rear derailleur: the Fasteners panel has found its twelve bolts by shape, ready to isolate or delete'],
       ['Images/apps/meshoptimiser-viewer.webp', 'A 1,583-part, 5.4-million-triangle assembly: the tree on the left, the scene’s totals on the right'],
       ['Images/apps/meshoptimiser-library.webp', 'The library drawer: a pillow block and a handwheel placed, and a stepper motor on its way in, shown where it will stand'],
       ['Images/apps/meshoptimiser-bolt-nut.webp', 'A hex bolt that carries its own nut: size, length and the nut’s distance from the head are all parameters'],
@@ -72,6 +79,23 @@ window.labApps = [
       ['Images/apps/meshoptimiser-shortcuts.webp', 'The keyboard shortcuts overlay, with search'],
       ['Images/apps/meshoptimiser-start.webp', 'The start screen: drop a file, reopen a recent one, or start from a shape'],
     ],
+    site: {
+      path: 'apps/meshoptimiser/',
+      lead: 'MeshOptimiser reads a heavy STEP assembly, keeps one mesh for every part that repeats, and gives back a compressed GLB with a viewer to inspect, clean up and export it. Free, open source, and nothing leaves your machine.',
+      // what the pipeline collapses (the README's example)
+      collapse: [
+        ['400 bolts × 50 KB', '1 mesh × 50 KB + 400 transforms'],
+        ['80 brackets × 12 KB', '1 mesh × 12 KB + 80 transforms'],
+        ['500K bad triangles', 'Adaptive re-tessellation, size-culled'],
+        ['320 MB STEP', '11 MB Meshopt-compressed GLB'],
+      ],
+      requirements: [
+        ['Python', '3.10, 3.11 or 3.12. 3.13 is not supported yet by cadquery-ocp.'],
+        ['Browser', 'One with WebGPU: a recent Chrome, Edge, Firefox or Safari.'],
+        ['Disk', 'About 2 GB free for the Python environment on the first install.'],
+        ['Network', 'None to run. The viewer’s libraries are bundled; only a few rarely used converters are fetched on demand.'],
+      ],
+    },
     spotlights: [
       ['A drawer full of parts', 'Hex bolts, wing nuts, pillow blocks, I-beams, gears, a stepper motor: 86 parametric parts on six shelves. Drag one out and a see-through copy shows where it will stand, square to the face under the pointer. Let go and it is there.', 'Images/apps/meshoptimiser-library.webp', 'cube'],
       ['878 parts nobody will ever see', 'Select hidden parts looks at the model from every side and picks out what cannot be seen from any of them. On this assembly that is more than half the parts and 2.4 million of its 5.4 million triangles, selected in one step and ready to delete.', 'Images/apps/meshoptimiser-select-hidden-result.webp', 'cube'],

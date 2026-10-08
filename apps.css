@@ -522,8 +522,13 @@ html[data-theme="light"] .app-log-body b { color: color-mix(in srgb, currentColo
   background: var(--g-well);
   cursor: inherit;                    /* the strip's hand (grab / grabbing), not a magnifier */
 }
-/* screenshots: wide, most of the column each */
-.app-shots.is-wide figure { width: min(78%, 980px); }
+/* screenshots: wide, most of the column each, and paged: the strip always
+   comes to rest with one picture in the middle (the first and the last
+   against its ends), one picture per swipe. A mouse drag settles the same
+   way from app-page.js, which frees the strip (.is-free) while it has it */
+.app-shots.is-wide { scroll-snap-type: x mandatory; }
+.app-shots.is-wide.is-free { scroll-snap-type: none; }
+.app-shots.is-wide figure { width: min(78%, 980px); scroll-snap-align: center; scroll-snap-stop: always; }
 .app-shots.is-wide img { aspect-ratio: 16 / 10; border-radius: clamp(8px, 1vw, 14px); }
 /* phone screenshots: tall, with a phone's rounded corners */
 .app-shots.is-phone figure { width: clamp(190px, 21vw, 270px); }

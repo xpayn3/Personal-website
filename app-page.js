@@ -161,11 +161,42 @@
     });
     return strip;
   }
+  // Where a strip rests with this picture in the middle of it. The first and
+  // the last picture rest against the strip's ends instead.
+  function restOf(strip, fig) {
+    const max = strip.scrollWidth - strip.clientWidth;
+    const middle = fig.offsetLeft - strip.offsetLeft + fig.offsetWidth / 2 - strip.clientWidth / 2;
+    return Math.max(0, Math.min(max, middle));
+  }
   // A strip of pictures scrolls sideways by touch already; with a mouse,
   // press and drag it. It glides on a little after a flick, but stops dead
-  // if the mouse was resting when you let go.
+  // if the mouse was resting when you let go. A strip of screenshots
+  // (.is-wide) is paged instead: let go anywhere and it settles with one
+  // picture in the middle, a flick taking it on to the next. Touch and
+  // trackpads get the same from scroll snapping (apps.css), which is switched
+  // off (.is-free) while the mouse has the strip.
   function dragToScroll(strip) {
-    let startX = 0, startLeft = 0, lastX = 0, lastT = 0, speed = 0, held = false, moved = false, glide = 0;
+    const paged = strip.classList.contains('is-wide');
+    let startX = 0, startLeft = 0, lastX = 0, lastT = 0, speed = 0, held = false, moved = false, glide = 0, gliding = false;
+    const settle = () => {
+      const rests = [...strip.children].map(fig => restOf(strip, fig));
+      const from = strip.scrollLeft;
+      let at = 0;
+      rests.forEach((rest, i) => { if (Math.abs(rest - from) < Math.abs(rests[at] - from)) at = i; });
+      const dir = speed < -2 ? 1 : speed > 2 ? -1 : 0;      // the strip moves against the mouse
+      if (dir && (rests[at] - from) * dir <= 0) at = Math.max(0, Math.min(rests.length - 1, at + dir));
+      const to = rests[at];
+      const done = () => { strip.scrollLeft = to; gliding = false; strip.classList.remove('is-free'); };
+      if (Math.abs(to - from) < 1 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return done();
+      const t0 = performance.now(), time = Math.min(520, 260 + Math.abs(to - from) * 0.4);
+      gliding = true;
+      const step = (now) => {
+        const t = Math.min(1, (now - t0) / time);
+        strip.scrollLeft = from + (to - from) * (1 - Math.pow(1 - t, 3));
+        if (t < 1) glide = requestAnimationFrame(step); else done();
+      };
+      glide = requestAnimationFrame(step);
+    };
     strip.addEventListener('pointerdown', (e) => {
       delete strip.dataset.dragged;          // any new press, by mouse, finger or pen, starts clean
       if (e.pointerType !== 'mouse' || e.button !== 0) return;
@@ -182,7 +213,7 @@
       if (!held) return;
       const dx = e.clientX - startX;
       if (!moved && Math.abs(dx) < 4) return;       // a click, not a drag, so far
-      if (!moved) { moved = true; strip.classList.add('is-held'); strip.dataset.dragged = '1'; }
+      if (!moved) { moved = true; strip.classList.add('is-held'); if (paged) strip.classList.add('is-free'); strip.dataset.dragged = '1'; }
       const dt = Math.max(1, e.timeStamp - lastT);
       speed = 0.7 * speed + 0.3 * ((e.clientX - lastX) / dt * 16);   // px per frame, smoothed
       lastX = e.clientX;
@@ -193,6 +224,11 @@
       if (!held) return;
       held = false;
       strip.classList.remove('is-held');
+      if (paged) {
+        if (e.timeStamp - lastT > 80) speed = 0;        // let go while resting: the nearest picture
+        if (moved || gliding) settle();                 // (a press that caught it settling lets it finish)
+        return;
+      }
       if (!moved || e.timeStamp - lastT > 80) return;   // let go while resting: no glide
       const coast = () => {
         speed *= 0.94;
@@ -217,13 +253,13 @@
     const row = el('div', 'app-dots');
     row.setAttribute('aria-hidden', 'true');
     const marks = figs.map(() => row.appendChild(el('i')));
-    const leftOf = (fig) => fig.offsetLeft - strip.offsetLeft;
+    const rest = (fig) => restOf(strip, fig);    // lit: the picture nearest the middle
     row.sync = () => {
       const max = strip.scrollWidth - strip.clientWidth;
       let now = 0;
       if (max > 0 && strip.scrollLeft >= max - 2) now = figs.length - 1;
       else figs.forEach((fig, i) => {
-        if (Math.abs(leftOf(fig) - strip.scrollLeft) < Math.abs(leftOf(figs[now]) - strip.scrollLeft)) now = i;
+        if (Math.abs(rest(fig) - strip.scrollLeft) < Math.abs(rest(figs[now]) - strip.scrollLeft)) now = i;
       });
       marks.forEach((mark, i) => mark.classList.toggle('is-active', i === now));
     };
@@ -296,16 +332,6 @@
   back.href = 'lab.html';
   root.replaceChildren(...[back, hero, cover, body].filter(Boolean));
 
-  // ---- more screenshots: a strip to drag through (the first is the cover) ----
-  if (shots.length > 1) {
-    const strip = figures(shots, 'app-shots is-wide');
-    const sec = section('Screens');
-    sec.append(strip);
-    const row = dots(strip);
-    sec.append(row);
-    row.sync();
-  }
-
   // ---- description + headline figures ----
   const about = section('About');
   if (app.about && app.about.length) {
@@ -320,6 +346,16 @@
       grid.append(card);
     });
     about.append(grid);
+  }
+
+  // ---- more screenshots: a strip to drag through (the first is the cover) ----
+  if (shots.length > 1) {
+    const strip = figures(shots, 'app-shots is-wide');
+    const sec = section('Screens');
+    sec.append(strip);
+    const row = dots(strip);
+    sec.append(row);
+    row.sync();
   }
 
   // ---- a closer look: a picture and what it shows, side by side ----
