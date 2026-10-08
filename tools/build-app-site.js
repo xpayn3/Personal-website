@@ -24,8 +24,8 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 3;
-const JS_V = 3;
+const CSS_V = 12;
+const JS_V = 9;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -103,8 +103,9 @@ ${JSON.stringify({
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=${CSS_V}" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="site.css?v=${CSS_V}" />${page.key === 'home' && site.pop ? `
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/"}}</script>` : ''}
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>${structured}
 </head>`;
@@ -244,14 +245,84 @@ ${rows.map(([label, command]) => `          <div><dt>${esc(label)}</dt><dd><code
         <div class="wrap pop-stage">
           <div class="pop-art">
             <a class="zoom pop-frame" href="${asset(cover[0])}" data-group="hero" data-caption="${esc(cover[1])}">
-              <img class="pop-ui" src="${asset(pop.ui)}" alt="${esc(app.title + ': ' + cover[1])}" width="${pop.size[0]}" height="${pop.size[1]}" decoding="async" fetchpriority="high" />
+              <img class="pop-ui" src="${asset(pop.ui)}?v=${pop.v || 1}" alt="${esc(app.title + ': ' + cover[1])}" width="${pop.size[0]}" height="${pop.size[1]}" decoding="async" fetchpriority="high" />
             </a>
-            <img class="pop-model" src="${asset(pop.model)}" alt="" width="${pop.modelSize[0]}" height="${pop.modelSize[1]}" decoding="async" style="left:${left}%;top:${top}%;width:${width}%" />
+            <img class="pop-model" src="${asset(pop.model)}?v=${pop.v || 1}" alt="" width="${pop.modelSize[0]}" height="${pop.modelSize[1]}" decoding="async" style="left:${left}%;top:${top}%;width:${width}%" />
           </div>
           <div class="pop-copy" aria-hidden="false">
             <p class="kicker">${esc(pop.kicker)}</p>
             <h2>${esc(pop.title)}</h2>
             <p>${esc(pop.line)}</p>
+          </div>
+        </div>
+      </div>
+    </section>`;
+  };
+
+  // The search of the app, working on the page. The words and lists are in
+  // `site.demo` (apps.js); site.js does the rest (filter, arrows, Enter, sums).
+  const searchDemo = () => {
+    const d = site.demo;
+    if (!d) return '';
+    return `
+    <section class="band" id="try-search">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">${esc(d.kicker)}</p>
+          <h2>${esc(d.title)}</h2>
+        </div>
+        <div class="demo-row">
+          <div class="demo-copy">
+            <p>${esc(d.line)}</p>
+            <ul>
+${d.tips.map(([key, line]) => `              <li><kbd>${esc(key)}</kbd><span>${esc(line)}</span></li>`).join('\n')}
+            </ul>
+          </div>
+          <div class="demo" data-demo>
+            <div class="demo-stage" aria-hidden="true"><i></i></div>
+            <div class="pal" role="search">
+              <label class="pal-in">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <input type="text" value="${esc(d.start)}" placeholder="${esc(d.placeholder)}" aria-label="${esc(d.placeholder)}" spellcheck="false" autocomplete="off" autocapitalize="off" role="combobox" aria-expanded="true" aria-controls="palList" />
+              </label>
+              <ul class="pal-list" id="palList" role="listbox"></ul>
+              <div class="pal-foot"><span><kbd>↑</kbd><kbd>↓</kbd> choose</span><span><kbd>↵</kbd> run</span><span><kbd>Esc</kbd> clear</span><em>${esc(d.hint)}</em></div>
+            </div>
+            <p class="demo-out" aria-live="polite"></p>
+            <script type="application/json" data-demo-data>${JSON.stringify({ parts: d.parts, library: d.library, commands: d.commands })}</script>
+          </div>
+        </div>
+      </div>
+    </section>`;
+  };
+
+  // The library, working on the page: shelves of the app's own part pictures,
+  // dragged (or double-clicked) into a scene. site.js does the dragging.
+  const libraryBand = () => {
+    const l = site.library;
+    if (!l) return '';
+    return `
+    <section class="band" id="library">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">${esc(l.kicker)}</p>
+          <h2>${esc(l.title)}</h2>
+        </div>
+        <p class="lead lib-lead">${esc(l.line)}</p>
+        <div class="lib" data-lib>
+          <div class="lib-shelf">
+            <div class="lib-tabs" role="tablist" aria-label="Shelves">
+${l.shelves.map(([name, items], i) => `              <button type="button" role="tab" aria-selected="${i === 0}" data-shelf="${i}">${esc(name)}<i>${items.length}</i></button>`).join('\n')}
+            </div>
+${l.shelves.map(([name, items], i) => `            <ul class="lib-grid" data-shelf-grid="${i}"${i ? ' hidden' : ''} role="tabpanel" aria-label="${esc(name)}">
+${items.map(([key, label]) => `              <li><button type="button" class="lib-card" data-key="${esc(key)}" data-name="${esc(label)}" aria-label="${esc(label)}: drag into the scene, or press Enter to add it"><img src="library/${esc(key)}.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>${esc(label)}</span></button></li>`).join('\n')}
+            </ul>`).join('\n')}
+          </div>
+          <div class="lib-scene">
+            <div class="lib-view" data-view tabindex="0" aria-label="A scene. Drop parts here, drag them around, press Delete to remove the selected one.">
+              <p class="lib-hint">${esc(l.hint)}</p>
+            </div>
+            <div class="lib-bar"><span class="lib-count" aria-live="polite">Nothing in the scene yet</span><button type="button" class="lib-clear" hidden>Clear scene</button></div>
           </div>
         </div>
       </div>
@@ -285,7 +356,7 @@ ${d.closeups.map(([image, name, line, span, focus], i) => `          <figure cla
             <p>${esc(L.line)}</p>
           </div>
           <div class="plan-art" role="img" aria-label="${esc(L.alt)}">
-            <div class="plan-window" style="--rail:${L.left};--side:${L.right};--top:${L.top};--foot:${L.status}">
+            <div class="plan-window" style="grid-template-columns:${L.left}fr ${L.view}fr ${L.right}fr;grid-template-rows:${L.top}fr ${1117 - L.top - L.status}fr ${L.status}fr">
               <div class="plan-top"><span>${esc(L.names[0])}</span><b>${L.top}</b></div>
               <div class="plan-left"><span>${esc(L.names[1])}</span><b>${L.left}</b></div>
               <div class="plan-view"><span>${esc(L.names[2])}</span><b>${L.view}</b>
@@ -384,6 +455,8 @@ ${app.steps.map(([name, line], i) => `          <li><i>${pad2(i + 1)}</i><h3>${e
       </div>
     </section>
 ${designBand()}
+${libraryBand()}
+${searchDemo()}
     <section class="band">
       <div class="wrap">
         <div class="band-head">

@@ -7,21 +7,22 @@
   <meta name="theme-color" content="#101010" />
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
-  <title>MeshOptimiser — From bloated CAD to browser-ready, locally.</title>
-  <meta name="description" content="MeshOptimiser reads a heavy STEP assembly, keeps one mesh for every part that repeats, and gives back a compressed GLB with a viewer to inspect, clean up and e…" />
+  <title>MeshOptimiser — Heavy CAD, made light enough for a browser.</title>
+  <meta name="description" content="MeshOptimiser opens a heavy CAD assembly, keeps one copy of every part that repeats, and gives you a small GLB plus a viewer to look around, clean up and expor…" />
   <link rel="icon" type="image/svg+xml" href="../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/" />
   <meta property="og:site_name" content="MeshOptimiser" />
-  <meta property="og:title" content="MeshOptimiser — From bloated CAD to browser-ready, locally." />
-  <meta property="og:description" content="MeshOptimiser reads a heavy STEP assembly, keeps one mesh for every part that repeats, and gives back a compressed GLB with a viewer to inspect, clean up and e…" />
+  <meta property="og:title" content="MeshOptimiser — Heavy CAD, made light enough for a browser." />
+  <meta property="og:description" content="MeshOptimiser opens a heavy CAD assembly, keeps one copy of every part that repeats, and gives you a small GLB plus a viewer to look around, clean up and expor…" />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=3" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="site.css?v=12" />
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/"}}</script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
   <script type="application/ld+json">
@@ -29,7 +30,7 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "MeshOptimiser",
-  "description": "MeshOptimiser reads a heavy STEP assembly, keeps one mesh for every part that repeats, and gives back a compressed GLB with a viewer to inspect, clean up and export it. Free, open source, and nothing leaves your machine.",
+  "description": "MeshOptimiser opens a heavy CAD assembly, keeps one copy of every part that repeats, and gives you a small GLB plus a viewer to look around, clean up and export. It’s free, it’s open source, and nothing leaves your computer.",
   "applicationCategory": "DesignApplication",
   "operatingSystem": "Windows, macOS",
   "softwareVersion": "0.13.0",
@@ -73,27 +74,27 @@
   <main id="main">
     <section class="wrap hero">
       <p class="kicker">v0.13.0<b>·</b>Beta<b>·</b>MIT<b>·</b>Windows and macOS</p>
-      <h1>From bloated CAD to browser-ready, locally.</h1>
-      <p class="lead">MeshOptimiser reads a heavy STEP assembly, keeps one mesh for every part that repeats, and gives back a compressed GLB with a viewer to inspect, clean up and export it. Free, open source, and nothing leaves your machine.</p>
+      <h1>Heavy CAD, made light enough for a browser.</h1>
+      <p class="lead">MeshOptimiser opens a heavy CAD assembly, keeps one copy of every part that repeats, and gives you a small GLB plus a viewer to look around, clean up and export. It’s free, it’s open source, and nothing leaves your computer.</p>
       <div class="actions">
         <a class="btn is-primary is-large" href="download.html">Download</a>
         <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         <a class="more" href="docs.html">Read the docs</a>
       </div>
     </section>
-    <section class="pop" data-pop aria-label="A rear derailleur steps out of the MeshOptimiser window">
+    <section class="pop" data-pop aria-label="A rear derailleur comes out of the MeshOptimiser window and pulls itself apart">
       <div class="pop-pin">
         <div class="wrap pop-stage">
           <div class="pop-art">
-            <a class="zoom pop-frame" href="../../Images/apps/meshoptimiser-hero.webp" data-group="hero" data-caption="A rear derailleur in the exploded view, pulled apart a little: the part tree on the left, the triangle count and the clean-up tools on the right">
-              <img class="pop-ui" src="../../Images/apps/meshoptimiser-hero-ui.webp" alt="MeshOptimiser: A rear derailleur in the exploded view, pulled apart a little: the part tree on the left, the triangle count and the clean-up tools on the right" width="2400" height="1551" decoding="async" fetchpriority="high" />
+            <a class="zoom pop-frame" href="../../Images/apps/meshoptimiser-hero.webp" data-group="hero" data-caption="A rear derailleur open in MeshOptimiser. The parts tree is on the left, the totals and the clean-up tools on the right.">
+              <img class="pop-ui" src="../../Images/apps/meshoptimiser-hero-ui.webp?v=3" alt="MeshOptimiser: A rear derailleur open in MeshOptimiser. The parts tree is on the left, the totals and the clean-up tools on the right." width="2400" height="1551" decoding="async" fetchpriority="high" />
             </a>
-            <img class="pop-model" src="../../Images/apps/meshoptimiser-hero-model.webp" alt="" width="1173" height="1327" decoding="async" style="left:41.38%;top:15.89%;width:33.94%" />
+            <img class="pop-model" src="../../Images/apps/meshoptimiser-hero-model.webp?v=3" alt="" width="1066" height="1230" decoding="async" style="left:43.52%;top:18.35%;width:30.84%" />
           </div>
           <div class="pop-copy" aria-hidden="false">
             <p class="kicker">See what is inside</p>
-            <h2>Pull it apart a little, and look.</h2>
-            <p>A rear derailleur with its parts eased apart. Every pin, bolt and bushing has its own row in the tree, its own triangle count, and a button to hide it, simplify it or take it out.</p>
+            <h2>Pull it apart, and look inside.</h2>
+            <p>This is a real mesh, a rear derailleur in 43 parts, and it comes apart as you scroll. In the app every pin, bolt and bushing has its own row, its own triangle count, and a button to hide it, simplify it or take it out.</p>
           </div>
         </div>
       </div>
@@ -102,10 +103,10 @@
     <section class="band">
       <div class="wrap">
         <dl class="figures">
-          <div><dt>320 MB → 11 MB</dt><dd>The README’s example: a STEP assembly down to a Meshopt-compressed GLB.</dd></div>
-          <div><dt>~10×</dt><dd>Smaller GLBs with Meshopt compression through gltfpack.</dd></div>
-          <div><dt>1 mesh, N transforms</dt><dd>Identical parts are found at any rotation or position and drawn once.</dd></div>
-          <div><dt>10K+ nodes</dt><dd>The assembly tree stays live and searchable at that size.</dd></div>
+          <div><dt>320 MB → 11 MB</dt><dd>The README’s example: a STEP assembly down to a compressed GLB.</dd></div>
+          <div><dt>About 10× smaller</dt><dd>GLBs shrink that much with Meshopt compression, through gltfpack.</dd></div>
+          <div><dt>1 mesh, many positions</dt><dd>Identical parts are found at any rotation or position and drawn once.</dd></div>
+          <div><dt>10,000+ nodes</dt><dd>The part tree stays quick and searchable at that size.</dd></div>
         </dl>
       </div>
     </section>
@@ -117,14 +118,14 @@
           <h2>A tool for getting heavy CAD assemblies into the browser.</h2>
         </div>
         <div class="split-body">
-          <p>The problem it works on is a practical one. A real-world STEP file can hold 400 identical bolts, 80 duplicate brackets and half a million degenerate triangles, and a browser is still expected to draw it. MeshOptimiser reads the assembly, recognises the parts that are the same and keeps one mesh with a list of positions, re-tessellates the bad geometry, and drops what is too small to see.</p>
-          <p>What comes out is a compressed GLB and a viewer to look at it in: the assembly tree, recolouring, mesh tools, a library of parts to add, export. It runs locally, with Python and a browser, as an open, self-hosted take on what preprocessors like Pixyz do.</p>
+          <p>The problem is a practical one. A real STEP file can hold 400 identical bolts, 80 duplicate brackets and half a million broken triangles, and a browser is still expected to draw it. MeshOptimiser reads the assembly, spots the parts that are the same and keeps one mesh with a list of positions, rebuilds the bad geometry, and drops what’s too small to see.</p>
+          <p>What you get back is a compressed GLB and a viewer to look at it in: the part tree, recolouring, mesh tools, a library of parts to add, and export. It runs on your own machine with Python and a browser, as an open take on what tools like Pixyz do.</p>
           <table class="collapse">
             <caption>What the pipeline collapses</caption>
-            <tr><th scope="row">400 bolts × 50 KB</th><td aria-hidden="true">→</td><td>1 mesh × 50 KB + 400 transforms</td></tr>
-            <tr><th scope="row">80 brackets × 12 KB</th><td aria-hidden="true">→</td><td>1 mesh × 12 KB + 80 transforms</td></tr>
-            <tr><th scope="row">500K bad triangles</th><td aria-hidden="true">→</td><td>Adaptive re-tessellation, size-culled</td></tr>
-            <tr class="is-total"><th scope="row">320 MB STEP</th><td aria-hidden="true">→</td><td>11 MB Meshopt-compressed GLB</td></tr>
+            <tr><th scope="row">400 bolts × 50 KB</th><td aria-hidden="true">→</td><td>1 mesh × 50 KB + 400 positions</td></tr>
+            <tr><th scope="row">80 brackets × 12 KB</th><td aria-hidden="true">→</td><td>1 mesh × 12 KB + 80 positions</td></tr>
+            <tr><th scope="row">500K broken triangles</th><td aria-hidden="true">→</td><td>Rebuilt, and the tiny ones dropped</td></tr>
+            <tr class="is-total"><th scope="row">320 MB STEP</th><td aria-hidden="true">→</td><td>11 MB compressed GLB</td></tr>
           </table>
         </div>
       </div>
@@ -137,9 +138,9 @@
           <h2>Three steps from STEP to the browser.</h2>
         </div>
         <ol class="steps">
-          <li><i>01</i><h3>STEP in</h3><p>Drop a .step or .stp file on the welcome screen, or run the converter from the command line.</p></li>
-          <li><i>02</i><h3>Convert</h3><p>OCCT reads the full assembly tree with names and colours; duplicate parts are instanced, surfaces tessellated adaptively, tiny parts culled, then the result is compressed.</p></li>
-          <li><i>03</i><h3>GLB out</h3><p>Open it in the built-in WebGPU viewer: inspect, recolour, reduce, tidy the hierarchy, and export.</p></li>
+          <li><i>01</i><h3>STEP in</h3><p>Drop a .step or .stp file on the start screen, or run the converter from the command line.</p></li>
+          <li><i>02</i><h3>Convert</h3><p>OpenCascade reads the whole assembly with its names and colours. Repeated parts become one mesh, surfaces are rebuilt, tiny parts are dropped and the result is compressed.</p></li>
+          <li><i>03</i><h3>GLB out</h3><p>Open it in the viewer to look around, recolour, reduce, tidy the tree and export.</p></li>
         </ol>
       </div>
     </section>
@@ -154,7 +155,7 @@
         <div class="clips">
         <figure class="clip">
           <video muted loop playsinline preload="none" disablepictureinpicture poster="../../Images/apps/meshoptimiser-clip-fill-holes_thumb.webp" data-src="../../Images/apps/meshoptimiser-clip-fill-holes.webm" aria-label="MeshOptimiser: Fill holes" width="592" height="370"></video>
-          <figcaption><i>01</i><strong>Fill holes</strong><span>Bolt holes, slots and pockets in flat faces close a few at a time; everything else is left as it was.</span></figcaption>
+          <figcaption><i>01</i><strong>Fill holes</strong><span>Bolt holes, slots and pockets in flat faces close a few at a time. Everything else stays as it was.</span></figcaption>
         </figure>
         <figure class="clip">
           <video muted loop playsinline preload="none" disablepictureinpicture poster="../../Images/apps/meshoptimiser-clip-split_thumb.webp" data-src="../../Images/apps/meshoptimiser-clip-split.webm" aria-label="MeshOptimiser: Split" width="592" height="370"></video>
@@ -162,7 +163,7 @@
         </figure>
         <figure class="clip">
           <video muted loop playsinline preload="none" disablepictureinpicture poster="../../Images/apps/meshoptimiser-clip-select-hidden_thumb.webp" data-src="../../Images/apps/meshoptimiser-clip-select-hidden.webm" aria-label="MeshOptimiser: Select hidden parts" width="592" height="370"></video>
-          <figcaption><i>03</i><strong>Select hidden parts</strong><span>The screws, bearings and brackets inside a housing light up: everything that cannot be seen from outside.</span></figcaption>
+          <figcaption><i>03</i><strong>Select hidden parts</strong><span>Screws, bearings and brackets inside a housing light up: everything you can’t see from outside.</span></figcaption>
         </figure>
         <figure class="clip">
           <video muted loop playsinline preload="none" disablepictureinpicture poster="../../Images/apps/meshoptimiser-clip-smart-fit_thumb.webp" data-src="../../Images/apps/meshoptimiser-clip-smart-fit.webm" aria-label="MeshOptimiser: Smart fit" width="592" height="370"></video>
@@ -180,27 +181,27 @@
         </div>
         <div class="spots">
         <article class="spot">
-          <a class="zoom" href="../../Images/apps/meshoptimiser-library.webp" data-group="spots" data-caption="A drawer full of parts"><img src="../../Images/apps/meshoptimiser-library.webp" alt="MeshOptimiser: A drawer full of parts" width="1600" height="1000" loading="lazy" decoding="async" /></a>
+          <a class="zoom" href="../../Images/apps/meshoptimiser-optimised.webp" data-group="spots" data-caption="One button, half the triangles"><img src="../../Images/apps/meshoptimiser-optimised.webp" alt="MeshOptimiser: One button, half the triangles" width="1600" height="1000" loading="lazy" decoding="async" /></a>
           <div>
             <i>01</i>
-            <h3>A drawer full of parts</h3>
-            <p>Hex bolts, wing nuts, pillow blocks, I-beams, gears, a stepper motor: 86 parametric parts on six shelves. Drag one out and a see-through copy shows where it will stand, square to the face under the pointer. Let go and it is there.</p>
+            <h3>One button, half the triangles</h3>
+            <p>Smart optimise runs every clean-up the app has, in order: empty and broken parts, hidden parts, fasteners, tiny parts, holes in flat faces, and then a reduction to the target you set. On this derailleur it took 1,103,373 triangles down to 552,115 and showed what it had saved. One Ctrl+Z puts it all back.</p>
           </div>
         </article>
         <article class="spot is-flipped">
-          <a class="zoom" href="../../Images/apps/meshoptimiser-select-hidden-result.webp" data-group="spots" data-caption="878 parts nobody will ever see"><img src="../../Images/apps/meshoptimiser-select-hidden-result.webp" alt="MeshOptimiser: 878 parts nobody will ever see" width="1600" height="1000" loading="lazy" decoding="async" /></a>
+          <a class="zoom" href="../../Images/apps/meshoptimiser-fasteners.webp" data-group="spots" data-caption="Bolts, found by their shape"><img src="../../Images/apps/meshoptimiser-fasteners.webp" alt="MeshOptimiser: Bolts, found by their shape" width="1600" height="1000" loading="lazy" decoding="async" /></a>
           <div>
             <i>02</i>
-            <h3>878 parts nobody will ever see</h3>
-            <p>Select hidden parts looks at the model from every side and picks out what cannot be seen from any of them. On this assembly that is more than half the parts and 2.4 million of its 5.4 million triangles, selected in one step and ready to delete.</p>
+            <h3>Bolts, found by their shape</h3>
+            <p>Names in a CAD export rarely say what a part is. Fasteners cuts each part across its axis and reads the outline: a round shank with a wider head, six flats around a hole, a flat ring. It finds hex bolts, socket screws, nuts and washers whatever they’re called, and leaves bushings, bearings and O-rings alone. Twelve here, 129,460 triangles.</p>
           </div>
         </article>
         <article class="spot">
-          <a class="zoom" href="../../Images/apps/meshoptimiser-blocks.webp" data-group="spots" data-caption="82% lighter, still recognisable"><img src="../../Images/apps/meshoptimiser-blocks.webp" alt="MeshOptimiser: 82% lighter, still recognisable" width="1600" height="1000" loading="lazy" decoding="async" /></a>
+          <a class="zoom" href="../../Images/apps/meshoptimiser-blocks.webp" data-group="spots" data-caption="172,894 triangles down to 114"><img src="../../Images/apps/meshoptimiser-blocks.webp" alt="MeshOptimiser: 172,894 triangles down to 114" width="1600" height="1000" loading="lazy" decoding="async" /></a>
           <div>
             <i>03</i>
-            <h3>82% lighter, still recognisable</h3>
-            <p>Smart fit used to turn a bracket into a brick. Blocks rebuilds each part from a coarse grid, with its steps, arms and openings where they were. This drive unit went from 16,812 triangles to 3,048 in one command.</p>
+            <h3>172,894 triangles down to 114</h3>
+            <p>Smart fit used to turn a bracket into a brick. Blocks rebuilds a part from a coarse grid, so its steps, arms and openings stay where they were. Here it took the two heaviest parts of the derailleur from 172,894 triangles to 114.</p>
           </div>
         </article>
         <article class="spot is-flipped">
@@ -208,32 +209,265 @@
           <div>
             <i>04</i>
             <h3>A bolt that brings its own nut</h3>
-            <p>Tick it on, choose the nut, and set how far from the head it sits. It is part of the bolt’s own shape, in the bolt’s thread: one part in the tree, one undo step, and it cannot run off the end.</p>
+            <p>Tick it on, pick the nut and set how far from the head it sits. The nut is part of the bolt’s own shape, in the bolt’s thread. It’s one part in the tree and one undo step, and it can’t slide off the end.</p>
           </div>
         </article>
         </div>
       </div>
     </section>
 
+    <section class="band design" id="design">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">Design</p>
+          <h2>Every gap is on purpose.</h2>
+        </div>
+        <p class="lead design-lead">The app is drawn like something you’d keep open all day: one dark tone, one blue, the same few corner radii everywhere, and room around every control. These are crops of the real window at twice the size. Nothing here is redrawn.</p>
+        <div class="bento">
+          <figure class="cu is-2" data-reveal style="--d:0ms">
+            <figcaption><strong>A dock that stays out of the way</strong><span>Search, the view modes and the tools you reach for most sit in a small bar over the model. It moves up by itself when a drawer opens.</span></figcaption>
+            <a class="zoom" href="../../Images/apps/meshoptimiser-design-dock.webp" data-group="design" data-caption="A dock that stays out of the way. Search, the view modes and the tools you reach for most sit in a small bar over the model. It moves up by itself when a drawer opens."><img src="../../Images/apps/meshoptimiser-design-dock.webp" alt="MeshOptimiser: A dock that stays out of the way" width="1200" height="545" loading="lazy" decoding="async" style="object-position:left bottom" /></a>
+          </figure>
+          <figure class="cu is-1" data-reveal style="--d:70ms">
+            <figcaption><strong>The number that matters</strong><span>The triangle count comes first and it’s big. What you saved sits right under it, in green.</span></figcaption>
+            <a class="zoom" href="../../Images/apps/meshoptimiser-design-props.webp" data-group="design" data-caption="The number that matters. The triangle count comes first and it’s big. What you saved sits right under it, in green."><img src="../../Images/apps/meshoptimiser-design-props.webp" alt="MeshOptimiser: The number that matters" width="1200" height="1140" loading="lazy" decoding="async" /></a>
+          </figure>
+          <figure class="cu is-1" data-reveal style="--d:140ms">
+            <figcaption><strong>Switches, segments and a number you can drag</strong><span>Click a number to type in it, or drag it sideways. Every option has a switch or a segment, never a dialog.</span></figcaption>
+            <a class="zoom" href="../../Images/apps/meshoptimiser-design-smart.webp" data-group="design" data-caption="Switches, segments and a number you can drag. Click a number to type in it, or drag it sideways. Every option has a switch or a segment, never a dialog."><img src="../../Images/apps/meshoptimiser-design-smart.webp" alt="MeshOptimiser: Switches, segments and a number you can drag" width="1200" height="1140" loading="lazy" decoding="async" /></a>
+          </figure>
+          <figure class="cu is-1" data-reveal style="--d:0ms">
+            <figcaption><strong>Cards, not dialogs</strong><span>A tool with settings opens as a card beside the model. Enter runs it and Esc puts it away.</span></figcaption>
+            <a class="zoom" href="../../Images/apps/meshoptimiser-design-faste.webp" data-group="design" data-caption="Cards, not dialogs. A tool with settings opens as a card beside the model. Enter runs it and Esc puts it away."><img src="../../Images/apps/meshoptimiser-design-faste.webp" alt="MeshOptimiser: Cards, not dialogs" width="1200" height="1140" loading="lazy" decoding="async" /></a>
+          </figure>
+          <figure class="cu is-1" data-reveal style="--d:70ms">
+            <figcaption><strong>Sliders you can read</strong><span>Each slider has its own number, and the parts move as you drag.</span></figcaption>
+            <a class="zoom" href="../../Images/apps/meshoptimiser-design-explode.webp" data-group="design" data-caption="Sliders you can read. Each slider has its own number, and the parts move as you drag."><img src="../../Images/apps/meshoptimiser-design-explode.webp" alt="MeshOptimiser: Sliders you can read" width="1200" height="1140" loading="lazy" decoding="async" /></a>
+          </figure>
+          <figure class="cu is-2" data-reveal style="--d:140ms">
+            <figcaption><strong>Eighty-six parts, drawn</strong><span>The library tiles are previews of the real parts, rendered by the app itself.</span></figcaption>
+            <a class="zoom" href="../../Images/apps/meshoptimiser-design-lib.webp" data-group="design" data-caption="Eighty-six parts, drawn. The library tiles are previews of the real parts, rendered by the app itself."><img src="../../Images/apps/meshoptimiser-design-lib.webp" alt="MeshOptimiser: Eighty-six parts, drawn" width="1200" height="545" loading="lazy" decoding="async" style="object-position:left bottom" /></a>
+          </figure>
+          <figure class="cu is-1" data-reveal style="--d:0ms">
+            <figcaption><strong>A tree with room</strong><span>Every row has an eye and a colour chip, the indent is a fixed step, and nothing shifts when you resize the sidebar.</span></figcaption>
+            <a class="zoom" href="../../Images/apps/meshoptimiser-design-tree.webp" data-group="design" data-caption="A tree with room. Every row has an eye and a colour chip, the indent is a fixed step, and nothing shifts when you resize the sidebar."><img src="../../Images/apps/meshoptimiser-design-tree.webp" alt="MeshOptimiser: A tree with room" width="1200" height="1140" loading="lazy" decoding="async" /></a>
+          </figure>
+        </div>
+
+        <div class="plan" data-reveal>
+          <div class="plan-head">
+            <h3>The whole window, as a plan</h3>
+            <p>Five areas and nothing else. The tools float over the model instead of squeezing it, so the picture never changes size when you open one.</p>
+          </div>
+          <div class="plan-art" role="img" aria-label="A plan of the MeshOptimiser window: a top bar, the parts tree on the left, the viewport in the middle, the properties on the right and a status bar underneath">
+            <div class="plan-window" style="grid-template-columns:248fr 1200fr 268fr;grid-template-rows:44fr 1051fr 22fr">
+              <div class="plan-top"><span>Top bar</span><b>44</b></div>
+              <div class="plan-left"><span>Parts tree</span><b>248</b></div>
+              <div class="plan-view"><span>Viewport</span><b>1200</b>
+                <i class="plan-dock"><u></u><u></u><u></u><u></u><u></u><u></u><u></u></i>
+                <i class="plan-card"></i>
+                <i class="plan-cube"></i>
+              </div>
+              <div class="plan-right"><span>Properties</span><b>268</b></div>
+              <div class="plan-foot"><span>Status bar</span><b>22</b></div>
+            </div>
+          </div>
+          <ol class="plan-notes">
+            <li><strong>Top bar</strong><span>Menu and tabs on the left, export on the right. Nothing else competes with the model.</span></li>
+            <li><strong>Parts tree</strong><span>The same width in every tab, unless you switch that off in Settings.</span></li>
+            <li><strong>Viewport</strong><span>Cards and the toolbar float over it. The library and the materials drawer slide up from below.</span></li>
+            <li><strong>Properties</strong><span>Totals first, then the tools in three groups: Inspect, Clean up and Reduce.</span></li>
+          </ol>
+        </div>
+
+        <dl class="tokens" data-reveal>
+          <div><dt>#101010</dt><dd>the one background</dd></div>
+          <div><dt>13 px</dt><dd>Inter, the body text</dd></div>
+          <div><dt>30 px</dt><dd>every toolbar button</dd></div>
+          <div><dt>28 px</dt><dd>every number field</dd></div>
+          <div><dt>6 px</dt><dd>corner radius of a control</dd></div>
+          <div><dt>10 px</dt><dd>corner radius of a card</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="band" id="library">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">The library</p>
+          <h2>Eighty-six parts, one drag away.</h2>
+        </div>
+        <p class="lead lib-lead">Bolts, nuts, pipe fittings, profiles, gears, a stepper motor. Pick a shelf, then drag a part into the scene on the right, or double-click it. In the app each of these is a real part with sizes you can change before it goes in.</p>
+        <div class="lib" data-lib>
+          <div class="lib-shelf">
+            <div class="lib-tabs" role="tablist" aria-label="Shelves">
+              <button type="button" role="tab" aria-selected="true" data-shelf="0">Shapes<i>17</i></button>
+              <button type="button" role="tab" aria-selected="false" data-shelf="1">Fasteners<i>16</i></button>
+              <button type="button" role="tab" aria-selected="false" data-shelf="2">Nuts<i>12</i></button>
+              <button type="button" role="tab" aria-selected="false" data-shelf="3">Pipes and flanges<i>7</i></button>
+              <button type="button" role="tab" aria-selected="false" data-shelf="4">Profiles and plates<i>16</i></button>
+              <button type="button" role="tab" aria-selected="false" data-shelf="5">Machine parts<i>18</i></button>
+            </div>
+            <ul class="lib-grid" data-shelf-grid="0" role="tabpanel" aria-label="Shapes">
+              <li><button type="button" class="lib-card" data-key="cube" data-name="Cube" aria-label="Cube: drag into the scene, or press Enter to add it"><img src="library/cube.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Cube</span></button></li>
+              <li><button type="button" class="lib-card" data-key="sphere" data-name="Sphere" aria-label="Sphere: drag into the scene, or press Enter to add it"><img src="library/sphere.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Sphere</span></button></li>
+              <li><button type="button" class="lib-card" data-key="cylinder" data-name="Cylinder" aria-label="Cylinder: drag into the scene, or press Enter to add it"><img src="library/cylinder.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Cylinder</span></button></li>
+              <li><button type="button" class="lib-card" data-key="cone" data-name="Cone" aria-label="Cone: drag into the scene, or press Enter to add it"><img src="library/cone.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Cone</span></button></li>
+              <li><button type="button" class="lib-card" data-key="torus" data-name="Torus" aria-label="Torus: drag into the scene, or press Enter to add it"><img src="library/torus.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Torus</span></button></li>
+              <li><button type="button" class="lib-card" data-key="plane" data-name="Plane" aria-label="Plane: drag into the scene, or press Enter to add it"><img src="library/plane.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Plane</span></button></li>
+              <li><button type="button" class="lib-card" data-key="capsule" data-name="Capsule" aria-label="Capsule: drag into the scene, or press Enter to add it"><img src="library/capsule.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Capsule</span></button></li>
+              <li><button type="button" class="lib-card" data-key="wedge" data-name="Wedge" aria-label="Wedge: drag into the scene, or press Enter to add it"><img src="library/wedge.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Wedge</span></button></li>
+              <li><button type="button" class="lib-card" data-key="pyramid" data-name="Pyramid" aria-label="Pyramid: drag into the scene, or press Enter to add it"><img src="library/pyramid.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Pyramid</span></button></li>
+              <li><button type="button" class="lib-card" data-key="prism" data-name="Prism" aria-label="Prism: drag into the scene, or press Enter to add it"><img src="library/prism.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Prism</span></button></li>
+              <li><button type="button" class="lib-card" data-key="hemisphere" data-name="Hemisphere" aria-label="Hemisphere: drag into the scene, or press Enter to add it"><img src="library/hemisphere.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Hemisphere</span></button></li>
+              <li><button type="button" class="lib-card" data-key="roundedbox" data-name="Rounded box" aria-label="Rounded box: drag into the scene, or press Enter to add it"><img src="library/roundedbox.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Rounded box</span></button></li>
+              <li><button type="button" class="lib-card" data-key="halfcyl" data-name="Half cylinder" aria-label="Half cylinder: drag into the scene, or press Enter to add it"><img src="library/halfcyl.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Half cylinder</span></button></li>
+              <li><button type="button" class="lib-card" data-key="tetra" data-name="Tetrahedron" aria-label="Tetrahedron: drag into the scene, or press Enter to add it"><img src="library/tetra.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Tetrahedron</span></button></li>
+              <li><button type="button" class="lib-card" data-key="star" data-name="Star" aria-label="Star: drag into the scene, or press Enter to add it"><img src="library/star.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Star</span></button></li>
+              <li><button type="button" class="lib-card" data-key="plus" data-name="Cross" aria-label="Cross: drag into the scene, or press Enter to add it"><img src="library/plus.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Cross</span></button></li>
+              <li><button type="button" class="lib-card" data-key="arrow" data-name="Arrow" aria-label="Arrow: drag into the scene, or press Enter to add it"><img src="library/arrow.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Arrow</span></button></li>
+            </ul>
+            <ul class="lib-grid" data-shelf-grid="1" hidden role="tabpanel" aria-label="Fasteners">
+              <li><button type="button" class="lib-card" data-key="hexbolt" data-name="Hex bolt" aria-label="Hex bolt: drag into the scene, or press Enter to add it"><img src="library/hexbolt.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Hex bolt</span></button></li>
+              <li><button type="button" class="lib-card" data-key="allen" data-name="Socket head screw" aria-label="Socket head screw: drag into the scene, or press Enter to add it"><img src="library/allen.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Socket head screw</span></button></li>
+              <li><button type="button" class="lib-card" data-key="countersunk" data-name="Countersunk screw" aria-label="Countersunk screw: drag into the scene, or press Enter to add it"><img src="library/countersunk.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Countersunk screw</span></button></li>
+              <li><button type="button" class="lib-card" data-key="buttonhead" data-name="Button head screw" aria-label="Button head screw: drag into the scene, or press Enter to add it"><img src="library/buttonhead.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Button head screw</span></button></li>
+              <li><button type="button" class="lib-card" data-key="threadedrod" data-name="Threaded rod" aria-label="Threaded rod: drag into the scene, or press Enter to add it"><img src="library/threadedrod.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Threaded rod</span></button></li>
+              <li><button type="button" class="lib-card" data-key="eyebolt" data-name="Eye bolt" aria-label="Eye bolt: drag into the scene, or press Enter to add it"><img src="library/eyebolt.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Eye bolt</span></button></li>
+              <li><button type="button" class="lib-card" data-key="washer" data-name="Washer" aria-label="Washer: drag into the scene, or press Enter to add it"><img src="library/washer.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Washer</span></button></li>
+              <li><button type="button" class="lib-card" data-key="pin" data-name="Dowel pin" aria-label="Dowel pin: drag into the scene, or press Enter to add it"><img src="library/pin.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Dowel pin</span></button></li>
+              <li><button type="button" class="lib-card" data-key="rivet" data-name="Rivet" aria-label="Rivet: drag into the scene, or press Enter to add it"><img src="library/rivet.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Rivet</span></button></li>
+              <li><button type="button" class="lib-card" data-key="key" data-name="Parallel key" aria-label="Parallel key: drag into the scene, or press Enter to add it"><img src="library/key.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Parallel key</span></button></li>
+              <li><button type="button" class="lib-card" data-key="standoff" data-name="Hex standoff" aria-label="Hex standoff: drag into the scene, or press Enter to add it"><img src="library/standoff.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Hex standoff</span></button></li>
+              <li><button type="button" class="lib-card" data-key="setscrew" data-name="Set screw" aria-label="Set screw: drag into the scene, or press Enter to add it"><img src="library/setscrew.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Set screw</span></button></li>
+              <li><button type="button" class="lib-card" data-key="carriagebolt" data-name="Carriage bolt" aria-label="Carriage bolt: drag into the scene, or press Enter to add it"><img src="library/carriagebolt.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Carriage bolt</span></button></li>
+              <li><button type="button" class="lib-card" data-key="ubolt" data-name="U bolt" aria-label="U bolt: drag into the scene, or press Enter to add it"><img src="library/ubolt.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>U bolt</span></button></li>
+              <li><button type="button" class="lib-card" data-key="circlip" data-name="Retaining ring" aria-label="Retaining ring: drag into the scene, or press Enter to add it"><img src="library/circlip.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Retaining ring</span></button></li>
+              <li><button type="button" class="lib-card" data-key="springwasher" data-name="Spring washer" aria-label="Spring washer: drag into the scene, or press Enter to add it"><img src="library/springwasher.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Spring washer</span></button></li>
+            </ul>
+            <ul class="lib-grid" data-shelf-grid="2" hidden role="tabpanel" aria-label="Nuts">
+              <li><button type="button" class="lib-card" data-key="hexnut" data-name="Hex nut" aria-label="Hex nut: drag into the scene, or press Enter to add it"><img src="library/hexnut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Hex nut</span></button></li>
+              <li><button type="button" class="lib-card" data-key="jamnut" data-name="Thin nut" aria-label="Thin nut: drag into the scene, or press Enter to add it"><img src="library/jamnut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Thin nut</span></button></li>
+              <li><button type="button" class="lib-card" data-key="locknut" data-name="Lock nut" aria-label="Lock nut: drag into the scene, or press Enter to add it"><img src="library/locknut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Lock nut</span></button></li>
+              <li><button type="button" class="lib-card" data-key="flangenut" data-name="Flange nut" aria-label="Flange nut: drag into the scene, or press Enter to add it"><img src="library/flangenut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Flange nut</span></button></li>
+              <li><button type="button" class="lib-card" data-key="capnut" data-name="Cap nut" aria-label="Cap nut: drag into the scene, or press Enter to add it"><img src="library/capnut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Cap nut</span></button></li>
+              <li><button type="button" class="lib-card" data-key="castlenut" data-name="Castle nut" aria-label="Castle nut: drag into the scene, or press Enter to add it"><img src="library/castlenut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Castle nut</span></button></li>
+              <li><button type="button" class="lib-card" data-key="squarenut" data-name="Square nut" aria-label="Square nut: drag into the scene, or press Enter to add it"><img src="library/squarenut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Square nut</span></button></li>
+              <li><button type="button" class="lib-card" data-key="couplingnut" data-name="Coupling nut" aria-label="Coupling nut: drag into the scene, or press Enter to add it"><img src="library/couplingnut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Coupling nut</span></button></li>
+              <li><button type="button" class="lib-card" data-key="wingnut" data-name="Wing nut" aria-label="Wing nut: drag into the scene, or press Enter to add it"><img src="library/wingnut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Wing nut</span></button></li>
+              <li><button type="button" class="lib-card" data-key="thumbnut" data-name="Knurled nut" aria-label="Knurled nut: drag into the scene, or press Enter to add it"><img src="library/thumbnut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Knurled nut</span></button></li>
+              <li><button type="button" class="lib-card" data-key="tslotnut" data-name="T-slot nut" aria-label="T-slot nut: drag into the scene, or press Enter to add it"><img src="library/tslotnut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>T-slot nut</span></button></li>
+              <li><button type="button" class="lib-card" data-key="eyenut" data-name="Eye nut" aria-label="Eye nut: drag into the scene, or press Enter to add it"><img src="library/eyenut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Eye nut</span></button></li>
+            </ul>
+            <ul class="lib-grid" data-shelf-grid="3" hidden role="tabpanel" aria-label="Pipes and flanges">
+              <li><button type="button" class="lib-card" data-key="tube" data-name="Tube" aria-label="Tube: drag into the scene, or press Enter to add it"><img src="library/tube.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Tube</span></button></li>
+              <li><button type="button" class="lib-card" data-key="elbow" data-name="Pipe elbow" aria-label="Pipe elbow: drag into the scene, or press Enter to add it"><img src="library/elbow.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Pipe elbow</span></button></li>
+              <li><button type="button" class="lib-card" data-key="tee" data-name="Pipe tee" aria-label="Pipe tee: drag into the scene, or press Enter to add it"><img src="library/tee.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Pipe tee</span></button></li>
+              <li><button type="button" class="lib-card" data-key="reducer" data-name="Pipe reducer" aria-label="Pipe reducer: drag into the scene, or press Enter to add it"><img src="library/reducer.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Pipe reducer</span></button></li>
+              <li><button type="button" class="lib-card" data-key="endcap" data-name="Pipe cap" aria-label="Pipe cap: drag into the scene, or press Enter to add it"><img src="library/endcap.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Pipe cap</span></button></li>
+              <li><button type="button" class="lib-card" data-key="flange" data-name="Flange" aria-label="Flange: drag into the scene, or press Enter to add it"><img src="library/flange.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Flange</span></button></li>
+              <li><button type="button" class="lib-card" data-key="pipecross" data-name="Pipe cross" aria-label="Pipe cross: drag into the scene, or press Enter to add it"><img src="library/pipecross.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Pipe cross</span></button></li>
+            </ul>
+            <ul class="lib-grid" data-shelf-grid="4" hidden role="tabpanel" aria-label="Profiles and plates">
+              <li><button type="button" class="lib-card" data-key="plate" data-name="Plate" aria-label="Plate: drag into the scene, or press Enter to add it"><img src="library/plate.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Plate</span></button></li>
+              <li><button type="button" class="lib-card" data-key="flatbar" data-name="Flat bar" aria-label="Flat bar: drag into the scene, or press Enter to add it"><img src="library/flatbar.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Flat bar</span></button></li>
+              <li><button type="button" class="lib-card" data-key="angle" data-name="Angle profile" aria-label="Angle profile: drag into the scene, or press Enter to add it"><img src="library/angle.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Angle profile</span></button></li>
+              <li><button type="button" class="lib-card" data-key="channel" data-name="U channel" aria-label="U channel: drag into the scene, or press Enter to add it"><img src="library/channel.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>U channel</span></button></li>
+              <li><button type="button" class="lib-card" data-key="tprofile" data-name="T profile" aria-label="T profile: drag into the scene, or press Enter to add it"><img src="library/tprofile.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>T profile</span></button></li>
+              <li><button type="button" class="lib-card" data-key="zprofile" data-name="Z profile" aria-label="Z profile: drag into the scene, or press Enter to add it"><img src="library/zprofile.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Z profile</span></button></li>
+              <li><button type="button" class="lib-card" data-key="ibeam" data-name="I beam" aria-label="I beam: drag into the scene, or press Enter to add it"><img src="library/ibeam.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>I beam</span></button></li>
+              <li><button type="button" class="lib-card" data-key="boxtube" data-name="Box tube" aria-label="Box tube: drag into the scene, or press Enter to add it"><img src="library/boxtube.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Box tube</span></button></li>
+              <li><button type="button" class="lib-card" data-key="extrusion" data-name="T-slot extrusion" aria-label="T-slot extrusion: drag into the scene, or press Enter to add it"><img src="library/extrusion.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>T-slot extrusion</span></button></li>
+              <li><button type="button" class="lib-card" data-key="roundbar" data-name="Round bar" aria-label="Round bar: drag into the scene, or press Enter to add it"><img src="library/roundbar.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Round bar</span></button></li>
+              <li><button type="button" class="lib-card" data-key="hexbar" data-name="Hex bar" aria-label="Hex bar: drag into the scene, or press Enter to add it"><img src="library/hexbar.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Hex bar</span></button></li>
+              <li><button type="button" class="lib-card" data-key="cchannel" data-name="C channel" aria-label="C channel: drag into the scene, or press Enter to add it"><img src="library/cchannel.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>C channel</span></button></li>
+              <li><button type="button" class="lib-card" data-key="gusset" data-name="Gusset plate" aria-label="Gusset plate: drag into the scene, or press Enter to add it"><img src="library/gusset.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Gusset plate</span></button></li>
+              <li><button type="button" class="lib-card" data-key="perfplate" data-name="Perforated plate" aria-label="Perforated plate: drag into the scene, or press Enter to add it"><img src="library/perfplate.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Perforated plate</span></button></li>
+              <li><button type="button" class="lib-card" data-key="slotplate" data-name="Slotted plate" aria-label="Slotted plate: drag into the scene, or press Enter to add it"><img src="library/slotplate.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Slotted plate</span></button></li>
+              <li><button type="button" class="lib-card" data-key="hinge" data-name="Hinge" aria-label="Hinge: drag into the scene, or press Enter to add it"><img src="library/hinge.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Hinge</span></button></li>
+            </ul>
+            <ul class="lib-grid" data-shelf-grid="5" hidden role="tabpanel" aria-label="Machine parts">
+              <li><button type="button" class="lib-card" data-key="gear" data-name="Spur gear" aria-label="Spur gear: drag into the scene, or press Enter to add it"><img src="library/gear.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Spur gear</span></button></li>
+              <li><button type="button" class="lib-card" data-key="rack" data-name="Gear rack" aria-label="Gear rack: drag into the scene, or press Enter to add it"><img src="library/rack.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Gear rack</span></button></li>
+              <li><button type="button" class="lib-card" data-key="sprocket" data-name="Sprocket" aria-label="Sprocket: drag into the scene, or press Enter to add it"><img src="library/sprocket.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Sprocket</span></button></li>
+              <li><button type="button" class="lib-card" data-key="pulley" data-name="V pulley" aria-label="V pulley: drag into the scene, or press Enter to add it"><img src="library/pulley.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>V pulley</span></button></li>
+              <li><button type="button" class="lib-card" data-key="bearing" data-name="Ball bearing" aria-label="Ball bearing: drag into the scene, or press Enter to add it"><img src="library/bearing.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Ball bearing</span></button></li>
+              <li><button type="button" class="lib-card" data-key="bushing" data-name="Flanged bushing" aria-label="Flanged bushing: drag into the scene, or press Enter to add it"><img src="library/bushing.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Flanged bushing</span></button></li>
+              <li><button type="button" class="lib-card" data-key="spring" data-name="Spring" aria-label="Spring: drag into the scene, or press Enter to add it"><img src="library/spring.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Spring</span></button></li>
+              <li><button type="button" class="lib-card" data-key="handwheel" data-name="Handwheel" aria-label="Handwheel: drag into the scene, or press Enter to add it"><img src="library/handwheel.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Handwheel</span></button></li>
+              <li><button type="button" class="lib-card" data-key="knob" data-name="Star knob" aria-label="Star knob: drag into the scene, or press Enter to add it"><img src="library/knob.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Star knob</span></button></li>
+              <li><button type="button" class="lib-card" data-key="bracket" data-name="Corner bracket" aria-label="Corner bracket: drag into the scene, or press Enter to add it"><img src="library/bracket.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Corner bracket</span></button></li>
+              <li><button type="button" class="lib-card" data-key="stepper" data-name="Stepper motor" aria-label="Stepper motor: drag into the scene, or press Enter to add it"><img src="library/stepper.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Stepper motor</span></button></li>
+              <li><button type="button" class="lib-card" data-key="collar" data-name="Shaft collar" aria-label="Shaft collar: drag into the scene, or press Enter to add it"><img src="library/collar.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Shaft collar</span></button></li>
+              <li><button type="button" class="lib-card" data-key="pillowblock" data-name="Pillow block" aria-label="Pillow block: drag into the scene, or press Enter to add it"><img src="library/pillowblock.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Pillow block</span></button></li>
+              <li><button type="button" class="lib-card" data-key="wheel" data-name="Wheel" aria-label="Wheel: drag into the scene, or press Enter to add it"><img src="library/wheel.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Wheel</span></button></li>
+              <li><button type="button" class="lib-card" data-key="rail" data-name="Linear rail" aria-label="Linear rail: drag into the scene, or press Enter to add it"><img src="library/rail.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Linear rail</span></button></li>
+              <li><button type="button" class="lib-card" data-key="foot" data-name="Levelling foot" aria-label="Levelling foot: drag into the scene, or press Enter to add it"><img src="library/foot.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Levelling foot</span></button></li>
+              <li><button type="button" class="lib-card" data-key="handle" data-name="Pull handle" aria-label="Pull handle: drag into the scene, or press Enter to add it"><img src="library/handle.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Pull handle</span></button></li>
+              <li><button type="button" class="lib-card" data-key="enclosure" data-name="Enclosure" aria-label="Enclosure: drag into the scene, or press Enter to add it"><img src="library/enclosure.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Enclosure</span></button></li>
+            </ul>
+          </div>
+          <div class="lib-scene">
+            <div class="lib-view" data-view tabindex="0" aria-label="A scene. Drop parts here, drag them around, press Delete to remove the selected one.">
+              <p class="lib-hint">Drag a part here</p>
+            </div>
+            <div class="lib-bar"><span class="lib-count" aria-live="polite">Nothing in the scene yet</span><button type="button" class="lib-clear" hidden>Clear scene</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="try-search">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">Try it</p>
+          <h2>Search is how you get around.</h2>
+        </div>
+        <div class="demo-row">
+          <div class="demo-copy">
+            <p>This is the app’s own search, filled with a rear derailleur’s parts. Type a part, a library item or a command. The arrow keys move, Enter runs, and it does sums too.</p>
+            <ul>
+              <li><kbd>bolt</kbd><span>The bolts in the scene and every bolt in the library, in one list.</span></li>
+              <li><kbd>12*25.4</kbd><span>Sums are worked out as you type. Enter copies the answer.</span></li>
+              <li><kbd>2 in</kbd><span>A length in inches comes back in millimetres, which is what the scene uses.</span></li>
+              <li><kbd>fill</kbd><span>Commands are in the same list, with their shortcuts.</span></li>
+            </ul>
+          </div>
+          <div class="demo" data-demo>
+            <div class="demo-stage" aria-hidden="true"><i></i></div>
+            <div class="pal" role="search">
+              <label class="pal-in">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                <input type="text" value="bolt" placeholder="Search parts, the library, commands, or type a sum" aria-label="Search parts, the library, commands, or type a sum" spellcheck="false" autocomplete="off" autocapitalize="off" role="combobox" aria-expanded="true" aria-controls="palList" />
+              </label>
+              <ul class="pal-list" id="palList" role="listbox"></ul>
+              <div class="pal-foot"><span><kbd>↑</kbd><kbd>↓</kbd> choose</span><span><kbd>↵</kbd> run</span><span><kbd>Esc</kbd> clear</span><em>12*25.4 · 2 in · a part’s name</em></div>
+            </div>
+            <p class="demo-out" aria-live="polite"></p>
+            <script type="application/json" data-demo-data>{"parts":[["Pivot bolt M5","","4,812 triangles"],["Pivot bolt M5 (lower)","","4,812 triangles"],["Pulley bolt M5×12","","9,360 triangles"],["Limit screw H","","3,120 triangles"],["Limit screw L","","3,120 triangles"],["B-knuckle bolt M8","","6,540 triangles"],["Hanger bolt M10","","8,244 triangles"],["Cage plate, outer","","165,071 triangles"],["Cage plate, inner","","111,460 triangles"],["Upper pulley","","109,430 triangles"],["Lower pulley","","109,430 triangles"],["Parallelogram link, front","","69,962 triangles"],["Parallelogram link, rear","","66,860 triangles"],["Spring housing","","63,212 triangles"],["Battery cover","","32,480 triangles"],["Clutch cam","","24,879 triangles"],["B-knuckle","","21,736 triangles"],["Pulley bushing","","19,052 triangles"]],"library":[["Hex bolt","","M8 × 30, a parametric part"],["Eye bolt","","M10, a parametric part"],["Carriage bolt","","M8 × 40"],["U bolt","","for a 40 mm tube"],["Socket head screw","","M6 × 20"],["Hex nut","","M8"],["Wing nut","","M8"],["Castle nut","","M10"],["T-slot nut","","20 series"],["Spring washer","","M8"],["Hex standoff","","M4 × 12"],["Pillow block","","for a 12 mm shaft"],["Spur gear","","24 teeth, module 2"],["Sprocket","","16 teeth"],["Stepper motor","","NEMA 17"],["Linear rail","","300 mm"],["I beam","","100 × 55"],["Box tube","","40 × 40"],["Flange","","DN50"],["Pipe elbow","","DN50, 90°"]],"commands":[["Select fasteners…","","Finds bolts, nuts and washers by their shape"],["Select hidden parts…","","Picks what can’t be seen from outside"],["Smart optimise","","Runs every clean-up in one go"],["Fill holes…","P","Closes holes in flat faces"],["Split meshes…","X","Cuts a fused mesh into its solids"],["Smart fit selection","Ctrl + B","A part becomes a box, a cylinder or blocks"],["Align model to the floor","","Stands the model on the grid"],["Isolate selected","S","Hides everything but the selection"],["Clay view","5","Every part in one plain material"],["Library","Shift + L","The drawer of parts to add"],["Export model…","Ctrl + E","GLB, glTF, FBX, OBJ, STL and more"],["Keyboard shortcuts","?","Every key in the app"]]}</script>
+          </div>
+        </div>
+      </div>
+    </section>
     <section class="band">
       <div class="wrap">
         <div class="band-head">
           <p class="kicker">Screenshots</p>
           <h2>The whole app, one screen at a time.</h2>
-          <a class="more" href="screenshots.html">All 29 screenshots</a>
+          <a class="more" href="screenshots.html">All 34 screenshots</a>
         </div>
       </div>
       <div class="strip" data-strip>
-        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-viewer.webp" data-group="strip" data-caption="A 1,583-part, 5.4-million-triangle assembly: the tree on the left, the scene’s totals on the right"><img src="../../Images/apps/meshoptimiser-viewer.webp" alt="MeshOptimiser: A 1,583-part, 5.4-million-triangle assembly: the tree on the left, the scene’s totals on the right" width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>A 1,583-part, 5.4-million-triangle assembly: the tree on the left, the scene’s totals on the right</figcaption></figure>
-        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-library.webp" data-group="strip" data-caption="The library drawer: a pillow block and a handwheel placed, and a stepper motor on its way in, shown where it will stand"><img src="../../Images/apps/meshoptimiser-library.webp" alt="MeshOptimiser: The library drawer: a pillow block and a handwheel placed, and a stepper motor on its way in, shown where it will stand" width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>The library drawer: a pillow block and a handwheel placed, and a stepper motor on its way in, shown where it will stand</figcaption></figure>
-        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-bolt-nut.webp" data-group="strip" data-caption="A hex bolt that carries its own nut: size, length and the nut’s distance from the head are all parameters"><img src="../../Images/apps/meshoptimiser-bolt-nut.webp" alt="MeshOptimiser: A hex bolt that carries its own nut: size, length and the nut’s distance from the head are all parameters" width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>A hex bolt that carries its own nut: size, length and the nut’s distance from the head are all parameters</figcaption></figure>
-        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-blocks.webp" data-group="strip" data-caption="Smart fit with Blocks on every part: 16,812 triangles down to 3,048, the outline kept"><img src="../../Images/apps/meshoptimiser-blocks.webp" alt="MeshOptimiser: Smart fit with Blocks on every part: 16,812 triangles down to 3,048, the outline kept" width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Smart fit with Blocks on every part: 16,812 triangles down to 3,048, the outline kept</figcaption></figure>
-        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-smart-fit.webp" data-group="strip" data-caption="Smart fit: box, turned box, cylinder, a few boxes, or blocks at the detail you choose"><img src="../../Images/apps/meshoptimiser-smart-fit.webp" alt="MeshOptimiser: Smart fit: box, turned box, cylinder, a few boxes, or blocks at the detail you choose" width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Smart fit: box, turned box, cylinder, a few boxes, or blocks at the detail you choose</figcaption></figure>
-        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-report.webp" data-group="strip" data-caption="The optimisation report: the scene as it was opened beside the scene now"><img src="../../Images/apps/meshoptimiser-report.webp" alt="MeshOptimiser: The optimisation report: the scene as it was opened beside the scene now" width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>The optimisation report: the scene as it was opened beside the scene now</figcaption></figure>
-        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-select-hidden.webp" data-group="strip" data-caption="Select hidden parts: the command panel beside the viewport"><img src="../../Images/apps/meshoptimiser-select-hidden.webp" alt="MeshOptimiser: Select hidden parts: the command panel beside the viewport" width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Select hidden parts: the command panel beside the viewport</figcaption></figure>
-        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-select-hidden-result.webp" data-group="strip" data-caption="878 of 1,583 parts cannot be seen from outside: 2.4 million triangles, selected in one step"><img src="../../Images/apps/meshoptimiser-select-hidden-result.webp" alt="MeshOptimiser: 878 of 1,583 parts cannot be seen from outside: 2.4 million triangles, selected in one step" width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>878 of 1,583 parts cannot be seen from outside: 2.4 million triangles, selected in one step</figcaption></figure>
-        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-isolate.webp" data-group="strip" data-caption="Those hidden parts on their own, isolated"><img src="../../Images/apps/meshoptimiser-isolate.webp" alt="MeshOptimiser: Those hidden parts on their own, isolated" width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Those hidden parts on their own, isolated</figcaption></figure>
-        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-fill-holes.webp" data-group="strip" data-caption="Fill holes: closes bolt holes, slots and pockets in flat faces and leaves the rest alone"><img src="../../Images/apps/meshoptimiser-fill-holes.webp" alt="MeshOptimiser: Fill holes: closes bolt holes, slots and pockets in flat faces and leaves the rest alone" width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Fill holes: closes bolt holes, slots and pockets in flat faces and leaves the rest alone</figcaption></figure>
+        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-viewer.webp" data-group="strip" data-caption="Before anything is done: 43 parts and 1.1 million triangles, with the heaviest parts ranked on the right."><img src="../../Images/apps/meshoptimiser-viewer.webp" alt="MeshOptimiser: Before anything is done: 43 parts and 1.1 million triangles, with the heaviest parts ranked on the right." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Before anything is done: 43 parts and 1.1 million triangles, with the heaviest parts ranked on the right.</figcaption></figure>
+        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-smart-optimise.webp" data-group="strip" data-caption="Smart optimise is one button that runs the clean-ups in order. Auto picked Balanced and aims at half the triangles."><img src="../../Images/apps/meshoptimiser-smart-optimise.webp" alt="MeshOptimiser: Smart optimise is one button that runs the clean-ups in order. Auto picked Balanced and aims at half the triangles." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Smart optimise is one button that runs the clean-ups in order. Auto picked Balanced and aims at half the triangles.</figcaption></figure>
+        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-optimised.webp" data-group="strip" data-caption="Done. 1,103,373 triangles became 552,115, and what was saved is shown under the number."><img src="../../Images/apps/meshoptimiser-optimised.webp" alt="MeshOptimiser: Done. 1,103,373 triangles became 552,115, and what was saved is shown under the number." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Done. 1,103,373 triangles became 552,115, and what was saved is shown under the number.</figcaption></figure>
+        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-report.webp" data-group="strip" data-caption="The report puts the scene as it was opened next to the scene now."><img src="../../Images/apps/meshoptimiser-report.webp" alt="MeshOptimiser: The report puts the scene as it was opened next to the scene now." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>The report puts the scene as it was opened next to the scene now.</figcaption></figure>
+        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-fasteners.webp" data-group="strip" data-caption="Fasteners found twelve bolts and screws by their shape: 129,460 triangles, ready to isolate or delete."><img src="../../Images/apps/meshoptimiser-fasteners.webp" alt="MeshOptimiser: Fasteners found twelve bolts and screws by their shape: 129,460 triangles, ready to isolate or delete." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Fasteners found twelve bolts and screws by their shape: 129,460 triangles, ready to isolate or delete.</figcaption></figure>
+        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-select-hidden.webp" data-group="strip" data-caption="Select hidden parts and its settings, in a card beside the model."><img src="../../Images/apps/meshoptimiser-select-hidden.webp" alt="MeshOptimiser: Select hidden parts and its settings, in a card beside the model." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Select hidden parts and its settings, in a card beside the model.</figcaption></figure>
+        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-select-hidden-result.webp" data-group="strip" data-caption="One part inside the housing can’t be seen from any side. It is selected: 3,160 triangles."><img src="../../Images/apps/meshoptimiser-select-hidden-result.webp" alt="MeshOptimiser: One part inside the housing can’t be seen from any side. It is selected: 3,160 triangles." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>One part inside the housing can’t be seen from any side. It is selected: 3,160 triangles.</figcaption></figure>
+        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-isolate.webp" data-group="strip" data-caption="That hidden part on its own, isolated."><img src="../../Images/apps/meshoptimiser-isolate.webp" alt="MeshOptimiser: That hidden part on its own, isolated." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>That hidden part on its own, isolated.</figcaption></figure>
+        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-smart-fit.webp" data-group="strip" data-caption="Smart fit turns a part into a box, a cylinder, a few boxes or blocks."><img src="../../Images/apps/meshoptimiser-smart-fit.webp" alt="MeshOptimiser: Smart fit turns a part into a box, a cylinder, a few boxes or blocks." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Smart fit turns a part into a box, a cylinder, a few boxes or blocks.</figcaption></figure>
+        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-blocks.webp" data-group="strip" data-caption="Blocks on the two heaviest parts: 172,894 triangles down to 114, and the outline is still there."><img src="../../Images/apps/meshoptimiser-blocks.webp" alt="MeshOptimiser: Blocks on the two heaviest parts: 172,894 triangles down to 114, and the outline is still there." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Blocks on the two heaviest parts: 172,894 triangles down to 114, and the outline is still there.</figcaption></figure>
       </div>
       <div class="dots" aria-hidden="true"></div>
     </section>
@@ -246,12 +480,12 @@
           <a class="more" href="changelog.html">Full changelog</a>
         </div>
         <div class="split-body">
-          <p>It feels like an app. MeshOptimiser installs to the desktop with an icon of its own, opens in a window with no address bar, browser tabs or extension buttons, and can fold its title bar away. The scene tabs grew up with it, and a view that is moving gives up what you cannot see anyway.</p>
+          <p>It now feels like an app. You can install it, it opens in a window with no address bar or browser tabs, and the title bar can fold away. The scene tabs got better too, and a view that’s moving skips what you couldn’t see anyway.</p>
           <ul class="changes">
-            <li><b class="is-new">New</b><span>Install it: Chrome and Edge offer Install, and the app gets a desktop shortcut and a window to itself. start.bat opens that window directly, with nothing of the browser in it.</span></li>
-            <li><b class="is-new">New</b><span>Fold the title bar away in the installed app: the window’s buttons float over the corner and the app’s top bar becomes the title bar.</span></li>
-            <li><b class="is-new">New</b><span>Drag tabs into order. A tab rides with the pointer, the others slide over, and Esc puts it back.</span></li>
-            <li><b class="is-polish">Polish</b><span>The tab, rearranged: a status dot on the icon’s corner (yellow unsaved, green saved), a click on the icon saves, and the close button sits at the right end.</span></li>
+            <li><b class="is-new">New</b><span>Install it from Chrome or Edge and you get a desktop icon and a window of its own. start.bat opens that window directly.</span></li>
+            <li><b class="is-new">New</b><span>In the installed app you can fold the title bar away. The window buttons float over the corner and the app’s own top bar takes over.</span></li>
+            <li><b class="is-new">New</b><span>Drag tabs into order. The tab follows the pointer, the others slide aside, and Esc puts it back.</span></li>
+            <li><b class="is-polish">Polish</b><span>Tabs have a dot on the icon (yellow for unsaved, green for saved), a click on the icon saves, and the close button moved to the right end.</span></li>
           </ul>
         </div>
       </div>
@@ -273,7 +507,7 @@
     <div class="wrap foot-in">
       <div class="foot-brand">
         <a class="brand" href="./"><img src="../../Images/apps/meshoptimiser-icon.svg" alt="" width="26" height="26" /><span>MeshOptimiser</span></a>
-        <p>From bloated CAD to browser-ready, locally.</p>
+        <p>Heavy CAD, made light enough for a browser.</p>
       </div>
       <nav aria-label="Product">
         <h2>Product</h2>
@@ -301,6 +535,6 @@
       <span><a href="../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="site.js?v=3"></script>
+  <script defer src="site.js?v=9"></script>
 </body>
 </html>

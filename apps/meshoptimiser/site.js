@@ -165,18 +165,25 @@
   // is scheduled per scroll event, so nothing runs while the page is still.
   const pop = $('[data-pop]');
   if (pop && !calm && 'IntersectionObserver' in window && window.matchMedia('(min-width: 861px)').matches) {
-    let queued = false, last = -1;
+    let queued = false, last = -1, hero3d = null, asked = false;
+    // the real mesh (hero3d.js): fetched once the section is near, and only where WebGL works
+    const wakeMesh = () => {
+      if (asked) return;
+      asked = true;
+      try { const gl = document.createElement('canvas').getContext('webgl2') || document.createElement('canvas').getContext('webgl'); if (!gl) return; } catch (e) { return; }
+      import('./hero3d.js?v=5').then(m => m.start(pop, '')).then((h) => { hero3d = h; h.setP(Math.max(0, last)); }).catch(() => {});
+    };
     const place = () => {
       queued = false;
       const rect = pop.getBoundingClientRect();
       const room = rect.height - ($('.pop-pin', pop).offsetHeight || window.innerHeight);
       const p = Math.max(0, Math.min(1, room > 0 ? -rect.top / room : 0));
       const eased = p * p * (3 - 2 * p);
-      if (Math.abs(eased - last) > 0.0005) { last = eased; pop.style.setProperty('--p', eased.toFixed(4)); }
+      if (Math.abs(eased - last) > 0.0005) { last = eased; pop.style.setProperty('--p', eased.toFixed(4)); if (hero3d) hero3d.setP(eased); }
     };
     const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(place); } };
     new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { window.addEventListener('scroll', onScroll, { passive: true }); window.addEventListener('resize', onScroll); onScroll(); }
+      if (entry.isIntersecting) { wakeMesh(); window.addEventListener('scroll', onScroll, { passive: true }); window.addEventListener('resize', onScroll); onScroll(); }
       else { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); }
     }, { rootMargin: '200px 0px' }).observe(pop);
   }
@@ -190,6 +197,185 @@
     }), { threshold: 0.15, rootMargin: '0px 0px -6% 0px' });
     reveal.forEach(node => seen.observe(node));
   }
+
+  // ---- the library: drag a part into the scene ----
+  // Pointer events, so a mouse, a finger and a pen all work. A card follows
+  // the pointer as a see-through copy; let go over the scene and the part
+  // lands there, snapped to the grid. Parts already in the scene can be
+  // dragged around, selected (click) and removed (Delete). Double-click or
+  // Enter on a card adds it in the middle.
+  $$('[data-lib]').forEach((lib) => {
+    const view = $('[data-view]', lib), count = $('.lib-count', lib), clear = $('.lib-clear', lib);
+    const tabs = $$('[data-shelf]', lib), grids = $$('[data-shelf-grid]', lib);
+    const snap = 16;
+    let parts = 0, selected = null;
+
+    tabs.forEach(tab => tab.addEventListener('click', () => {
+      tabs.forEach(t => t.setAttribute('aria-selected', String(t === tab)));
+      grids.forEach(g => { g.hidden = g.dataset.shelfGrid !== tab.dataset.shelf; });
+    }));
+    const note = () => {
+      view.classList.toggle('has-parts', parts > 0);
+      clear.hidden = parts === 0;
+      count.textContent = parts === 0 ? 'Nothing in the scene yet' : parts === 1 ? '1 part in the scene' : parts + ' parts in the scene';
+    };
+    const select = (node) => { if (selected) selected.classList.remove('is-on'); selected = node; if (node) node.classList.add('is-on'); };
+    const clampTo = (x, y) => {
+      const w = view.clientWidth, h = view.clientHeight;
+      return [Math.max(48, Math.min(w - 48, Math.round(x / snap) * snap)), Math.max(48, Math.min(h - 56, Math.round(y / snap) * snap))];
+    };
+    const place = (key, name, x, y) => {
+      const node = el('div', 'lib-part');
+      node.dataset.key = key;
+      const img = el('img'); img.src = 'library/' + key + '.webp'; img.alt = ''; img.draggable = false;
+      node.append(img, el('span', '', name));
+      const [px, py] = clampTo(x, y);
+      node.style.left = px + 'px'; node.style.top = py + 'px';
+      view.appendChild(node);
+      parts++; note(); select(node);
+      return node;
+    };
+    // moving a part that is already in the scene
+    view.addEventListener('pointerdown', (e) => {
+      const node = e.target.closest('.lib-part');
+      if (!node) { select(null); view.focus({ preventScroll: true }); return; }
+      e.preventDefault();
+      select(node); node.classList.add('is-held'); node.setPointerCapture(e.pointerId);
+      const box = view.getBoundingClientRect(), dx = parseFloat(node.style.left) - (e.clientX - box.left), dy = parseFloat(node.style.top) - (e.clientY - box.top);
+      const move = (m) => { const b = view.getBoundingClientRect(); const [px, py] = clampTo(m.clientX - b.left + dx, m.clientY - b.top + dy); node.style.left = px + 'px'; node.style.top = py + 'px'; };
+      const up = () => { node.classList.remove('is-held'); node.removeEventListener('pointermove', move); node.removeEventListener('pointerup', up); node.removeEventListener('pointercancel', up); };
+      node.addEventListener('pointermove', move); node.addEventListener('pointerup', up); node.addEventListener('pointercancel', up);
+    });
+    view.addEventListener('keydown', (e) => {
+      if ((e.key === 'Delete' || e.key === 'Backspace') && selected) { e.preventDefault(); selected.remove(); selected = null; parts--; note(); }
+      if (e.key === 'Escape') select(null);
+    });
+    clear.addEventListener('click', () => { $$('.lib-part', view).forEach(n => n.remove()); selected = null; parts = 0; note(); });
+
+    // dragging a card out of the shelf
+    lib.addEventListener('pointerdown', (e) => {
+      const card = e.target.closest('.lib-card');
+      if (!card || (e.pointerType === 'mouse' && e.button !== 0)) return;
+      const key = card.dataset.key, name = card.dataset.name;
+      const sx = e.clientX, sy = e.clientY;
+      let ghost = null;
+      const over = (m) => { const b = view.getBoundingClientRect(); return m.clientX >= b.left && m.clientX <= b.right && m.clientY >= b.top && m.clientY <= b.bottom; };
+      const move = (m) => {
+        if (!ghost && Math.hypot(m.clientX - sx, m.clientY - sy) > 6) {
+          ghost = el('div', 'lib-ghost'); const g = el('img'); g.src = 'library/' + key + '.webp'; g.alt = ''; ghost.appendChild(g);
+          document.body.appendChild(ghost);
+        }
+        if (ghost) { ghost.style.transform = `translate(${m.clientX}px, ${m.clientY}px)`; view.classList.toggle('is-over', over(m)); }
+      };
+      const end = (m) => {
+        window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', end); window.removeEventListener('pointercancel', end);
+        view.classList.remove('is-over');
+        if (ghost) {
+          ghost.remove();
+          if (m.type === 'pointerup' && over(m)) { const b = view.getBoundingClientRect(); place(key, name, m.clientX - b.left, m.clientY - b.top); }
+        }
+      };
+      window.addEventListener('pointermove', move); window.addEventListener('pointerup', end); window.addEventListener('pointercancel', end);
+    });
+    const addMiddle = (card) => place(card.dataset.key, card.dataset.name, view.clientWidth / 2 + (parts % 5 - 2) * 40, view.clientHeight / 2 + (parts % 3 - 1) * 36);
+    lib.addEventListener('dblclick', (e) => { const card = e.target.closest('.lib-card'); if (card) addMiddle(card); });
+    lib.addEventListener('keydown', (e) => { const card = e.target.closest('.lib-card'); if (card && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); addMiddle(card); } });
+    note();
+  });
+
+  // ---- the search, working ----
+  // The same shape as the app's: parts of the scene, the library, commands,
+  // and a sum when what you type is one. Everything is typed words against
+  // a list that came with the page; nothing leaves it.
+  $$('[data-demo]').forEach((demo) => {
+    const data = JSON.parse($('[data-demo-data]', demo).textContent);
+    const input = $('input', demo), list = $('.pal-list', demo), out = $('.demo-out', demo);
+    const icon = {
+      Parts: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 3 4 7.5v9L12 21l8-4.500v-9L12 3Z"/><path d="m4 7.500 8 4.500 8-4.500M12 12v9"/></svg>',
+      Library: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3.500" y="13" width="7" height="7" rx="1.500"/><circle cx="7" cy="7" r="3.500"/><path d="m17 3.500 3.500 6.500h-7L17 3.500Z"/></svg>',
+      Commands: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 4 4-4 4M12 17h7"/></svg>',
+    };
+    const verb = { Parts: 'Part', Library: 'Add', Commands: '' };
+    let rows = [], at = 0;
+
+    // "12*25.4", "2 in", "300 mm" ... one number and a unit, or arithmetic
+    const sum = (text) => {
+      const t = text.trim().toLowerCase().replace(/,/g, '.');
+      if (!t) return null;
+      const unit = t.match(/^(-?\d+(?:\.\d+)?)\s*(mm|cm|m|in|inch|inches|ft)$/);
+      if (unit) {
+        const n = parseFloat(unit[1]), f = { mm: 1, cm: 10, m: 1000, in: 25.4, inch: 25.4, inches: 25.4, ft: 304.8 }[unit[2]];
+        const mm = n * f, show = (v) => (Math.round(v * 1000) / 1000).toString();
+        return { label: `${unit[1]} ${unit[2]}`, value: `${show(mm)} mm`, copy: show(mm) };
+      }
+      if (/^[\d\s.+\-*/()x×÷]+$/.test(t) && /[+\-*/x×÷]/.test(t.replace(/^-/, ''))) {
+        try {
+          const v = Function('"use strict"; return (' + t.replace(/[x×]/g, '*').replace(/÷/g, '/') + ')')();
+          if (typeof v === 'number' && isFinite(v)) { const r = (Math.round(v * 1e6) / 1e6).toString(); return { label: text.trim(), value: r, copy: r }; }
+        } catch (e) { /* not a sum */ }
+      }
+      return null;
+    };
+    const mark = (name, words) => {
+      const lower = name.toLowerCase(); let out = '', i = 0;
+      const spans = [];
+      words.forEach((w) => { const k = lower.indexOf(w); if (k >= 0) spans.push([k, k + w.length]); });
+      spans.sort((a, b) => a[0] - b[0]);
+      spans.forEach(([a, b]) => { if (a < i) return; out += esc(name.slice(i, a)) + '<mark>' + esc(name.slice(a, b)) + '</mark>'; i = b; });
+      return out + esc(name.slice(i));
+    };
+    const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const find = (group, words, max) => {
+      const hits = data[group.toLowerCase()].filter(item => words.every(w => (item[0] + ' ' + (item[2] || '')).toLowerCase().includes(w)));
+      return hits.slice(0, max);
+    };
+    const draw = () => {
+      const q = input.value.trim().toLowerCase(), words = q.split(/\s+/).filter(Boolean);
+      rows = [];
+      let html = '';
+      const s = sum(input.value);
+      if (s) { html += `<li class="pal-sum" role="presentation"><span>${esc(s.label)} =</span><b>${esc(s.value)}</b></li>`; rows.push({ kind: 'sum', s }); }
+      ['Parts', 'Library', 'Commands'].forEach((group) => {
+        const hits = words.length ? find(group, words, group === 'Parts' ? 6 : 5) : (group === 'Commands' ? data.commands.slice(0, 5) : []);
+        if (!hits.length) return;
+        html += `<li class="pal-h" role="presentation">${group}</li>`;
+        hits.forEach((item) => {
+          const id = rows.length;
+          rows.push({ kind: group, item });
+          const right = group === 'Commands' ? (item[1] || '') : verb[group];
+          html += `<li class="pal-r" role="option" data-i="${id}">${icon[group]}<b>${mark(item[0], words)}</b><span>${esc(right)}</span></li>`;
+        });
+      });
+      if (!rows.length) html = `<li class="pal-none" role="presentation">${q ? 'Nothing called “' + esc(input.value.trim()) + '”' : 'Type a part, a command or a sum'}</li>`;
+      list.innerHTML = html;
+      at = Math.min(at, Math.max(0, rows.length - 1));
+      mark_on();
+    };
+    const mark_on = () => {
+      $$('.pal-r', list).forEach((row) => row.classList.toggle('is-on', +row.dataset.i === at));
+      const row = $('.pal-r.is-on', list);
+      if (row) { const top = row.offsetTop, bottom = top + row.offsetHeight; if (top < list.scrollTop + 28) list.scrollTop = Math.max(0, top - 36); else if (bottom > list.scrollTop + list.clientHeight) list.scrollTop = bottom - list.clientHeight + 6; }
+    };
+    const run = (i) => {
+      const r = rows[i]; if (!r) return;
+      if (r.kind === 'sum') {
+        out.innerHTML = `Copied <b>${esc(r.s.copy)}</b>`;
+        if (navigator.clipboard) navigator.clipboard.writeText(r.s.copy).catch(() => {});
+      } else if (r.kind === 'Parts') out.innerHTML = `Selected <b>${esc(r.item[0])}</b> and framed it${r.item[2] ? ' · ' + esc(r.item[2]) : ''}`;
+      else if (r.kind === 'Library') out.innerHTML = `Added <b>${esc(r.item[0])}</b> to the scene${r.item[2] ? ' · ' + esc(r.item[2]) : ''}`;
+      else out.innerHTML = `<b>${esc(r.item[0])}</b> opens${r.item[2] ? ': ' + esc(r.item[2]) : ' its panel'}`;
+    };
+    input.addEventListener('input', () => { at = 0; out.textContent = ''; draw(); });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') { e.preventDefault(); at = Math.min(rows.length - 1, at + 1); mark_on(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); at = Math.max(0, at - 1); mark_on(); }
+      else if (e.key === 'Enter') { e.preventDefault(); run(at); }
+      else if (e.key === 'Escape') { input.value = ''; at = 0; out.textContent = ''; draw(); }
+    });
+    list.addEventListener('mousemove', (e) => { const row = e.target.closest('.pal-r'); if (row && +row.dataset.i !== at) { at = +row.dataset.i; mark_on(); } });
+    list.addEventListener('click', (e) => { const row = e.target.closest('.pal-r,.pal-sum'); if (!row) return; if (row.dataset.i) { at = +row.dataset.i; mark_on(); } run(row.dataset.i ? at : 0); });
+    draw();
+  });
 
   // ---- clips ----
   // A clip is fetched and played only while it is on screen and stops when

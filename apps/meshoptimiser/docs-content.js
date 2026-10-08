@@ -38,7 +38,7 @@ module.exports = {
           'The viewer. A page that opens in a window of its own and shows the model. Here you look around, select parts, remove what you do not need, reduce triangles, recolour, and export.',
         ]],
         ['p', 'You do not have to run the two halves yourself. One launcher starts everything, and you drop a file on the window.'],
-        ['img', 'Images/apps/meshoptimiser-viewer.webp', 'A 1,583-part, 5.4-million-triangle assembly: the parts tree on the left, the scene’s totals on the right.'],
+        ['img', 'Images/apps/meshoptimiser-viewer.webp', 'A rear derailleur in 43 parts and 1.1 million triangles: the parts tree on the left, the scene’s totals on the right.'],
         ['h', 'What you can do with it'],
         ['list', [
           'Open STEP, GLB, glTF, FBX, OBJ, 3MF and STL files.',
@@ -503,7 +503,7 @@ module.exports = {
         ['steps', [
           'Select the parts you want to look at.',
           'Press [[S]]. Everything else disappears.',
-          'A pill at the top of the viewport says so, for example “Isolated · 3 of 1,583 parts”.',
+          'A pill at the top of the viewport says so, for example “Isolated · 1 of 43 parts”.',
           'Press [[S]] again, or click the pill, to show everything.',
         ]],
         ['img', 'Images/apps/meshoptimiser-isolate.webp', 'A set of parts on their own, isolated.'],
@@ -847,8 +847,8 @@ module.exports = {
       summary: 'Find every part that cannot be seen from outside the model, such as screws inside a housing, and delete them in one step.',
       blocks: [
         ['p', 'Much of an assembly is inside it: the screws in a housing, the board under a cover, a bearing in its seat. If the model is only ever seen from outside, those parts are dead weight. This command looks at the model from every side and selects the parts that never show.'],
-        ['p', 'On the 1,583-part test assembly it found 878 parts, with 2.4 million of the model’s 5.4 million triangles.'],
-        ['img', 'Images/apps/meshoptimiser-select-hidden-result.webp', '878 of 1,583 parts cannot be seen from outside: 2.4 million triangles, selected in one step.'],
+        ['p', 'On the rear derailleur used in these pictures it found one part, 3,160 triangles, tucked inside the housing. On a bigger assembly there are usually many more.'],
+        ['img', 'Images/apps/meshoptimiser-select-hidden-result.webp', 'One part inside the housing can’t be seen from any side: 3,160 triangles, selected.'],
         ['h', 'When to use it'],
         ['p', 'When the model will be shown closed, from outside. Not when someone will open a cover, look through a window in the casing, or show an exploded view.'],
         ['h', 'Steps'],
@@ -889,7 +889,7 @@ module.exports = {
       summary: 'Close bolt holes, slots, pockets and lettering in flat faces. Each closed hole removes the triangles of its walls.',
       blocks: [
         ['p', 'A plate with forty bolt holes carries forty small cylinders of triangles that nobody notices from a distance. Fill holes closes holes in flat faces and leaves the rest of each part exactly as it was. The part keeps its outline and loses the triangles inside the holes.'],
-        ['p', 'On the 1,583-part test assembly, with the limit at 12 mm, it closed 4,136 holes in about two seconds and removed 427,543 triangles.'],
+        ['p', 'With the limit at 12 mm it closes bolt holes, slots and pockets up to that size, and leaves bosses and the bore of a washer or a nut alone.'],
         ['img', 'Images/apps/meshoptimiser-fill-holes.webp', 'Fill holes: closes bolt holes, slots and pockets in flat faces and leaves the rest alone.'],
         ['h', 'What it closes, and what it leaves'],
         ['list', [
@@ -1000,7 +1000,7 @@ module.exports = {
           ['Blocks', 'The part rebuilt from a coarse grid of boxes. It looks boxy, but its steps, arms and openings stay where they are.'],
         ]],
         ['p', 'One box says where a part is and nothing about what it is: a bracket becomes a brick. {{A few boxes}} and {{Blocks}} keep the outline. Both fall back to a plain box when they would not be clearly lighter than the part.'],
-        ['img', 'Images/apps/meshoptimiser-blocks.webp', 'Smart fit with Blocks on every part: 16,812 triangles down to 3,048, the outline kept.'],
+        ['img', 'Images/apps/meshoptimiser-blocks.webp', 'Smart fit with Blocks on the two heaviest parts of the derailleur: 172,894 triangles down to 114, the outline kept.'],
         ['h', 'What the options mean'],
         ['terms', [
           ['At most … boxes', 'For {{A few boxes}}: the most boxes a part may become. Simple parts use fewer. It starts at 6.'],
@@ -1971,7 +1971,7 @@ module.exports = {
         ['h', 'Which Python version?'],
         ['p', '3.10, 3.11 or 3.12. Version 3.13 is not supported yet.'],
         ['h', 'How big a file can it handle?'],
-        ['p', 'There is no fixed limit in these pages, because it depends on your computer’s memory and graphics card. The app is developed and measured against an assembly of 1,583 parts and 5.4 million triangles. The README’s example is a 320 MB STEP file. The local server accepts STEP files up to 4 GB.'],
+        ['p', 'There is no fixed limit in these pages, because it depends on your computer’s memory and graphics card. The app is tested on assemblies of thousands of parts and millions of triangles. The README’s example is a 320 MB STEP file. The local server accepts STEP files up to 4 GB.'],
         ['h', 'Does it change my original file?'],
         ['p', 'No. Nothing reaches a file until you save a scene or export, and both write a new file.'],
         ['h', 'Can it write STEP files?'],
