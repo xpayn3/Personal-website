@@ -56,6 +56,7 @@ for k, h in d['parts'].items():
     a, b = wrap.get(k, ('', ''))
     h = h.replace('assets/help/fasteners-poster.webp', 'ui/fasteners-poster.webp').replace('assets/help/fasteners.webm', 'ui/fasteners.webm')
     h = h.replace('assets/library/', 'library/')
+    h = re.sub(r'<img[^>]*assets/(?:webgpu\.svg|webgl\.png)[^>]*>', '', h)   # icons of a hidden menu: not worth shipping
     if k == 'topbar':
         h = re.sub(r'<span class="dtn-a">([^<]*)</span><span class="dtn-b"></span>', lambda m: m.group(1), h)
     if k == 'fasteners':
