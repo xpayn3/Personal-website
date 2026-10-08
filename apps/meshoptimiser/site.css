@@ -169,6 +169,10 @@ figcaption { margin-top: 12px; color: var(--tx-3); font-size: 13px; line-height:
 .clip figcaption i { color: var(--tx-3); font: 400 12px/1.7 var(--mono); }
 .clip figcaption strong { color: var(--tx); font-size: 15px; }
 .clip figcaption span { grid-column: 2; }
+.clip figcaption .clip-more { grid-column: 2; justify-self: start; margin-top: 6px; color: var(--accent-hover); font-size: 13.5px; text-decoration: none; transition: color 0.15s ease; }
+.clip figcaption .clip-more:hover { color: #fff; }
+.clip figcaption .clip-more .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.clip figcaption .clip-more > span:not(.sr) { display: inline; grid-column: auto; }
 
 /* a closer look: a picture and what it shows, side by side */
 .spots { display: grid; gap: clamp(48px, 7vw, 112px); }

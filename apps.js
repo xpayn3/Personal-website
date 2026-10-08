@@ -250,10 +250,10 @@ window.labApps = [
       ['It starts like an app', 'Installed, it opens in a window of its own with no address bar and no browser tabs. Drop a STEP, GLB, glTF, FBX, OBJ, 3MF or STL file anywhere on the start screen, or begin from a shape.', 'Images/apps/meshoptimiser-start.webp', 'upload'],
     ],
     clips: [
-      ['Fill holes', 'Bolt holes, slots and pockets in flat faces close a few at a time. Everything else stays as it was.', 'Images/apps/meshoptimiser-clip-fill-holes.webm'],
-      ['Split', 'A mesh that was fused on export comes apart into the solids it was made of.', 'Images/apps/meshoptimiser-clip-split.webm'],
-      ['Select hidden parts', 'Screws, bearings and brackets inside a housing light up: everything you can’t see from outside.', 'Images/apps/meshoptimiser-clip-select-hidden.webm'],
-      ['Smart fit', 'A dense part becomes a box, a cylinder, a few boxes or blocks that keep its outline.', 'Images/apps/meshoptimiser-clip-smart-fit.webm'],
+      ['Fill holes', 'Bolt holes, slots and pockets in flat faces close a few at a time. Everything else stays as it was.', 'Images/apps/meshoptimiser-clip-fill-holes.webm', 'fill-holes'],
+      ['Split', 'A mesh that was fused on export comes apart into the solids it was made of.', 'Images/apps/meshoptimiser-clip-split.webm', 'split'],
+      ['Select hidden parts', 'Screws, bearings and brackets inside a housing light up: everything you can’t see from outside.', 'Images/apps/meshoptimiser-clip-select-hidden.webm', 'select-hidden-parts'],
+      ['Smart fit', 'A dense part becomes a box, a cylinder, a few boxes or blocks that keep its outline.', 'Images/apps/meshoptimiser-clip-smart-fit.webm', 'smart-fit'],
     ],
     stats: [['Version', '0.13.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
     about: [

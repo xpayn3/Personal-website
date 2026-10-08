@@ -24,7 +24,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 16;
+const CSS_V = 17;
 const JS_V = 15;
 
 // The pages of an app's site, in the order of its navigation. `file` is
@@ -194,10 +194,10 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
   const shot = ([src, caption], group, eager) =>
     `<figure><a class="zoom" href="${asset(src)}" data-group="${group}" data-caption="${esc(caption)}"><img src="${asset(src)}" alt="${esc(app.title + ': ' + caption)}" width="1600" height="1000"${eager ? '' : ' loading="lazy"'} decoding="async" /></a><figcaption>${esc(caption)}</figcaption></figure>`;
 
-  const clipCards = () => (app.clips || []).map(([name, line, src], i) => `
+  const clipCards = () => (app.clips || []).map(([name, line, src, doc], i) => `
         <figure class="clip">
           <video muted loop playsinline preload="none" disablepictureinpicture poster="${asset(src.replace(/\.(webm|mp4)$/, '_thumb.webp'))}" data-src="${asset(src)}" aria-label="${esc(app.title + ': ' + name)}" width="592" height="370"></video>
-          <figcaption><i>${pad2(i + 1)}</i><strong>${esc(name)}</strong><span>${esc(line)}</span></figcaption>
+          <figcaption><i>${pad2(i + 1)}</i><strong>${esc(name)}</strong><span>${esc(line)}</span>${doc ? `<a class="clip-more" href="docs/${esc(doc)}.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about ${esc(name)}</span></a>` : ''}</figcaption>
         </figure>`).join('');
 
   const spotRows = (list, group) => list.map(([name, line, image], i) => `
