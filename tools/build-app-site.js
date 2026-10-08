@@ -55,7 +55,7 @@ function siteFor(app, docs) {
   const licence = (app.info.find(([label]) => label === 'Licence') || [])[1] || '';
   const repo = app.repo.replace(/\/+$/, '');
   const zip = app.download || repo + '/archive/HEAD.zip';
-  const latest = app.changelog.versions[0];
+  const latest = app.changelog.versions.find(v => v.latest) || app.changelog.versions[0];
 
   // the address of the docs article whose slug matches, or the docs home
   const docLink = (re) => { const hit = docs && docs.articles.find(a => re.test(a.slug)); return hit ? `docs/${hit.slug}.html` : 'docs.html'; };
@@ -213,7 +213,7 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
   const logEntry = (entry, open) => `
         <li id="v${esc(entry.version)}">
           <div class="log-head">
-            <strong>v${esc(entry.version)}</strong>${entry.latest ? '<em>Latest</em>' : ''}${entry.date ? `<span>${esc(entry.date)}</span>` : ''}
+            <strong>v${esc(entry.version)}</strong>${entry.latest ? '<em>Latest</em>' : entry.next ? '<em>Next</em>' : ''}${entry.date ? `<span>${esc(entry.date)}</span>` : ''}${entry.fixes ? `<span>${entry.fixes} ${entry.fixes === 1 ? 'fix' : 'fixes'}</span>` : ''}
           </div>
           <div class="log-body">
             <p>${esc(entry.summary)}</p>${entry.items && entry.items.length && open ? `
@@ -616,7 +616,7 @@ ${docs.articles.filter(a => a.group === group.id).map(a => `          <li data-w
   };
 
   pages.changelog = (page) => head(page, `Changelog — ${app.title}`, `What changed in each version of ${app.title}, newest first. Latest: v${latest.version}.`) + header(page) +
-    pageHead('Changelog', 'What changed, newest first.', '') + `
+    pageHead('Changelog', 'What changed, newest first.', 'Every release, with the fixes that went into it. The app’s own change log on GitHub has 137 fixes in it, and the ones that mattered most are here.') + `
     <section class="wrap">
       <ol class="log">${app.changelog.versions.map(entry => logEntry(entry, true)).join('')}
       </ol>
