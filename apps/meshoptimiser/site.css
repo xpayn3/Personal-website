@@ -169,6 +169,10 @@ figcaption { margin-top: 12px; color: var(--tx-3); font-size: 13px; line-height:
 .clip figcaption i { color: var(--tx-3); font: 400 12px/1.7 var(--mono); }
 .clip figcaption strong { color: var(--tx); font-size: 15px; }
 .clip figcaption span { grid-column: 2; }
+.clip figcaption .clip-more { grid-column: 2; justify-self: start; margin-top: 6px; color: var(--accent-hover); font-size: 13.5px; text-decoration: none; transition: color 0.15s ease; }
+.clip figcaption .clip-more:hover { color: #fff; }
+.clip figcaption .clip-more .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.clip figcaption .clip-more > span:not(.sr) { display: inline; grid-column: auto; }
 
 /* a closer look: a picture and what it shows, side by side */
 .spots { display: grid; gap: clamp(48px, 7vw, 112px); }
@@ -446,18 +450,9 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 .has-reveal [data-reveal] { opacity: 0; transform: translate3d(0, 28px, 0); transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0ms), transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0ms); }
 .has-reveal [data-reveal].is-in { opacity: 1; transform: none; }
 
-/* ---- the design band: close-ups, a plan of the window, and its numbers ---- */
+/* ---- the design band: a plan of the window and its numbers ---- */
 .design-lead, .lib-lead { margin-top: calc(clamp(32px, 4vw, 56px) * -0.55); }
 .design-lead { margin-bottom: clamp(32px, 4vw, 56px); }
-.bento { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: clamp(300px, 34vw, 470px); gap: clamp(12px, 1.4vw, 20px); }
-.cu { position: relative; display: flex; flex-direction: column; min-width: 0; overflow: hidden; border-radius: clamp(14px, 1.6vw, 22px); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
-.cu.is-2 { grid-column: span 2; }
-.cu figcaption { margin: 0; padding: clamp(20px, 2.2vw, 32px) clamp(20px, 2.2vw, 32px) 0; }
-.cu figcaption strong { display: block; font-weight: 400; font-size: clamp(19px, 1.8vw, 26px); line-height: 1.15; letter-spacing: -0.025em; }
-.cu figcaption span { display: block; max-width: 40ch; margin-top: 10px; color: var(--tx-2); font-size: 15px; line-height: 1.5; }
-.cu .zoom { flex: 1; min-height: 0; margin-top: clamp(16px, 2vw, 28px); overflow: hidden; border-radius: 0; }
-.cu img { width: 100%; height: 100%; object-fit: cover; object-position: left top; transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1); }
-.cu:hover img { transform: scale(1.025); }
 
 .plan { margin-top: clamp(56px, 7vw, 104px); display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(24px, 4vw, 64px); align-items: center; }
 .plan-head h3 { font-size: clamp(22px, 2.2vw, 30px); line-height: 1.15; letter-spacing: -0.025em; }
@@ -488,7 +483,6 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 .tokens dt { font-size: clamp(22px, 2.4vw, 34px); line-height: 1.1; letter-spacing: -0.03em; font-weight: 300; }
 .tokens dd { margin-top: 8px; color: var(--tx-2); font-size: 13.5px; line-height: 1.45; }
 @media (max-width: 1000px) {
-  .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tokens { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 860px) {
@@ -497,9 +491,6 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
   .plan-notes { grid-column: 1; }
 }
 @media (max-width: 640px) {
-  .bento { grid-template-columns: minmax(0, 1fr); grid-auto-rows: auto; }
-  .cu.is-2 { grid-column: auto; }
-  .cu .zoom { aspect-ratio: 4 / 3; flex: none; }
   .tokens { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
@@ -578,10 +569,36 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
   .lib-scene { height: 380px; }
 }
 
+/* ---- the design band: the app's own parts on a stage ----
+   Each .ap is a shadow root that site.js fills from ui-parts.json with the
+   app's own stylesheet (ui.css), so the parts look exactly as they do in the
+   window. The stage is drawn at 1240 x 880 and scaled to fit (--k). */
+.appui { --k: 1; --mx: 0; --my: 0; position: relative; width: 100%; aspect-ratio: 1240 / 920; border-radius: clamp(16px, 2vw, 28px); background: #141416; box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; contain: layout paint; }
+.appui-stage { position: absolute; left: 0; top: 0; width: 1240px; height: 920px; transform: scale(var(--k)); transform-origin: 0 0; }
+.appui-floor { position: absolute; inset: 0; background-color: #1c1c1e; background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px); background-size: 40px 40px; background-position: center; }
+.appui-model { position: absolute; left: 585px; top: 70px; width: 360px; height: auto; pointer-events: none; filter: drop-shadow(0 40px 36px rgba(0, 0, 0, 0.5));
+  transform: translate3d(calc(var(--mx) * -10px), calc(var(--my) * -8px), 0) rotate(calc(var(--mx) * 1.5deg)); transition: transform 0.25s ease-out; }
+.ap { position: absolute; left: var(--x); top: var(--y); z-index: calc(var(--z) * 10); border-radius: 10px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 2px 10px rgba(0, 0, 0, 0.35);
+  transform: translate3d(calc(var(--mx) * var(--z) * 14px), calc(var(--my) * var(--z) * 10px), 0) rotate(var(--r));
+  transition: transform 0.28s ease-out, box-shadow 0.28s ease-out, opacity 0.8s ease var(--d), translate 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) var(--d); }
+.ap:hover { box-shadow: 0 44px 80px rgba(0, 0, 0, 0.55), 0 2px 10px rgba(0, 0, 0, 0.35); z-index: 90; }
+.has-reveal .appui:not(.is-in) .ap { opacity: 0; translate: 0 56px; }
+.has-reveal .appui:not(.is-in) .appui-model { opacity: 0; }
+.appui-model { transition: transform 0.25s ease-out, opacity 1s ease 0.1s; }
+.ap-dock, .ap-topbar { box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45); }
+.appui-note { margin-top: 14px; color: var(--tx-3); font-size: 13px; text-align: center; }
+@media (max-width: 900px) {
+  .appui { aspect-ratio: auto; height: auto; padding: 16px; contain: none; }
+  .appui-stage { position: static; width: auto; height: auto; transform: none; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .appui-floor, .appui-model, .ap-topbar, .ap-dock, .ap-library { display: none; }
+  .ap { position: static; transform: none; translate: none; }
+  .has-reveal .appui:not(.is-in) .ap { opacity: 1; translate: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: 0.01ms !important; }
   .has-reveal [data-reveal] { opacity: 1; transform: none; }
-  .cu:hover img { transform: none; }
   .lib-part { animation: none; }
+  .appui:not(.is-in) .ap, .appui .ap { translate: none !important; opacity: 1 !important; transition: none; }
 }
