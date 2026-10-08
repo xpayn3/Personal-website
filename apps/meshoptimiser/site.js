@@ -214,7 +214,7 @@
       if (loaded) return; loaded = true;
       let parts, css;
       try {
-        [parts, css] = await Promise.all([fetch('ui-parts.json?v=6').then(r => r.json()), fetch('ui.css?v=6').then(r => r.text())]);
+        [parts, css] = await Promise.all([fetch('ui-parts.json?v=7').then(r => r.json()), fetch('ui.css?v=7').then(r => r.text())]);
       } catch (e) { return; }
       const sheet = new CSSStyleSheet(); sheet.replaceSync(css);
       $$('.ap', stageEl).forEach((host) => {

@@ -288,7 +288,7 @@ strong, b, h1, h2, h3, h4, th { font-weight: var(--fw-semibold); }
 .tree-node:not(:empty)::before { content: ""; flex: 0 0 0px; width: 0px; margin-right: calc(-1 * var(--space-sm)); }
 .tree-node > * { flex-shrink: 0; }
 .tree-node .tree-label { flex: 0 0 auto; min-width: 0px; overflow: visible; text-overflow: clip; }
-.tree-node .tree-iconcol, .tree-node:hover .tree-iconcol, .tree-node.selected .tree-iconcol, .tree-node.selected:hover .tree-iconcol { position: absolute; right: 0px; top: 0px; bottom: 0px; z-index: 1; box-sizing: border-box; width: 60px; height: auto; margin: 0px; padding: 0px 12px 0px 10px; display: flex; align-items: center; background: linear-gradient(var(--row-tint,transparent),var(--row-tint,transparent)),var(--bg); }
+.tree-node .tree-iconcol, .tree-node:hover .tree-iconcol, .tree-node.selected .tree-iconcol, .tree-node.selected:hover .tree-iconcol { position: absolute; right: 0px; top: 0px; bottom: 0px; z-index: 1; box-sizing: border-box; width: 50px; height: auto; margin: 0px; padding: 0px 4px 0px 10px; display: flex; align-items: center; background: linear-gradient(var(--row-tint,transparent),var(--row-tint,transparent)),var(--bg); }
 .tree-line { width: 14px; }
 .tree-line.elbow:has(+ .tree-expand-spacer)::before { width: 23px; }
 .tree-node.is-group .tree-label { color: rgb(196, 196, 198); font-weight: var(--fw-regular); }
