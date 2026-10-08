@@ -198,6 +198,109 @@
     reveal.forEach(node => seen.observe(node));
   }
 
+  // ---- the design band: the app's own parts on a stage ----
+  // ui-parts.json holds each part's markup and ui.css the app's own rules for
+  // them. Every part gets a shadow root, so its ids and selectors work as they
+  // do in the app without touching the page. The stage is scaled to fit; the
+  // pointer moves the parts a little by depth (only while it moves).
+  $$('[data-appui]').forEach((stageEl) => {
+    const stage = $('.appui-stage', stageEl);
+    const fit = () => stageEl.style.setProperty('--k', String(stageEl.clientWidth / 1240));
+    fit();
+    if ('ResizeObserver' in window) new ResizeObserver(fit).observe(stageEl); else window.addEventListener('resize', fit);
+
+    let loaded = false;
+    const load = async () => {
+      if (loaded) return; loaded = true;
+      let parts, css;
+      try {
+        [parts, css] = await Promise.all([fetch('ui-parts.json?v=5').then(r => r.json()), fetch('ui.css?v=5').then(r => r.text())]);
+      } catch (e) { return; }
+      const sheet = new CSSStyleSheet(); sheet.replaceSync(css);
+      $$('.ap', stageEl).forEach((host) => {
+        const html = parts[host.dataset.part]; if (!html) return;
+        const root = host.attachShadow({ mode: 'open' });
+        root.adoptedStyleSheets = [sheet];
+        const box = document.createElement('div'); box.innerHTML = html; root.append(...box.childNodes);
+        wire(root);
+        if (host.dataset.part === 'props') { const sub = $('.prop-hero-sub', root), badge = $('.prop-hero-badge', root); if (sub) sub.style.visibility = 'hidden'; if (badge) badge.style.visibility = 'hidden'; }
+      });
+      stageEl.classList.add('is-loaded');
+    };
+
+    // what the parts do when you use them
+    const count = (el, from, to, ms, done) => {
+      const t0 = performance.now(), fmt = (n) => Math.round(n).toLocaleString('en-US');
+      const step = (now) => { const t = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - t, 3); el.textContent = fmt(from + (to - from) * e); if (t < 1) requestAnimationFrame(step); else if (done) done(); };
+      requestAnimationFrame(step);
+    };
+    const reduce = (root, on) => {
+      const num = $('.prop-hero-num', root); if (!num) return;
+      const hero = $('.prop-hero', root), bar = $('.prop-bar-fill', root), cap = $('.prop-hero-cap span', root), per = $('.prop-hero-cap span:last-child', root), sub = $('.prop-hero-sub', root), badge = $('.prop-hero-badge', root), vals = $$('.prop-value', root);
+      const from = 1103373, to = on ? 552115 : 1103373;
+      if (calm) { num.textContent = to.toLocaleString('en-US'); }
+      else count(num, parseFloat((num.dataset.v || String(from))), to, 900);
+      num.dataset.v = String(to);
+      hero.classList.toggle('is-reduced', on);
+      if (bar) bar.style.width = (to / from * 100).toFixed(2) + '%';
+      if (cap) cap.textContent = (to / from * 100).toFixed(1) + '% of original';
+      if (per) per.textContent = '≈ ' + (on ? '13,146' : '25,660') + ' per part';
+      if (vals[0]) vals[0].textContent = on ? '42' : '43';
+      if (vals[1]) vals[1].textContent = on ? '365,912' : '668,150';
+      if (vals[3]) vals[3].textContent = on ? '12.2 MB' : '22.6 MB';
+      if (sub) sub.style.visibility = on ? '' : 'hidden';
+      if (badge) badge.style.visibility = on ? '' : 'hidden';
+    };
+    const wire = (root) => {
+      root.addEventListener('click', (e) => {
+        const seg = e.target.closest('.cmd-seg > button');
+        if (seg) { $$('.cmd-seg > button', seg.parentElement).forEach(b => b.classList.toggle('active', b === seg)); return; }
+        const head = e.target.closest('.section-h');
+        if (head && !head.closest('.section-fixed') && !head.closest('.section-cmd')) {
+          const body = head.nextElementSibling; const open = head.classList.toggle('collapsed') === false;
+          if (body) body.style.display = open ? '' : 'none';
+          return;
+        }
+        const tile = e.target.closest('.lib-item'); if (tile) { $$('.lib-item', root).forEach(t => t.classList.toggle('selected', t === tile)); return; }
+        const row = e.target.closest('.tree-node'); if (row) { $$('.tree-node', root).forEach(t => t.classList.toggle('selected', t === row)); return; }
+        const vp = e.target.closest('.vpb'); if (vp) { vp.classList.toggle('active'); return; }
+        const tab = e.target.closest('.cs-trigger, .lib-view-btn'); if (tab && tab.classList.contains('lib-view-btn')) { $$('.lib-view-btn', root).forEach(t => t.classList.toggle('active', t === tab)); return; }
+        const go = e.target.closest('#btn-smart-run');
+        if (go) { const host = stageEl.querySelector('.ap-props'); if (host && host.shadowRoot) { const done = go.classList.toggle('is-done'); reduce(host.shadowRoot, done); } }
+      });
+      root.addEventListener('input', (e) => {
+        const r = e.target.closest('.scrub-range'); if (!r) return;
+        const scrub = r.closest('.scrub'), val = $('.scrub-value', scrub), pct = (+r.value / +r.max * 100) + '%';
+        scrub.style.setProperty('--scrub-pct', pct); if (val) val.textContent = String(Math.round(+r.value * 5));
+        const label = ($('.scrub-label', scrub) || {}).textContent || '';
+        if (/All axes/i.test(label)) $$('.scrub-range', root).forEach((o) => { o.value = r.value; const sc = o.closest('.scrub'); sc.style.setProperty('--scrub-pct', pct); const v = $('.scrub-value', sc); if (v) v.textContent = String(Math.round(+r.value * 5)); });
+      });
+      // the value shown is what the slider holds
+      $$('.scrub-range', root).forEach((r) => { const v = $('.scrub-value', r.closest('.scrub')); if (v) r.value = String(Math.round((+v.textContent || 0) / 5)); });
+      const vid = $('video', root); if (vid && mouse && !calm && 'IntersectionObserver' in window) {
+        new IntersectionObserver(([en]) => { if (en.isIntersecting) { vid.play().catch(() => {}); } else vid.pause(); }, { threshold: 0.4 }).observe(vid);
+      }
+    };
+
+    // the first time it is near: fetch, build, and let the parts arrive
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([en], obs) => {
+        if (!en.isIntersecting) return;
+        obs.disconnect(); load().then(() => requestAnimationFrame(() => { stageEl.classList.add('is-in'); }));
+      }, { rootMargin: '300px 0px' }).observe(stageEl);
+    } else { load().then(() => stageEl.classList.add('is-in')); }
+
+    // a little depth under the pointer
+    if (mouse && !calm) {
+      let queued = false, px = 0, py = 0;
+      stageEl.addEventListener('pointermove', (e) => {
+        const r = stageEl.getBoundingClientRect(); px = (e.clientX - r.left) / r.width * 2 - 1; py = (e.clientY - r.top) / r.height * 2 - 1;
+        if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; stageEl.style.setProperty('--mx', px.toFixed(3)); stageEl.style.setProperty('--my', py.toFixed(3)); }); }
+      });
+      stageEl.addEventListener('pointerleave', () => { stageEl.style.setProperty('--mx', '0'); stageEl.style.setProperty('--my', '0'); });
+    }
+  });
+
   // ---- the library: drag a part into the scene ----
   // Pointer events, so a mouse, a finger and a pen all work. A card follows
   // the pointer as a see-through copy; let go over the scene and the part

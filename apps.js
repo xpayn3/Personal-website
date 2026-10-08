@@ -172,20 +172,23 @@ window.labApps = [
           ['Machine parts', [['gear', 'Spur gear'], ['rack', 'Gear rack'], ['sprocket', 'Sprocket'], ['pulley', 'V pulley'], ['bearing', 'Ball bearing'], ['bushing', 'Flanged bushing'], ['spring', 'Spring'], ['handwheel', 'Handwheel'], ['knob', 'Star knob'], ['bracket', 'Corner bracket'], ['stepper', 'Stepper motor'], ['collar', 'Shaft collar'], ['pillowblock', 'Pillow block'], ['wheel', 'Wheel'], ['rail', 'Linear rail'], ['foot', 'Levelling foot'], ['handle', 'Pull handle'], ['enclosure', 'Enclosure']]],
         ],
       },
-      // the design band: close-ups [picture, name, line, columns wide (1 or 2)], a plan of the window, and its numbers
+      // the design band: the app's own components on a stage ([part, x, y, depth, tilt in degrees, delay in ms],
+      // in a 1240 x 920 stage; see designBand in tools/build-app-site.js and ui-parts.json / ui.css), a plan of the window, and its numbers
       design: {
         kicker: 'Design',
         title: 'Every gap is on purpose.',
-        lead: 'The app is drawn like something you’d keep open all day: one dark tone, one blue, the same few corner radii everywhere, and room around every control. These are crops of the real window at twice the size. Nothing here is redrawn.',
-        closeups: [
-          ['Images/apps/meshoptimiser-design-dock.webp', 'A dock that stays out of the way', 'Search, the view modes and the tools you reach for most sit in a small bar over the model. It moves up by itself when a drawer opens.', 2, 'left bottom'],
-          ['Images/apps/meshoptimiser-design-props.webp', 'The number that matters', 'The triangle count comes first and it’s big. What you saved sits right under it, in green.', 1],
-          ['Images/apps/meshoptimiser-design-smart.webp', 'Switches, segments and a number you can drag', 'Click a number to type in it, or drag it sideways. Every option has a switch or a segment, never a dialog.', 1],
-          ['Images/apps/meshoptimiser-design-faste.webp', 'Cards, not dialogs', 'A tool with settings opens as a card beside the model. Enter runs it and Esc puts it away.', 1],
-          ['Images/apps/meshoptimiser-design-explode.webp', 'Sliders you can read', 'Each slider has its own number, and the parts move as you drag.', 1],
-          ['Images/apps/meshoptimiser-design-lib.webp', 'Eighty-six parts, drawn', 'The library tiles are previews of the real parts, rendered by the app itself.', 2, 'left bottom'],
-          ['Images/apps/meshoptimiser-design-tree.webp', 'A tree with room', 'Every row has an eye and a colour chip, the indent is a fixed step, and nothing shifts when you resize the sidebar.', 1],
+        lead: 'None of this is a screenshot. Each card, switch, slider and button below is the app’s own markup and stylesheet, lifted out of the running window and put on a stage. Press a switch, drag a slider, hit Optimise.',
+        stage: [
+          ['topbar', 330, 18, 0.3, 0, 0],
+          ['tree', 24, 92, 0.5, -1.4, 80],
+          ['props', 930, 60, 0.8, 1.2, 160],
+          ['smart', 300, 130, 1.0, -1.2, 240],
+          ['explode', 962, 480, 0.9, 1.6, 320],
+          ['fasteners', 640, 420, 1.2, 1, 400],
+          ['library', 24, 585, 0.7, -0.6, 480],
+          ['dock', 190, 858, 1.1, 0, 560],
         ],
+        note: 'The real components, drawn at their real size and scaled to fit. Move the pointer over the stage.',
         layout: {
           title: 'The whole window, as a plan',
           line: 'Five areas and nothing else. The tools float over the model instead of squeezing it, so the picture never changes size when you open one.',

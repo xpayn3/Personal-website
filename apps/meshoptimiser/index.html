@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=12" />
+  <link rel="stylesheet" href="site.css?v=16" />
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/"}}</script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
@@ -222,37 +222,22 @@
           <p class="kicker">Design</p>
           <h2>Every gap is on purpose.</h2>
         </div>
-        <p class="lead design-lead">The app is drawn like something you’d keep open all day: one dark tone, one blue, the same few corner radii everywhere, and room around every control. These are crops of the real window at twice the size. Nothing here is redrawn.</p>
-        <div class="bento">
-          <figure class="cu is-2" data-reveal style="--d:0ms">
-            <figcaption><strong>A dock that stays out of the way</strong><span>Search, the view modes and the tools you reach for most sit in a small bar over the model. It moves up by itself when a drawer opens.</span></figcaption>
-            <a class="zoom" href="../../Images/apps/meshoptimiser-design-dock.webp" data-group="design" data-caption="A dock that stays out of the way. Search, the view modes and the tools you reach for most sit in a small bar over the model. It moves up by itself when a drawer opens."><img src="../../Images/apps/meshoptimiser-design-dock.webp" alt="MeshOptimiser: A dock that stays out of the way" width="1200" height="545" loading="lazy" decoding="async" style="object-position:left bottom" /></a>
-          </figure>
-          <figure class="cu is-1" data-reveal style="--d:70ms">
-            <figcaption><strong>The number that matters</strong><span>The triangle count comes first and it’s big. What you saved sits right under it, in green.</span></figcaption>
-            <a class="zoom" href="../../Images/apps/meshoptimiser-design-props.webp" data-group="design" data-caption="The number that matters. The triangle count comes first and it’s big. What you saved sits right under it, in green."><img src="../../Images/apps/meshoptimiser-design-props.webp" alt="MeshOptimiser: The number that matters" width="1200" height="1140" loading="lazy" decoding="async" /></a>
-          </figure>
-          <figure class="cu is-1" data-reveal style="--d:140ms">
-            <figcaption><strong>Switches, segments and a number you can drag</strong><span>Click a number to type in it, or drag it sideways. Every option has a switch or a segment, never a dialog.</span></figcaption>
-            <a class="zoom" href="../../Images/apps/meshoptimiser-design-smart.webp" data-group="design" data-caption="Switches, segments and a number you can drag. Click a number to type in it, or drag it sideways. Every option has a switch or a segment, never a dialog."><img src="../../Images/apps/meshoptimiser-design-smart.webp" alt="MeshOptimiser: Switches, segments and a number you can drag" width="1200" height="1140" loading="lazy" decoding="async" /></a>
-          </figure>
-          <figure class="cu is-1" data-reveal style="--d:0ms">
-            <figcaption><strong>Cards, not dialogs</strong><span>A tool with settings opens as a card beside the model. Enter runs it and Esc puts it away.</span></figcaption>
-            <a class="zoom" href="../../Images/apps/meshoptimiser-design-faste.webp" data-group="design" data-caption="Cards, not dialogs. A tool with settings opens as a card beside the model. Enter runs it and Esc puts it away."><img src="../../Images/apps/meshoptimiser-design-faste.webp" alt="MeshOptimiser: Cards, not dialogs" width="1200" height="1140" loading="lazy" decoding="async" /></a>
-          </figure>
-          <figure class="cu is-1" data-reveal style="--d:70ms">
-            <figcaption><strong>Sliders you can read</strong><span>Each slider has its own number, and the parts move as you drag.</span></figcaption>
-            <a class="zoom" href="../../Images/apps/meshoptimiser-design-explode.webp" data-group="design" data-caption="Sliders you can read. Each slider has its own number, and the parts move as you drag."><img src="../../Images/apps/meshoptimiser-design-explode.webp" alt="MeshOptimiser: Sliders you can read" width="1200" height="1140" loading="lazy" decoding="async" /></a>
-          </figure>
-          <figure class="cu is-2" data-reveal style="--d:140ms">
-            <figcaption><strong>Eighty-six parts, drawn</strong><span>The library tiles are previews of the real parts, rendered by the app itself.</span></figcaption>
-            <a class="zoom" href="../../Images/apps/meshoptimiser-design-lib.webp" data-group="design" data-caption="Eighty-six parts, drawn. The library tiles are previews of the real parts, rendered by the app itself."><img src="../../Images/apps/meshoptimiser-design-lib.webp" alt="MeshOptimiser: Eighty-six parts, drawn" width="1200" height="545" loading="lazy" decoding="async" style="object-position:left bottom" /></a>
-          </figure>
-          <figure class="cu is-1" data-reveal style="--d:0ms">
-            <figcaption><strong>A tree with room</strong><span>Every row has an eye and a colour chip, the indent is a fixed step, and nothing shifts when you resize the sidebar.</span></figcaption>
-            <a class="zoom" href="../../Images/apps/meshoptimiser-design-tree.webp" data-group="design" data-caption="A tree with room. Every row has an eye and a colour chip, the indent is a fixed step, and nothing shifts when you resize the sidebar."><img src="../../Images/apps/meshoptimiser-design-tree.webp" alt="MeshOptimiser: A tree with room" width="1200" height="1140" loading="lazy" decoding="async" /></a>
-          </figure>
+        <p class="lead design-lead">None of this is a screenshot. Each card, switch, slider and button below is the app’s own markup and stylesheet, lifted out of the running window and put on a stage. Press a switch, drag a slider, hit Optimise.</p>
+        <div class="appui" data-appui>
+          <div class="appui-stage">
+            <div class="appui-floor" aria-hidden="true"></div>
+            <img class="appui-model" src="../../Images/apps/meshoptimiser-hero-model.webp?v=4" alt="" width="1074" height="1231" loading="lazy" decoding="async" />
+            <div class="ap ap-topbar" data-part="topbar" style="--x:330px;--y:18px;--z:0.3;--r:0deg;--d:0ms"></div>
+            <div class="ap ap-tree" data-part="tree" style="--x:24px;--y:92px;--z:0.5;--r:-1.4deg;--d:80ms"></div>
+            <div class="ap ap-props" data-part="props" style="--x:930px;--y:60px;--z:0.8;--r:1.2deg;--d:160ms"></div>
+            <div class="ap ap-smart" data-part="smart" style="--x:300px;--y:130px;--z:1;--r:-1.2deg;--d:240ms"></div>
+            <div class="ap ap-explode" data-part="explode" style="--x:962px;--y:480px;--z:0.9;--r:1.6deg;--d:320ms"></div>
+            <div class="ap ap-fasteners" data-part="fasteners" style="--x:640px;--y:420px;--z:1.2;--r:1deg;--d:400ms"></div>
+            <div class="ap ap-library" data-part="library" style="--x:24px;--y:585px;--z:0.7;--r:-0.6deg;--d:480ms"></div>
+            <div class="ap ap-dock" data-part="dock" style="--x:190px;--y:858px;--z:1.1;--r:0deg;--d:560ms"></div>
+          </div>
         </div>
+        <p class="appui-note">The real components, drawn at their real size and scaled to fit. Move the pointer over the stage.</p>
 
         <div class="plan" data-reveal>
           <div class="plan-head">
@@ -535,6 +520,6 @@
       <span><a href="../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="site.js?v=10"></script>
+  <script defer src="site.js?v=15"></script>
 </body>
 </html>

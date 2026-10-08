@@ -24,8 +24,8 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 12;
-const JS_V = 10;
+const CSS_V = 16;
+const JS_V = 15;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -343,12 +343,14 @@ ${items.map(([key, label]) => `              <li><button type="button" class="li
           <h2>${esc(d.title)}</h2>
         </div>
         <p class="lead design-lead">${esc(d.lead)}</p>
-        <div class="bento">
-${d.closeups.map(([image, name, line, span, focus], i) => `          <figure class="cu is-${span}" data-reveal style="--d:${(i % 3) * 70}ms">
-            <figcaption><strong>${esc(name)}</strong><span>${esc(line)}</span></figcaption>
-            <a class="zoom" href="${asset(image)}" data-group="design" data-caption="${esc(name + '. ' + line)}"><img src="${asset(image)}" alt="${esc(app.title + ': ' + name)}" width="1200" height="${span === 2 ? 545 : 1140}" loading="lazy" decoding="async"${focus ? ` style="object-position:${focus}"` : ''} /></a>
-          </figure>`).join('\n')}
+        <div class="appui" data-appui>
+          <div class="appui-stage">
+            <div class="appui-floor" aria-hidden="true"></div>
+            <img class="appui-model" src="${asset(site.pop.model)}?v=${site.pop.v || 1}" alt="" width="${site.pop.modelSize[0]}" height="${site.pop.modelSize[1]}" loading="lazy" decoding="async" />
+${d.stage.map(([part, x, y, z, r, delay]) => `            <div class="ap ap-${part}" data-part="${part}" style="--x:${x}px;--y:${y}px;--z:${z};--r:${r}deg;--d:${delay}ms"></div>`).join('\n')}
+          </div>
         </div>
+        <p class="appui-note">${esc(d.note)}</p>
 
         <div class="plan" data-reveal>
           <div class="plan-head">
