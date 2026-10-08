@@ -159,6 +159,38 @@
     }, { passive: true });
   }
 
+  // ---- the opening: the part steps out of the window ----
+  // The scroll through .pop sets --p (0 to 1); the styles do the rest. The
+  // listener exists only while the section is on screen, and only one frame
+  // is scheduled per scroll event, so nothing runs while the page is still.
+  const pop = $('[data-pop]');
+  if (pop && !calm && 'IntersectionObserver' in window && window.matchMedia('(min-width: 861px)').matches) {
+    let queued = false, last = -1;
+    const place = () => {
+      queued = false;
+      const rect = pop.getBoundingClientRect();
+      const room = rect.height - ($('.pop-pin', pop).offsetHeight || window.innerHeight);
+      const p = Math.max(0, Math.min(1, room > 0 ? -rect.top / room : 0));
+      const eased = p * p * (3 - 2 * p);
+      if (Math.abs(eased - last) > 0.0005) { last = eased; pop.style.setProperty('--p', eased.toFixed(4)); }
+    };
+    const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(place); } };
+    new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { window.addEventListener('scroll', onScroll, { passive: true }); window.addEventListener('resize', onScroll); onScroll(); }
+      else { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); }
+    }, { rootMargin: '200px 0px' }).observe(pop);
+  }
+
+  // ---- things that arrive as they come into view ----
+  const reveal = $$('[data-reveal]');
+  if (reveal.length && !calm && 'IntersectionObserver' in window) {
+    document.documentElement.classList.add('has-reveal');
+    const seen = new IntersectionObserver((entries) => entries.forEach((entry) => {
+      if (entry.isIntersecting) { entry.target.classList.add('is-in'); seen.unobserve(entry.target); }
+    }), { threshold: 0.15, rootMargin: '0px 0px -6% 0px' });
+    reveal.forEach(node => seen.observe(node));
+  }
+
   // ---- clips ----
   // A clip is fetched and played only while it is on screen and stops when
   // it leaves. On touch devices, and with reduced motion, it stays a poster

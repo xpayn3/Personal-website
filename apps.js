@@ -49,7 +49,7 @@ window.labApps = [
     icon: 'Images/apps/meshoptimiser-icon.svg',
     cover: 'Images/apps/meshoptimiser-hero.webp',
     shots: [
-      ['Images/apps/meshoptimiser-hero.webp', 'Mid clean-up on a rear derailleur: the Fasteners panel has found its twelve bolts by shape, ready to isolate or delete'],
+      ['Images/apps/meshoptimiser-hero.webp', 'A rear derailleur in the exploded view, pulled apart a little: the part tree on the left, the triangle count and the clean-up tools on the right'],
       ['Images/apps/meshoptimiser-viewer.webp', 'A 1,583-part, 5.4-million-triangle assembly: the tree on the left, the scene’s totals on the right'],
       ['Images/apps/meshoptimiser-library.webp', 'The library drawer: a pillow block and a handwheel placed, and a stepper motor on its way in, shown where it will stand'],
       ['Images/apps/meshoptimiser-bolt-nut.webp', 'A hex bolt that carries its own nut: size, length and the nut’s distance from the head are all parameters'],
@@ -81,6 +81,19 @@ window.labApps = [
     ],
     site: {
       path: 'apps/meshoptimiser/',
+      // the opening picture as two layers (see popHero in tools/build-app-site.js):
+      // the window without its model, and the model cut out, placed at box = [left, top, width] in % of the window
+      pop: {
+        ui: 'Images/apps/meshoptimiser-hero-ui.webp',
+        model: 'Images/apps/meshoptimiser-hero-model.webp',
+        size: [2400, 1551],
+        modelSize: [1173, 1327],
+        box: [41.38, 15.89, 33.94],
+        label: 'A rear derailleur steps out of the MeshOptimiser window',
+        kicker: 'See what is inside',
+        title: 'Pull it apart a little, and look.',
+        line: 'A rear derailleur with its parts eased apart. Every pin, bolt and bushing has its own row in the tree, its own triangle count, and a button to hide it, simplify it or take it out.',
+      },
       lead: 'MeshOptimiser reads a heavy STEP assembly, keeps one mesh for every part that repeats, and gives back a compressed GLB with a viewer to inspect, clean up and export it. Free, open source, and nothing leaves your machine.',
       // what the pipeline collapses (the README's example)
       collapse: [

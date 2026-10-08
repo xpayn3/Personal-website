@@ -24,8 +24,8 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 2;
-const JS_V = 2;
+const CSS_V = 3;
+const JS_V = 3;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -227,6 +227,88 @@ ${entry.items.map(([tag, line]) => `              <li><b class="is-${tag.toLower
 ${rows.map(([label, command]) => `          <div><dt>${esc(label)}</dt><dd><code>${esc(command)}</code><button type="button" class="copy" data-copy="${esc(command)}">Copy</button></dd></div>`).join('\n')}
         </dl>`;
 
+  // The opening picture. With `site.pop` it is two layers that come apart as
+  // the page scrolls (site.js sets --p, 0 to 1): the app without its model,
+  // and the model on its own, cut out and placed exactly where it was, so at
+  // rest it is the app as it is and a little further down the part steps out
+  // of the window. `pop.box` = [left, top, width] of the cut-out, in % of the frame.
+  const popHero = () => {
+    const pop = site.pop;
+    const cover = app.shots.find(([src]) => src === app.cover) || app.shots[0];
+    if (!pop) return `    <section class="wrap hero-shot">
+      ${shot(cover, 'hero', true)}
+    </section>`;
+    const [left, top, width] = pop.box;
+    return `    <section class="pop" data-pop aria-label="${esc(pop.label)}">
+      <div class="pop-pin">
+        <div class="wrap pop-stage">
+          <div class="pop-art">
+            <a class="zoom pop-frame" href="${asset(cover[0])}" data-group="hero" data-caption="${esc(cover[1])}">
+              <img class="pop-ui" src="${asset(pop.ui)}" alt="${esc(app.title + ': ' + cover[1])}" width="${pop.size[0]}" height="${pop.size[1]}" decoding="async" fetchpriority="high" />
+            </a>
+            <img class="pop-model" src="${asset(pop.model)}" alt="" width="${pop.modelSize[0]}" height="${pop.modelSize[1]}" decoding="async" style="left:${left}%;top:${top}%;width:${width}%" />
+          </div>
+          <div class="pop-copy" aria-hidden="false">
+            <p class="kicker">${esc(pop.kicker)}</p>
+            <h2>${esc(pop.title)}</h2>
+            <p>${esc(pop.line)}</p>
+          </div>
+        </div>
+      </div>
+    </section>`;
+  };
+
+  // The design band: close-ups of the controls, the app's layout drawn as a
+  // plan, and the numbers it is built from. `site.design` holds the words.
+  const designBand = () => {
+    const d = site.design;
+    if (!d) return '';
+    const L = d.layout;
+    return `
+    <section class="band design" id="design">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">${esc(d.kicker)}</p>
+          <h2>${esc(d.title)}</h2>
+        </div>
+        <p class="lead design-lead">${esc(d.lead)}</p>
+        <div class="bento">
+${d.closeups.map(([image, name, line, span, focus], i) => `          <figure class="cu is-${span}" data-reveal style="--d:${(i % 3) * 70}ms">
+            <figcaption><strong>${esc(name)}</strong><span>${esc(line)}</span></figcaption>
+            <a class="zoom" href="${asset(image)}" data-group="design" data-caption="${esc(name + '. ' + line)}"><img src="${asset(image)}" alt="${esc(app.title + ': ' + name)}" width="1200" height="${span === 2 ? 545 : 1140}" loading="lazy" decoding="async"${focus ? ` style="object-position:${focus}"` : ''} /></a>
+          </figure>`).join('\n')}
+        </div>
+
+        <div class="plan" data-reveal>
+          <div class="plan-head">
+            <h3>${esc(L.title)}</h3>
+            <p>${esc(L.line)}</p>
+          </div>
+          <div class="plan-art" role="img" aria-label="${esc(L.alt)}">
+            <div class="plan-window" style="--rail:${L.left};--side:${L.right};--top:${L.top};--foot:${L.status}">
+              <div class="plan-top"><span>${esc(L.names[0])}</span><b>${L.top}</b></div>
+              <div class="plan-left"><span>${esc(L.names[1])}</span><b>${L.left}</b></div>
+              <div class="plan-view"><span>${esc(L.names[2])}</span><b>${L.view}</b>
+                <i class="plan-dock"><u></u><u></u><u></u><u></u><u></u><u></u><u></u></i>
+                <i class="plan-card"></i>
+                <i class="plan-cube"></i>
+              </div>
+              <div class="plan-right"><span>${esc(L.names[3])}</span><b>${L.right}</b></div>
+              <div class="plan-foot"><span>${esc(L.names[4])}</span><b>${L.status}</b></div>
+            </div>
+          </div>
+          <ol class="plan-notes">
+${L.notes.map(([name, line]) => `            <li><strong>${esc(name)}</strong><span>${esc(line)}</span></li>`).join('\n')}
+          </ol>
+        </div>
+
+        <dl class="tokens" data-reveal>
+${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${esc(line)}</dd></div>`).join('\n')}
+        </dl>
+      </div>
+    </section>`;
+  };
+
   // ---- the pages ----
   const pages = {};
 
@@ -241,9 +323,7 @@ ${rows.map(([label, command]) => `          <div><dt>${esc(label)}</dt><dd><code
         <a class="more" href="docs.html">Read the docs</a>
       </div>
     </section>
-    <section class="wrap hero-shot">
-      ${shot(app.shots.find(([src]) => src === app.cover) || app.shots[0], 'hero', true)}
-    </section>
+${popHero()}
 
     <section class="band">
       <div class="wrap">
@@ -303,7 +383,7 @@ ${app.steps.map(([name, line], i) => `          <li><i>${pad2(i + 1)}</i><h3>${e
         </div>
       </div>
     </section>
-
+${designBand()}
     <section class="band">
       <div class="wrap">
         <div class="band-head">
