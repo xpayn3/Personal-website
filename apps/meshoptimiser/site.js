@@ -171,7 +171,7 @@
       if (asked) return;
       asked = true;
       try { const gl = document.createElement('canvas').getContext('webgl2') || document.createElement('canvas').getContext('webgl'); if (!gl) return; } catch (e) { return; }
-      import('./hero3d.js?v=5').then(m => m.start(pop, '')).then((h) => { hero3d = h; h.setP(Math.max(0, last)); }).catch(() => {});
+      import('./hero3d.js?v=6').then(m => m.start(pop, '')).then((h) => { hero3d = h; h.setP(Math.max(0, last)); }).catch(() => {});
     };
     const place = () => {
       queued = false;

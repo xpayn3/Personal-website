@@ -213,10 +213,10 @@ window.labApps = [
       pop: {
         ui: 'Images/apps/meshoptimiser-hero-ui.webp',
         model: 'Images/apps/meshoptimiser-hero-model.webp',
-        v: 3,
+        v: 4,
         size: [2400, 1551],
-        modelSize: [1066, 1230],
-        box: [43.52, 18.35, 30.84],
+        modelSize: [1074, 1231],
+        box: [34.46, 18.13, 31.08],
         label: 'A rear derailleur comes out of the MeshOptimiser window and pulls itself apart',
         kicker: 'See what is inside',
         title: 'Pull it apart, and look inside.',

@@ -14,8 +14,8 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 export async function start(pop, base) {
   const [meta, bin] = await Promise.all([
-    fetch(base + 'hero-mesh.json?v=3').then(r => r.json()),
-    fetch(base + 'hero-mesh.bin?v=3').then(r => r.arrayBuffer()),
+    fetch(base + 'hero-mesh.json?v=4').then(r => r.json()),
+    fetch(base + 'hero-mesh.bin?v=4').then(r => r.arrayBuffer()),
   ]);
   const pin = pop.querySelector('.pop-pin'), art = pop.querySelector('.pop-art');
   const canvas = document.createElement('canvas');
