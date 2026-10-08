@@ -354,7 +354,7 @@ window.labApps = [
       link: 'https://github.com/xpayn3/MeshOptimiser/blob/main/CHANGELOG.md',
       versions: [
         { version: '0.14.0', fixes: 72, date: '8 Oct 2026 · 23:50', latest: true,
-          summary: 'The biggest release so far. A CAD view and a Shading card, Dynamic place, an Align to floor that shows what it will do, Help inside the app, a Settings window that can change the look of the interface, a rebuilt Export window, and three tools that clean a scene up for you. We also read the whole code base, tested it hard on assemblies with thousands of parts and fixed 72 things, most of them in the places you only notice when they go wrong: undo, exports and big files. Opening a big model is faster, too.',
+          summary: 'The biggest release so far. A CAD view and a Shading card, Dynamic place, an Align to floor that shows what it will do, Help inside the app, a Settings window that can change the look of the interface, a rebuilt Export window, and three tools that clean a scene up for you. I also read the whole code base, tested it hard on assemblies with thousands of parts and fixed 72 things, most of them in the places you only notice when they go wrong: undo, exports and big files. Opening a big model is faster, too.',
           items: [
             ['New', 'A CAD view (key 6) and a Shading card. The CAD view has no lights or reflections: every surface is shaded by which way it faces the camera, with a dark line on every sharp edge. The card under Properties holds every look as a small 3D nut: Default, Clay, Porcelain, Steel and Red wax, and the CAD looks Ceramic, Light and Mono. One Outlines switch draws the edge lines in every view.'],
             ['New', 'Dynamic place (key D). Press the selected part and drag it over other surfaces: it rests on the surface under the cursor and turns to face it, like dragging a part out of a library onto a model. Choose which side of the part points away from the surface, a gap, and a turn; the wheel turns it while you hold it. One undo step.'],
@@ -369,7 +369,7 @@ window.labApps = [
             ['New', 'Fasteners finds bolts, screws, nuts and washers by their shape, whatever they’re called, and selects them. Stacked copies finds parts drawn twice in the same place. Select similar has a strictness slider, from “about the same size” to “the very same shape”.'],
             ['New', 'The library is a drawer under the viewport (Shift + L). Click a part to look at it, turn it, set its size, and then it goes in with those sizes. A starred shelf, small or large tiles.'],
             ['New', 'Drop a file on a scene that already has parts and the app asks: add it here, or open it in a new tab. Right-click a tab for duplicate, close others and recent files. Hold Shift while dragging a handle to snap, and turn the wheel to change the step.'],
-            ['Fix', 'Cinema 4D opens the FBX. A binary FBX carries an id, a creation time and a closing code that have to agree, and the FBX SDK refuses the file when they don’t. Ours wrote a random id with a fixed code, so Blender and the app could read it and Cinema 4D couldn’t. They agree now.'],
+            ['Fix', 'Cinema 4D opens the FBX. A binary FBX carries an id, a creation time and a closing code that have to agree, and the FBX SDK refuses the file when they don’t. Mine wrote a random id with a fixed code, so Blender and the app could read it and Cinema 4D couldn’t. They agree now.'],
             ['Fix', 'An FBX now says what its units are and which way is up. A 2.6 m machine used to arrive in Cinema 4D 26 m long, and a Z-up scene was labelled Y-up.'],
             ['Fix', 'The binary FBX shares its materials: one per colour instead of one per mesh. A 778-part model arrived with 778 materials and took 13 seconds to open. Now it has 40 and opens in 1.4 s. OBJ keeps parts that share a name separate: 778 parts used to arrive as 325.'],
             ['Fix', 'Up axis and Scene scale no longer leak into the file for some parts and not others. A part you moved after changing either one used to be written turned or resized while its neighbours weren’t.'],
@@ -458,7 +458,7 @@ window.labApps = [
             ['Fix', 'The icon set is pinned to one version (0.10.1). It used to load as “latest”, so an upstream release could rename or drop an icon without warning.'],
           ] },
         { version: '0.9.0', fixes: 24, date: '7 Oct 2026 · 12:41',
-          summary: 'More trustworthy. A self-test that runs inside the app, undo for every action, exports that match the scene, and a restyled interface. This was the version where we stopped trusting that things worked and started checking.',
+          summary: 'More trustworthy. A self-test that runs inside the app, undo for every action, exports that match the scene, and a restyled interface. This was the version where I stopped trusting that things worked and started checking.',
           items: [
             ['New', 'A self-test that runs inside the app and checks the things that broke before.'],
             ['Fix', 'Decimate destroyed parts. The removal count was taken from the un-indexed corner count, three per triangle, instead of the welded vertex count, so at −50% most parts were reduced to zero triangles. Now −25, −50 and −75% remove exactly that share.'],
