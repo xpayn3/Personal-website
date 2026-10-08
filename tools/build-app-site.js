@@ -24,7 +24,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 17;
+const CSS_V = 18;
 const JS_V = 17;
 
 // The pages of an app's site, in the order of its navigation. `file` is
