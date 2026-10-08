@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>View modes — MeshOptimiser Docs</title>
-  <meta name="description" content="Five ways to draw the same model: solid, wireframe, X-ray, heatmap and clay. One key each, and what each is good for." />
+  <meta name="description" content="Six ways to draw the same model: solid, wireframe, X-ray, heatmap, clay and CAD. One key each, plus the Shading card for the clay and CAD looks." />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/view-modes" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="View modes — MeshOptimiser Docs" />
-  <meta property="og:description" content="Five ways to draw the same model: solid, wireframe, X-ray, heatmap and clay. One key each, and what each is good for." />
+  <meta property="og:description" content="Six ways to draw the same model: solid, wireframe, X-ray, heatmap, clay and CAD. One key each, plus the Shading card for the clay and CAD looks." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/view-modes" />
   <meta property="og:type" content="website" />
@@ -67,10 +67,15 @@
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
+        <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html">How to read the numbers</a>
+        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
+        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -104,15 +109,16 @@
       <article class="kb-article">
         <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#look">Look and arrange</a></p>
         <h1>View modes</h1>
-        <p class="lead">Five ways to draw the same model: solid, wireframe, X-ray, heatmap and clay. One key each, and what each is good for.</p>
+        <p class="lead">Six ways to draw the same model: solid, wireframe, X-ray, heatmap, clay and CAD. One key each, plus the Shading card for the clay and CAD looks.</p>
         <div class="kb-body">
-          <p>A view mode changes how the model is drawn, not the model itself. Switch with the number keys, or with the buttons on the tool strip at the left edge of the viewport.</p>
+          <p>A view mode changes how the model is drawn, not the model itself. Switch with the number keys. The first four also have buttons on the tool strip at the left edge of the viewport. Clay and CAD are chosen on the <span class="ui">Shading</span> card in the right sidebar (see below).</p>
           <dl class="kb-keys">
             <div><dt><kbd>1</kbd></dt><dd>Solid: the normal view, with colours and lighting</dd></div>
             <div><dt><kbd>2</kbd></dt><dd>Wireframe: only the edges of the triangles</dd></div>
             <div><dt><kbd>3</kbd></dt><dd>X-ray: every part as a see-through shell</dd></div>
             <div><dt><kbd>4</kbd></dt><dd>Heatmap: parts coloured by triangle density</dd></div>
             <div><dt><kbd>5</kbd></dt><dd>Clay: every part in one plain material. Press it again to return to solid.</dd></div>
+            <div><dt><kbd>6</kbd></dt><dd>CAD: flat, matte shading with a dark line on every sharp edge. Press it again to return to solid.</dd></div>
           </dl>
           <h2 id="solid">Solid</h2>
           <p>The everyday view. Parts have their own colours and are lit by a soft studio and a light that follows the camera, so dark parts keep an edge and a sheen.</p>
@@ -126,13 +132,35 @@
           <p>Colours each part by how many triangles it has for its size. It answers the question “where is the weight?” at a glance. See <a href="../docs/read-the-numbers.html">How to read the numbers</a>.</p>
           <h2 id="clay">Clay</h2>
           <p>Takes the colours away. Every part gets the same plain material, so all that is left is form: edges, curvature, and what stands in front of what. It is a good view for judging whether a simplified model still reads as the same object.</p>
-          <p>Right-click the clay button on the tool strip for other looks: porcelain, steel or red wax.</p>
+          <p>Clay has four looks: <span class="ui">Clay</span> (matte grey), <span class="ui">Porcelain</span> (pale and glossy), <span class="ui">Steel</span> (metal) and <span class="ui">Red wax</span>. You choose the look on the Shading card.</p>
           <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-clay.webp" data-group="article" data-caption="Clay: every part in one plain material, so only the form is left."><img src="../../../Images/apps/meshoptimiser-clay.webp" alt="MeshOptimiser: Clay: every part in one plain material, so only the form is left." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Clay: every part in one plain material, so only the form is left.</figcaption></figure>
+          <h2 id="cad">CAD</h2>
+          <p>The look of a CAD program. There are no lights, no reflections and no shadows. A surface gets its shade only from the way it faces the camera: lighter where it looks left, darker where it looks right, and a warm sand tone where it looks up. (This kind of shading is called a matcap: a picture of one lit ball, and every surface takes the colour of the spot on the ball that faces the same way.)</p>
+          <p>A grey or white part takes the shading as it is. A coloured part keeps its colour, with the same shading on top. A fine dark line follows the sharp edges of every part, and the sides of round parts get a thin dark outline too, so the form stays easy to read.</p>
+          <p>CAD has three looks: <span class="ui">Ceramic</span> (the default, with warm tops), <span class="ui">Light</span> (brighter) and <span class="ui">Mono</span> (plain grey, no warm tone).</p>
+          <h2 id="the-shading-card">The Shading card</h2>
+          <p>In the right sidebar, under <span class="ui">Properties</span>, is the <span class="ui">Shading</span> card. If it is folded, click its header to open it. It is one row of small 3D nuts, each drawn in its own look, so you see what a look does before you choose it. The row scrolls sideways when the sidebar is narrow.</p>
+          <dl class="table">
+            <div><dt>Default</dt><dd>The plain Solid view, with the model’s own materials.</dd></div>
+            <div><dt>Clay, Porcelain, Steel, Red wax</dt><dd>The four clay looks.</dd></div>
+            <div><dt>Ceramic, Light, Mono</dt><dd>The three CAD looks. They carry a small CAD badge.</dd></div>
+            <div><dt>Outlines</dt><dd>A switch under the row. It turns the dark lines on sharp edges on or off.</dd></div>
+          </dl>
+          <ol class="kb-steps">
+            <li>Click a look. The view switches to clay or CAD, whichever the look belongs to, and the look you clicked is lit.</li>
+            <li>Click another look to change it. The model changes at once.</li>
+            <li>Click the lit look again to go back to Solid. Clicking <span class="ui">Default</span> does the same.</li>
+          </ol>
+          <p>Keys 5 and 6 do the same as clicking: they switch to clay or CAD with the last look you used, and press again to go back to solid.</p>
+          <h2 id="outlines">Outlines</h2>
+          <p>The <span class="ui">Outlines</span> switch draws a fine dark line along the sharp edges of every part. It works in Solid, Clay and CAD views, and is on to begin with. It is not drawn in Wireframe, X-ray or Heatmap. The same switch is under <span class="ui">Settings</span>, <span class="ui">Viewport</span>, together with the choice of CAD look.</p>
+          <p>On a very large scene, the smallest parts may be drawn without outlines to keep the view quick. The app tells you when it does this.</p>
           <h2 id="good-to-know">Good to know</h2>
           <ul class="kb-points">
             <li>A view mode never reaches a file. Saving and exporting switch to solid while they run, then switch back.</li>
             <li>To see inside a model, use X-ray, <a href="../docs/hide-isolate.html">Hide, isolate, show all</a> or <a href="../docs/select-hidden-parts.html">Select hidden parts</a>.</li>
-            <li>The background and the lighting are under <span class="ui">Settings</span>, <span class="ui">Viewport</span> and <span class="ui">Settings</span>, <span class="ui">Scene</span>.</li>
+            <li>The background and the lighting are under <span class="ui">Settings</span>, <span class="ui">Viewport</span> and <span class="ui">Settings</span>, <span class="ui">Scene</span>. CAD does not use the lights at all.</li>
+            <li>A <a href="../docs/screenshots.html">screenshot</a> uses the view that is on, unless you choose Solid, Wireframe or X-ray in the screenshot window.</li>
           </ul>
           <div class="kb-see"><h2>Related</h2><ul>
             <li><a href="../docs/read-the-numbers.html">How to read the numbers</a></li>
@@ -153,7 +181,7 @@
           <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.13.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.14.0</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
       </div>

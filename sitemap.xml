@@ -784,7 +784,25 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/help-window</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://lukagrcar.com/apps/meshoptimiser/docs/read-the-numbers</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/heavy-parts</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/smart-optimise</loc>
     <lastmod>2026-10-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -797,6 +815,18 @@
   </url>
   <url>
     <loc>https://lukagrcar.com/apps/meshoptimiser/docs/select-hidden-parts</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/fasteners</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/stacked-copies</loc>
     <lastmod>2026-10-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

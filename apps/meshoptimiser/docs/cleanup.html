@@ -67,10 +67,15 @@
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
+        <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html">How to read the numbers</a>
+        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
+        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -115,7 +120,8 @@
             <div><dt>Deduplicate geometry</dt><dd>Looks for parts whose mesh data is identical to another part’s. See the note below before you use it.</dd></div>
           </dl>
           <p>Each command reports what it did, or says that it found nothing.</p>
-          <aside class="kb-note"><p>Be careful with <span class="ui">Deduplicate geometry</span> on an assembly. In v0.13.0 it removes the repeats of a part and keeps the first one, so a set of identical bolts is reduced to a single bolt. Check the parts count afterwards, and press <kbd>Ctrl</kbd><kbd>Z</kbd> if it took parts you wanted.</p></aside>
+          <aside class="kb-note"><p>Be careful with <span class="ui">Deduplicate geometry</span> on an assembly. It removes the repeats of a part wherever they stand and keeps the first one, so a set of identical bolts is reduced to a single bolt. Check the parts count afterwards, and press <kbd>Ctrl</kbd><kbd>Z</kbd> if it took parts you wanted. To remove only copies that sit in the same place, use <a href="../docs/stacked-copies.html">Stacked copies</a> instead.</p></aside>
+          <p><a href="../docs/smart-optimise.html">Smart optimise</a> starts every run with the first three commands, empty parts, degenerate parts and empty groups, under the name <span class="ui">Remove empty and broken parts</span>. It does not run <span class="ui">Deduplicate geometry</span> or any of the Tidy geometry commands.</p>
           <h2 id="tidy-geometry">Tidy geometry</h2>
           <dl class="table">
             <div><dt>Recompute smooth normals</dt><dd>Works out the shading directions of every surface again. Use it when parts look oddly faceted or dark after large changes.</dd></div>
@@ -131,6 +137,8 @@
           </dl>
           <p>The status bar shows how many parts are flagged. Click that number to isolate them, look at them, and decide what to do.</p>
           <div class="kb-see"><h2>Related</h2><ul>
+            <li><a href="../docs/stacked-copies.html">Stacked copies</a></li>
+            <li><a href="../docs/smart-optimise.html">Smart optimise</a></li>
             <li><a href="../docs/parts-tree.html">The parts tree</a></li>
             <li><a href="../docs/align-to-floor.html">Align to floor</a></li>
             <li><a href="../docs/workflow.html">A sensible order to work in</a></li>
@@ -149,7 +157,7 @@
           <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.13.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.14.0</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
       </div>

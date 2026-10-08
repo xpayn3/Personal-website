@@ -7,15 +7,15 @@
   <meta name="theme-color" content="#101010" />
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
-  <title>Fit to budget — MeshOptimiser Docs</title>
-  <meta name="description" content="Type the number of triangles the whole scene may have. The densest meshes are reduced first until the total fits." />
+  <title>Heavy parts — MeshOptimiser Docs</title>
+  <meta name="description" content="A list of the parts that hold the most triangles, heaviest first, with a count beside its title. Tick the ones you do not need and delete them in one step." />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
-  <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/fit-to-budget" />
+  <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/heavy-parts" />
   <meta property="og:site_name" content="MeshOptimiser" />
-  <meta property="og:title" content="Fit to budget — MeshOptimiser Docs" />
-  <meta property="og:description" content="Type the number of triangles the whole scene may have. The densest meshes are reduced first until the total fits." />
+  <meta property="og:title" content="Heavy parts — MeshOptimiser Docs" />
+  <meta property="og:description" content="A list of the parts that hold the most triangles, heaviest first, with a count beside its title. Tick the ones you do not need and delete them in one step." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
-  <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/fit-to-budget" />
+  <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/heavy-parts" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -70,7 +70,7 @@
         <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html">How to read the numbers</a>
-        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/heavy-parts.html" aria-current="page">Heavy parts</a>
         <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
@@ -80,7 +80,7 @@
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
         <a href="../docs/decimate.html">Decimate</a>
-        <a href="../docs/fit-to-budget.html" aria-current="page">Fit to budget</a>
+        <a href="../docs/fit-to-budget.html">Fit to budget</a>
         <a href="../docs/cleanup.html">Auto cleanup and Tidy geometry</a>
         <a href="../docs/workflow.html">A sensible order to work in</a>
         <h2>Look and arrange</h2>
@@ -108,42 +108,46 @@
       </nav>
       <article class="kb-article">
         <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#lighter">Make it lighter</a></p>
-        <h1>Fit to budget</h1>
-        <p class="lead">Type the number of triangles the whole scene may have. The densest meshes are reduced first until the total fits.</p>
+        <h1>Heavy parts</h1>
+        <p class="lead">A list of the parts that hold the most triangles, heaviest first, with a count beside its title. Tick the ones you do not need and delete them in one step.</p>
         <div class="kb-body">
-          <p>Often you are given one number: “the model must be under 500,000 triangles”. Fit to budget takes that number and decides for you which parts to reduce and by how much. The densest meshes give up the most. Large, sparse ones are left alone.</p>
-          <h2 id="when-to-use-it">When to use it</h2>
-          <p>Near the end, after you have deleted the parts that are not needed. Deleting is free. Reducing costs detail, so reduce only what is left.</p>
+          <p>A few parts often hold a large share of a model’s triangles. The card <span class="ui">Heavy parts</span> lists them, so you can see where the weight is without searching the tree.</p>
+          <h2 id="what-the-card-lists">What the card lists</h2>
+          <p>Only parts with more than 10,000 triangles are listed. The heaviest is at the top, and the list holds at most 500 parts. Each row shows the part’s place in the list, its name, its triangle count (for example 12.4k) and a bar that compares it with the heaviest part. Hover over a row to see the full name, the exact count and the rank.</p>
+          <p>The card is in the right sidebar, under Inspect. Beside its title is a small number: how many parts are over the limit. You can read it while the card is folded. It goes down as you delete or reduce parts, and it reads 0, dimmed, when no part is that big.</p>
           <h2 id="steps">Steps</h2>
           <ol class="kb-steps">
-            <li>Open the card <span class="ui">Reduce triangles</span> in the right sidebar.</li>
-            <li>Type the budget in the field beside <span class="ui">Fit to budget</span>. You can write <code>150000</code>, <code>150k</code> or <code>1.5m</code>.</li>
-            <li>Press <span class="ui">Preview…</span>. A table lists the meshes that will be reduced, with their triangle count now and after, and an estimate of the new total.</li>
-            <li>Press <span class="ui">Fit to budget</span>.</li>
-            <li>A progress card appears. <span class="ui">Cancel</span> stops it, and then nothing is changed.</li>
-            <li>A message gives the result, for example how many triangles the scene went from and to, and how many meshes were reduced.</li>
+            <li>Open the card <span class="ui">Heavy parts</span> in the right sidebar, under Inspect.</li>
+            <li>Click a row to tick it. The part is selected in the viewport. Click the row again to take the tick off. Rows you ticked before stay ticked.</li>
+            <li>To tick a run of rows, click the first one, then hold <kbd>Shift</kbd> and click the last.</li>
+            <li>To see where a part is, right-click its row. The view moves to the part. The ticks stay as they are.</li>
+            <li>Press the button under the list. It says what it will remove, for example “Delete 3 parts · 171.3k triangles”. It cannot be pressed until a row is ticked.</li>
+            <li>If you removed too much, press <kbd>Ctrl</kbd><kbd>Z</kbd>. The whole delete is one undo step.</li>
           </ol>
-          <h2 id="what-to-expect">What to expect</h2>
+          <aside class="kb-note"><p>A tick is the same thing as selecting the part. A part that you selected in the viewport or in the tree is ticked in the list too, if it is listed. The button deletes only the ticked rows, never a selected part that is not on the list.</p></aside>
+          <h2 id="what-to-do-with-a-heavy-part">What to do with a heavy part</h2>
           <ul class="kb-points">
-            <li>The preview is an estimate. A mesh can stop a little short of its share.</li>
-            <li>Every mesh keeps at least 16 triangles. If the budget is lower than the scene can reach, the app goes as far as it can and says that the budget was not reached.</li>
-            <li>If the scene is already under the budget, the app says so and changes nothing.</li>
+            <li>Delete it, if nobody will miss it. Deleting costs no quality.</li>
+            <li>Reduce it with <a href="../docs/decimate.html">Decimate</a>, if it matters and is simply too dense.</li>
+            <li>Replace it with a simple stand-in using <a href="../docs/smart-fit.html">Smart fit</a>, if only its size and place matter.</li>
+            <li>Leave it, if it is the part everybody will look at.</li>
           </ul>
-          <h2 id="undo">Undo</h2>
-          <p>The whole step is one undo: <kbd>Ctrl</kbd><kbd>Z</kbd> restores every mesh.</p>
-          <aside class="kb-note"><p>If the result looks too rough, undo, delete more of what is not needed (see <a href="../docs/select-hidden-parts.html">Select hidden parts</a> and <a href="../docs/delete-small-parts.html">Delete small parts</a>), and run it again. The same budget then leaves more triangles for the parts that remain.</p></aside>
-          <p><a href="../docs/smart-optimise.html">Smart optimise</a> can do this as its last step, together with the other clean-ups. The whole run is then one undo step. Its card is just above the Reduce triangles card in the sidebar.</p>
+          <h2 id="good-to-know">Good to know</h2>
+          <ul class="kb-points">
+            <li>The list follows the scene. After a delete, an undo or a decimate it updates a moment later.</li>
+            <li>The limit of 10,000 triangles is fixed. A scene made of many lighter parts can be heavy without one part in the list. To bring a whole scene down to a number, use <a href="../docs/fit-to-budget.html">Fit to budget</a> or <a href="../docs/smart-optimise.html">Smart optimise</a>.</li>
+            <li>For a picture of where the density is, press <kbd>4</kbd> for the heatmap. See <a href="../docs/read-the-numbers.html">How to read the numbers</a>.</li>
+          </ul>
           <div class="kb-see"><h2>Related</h2><ul>
-            <li><a href="../docs/decimate.html">Decimate</a></li>
-            <li><a href="../docs/smart-optimise.html">Smart optimise</a></li>
-            <li><a href="../docs/heavy-parts.html">Heavy parts</a></li>
             <li><a href="../docs/read-the-numbers.html">How to read the numbers</a></li>
-            <li><a href="../docs/workflow.html">A sensible order to work in</a></li>
+            <li><a href="../docs/decimate.html">Decimate</a></li>
+            <li><a href="../docs/smart-fit.html">Smart fit</a></li>
+            <li><a href="../docs/fit-to-budget.html">Fit to budget</a></li>
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">
-          <a class="is-before" href="../docs/decimate.html"><span>Before</span><strong>Decimate</strong></a>
-          <a class="is-after" href="../docs/cleanup.html"><span>Next</span><strong>Auto cleanup and Tidy geometry</strong></a>
+          <a class="is-before" href="../docs/read-the-numbers.html"><span>Before</span><strong>How to read the numbers</strong></a>
+          <a class="is-after" href="../docs/smart-optimise.html"><span>Next</span><strong>Smart optimise</strong></a>
         </nav>
       </article>
     </section>

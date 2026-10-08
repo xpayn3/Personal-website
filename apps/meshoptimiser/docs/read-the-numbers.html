@@ -67,10 +67,15 @@
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
+        <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html" aria-current="page">How to read the numbers</a>
+        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
+        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -119,7 +124,7 @@
             <div><dt>Size</dt><dd>How large the whole model is along its three axes, in the display unit.</dd></div>
             <div><dt>Mesh data</dt><dd>How much memory the triangles take. A shape that repeats is counted once.</dd></div>
           </dl>
-          <p>The status bar under the viewport repeats the main totals.</p>
+          <p>The status bar under the viewport shows the number of vertices, the size of the mesh data, how many parts are selected and flagged, the frame rate and the console.</p>
           <h2 id="one-part">One part</h2>
           <p>Select a part and <span class="ui">Properties</span> describes it instead: its name, its material, its triangle count, its share of the scene, and where it ranks by weight, for example “#28 of 67 by weight”. Below that are its vertices, size and volume.</p>
           <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-inspect.webp" data-group="article" data-caption="One part selected: its triangles, its share of the scene and its rank by weight."><img src="../../../Images/apps/meshoptimiser-inspect.webp" alt="MeshOptimiser: One part selected: its triangles, its share of the scene and its rank by weight." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>One part selected: its triangles, its share of the scene and its rank by weight.</figcaption></figure>
@@ -130,7 +135,7 @@
           <ol class="kb-steps">
             <li>Open the card <span class="ui">Heavy parts</span> in the right sidebar.</li>
             <li>It lists the parts with the most triangles, heaviest first, each with a bar that shows how it compares with the heaviest.</li>
-            <li>Click a row. The part is selected and the view moves to it.</li>
+            <li>Click a row to tick it: the part is selected in the viewport. Right-click a row to move the view to the part. The card <span class="ui">Heavy parts</span> lists the parts with more than 10,000 triangles.</li>
             <li>Decide what to do with it: delete it, simplify it, or leave it.</li>
           </ol>
           <p>A few parts often hold a large share of the triangles. Start with those.</p>
@@ -154,8 +159,8 @@
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">
-          <a class="is-before" href="../docs/settings.html"><span>Before</span><strong>Settings</strong></a>
-          <a class="is-after" href="../docs/delete-small-parts.html"><span>Next</span><strong>Delete small parts</strong></a>
+          <a class="is-before" href="../docs/help-window.html"><span>Before</span><strong>The help window</strong></a>
+          <a class="is-after" href="../docs/heavy-parts.html"><span>Next</span><strong>Heavy parts</strong></a>
         </nav>
       </article>
     </section>
@@ -166,7 +171,7 @@
           <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.13.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.14.0</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
       </div>

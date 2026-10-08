@@ -7,15 +7,15 @@
   <meta name="theme-color" content="#101010" />
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
-  <title>Fit to budget — MeshOptimiser Docs</title>
-  <meta name="description" content="Type the number of triangles the whole scene may have. The densest meshes are reduced first until the total fits." />
+  <title>Fasteners — MeshOptimiser Docs</title>
+  <meta name="description" content="Find every bolt, screw, nut and washer by its shape, whatever the parts are called, then isolate or delete them in one step." />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
-  <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/fit-to-budget" />
+  <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/fasteners" />
   <meta property="og:site_name" content="MeshOptimiser" />
-  <meta property="og:title" content="Fit to budget — MeshOptimiser Docs" />
-  <meta property="og:description" content="Type the number of triangles the whole scene may have. The densest meshes are reduced first until the total fits." />
+  <meta property="og:title" content="Fasteners — MeshOptimiser Docs" />
+  <meta property="og:description" content="Find every bolt, screw, nut and washer by its shape, whatever the parts are called, then isolate or delete them in one step." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
-  <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/fit-to-budget" />
+  <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/fasteners" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -74,13 +74,13 @@
         <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
-        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/fasteners.html" aria-current="page">Fasteners</a>
         <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
         <a href="../docs/decimate.html">Decimate</a>
-        <a href="../docs/fit-to-budget.html" aria-current="page">Fit to budget</a>
+        <a href="../docs/fit-to-budget.html">Fit to budget</a>
         <a href="../docs/cleanup.html">Auto cleanup and Tidy geometry</a>
         <a href="../docs/workflow.html">A sensible order to work in</a>
         <h2>Look and arrange</h2>
@@ -108,42 +108,60 @@
       </nav>
       <article class="kb-article">
         <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#lighter">Make it lighter</a></p>
-        <h1>Fit to budget</h1>
-        <p class="lead">Type the number of triangles the whole scene may have. The densest meshes are reduced first until the total fits.</p>
+        <h1>Fasteners</h1>
+        <p class="lead">Find every bolt, screw, nut and washer by its shape, whatever the parts are called, then isolate or delete them in one step.</p>
         <div class="kb-body">
-          <p>Often you are given one number: “the model must be under 500,000 triangles”. Fit to budget takes that number and decides for you which parts to reduce and by how much. The densest meshes give up the most. Large, sparse ones are left alone.</p>
+          <p>A machine can hold hundreds of fasteners: the small metal parts that hold other parts together. In a CAD export their names are often useless, for example <code>=&gt;0_1_1_9_000009</code>, so searching by name does not work. Fasteners looks at the shape of every part instead, and selects the ones shaped like a bolt, a screw, a nut or a washer.</p>
+          <p>It cuts each part across its own axis and reads the outline: a round shank with a wider head, six flats around a hole, a flat ring. It compares that with the proportions of standard fasteners. Bushings, bearings, O-rings, shafts, pipe fittings and cable glands have other shapes, and are left alone.</p>
+          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-fasteners.webp" data-group="article" data-caption="Fasteners found twelve bolts and screws by their shape: 129,460 triangles, selected and ready to isolate or delete."><img src="../../../Images/apps/meshoptimiser-fasteners.webp" alt="MeshOptimiser: Fasteners found twelve bolts and screws by their shape: 129,460 triangles, selected and ready to isolate or delete." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Fasteners found twelve bolts and screws by their shape: 129,460 triangles, selected and ready to isolate or delete.</figcaption></figure>
           <h2 id="when-to-use-it">When to use it</h2>
-          <p>Near the end, after you have deleted the parts that are not needed. Deleting is free. Reducing costs detail, so reduce only what is left.</p>
+          <p>Before you delete or simplify the hardware, when the names do not help. Not when the fasteners are the point of the picture.</p>
           <h2 id="steps">Steps</h2>
           <ol class="kb-steps">
-            <li>Open the card <span class="ui">Reduce triangles</span> in the right sidebar.</li>
-            <li>Type the budget in the field beside <span class="ui">Fit to budget</span>. You can write <code>150000</code>, <code>150k</code> or <code>1.5m</code>.</li>
-            <li>Press <span class="ui">Preview…</span>. A table lists the meshes that will be reduced, with their triangle count now and after, and an estimate of the new total.</li>
-            <li>Press <span class="ui">Fit to budget</span>.</li>
-            <li>A progress card appears. <span class="ui">Cancel</span> stops it, and then nothing is changed.</li>
-            <li>A message gives the result, for example how many triangles the scene went from and to, and how many meshes were reduced.</li>
+            <li>Click the <span class="ui">Fasteners</span> button (a bolt) on the bottom toolbar. You can also find it in the <code>…</code> list, or with the search (<kbd>Ctrl</kbd><kbd>K</kbd>, “Select fasteners”). Its panel opens at the bottom left of the viewport.</li>
+            <li>Set <span class="ui">up to M</span> to the largest thread to look for. It starts at 30. A thread size is written M and the width in millimetres: M6 is a bolt 6 mm wide. A bolt, nut or washer for a bigger thread is left alone.</li>
+            <li>Leave the three switches on: <span class="ui">Bolts and screws</span>, <span class="ui">Nuts</span> and <span class="ui">Washers</span>. Switch off a kind you do not want.</li>
+            <li>Press <span class="ui">Select fasteners</span>, or <kbd>Enter</kbd>. It looks at every visible part. On a large assembly it shows its progress and takes a few seconds.</li>
+            <li>The fasteners are selected. A line says how many, how many triangles they hold and what share of the scene that is, for example “12 fasteners selected: 129,460 triangles, 11.7% of the scene”.</li>
+            <li>Under it is a short list with one row per kind and the sizes found, for example “12 bolts and screws · M3.5 ×6 · M4 ×4 · M5 ×2”. Click a row to select only that kind. Click it again to go back to all of them.</li>
+            <li>Press <span class="ui">Isolate</span> to look at them on their own. Check that nothing you need is among them.</li>
+            <li>Press <span class="ui">Delete</span> to remove them, or leave them selected and use another tool on them, such as <a href="../docs/smart-fit.html">Smart fit</a>.</li>
           </ol>
-          <h2 id="what-to-expect">What to expect</h2>
-          <ul class="kb-points">
-            <li>The preview is an estimate. A mesh can stop a little short of its share.</li>
-            <li>Every mesh keeps at least 16 triangles. If the budget is lower than the scene can reach, the app goes as far as it can and says that the budget was not reached.</li>
-            <li>If the scene is already under the budget, the app says so and changes nothing.</li>
-          </ul>
+          <aside class="kb-note"><p>The command only selects. Nothing is deleted until you press <span class="ui">Delete</span>.</p></aside>
+          <h2 id="what-the-options-mean">What the options mean</h2>
+          <p>Open <span class="ui">Advanced</span> in the panel.</p>
+          <dl class="table">
+            <div><dt>Look in: Whole scene / Selection</dt><dd>Check every visible part, or only the parts you selected first.</dd></div>
+            <div><dt>How sure: Certain</dt><dd>Only parts with a clear fastener shape: a hex head, a key socket, a hex nut, a washer of standard proportions.</dd></div>
+            <div><dt>How sure: Likely too</dt><dd>The default. Also plain two-cylinder screws and headed pins, which have the proportions of a fastener and nothing else to show for it.</dd></div>
+            <div><dt>Pins, studs and threaded rods</dt><dd>Plain round bars up to the size limit. Off by default, because a shaft or a roller is a round bar too.</dd></div>
+            <div><dt>Add to the selection</dt><dd>Keeps what is selected now and adds the fasteners to it.</dd></div>
+            <div><dt>Used at least … times</dt><dd>Takes a fastener only if the scene holds at least this many of the same shape and size. Fasteners come in sets. 1 takes single ones too.</dd></div>
+            <div><dt>Smallest thread</dt><dd>Leaves the fasteners for threads below this alone. 0 means no lower limit.</dd></div>
+            <div><dt>Reset to defaults</dt><dd>Puts every option back.</dd></div>
+          </dl>
+          <h2 id="sizes-and-units">Sizes and units</h2>
+          <p>The app works in millimetres. A file saved in metres, centimetres or inches would show its fasteners at impossible sizes. The app checks which unit gives the sizes of real fasteners and reads the file that way. When it had to, the line under the button says so, for example “Sizes read as inches”.</p>
+          <h2 id="simplify-instead-of-delete">Simplify instead of delete</h2>
+          <p>To keep a stand-in where each fastener was, leave them selected and run <a href="../docs/smart-fit.html">Smart fit</a> with <span class="ui">Cylinder</span>. <a href="../docs/smart-optimise.html">Smart optimise</a> does the same with its <span class="ui">Simplify</span> choice.</p>
           <h2 id="undo">Undo</h2>
-          <p>The whole step is one undo: <kbd>Ctrl</kbd><kbd>Z</kbd> restores every mesh.</p>
-          <aside class="kb-note"><p>If the result looks too rough, undo, delete more of what is not needed (see <a href="../docs/select-hidden-parts.html">Select hidden parts</a> and <a href="../docs/delete-small-parts.html">Delete small parts</a>), and run it again. The same budget then leaves more triangles for the parts that remain.</p></aside>
-          <p><a href="../docs/smart-optimise.html">Smart optimise</a> can do this as its last step, together with the other clean-ups. The whole run is then one undo step. Its card is just above the Reduce triangles card in the sidebar.</p>
+          <p>Selecting changes nothing. The delete is one undo step: <kbd>Ctrl</kbd><kbd>Z</kbd>.</p>
+          <h2 id="tips">Tips</h2>
+          <ul class="kb-points">
+            <li>Show all parts first (<kbd>Alt</kbd><kbd>H</kbd>). Only visible parts are looked at.</li>
+            <li>If a part that is not a fastener was selected, press <span class="ui">Certain</span> under <span class="ui">How sure</span> and run it again.</li>
+            <li>If a fastener was missed, raise <span class="ui">up to M</span>, or switch on <span class="ui">Pins, studs and threaded rods</span>.</li>
+          </ul>
           <div class="kb-see"><h2>Related</h2><ul>
-            <li><a href="../docs/decimate.html">Decimate</a></li>
+            <li><a href="../docs/select-hidden-parts.html">Select hidden parts</a></li>
+            <li><a href="../docs/delete-small-parts.html">Delete small parts</a></li>
+            <li><a href="../docs/smart-fit.html">Smart fit</a></li>
             <li><a href="../docs/smart-optimise.html">Smart optimise</a></li>
-            <li><a href="../docs/heavy-parts.html">Heavy parts</a></li>
-            <li><a href="../docs/read-the-numbers.html">How to read the numbers</a></li>
-            <li><a href="../docs/workflow.html">A sensible order to work in</a></li>
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">
-          <a class="is-before" href="../docs/decimate.html"><span>Before</span><strong>Decimate</strong></a>
-          <a class="is-after" href="../docs/cleanup.html"><span>Next</span><strong>Auto cleanup and Tidy geometry</strong></a>
+          <a class="is-before" href="../docs/select-hidden-parts.html"><span>Before</span><strong>Select hidden parts</strong></a>
+          <a class="is-after" href="../docs/stacked-copies.html"><span>Next</span><strong>Stacked copies</strong></a>
         </nav>
       </article>
     </section>

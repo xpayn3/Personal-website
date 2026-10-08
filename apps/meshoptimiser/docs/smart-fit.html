@@ -67,10 +67,15 @@
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
+        <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html">How to read the numbers</a>
+        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
+        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html" aria-current="page">Smart fit</a>
@@ -142,10 +147,17 @@
           <p>The button <span class="ui">Smart fit all parts</span> in the card <span class="ui">Reduce triangles</span> replaces every part in the scene with a box, a turned box or a cylinder. It removes most of the detail of the model. Use it only when you need the roughest possible stand-in for a whole assembly.</p>
           <h2 id="undo">Undo</h2>
           <p>One run is one undo step: <kbd>Ctrl</kbd><kbd>Z</kbd> brings the original meshes back.</p>
-          <aside class="kb-note"><p>A quick way to simplify all fasteners of one kind: select one, press <span class="ui">Select similar</span> in the card <span class="ui">Selection &amp; actions</span>, then run Smart fit with <span class="ui">Cylinder</span>.</p></aside>
+          <h2 id="good-to-know">Good to know</h2>
+          <ul class="kb-points">
+            <li>Only the selected parts change. Another part with the same shape that stands elsewhere is left as it is. Only a copy that lies on the selected part itself, drawn twice in the same place, is fitted along with it.</li>
+            <li>If the view is exploded, Smart fit works on the parts at rest and then puts the explosion back as it was.</li>
+          </ul>
+          <aside class="kb-note"><p>A quick way to simplify all fasteners: press <span class="ui">Select fasteners</span> in <a href="../docs/fasteners.html">Fasteners</a>, then run Smart fit with <span class="ui">Cylinder</span>. For the copies of one fastener only, select one, press <span class="ui">Select similar</span> in the card <span class="ui">Selection &amp; actions</span>, then run Smart fit with <span class="ui">Cylinder</span>.</p></aside>
           <div class="kb-see"><h2>Related</h2><ul>
             <li><a href="../docs/decimate.html">Decimate</a></li>
+            <li><a href="../docs/fasteners.html">Fasteners</a></li>
             <li><a href="../docs/select-parts.html">Select parts</a></li>
+            <li><a href="../docs/smart-optimise.html">Smart optimise</a></li>
             <li><a href="../docs/workflow.html">A sensible order to work in</a></li>
           </ul></div>
         </div>
@@ -162,7 +174,7 @@
           <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.13.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.14.0</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
       </div>

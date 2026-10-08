@@ -7,15 +7,15 @@
   <meta name="theme-color" content="#101010" />
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
-  <title>Fit to budget — MeshOptimiser Docs</title>
-  <meta name="description" content="Type the number of triangles the whole scene may have. The densest meshes are reduced first until the total fits." />
+  <title>Stacked copies — MeshOptimiser Docs</title>
+  <meta name="description" content="Find parts that sit exactly on top of an identical copy of themselves, drawn twice, and remove the extra ones." />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
-  <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/fit-to-budget" />
+  <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/stacked-copies" />
   <meta property="og:site_name" content="MeshOptimiser" />
-  <meta property="og:title" content="Fit to budget — MeshOptimiser Docs" />
-  <meta property="og:description" content="Type the number of triangles the whole scene may have. The densest meshes are reduced first until the total fits." />
+  <meta property="og:title" content="Stacked copies — MeshOptimiser Docs" />
+  <meta property="og:description" content="Find parts that sit exactly on top of an identical copy of themselves, drawn twice, and remove the extra ones." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
-  <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/fit-to-budget" />
+  <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/stacked-copies" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -75,12 +75,12 @@
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
         <a href="../docs/fasteners.html">Fasteners</a>
-        <a href="../docs/stacked-copies.html">Stacked copies</a>
+        <a href="../docs/stacked-copies.html" aria-current="page">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
         <a href="../docs/decimate.html">Decimate</a>
-        <a href="../docs/fit-to-budget.html" aria-current="page">Fit to budget</a>
+        <a href="../docs/fit-to-budget.html">Fit to budget</a>
         <a href="../docs/cleanup.html">Auto cleanup and Tidy geometry</a>
         <a href="../docs/workflow.html">A sensible order to work in</a>
         <h2>Look and arrange</h2>
@@ -108,42 +108,42 @@
       </nav>
       <article class="kb-article">
         <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#lighter">Make it lighter</a></p>
-        <h1>Fit to budget</h1>
-        <p class="lead">Type the number of triangles the whole scene may have. The densest meshes are reduced first until the total fits.</p>
+        <h1>Stacked copies</h1>
+        <p class="lead">Find parts that sit exactly on top of an identical copy of themselves, drawn twice, and remove the extra ones.</p>
         <div class="kb-body">
-          <p>Often you are given one number: “the model must be under 500,000 triangles”. Fit to budget takes that number and decides for you which parts to reduce and by how much. The densest meshes give up the most. Large, sparse ones are left alone.</p>
-          <h2 id="when-to-use-it">When to use it</h2>
-          <p>Near the end, after you have deleted the parts that are not needed. Deleting is free. Reducing costs detail, so reduce only what is left.</p>
+          <p>Some files hold the same part twice, in the same place. From a distance nothing looks wrong. But the two surfaces lie on each other, so the screen flickers where they meet, because the graphics card cannot tell which one is in front. And the triangles are stored and drawn twice. Stacked copies finds these parts and keeps one of each.</p>
+          <p>Ten identical bolts in ten different places are not stacked copies. Only parts in the same place count.</p>
+          <h2 id="open-the-card">Open the card</h2>
+          <p>Press <kbd>Ctrl</kbd><kbd>K</kbd> to open the search, type <code>stacked</code>, and choose <span class="ui">Find stacked copies…</span>. The card opens over the viewport, at the bottom left, like <a href="../docs/split.html">Split</a> and <a href="../docs/fill-holes.html">Fill holes</a>. <kbd>Esc</kbd> puts it away.</p>
           <h2 id="steps">Steps</h2>
           <ol class="kb-steps">
-            <li>Open the card <span class="ui">Reduce triangles</span> in the right sidebar.</li>
-            <li>Type the budget in the field beside <span class="ui">Fit to budget</span>. You can write <code>150000</code>, <code>150k</code> or <code>1.5m</code>.</li>
-            <li>Press <span class="ui">Preview…</span>. A table lists the meshes that will be reduced, with their triangle count now and after, and an estimate of the new total.</li>
-            <li>Press <span class="ui">Fit to budget</span>.</li>
-            <li>A progress card appears. <span class="ui">Cancel</span> stops it, and then nothing is changed.</li>
-            <li>A message gives the result, for example how many triangles the scene went from and to, and how many meshes were reduced.</li>
+            <li>Open the card <span class="ui">Stacked copies</span> as above.</li>
+            <li>Set <span class="ui">Same place within</span>. The slider goes from 0 to 5 percent of the part’s size, and starts at 0.5. At 0 the parts must lie almost exactly on each other. A higher value also accepts copies that are a little off.</li>
+            <li>Switch on <span class="ui">Also near copies</span> if the copies may differ a little. Off, two parts count as copies only when they have the same number of triangles. On, the number may differ by up to a quarter, as with another export of the same part, or a copy that was rebuilt with a different mesh.</li>
+            <li>Press <span class="ui">Find stacked copies</span>.</li>
+            <li>The extra copies are selected, and a line says how many, for example “6 extra copies of 6 parts selected; the first of each is kept”. The part that was loaded first stays. If there are none, it says “No stacked copies found”.</li>
+            <li>Press <span class="ui">Isolate</span> to look at the extra copies on their own. Check them.</li>
+            <li>Press <span class="ui">Delete</span> to remove them.</li>
           </ol>
-          <h2 id="what-to-expect">What to expect</h2>
+          <aside class="kb-note"><p>The command only selects. Nothing is deleted until you press <span class="ui">Delete</span>.</p></aside>
+          <h2 id="good-to-know">Good to know</h2>
           <ul class="kb-points">
-            <li>The preview is an estimate. A mesh can stop a little short of its share.</li>
-            <li>Every mesh keeps at least 16 triangles. If the budget is lower than the scene can reach, the app goes as far as it can and says that the budget was not reached.</li>
-            <li>If the scene is already under the budget, the app says so and changes nothing.</li>
+            <li>Hidden parts are not looked at. Show all parts first (<kbd>Alt</kbd><kbd>H</kbd>).</li>
+            <li>The card remembers <span class="ui">Same place within</span> and <span class="ui">Also near copies</span> for next time.</li>
+            <li>Faces that lie exactly on each other still flicker in the viewport. This card is the way to find the parts that cause it.</li>
           </ul>
           <h2 id="undo">Undo</h2>
-          <p>The whole step is one undo: <kbd>Ctrl</kbd><kbd>Z</kbd> restores every mesh.</p>
-          <aside class="kb-note"><p>If the result looks too rough, undo, delete more of what is not needed (see <a href="../docs/select-hidden-parts.html">Select hidden parts</a> and <a href="../docs/delete-small-parts.html">Delete small parts</a>), and run it again. The same budget then leaves more triangles for the parts that remain.</p></aside>
-          <p><a href="../docs/smart-optimise.html">Smart optimise</a> can do this as its last step, together with the other clean-ups. The whole run is then one undo step. Its card is just above the Reduce triangles card in the sidebar.</p>
+          <p>Selecting changes nothing. The delete is one undo step: <kbd>Ctrl</kbd><kbd>Z</kbd> brings the copies back.</p>
           <div class="kb-see"><h2>Related</h2><ul>
-            <li><a href="../docs/decimate.html">Decimate</a></li>
-            <li><a href="../docs/smart-optimise.html">Smart optimise</a></li>
-            <li><a href="../docs/heavy-parts.html">Heavy parts</a></li>
-            <li><a href="../docs/read-the-numbers.html">How to read the numbers</a></li>
+            <li><a href="../docs/select-hidden-parts.html">Select hidden parts</a></li>
+            <li><a href="../docs/cleanup.html">Auto cleanup and Tidy geometry</a></li>
+            <li><a href="../docs/delete-small-parts.html">Delete small parts</a></li>
             <li><a href="../docs/workflow.html">A sensible order to work in</a></li>
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">
-          <a class="is-before" href="../docs/decimate.html"><span>Before</span><strong>Decimate</strong></a>
-          <a class="is-after" href="../docs/cleanup.html"><span>Next</span><strong>Auto cleanup and Tidy geometry</strong></a>
+          <a class="is-before" href="../docs/fasteners.html"><span>Before</span><strong>Fasteners</strong></a>
+          <a class="is-after" href="../docs/fill-holes.html"><span>Next</span><strong>Fill holes</strong></a>
         </nav>
       </article>
     </section>

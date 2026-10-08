@@ -7,15 +7,15 @@
   <meta name="theme-color" content="#101010" />
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
-  <title>Fit to budget — MeshOptimiser Docs</title>
-  <meta name="description" content="Type the number of triangles the whole scene may have. The densest meshes are reduced first until the total fits." />
+  <title>The help window — MeshOptimiser Docs</title>
+  <meta name="description" content="These articles also live inside the app. Press F1 to open them, with a search, and read them with no internet connection." />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
-  <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/fit-to-budget" />
+  <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/help-window" />
   <meta property="og:site_name" content="MeshOptimiser" />
-  <meta property="og:title" content="Fit to budget — MeshOptimiser Docs" />
-  <meta property="og:description" content="Type the number of triangles the whole scene may have. The densest meshes are reduced first until the total fits." />
+  <meta property="og:title" content="The help window — MeshOptimiser Docs" />
+  <meta property="og:description" content="These articles also live inside the app. Press F1 to open them, with a search, and read them with no internet connection." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
-  <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/fit-to-budget" />
+  <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/help-window" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -67,7 +67,7 @@
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
-        <a href="../docs/help-window.html">The help window</a>
+        <a href="../docs/help-window.html" aria-current="page">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html">How to read the numbers</a>
         <a href="../docs/heavy-parts.html">Heavy parts</a>
@@ -80,7 +80,7 @@
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
         <a href="../docs/decimate.html">Decimate</a>
-        <a href="../docs/fit-to-budget.html" aria-current="page">Fit to budget</a>
+        <a href="../docs/fit-to-budget.html">Fit to budget</a>
         <a href="../docs/cleanup.html">Auto cleanup and Tidy geometry</a>
         <a href="../docs/workflow.html">A sensible order to work in</a>
         <h2>Look and arrange</h2>
@@ -107,43 +107,49 @@
         <a href="../docs/self-test.html">Self-test</a>
       </nav>
       <article class="kb-article">
-        <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#lighter">Make it lighter</a></p>
-        <h1>Fit to budget</h1>
-        <p class="lead">Type the number of triangles the whole scene may have. The densest meshes are reduced first until the total fits.</p>
+        <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#around">Find your way around</a></p>
+        <h1>The help window</h1>
+        <p class="lead">These articles also live inside the app. Press F1 to open them, with a search, and read them with no internet connection.</p>
         <div class="kb-body">
-          <p>Often you are given one number: “the model must be under 500,000 triangles”. Fit to budget takes that number and decides for you which parts to reduce and by how much. The densest meshes give up the most. Large, sparse ones are left alone.</p>
-          <h2 id="when-to-use-it">When to use it</h2>
-          <p>Near the end, after you have deleted the parts that are not needed. Deleting is free. Reducing costs detail, so reduce only what is left.</p>
-          <h2 id="steps">Steps</h2>
-          <ol class="kb-steps">
-            <li>Open the card <span class="ui">Reduce triangles</span> in the right sidebar.</li>
-            <li>Type the budget in the field beside <span class="ui">Fit to budget</span>. You can write <code>150000</code>, <code>150k</code> or <code>1.5m</code>.</li>
-            <li>Press <span class="ui">Preview…</span>. A table lists the meshes that will be reduced, with their triangle count now and after, and an estimate of the new total.</li>
-            <li>Press <span class="ui">Fit to budget</span>.</li>
-            <li>A progress card appears. <span class="ui">Cancel</span> stops it, and then nothing is changed.</li>
-            <li>A message gives the result, for example how many triangles the scene went from and to, and how many meshes were reduced.</li>
-          </ol>
-          <h2 id="what-to-expect">What to expect</h2>
+          <p>You do not have to leave the app to find an answer. The help window holds the same articles as this website. Its text is stored inside the app, so it opens even when you are offline.</p>
+          <h2 id="open-it">Open it</h2>
           <ul class="kb-points">
-            <li>The preview is an estimate. A mesh can stop a little short of its share.</li>
-            <li>Every mesh keeps at least 16 triangles. If the budget is lower than the scene can reach, the app goes as far as it can and says that the budget was not reached.</li>
-            <li>If the scene is already under the budget, the app says so and changes nothing.</li>
+            <li>Press <kbd>F1</kbd>.</li>
+            <li>Or choose <span class="ui">Menu</span>, then <span class="ui">Help &amp; docs</span>.</li>
+            <li>Or click the app’s mark at the far left of the top bar, then <span class="ui">Help &amp; docs</span>.</li>
+            <li>Or open <span class="ui">Settings</span> and click <span class="ui">Help &amp; docs</span> in the list at the left.</li>
+            <li>On the start screen there is a <span class="ui">Help</span> link at the top.</li>
           </ul>
-          <h2 id="undo">Undo</h2>
-          <p>The whole step is one undo: <kbd>Ctrl</kbd><kbd>Z</kbd> restores every mesh.</p>
-          <aside class="kb-note"><p>If the result looks too rough, undo, delete more of what is not needed (see <a href="../docs/select-hidden-parts.html">Select hidden parts</a> and <a href="../docs/delete-small-parts.html">Delete small parts</a>), and run it again. The same budget then leaves more triangles for the parts that remain.</p></aside>
-          <p><a href="../docs/smart-optimise.html">Smart optimise</a> can do this as its last step, together with the other clean-ups. The whole run is then one undo step. Its card is just above the Reduce triangles card in the sidebar.</p>
+          <p>The window opens on the article you read last. The first time, it opens on the first one. The command <span class="ui">Help &amp; docs</span> is in the search (<kbd>Ctrl</kbd><kbd>K</kbd>) too.</p>
+          <h2 id="find-your-way">Find your way</h2>
+          <dl class="table">
+            <div><dt>The list at the left</dt><dd>Every article, in groups. Click one to read it.</dd></div>
+            <div><dt>The article</dt><dd>At the right. At its end, <span class="ui">Previous</span> and <span class="ui">Next</span> take you to the neighbours. A link inside an article opens the other article in the same window. A <span class="ui">Copy</span> button next to a command copies it.</dd></div>
+            <div><dt>The search field</dt><dd>At the top. Type a word or two. The list changes into the articles that contain them, best match first, with a few words around the hit. <kbd>Enter</kbd> opens the first one. The words are marked in the article.</dd></div>
+            <div><dt>Website</dt><dd>A button at the top right. It opens the same pages on the website, which is where the pictures live.</dd></div>
+          </dl>
+          <dl class="kb-keys">
+            <div><dt><kbd>F1</kbd></dt><dd>Open the help window</dd></div>
+            <div><dt><kbd>/</kbd></dt><dd>Jump to the search field, while you are not typing</dd></div>
+            <div><dt><kbd>Enter</kbd></dt><dd>In the search field: open the first result</dd></div>
+            <div><dt><kbd>Esc</kbd></dt><dd>Clear the search. Press it again to close the window</dd></div>
+          </dl>
+          <h2 id="good-to-know">Good to know</h2>
+          <ul class="kb-points">
+            <li>The pictures are loaded from the website. Without an internet connection the text is all there, and the pictures are left out.</li>
+            <li>The text is a copy made when your version of the app was built. The website can be newer.</li>
+            <li>The help window does not change anything in your scene. Close it and you are back where you were.</li>
+          </ul>
           <div class="kb-see"><h2>Related</h2><ul>
-            <li><a href="../docs/decimate.html">Decimate</a></li>
-            <li><a href="../docs/smart-optimise.html">Smart optimise</a></li>
-            <li><a href="../docs/heavy-parts.html">Heavy parts</a></li>
-            <li><a href="../docs/read-the-numbers.html">How to read the numbers</a></li>
-            <li><a href="../docs/workflow.html">A sensible order to work in</a></li>
+            <li><a href="../docs/the-window.html">The window</a></li>
+            <li><a href="../docs/search-and-commands.html">Search and commands</a></li>
+            <li><a href="../docs/shortcuts.html">Keyboard shortcuts</a></li>
+            <li><a href="../docs/troubleshooting.html">Troubleshooting</a></li>
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">
-          <a class="is-before" href="../docs/decimate.html"><span>Before</span><strong>Decimate</strong></a>
-          <a class="is-after" href="../docs/cleanup.html"><span>Next</span><strong>Auto cleanup and Tidy geometry</strong></a>
+          <a class="is-before" href="../docs/settings.html"><span>Before</span><strong>Settings</strong></a>
+          <a class="is-after" href="../docs/read-the-numbers.html"><span>Next</span><strong>How to read the numbers</strong></a>
         </nav>
       </article>
     </section>

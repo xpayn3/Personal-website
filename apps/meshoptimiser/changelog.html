@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>Changelog — MeshOptimiser</title>
-  <meta name="description" content="What changed in each version of MeshOptimiser, newest first. Latest: v0.13.0." />
+  <meta name="description" content="What changed in each version of MeshOptimiser, newest first. Latest: v0.14.0." />
   <link rel="icon" type="image/svg+xml" href="../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/changelog" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="Changelog — MeshOptimiser" />
-  <meta property="og:description" content="What changed in each version of MeshOptimiser, newest first. Latest: v0.13.0." />
+  <meta property="og:description" content="What changed in each version of MeshOptimiser, newest first. Latest: v0.14.0." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/changelog" />
   <meta property="og:type" content="website" />
@@ -48,17 +48,26 @@
     <section class="wrap page-head">
       <p class="kicker">Changelog</p>
       <h1>What changed, newest first.</h1>
-      <p class="lead">Every release, with the fixes that went into it. The app’s own change log on GitHub has 137 fixes in it, and the ones that mattered most are here.</p>
+      <p class="lead">Every release, with the fixes that went into it. The app’s own change log on GitHub has 150 fixes in it, and the ones that mattered most are here.</p>
     </section>
     <section class="wrap">
       <ol class="log">
         <li id="v0.14.0">
           <div class="log-head">
-            <strong>v0.14.0</strong><em>Next</em><span>In the repository, not tagged yet</span><span>59 fixes</span>
+            <strong>v0.14.0</strong><em>Latest</em><span>8 Oct 2026 · 23:50</span><span>72 fixes</span>
           </div>
           <div class="log-body">
-            <p>The biggest round of fixes the app has had. We read the whole code base and tested it hard on assemblies with thousands of parts, and fixed what we found: 59 fixes, most of them in the things you only notice when they go wrong, like undo, exports and big files. Three new tools and a calmer viewport came along. It’s all in the repository now, and the release is to follow.</p>
+            <p>The biggest release so far. A CAD view and a Shading card, Dynamic place, an Align to floor that shows what it will do, Help inside the app, a Settings window that can change the look of the interface, a rebuilt Export window, and three tools that clean a scene up for you. We also read the whole code base, tested it hard on assemblies with thousands of parts and fixed 72 things, most of them in the places you only notice when they go wrong: undo, exports and big files. Opening a big model is faster, too.</p>
             <ul>
+              <li><b class="is-new">New</b><span>A CAD view (key 6) and a Shading card. The CAD view has no lights or reflections: every surface is shaded by which way it faces the camera, with a dark line on every sharp edge. The card under Properties holds every look as a small 3D nut: Default, Clay, Porcelain, Steel and Red wax, and the CAD looks Ceramic, Light and Mono. One Outlines switch draws the edge lines in every view.</span></li>
+              <li><b class="is-new">New</b><span>Dynamic place (key D). Press the selected part and drag it over other surfaces: it rests on the surface under the cursor and turns to face it, like dragging a part out of a library onto a model. Choose which side of the part points away from the surface, a gap, and a turn; the wheel turns it while you hold it. One undo step.</span></li>
+              <li><b class="is-new">New</b><span>Align to floor shows what it will do. A small 3D drawing of the floor, the origin and the model rings the point that goes to zero and turns two arrows (its top and its front) as you turn the model. Nothing moves until you press the button. It opens over the viewport like Split and Fill holes.</span></li>
+              <li><b class="is-new">New</b><span>Help inside the app (F1): the whole knowledge base of this site, with search, working offline. Settings has an Appearance page (accent colours, four tones, fonts, text size, corners and density) and an About page that copies the details a bug report needs.</span></li>
+              <li><b class="is-new">New</b><span>A splash screen while the app starts: the rear derailleur drawn as glowing 3D lines, then the app fades in part by part. It can be switched off in Settings.</span></li>
+              <li><b class="is-polish">Polish</b><span>The Export window is rebuilt. A file name with the same pills as Save scene, a summary of what will be written, Flatten groups, ASCII STL, only the options that apply to the format, and your choices remembered. Batch rename is redesigned too, with a Quick tab, buttons for the pattern pieces and a preview that marks what changed.</span></li>
+              <li><b class="is-polish">Polish</b><span>Cards over the viewport can be moved by their title bar. Stacked copies is one of them now. Heavy parts are the parts over 10,000 triangles, with a count beside the title. The sidebars have drag handles that stay put and a minimum width, and the Collapse button has a menu for the whole tree, the selection or from the selection down.</span></li>
+              <li><b class="is-polish">Polish</b><span>Faster on a big model. The outline of the selection and the edge lines are drawn by the graphics card, so nothing is copied when parts move, and the picture for the Recents list and the spare copy of the app for the next tab wait until you have stopped clicking.</span></li>
+              <li><b class="is-fix">Fix</b><span>Edge lines show on every part whatever the tilt, are not hidden by the ground grid, and no longer trail behind their parts in an exploded view. Materials work while Clay or CAD is on, and the Properties card shows the material the part really has.</span></li>
               <li><b class="is-new">New</b><span>Smart optimise. One card, one button, at the top of Reduce. It runs every clean-up the app has, one after another: empty and broken parts, parts hidden inside, bolts and nuts, small parts, holes in flat faces, and a reduction to the triangle count you set. Light, Balanced or Strong, or Auto. The whole run is one undo step.</span></li>
               <li><b class="is-new">New</b><span>Fasteners finds bolts, screws, nuts and washers by their shape, whatever they’re called, and selects them. Stacked copies finds parts drawn twice in the same place. Select similar has a strictness slider, from “about the same size” to “the very same shape”.</span></li>
               <li><b class="is-new">New</b><span>The library is a drawer under the viewport (Shift + L). Click a part to look at it, turn it, set its size, and then it goes in with those sizes. A starred shelf, small or large tiles.</span></li>
@@ -94,7 +103,7 @@
         </li>
         <li id="v0.13.0">
           <div class="log-head">
-            <strong>v0.13.0</strong><em>Latest</em><span>8 Oct 2026 · 03:04</span><span>1 fix</span>
+            <strong>v0.13.0</strong><span>8 Oct 2026 · 03:04</span><span>1 fix</span>
           </div>
           <div class="log-body">
             <p>It now feels like an app. You can install it, it opens in a window with no address bar or browser tabs, and the title bar can fold away. The scene tabs got better too, and a view that’s moving skips what you couldn’t see anyway.</p>
@@ -301,7 +310,7 @@
           <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="download.html">Download v0.13.0</a>
+          <a class="btn is-primary is-large" href="download.html">Download v0.14.0</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
       </div>

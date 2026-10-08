@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>Move, rotate, scale and measure — MeshOptimiser Docs</title>
-  <meta name="description" content="Use the gizmo to move, turn and resize parts, type exact values in the transform panel, and measure the distance between two points." />
+  <meta name="description" content="Use the gizmo to move, turn and resize parts, drag a part over other surfaces with Dynamic place, type exact values in the transform card, and measure the dist…" />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/move-rotate-scale" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="Move, rotate, scale and measure — MeshOptimiser Docs" />
-  <meta property="og:description" content="Use the gizmo to move, turn and resize parts, type exact values in the transform panel, and measure the distance between two points." />
+  <meta property="og:description" content="Use the gizmo to move, turn and resize parts, drag a part over other surfaces with Dynamic place, type exact values in the transform card, and measure the dist…" />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/move-rotate-scale" />
   <meta property="og:type" content="website" />
@@ -67,10 +67,15 @@
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
+        <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html">How to read the numbers</a>
+        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
+        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -104,7 +109,7 @@
       <article class="kb-article">
         <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#look">Look and arrange</a></p>
         <h1>Move, rotate, scale and measure</h1>
-        <p class="lead">Use the gizmo to move, turn and resize parts, type exact values in the transform panel, and measure the distance between two points.</p>
+        <p class="lead">Use the gizmo to move, turn and resize parts, drag a part over other surfaces with Dynamic place, type exact values in the transform card, and measure the distance between two points.</p>
         <div class="kb-body">
           <p>Select a part and a gizmo appears on it: a set of coloured handles. Red is the X axis, green is Y and blue is Z. Drag a handle to change the part along that axis.</p>
           <dl class="kb-keys">
@@ -112,6 +117,7 @@
             <div><dt><kbd>R</kbd></dt><dd>Rotate</dd></div>
             <div><dt><kbd>T</kbd></dt><dd>Scale</dd></div>
             <div><dt><kbd>Q</kbd></dt><dd>Hide the gizmo</dd></div>
+            <div><dt><kbd>D</kbd></dt><dd>Dynamic place: drag the selected part over other surfaces</dd></div>
             <div><dt><kbd>Shift</kbd></dt><dd>Hold while dragging to snap to round steps</dd></div>
           </dl>
           <h2 id="move-a-part">Move a part</h2>
@@ -122,14 +128,39 @@
             <li>Hold <kbd>Shift</kbd> while you drag to move in round steps sized to the model.</li>
           </ol>
           <p>Rotate (<kbd>R</kbd>) and scale (<kbd>T</kbd>) work the same way. With <kbd>Shift</kbd> held, rotation snaps to 15° and scale to steps of 0.1.</p>
+          <h2 id="choose-the-snap-step">Choose the snap step</h2>
+          <p>While you hold <kbd>Shift</kbd> and drag a handle, turn the mouse wheel to change the step. Wheel up gives a coarser step and wheel down a finer one. A move steps through 1, 2, 5, 10, 20, 50 and so on. A turn steps through 1°, 5°, 10°, 15°, 30°, 45° and 90°. A scale steps from 0.01 to 1. The part takes the new step at once, and the step is kept for your next drags.</p>
+          <p>While snap is on, a small green pill at the top of the viewport, beside the camera pill, shows the step, for example <span class="ui">Snap 10 mm</span> or <span class="ui">Snap 15°</span>.</p>
           <h2 id="type-exact-values">Type exact values</h2>
           <ol class="kb-steps">
-            <li>Click the transform panel button on the viewport’s tool strip, the fourth button from the top. The <span class="ui">Transform</span> panel appears at the foot of the left sidebar.</li>
+            <li>Click the transform panel button on the viewport’s tool strip, the fifth button from the top. The <span class="ui">Transform</span> card rises into place at the foot of the left sidebar, under the parts tree.</li>
             <li>It has three columns, <span class="ui">Position</span>, <span class="ui">Rotation</span> and <span class="ui">Size</span>, with a row for X, Y and Z.</li>
             <li>Click a number and type a value, or drag it sideways.</li>
             <li>Press <span class="ui">Reset</span> to put position, rotation and size back.</li>
           </ol>
           <p>Right-click a column heading to copy all three values or paste them onto another part. The units follow <span class="ui">Display units</span> under <span class="ui">Settings</span>, <span class="ui">Scene</span>.</p>
+          <h2 id="dynamic-place">Dynamic place</h2>
+          <p>Dynamic place moves a part by dragging it over the model, instead of by its handles. The part rests on whatever surface is under the pointer and turns to face it, as when you drag a part out of the <a href="../docs/library.html">library</a> onto a model. It is handy for putting a bolt on a plate or a bracket on a wall.</p>
+          <ol class="kb-steps">
+            <li>Select the part, or several parts.</li>
+            <li>Press <kbd>D</kbd>, or click the fourth button on the tool strip (an arrow pointing down at a dot). The <span class="ui">Dynamic place</span> card opens over the viewport. The gizmo is hidden, and a thin blue box appears round the selection to show which box is being set down.</li>
+            <li>Press on the selected part and drag. The part follows the pointer and rests on the surface under it. The underside of the box touches the surface and never sinks into it.</li>
+            <li>Let go to drop it there.</li>
+            <li>Press <kbd>Esc</kbd> or <span class="ui">Done</span> to close the card and get the gizmo back.</li>
+          </ol>
+          <p>A press that is not on the selected part selects as usual, and a press with <kbd>Shift</kbd>, <kbd>Ctrl</kbd> or <kbd>Alt</kbd> held is left alone. If the view is exploded, put the parts back together first.</p>
+          <h2 id="what-the-options-mean">What the options mean</h2>
+          <dl class="table">
+            <div><dt>Align to surface</dt><dd>On to begin with. The part turns so that its top points away from the surface it rests on. Off: the part keeps the way it faces and only slides.</dd></div>
+            <div><dt>Land on the grid</dt><dd>On to begin with. Where nothing is under the pointer, the part lands on the grid. Off: it stays where it last rested.</dd></div>
+            <div><dt>Top axis</dt><dd>Which of the part’s own axes, X, Y or Z, counts as its top. It is the part’s axes as it stands when you first pick it up. Z is the default when Z is up.</dd></div>
+            <div><dt>Direction</dt><dd><span class="ui">+</span> or <span class="ui">−</span>: whether the top axis points away from the surface or into it. Choose <span class="ui">−</span> to put a part on upside down.</dd></div>
+            <div><dt>Gap</dt><dd>How far the part floats above the surface, in millimetres. A negative number sinks it in.</dd></div>
+            <div><dt>Turn</dt><dd>Turns the part about the surface it rests on. Type an angle, or press 0°, 90°, 180° or 270°.</dd></div>
+            <div><dt>Reset gap and turn</dt><dd>Sets the gap and the turn back to 0.</dd></div>
+          </dl>
+          <p>While you hold a part, the mouse wheel turns it in steps of 15°, and the <span class="ui">Turn</span> box follows. Press <kbd>Esc</kbd> during a drag and the part goes back to where it was before the drag.</p>
+          <p>The whole drag is one undo step. Choosing a gizmo with <kbd>E</kbd>, <kbd>R</kbd> or <kbd>T</kbd> also ends Dynamic place and closes the card.</p>
           <h2 id="copy-and-duplicate">Copy and duplicate</h2>
           <dl class="kb-keys">
             <div><dt><kbd>Ctrl</kbd><kbd>D</kbd></dt><dd>Duplicate the selection</dd></div>
@@ -147,7 +178,8 @@
           </ol>
           <ul class="kb-points">
             <li>Dragging still turns the view while you measure.</li>
-            <li>Measurements stay on screen after you leave measure mode, and are listed in the card <span class="ui">Measurements</span> in the right sidebar.</li>
+            <li>While you measure, a yellow <span class="ui">Measure</span> pill sits at the top of the viewport. Click it to leave measure mode.</li>
+            <li>Measurements stay on screen after you leave measure mode, and are listed in the card <span class="ui">Measurements</span> in the right sidebar. Click a row there to pick that measurement: its line gets thicker and its label turns yellow.</li>
             <li><span class="ui">Clear all</span> in that card removes them.</li>
           </ul>
           <h2 id="undo">Undo</h2>
@@ -172,7 +204,7 @@
           <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.13.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.14.0</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
       </div>

@@ -67,10 +67,15 @@
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
+        <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html">How to read the numbers</a>
+        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
+        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -107,14 +112,17 @@
         <p class="lead">A suggested routine for a first clean-up: look, delete what is not needed, simplify what remains, check, save and export.</p>
         <div class="kb-body">
           <p>This is a suggestion, not a rule. It follows from what the tools do: deleting a part costs nothing in quality, so delete first. Reducing a mesh costs detail, so reduce only what you decided to keep. And there is no point in simplifying a part you are about to delete.</p>
+          <p>If you want the shortest way, <a href="../docs/smart-optimise.html">Smart optimise</a> follows this same order for you: one button, one undo. The steps below are for when you want to look at the result of each tool before the next one.</p>
           <ol class="kb-steps">
             <li>Open the file and look at it. Read the totals in <span class="ui">Properties</span>. See <a href="../docs/read-the-numbers.html">How to read the numbers</a>.</li>
             <li>If the model lies on its side or sits far from the grid, stand it up with <a href="../docs/align-to-floor.html">Align to floor</a>.</li>
-            <li>Find out where the weight is: open <span class="ui">Heavy parts</span> and press <kbd>4</kbd> for the heatmap.</li>
+            <li>Find out where the weight is: open <a href="../docs/heavy-parts.html">Heavy parts</a> and press <kbd>4</kbd> for the heatmap. Delete the heavy parts that nobody needs.</li>
             <li>Remove what nobody will see with <a href="../docs/select-hidden-parts.html">Select hidden parts</a>. Isolate, check, delete.</li>
-            <li>Remove small hardware with <a href="../docs/delete-small-parts.html">Delete small parts</a>, if the model does not need it.</li>
+            <li>Remove copies that lie on top of each other with <a href="../docs/stacked-copies.html">Stacked copies</a>. Find, isolate, check, delete.</li>
+            <li>Find the bolts, nuts and washers with <a href="../docs/fasteners.html">Fasteners</a>. Delete them if the model does not need them, or replace them with stand-ins using <a href="../docs/smart-fit.html">Smart fit</a>.</li>
+            <li>Remove other small parts with <a href="../docs/delete-small-parts.html">Delete small parts</a>, if the model does not need them.</li>
             <li>Close holes with <a href="../docs/fill-holes.html">Fill holes</a>.</li>
-            <li>Replace fasteners and other filler parts with stand-ins, using <a href="../docs/smart-fit.html">Smart fit</a>.</li>
+            <li>Replace other filler parts with stand-ins, using <a href="../docs/smart-fit.html">Smart fit</a>.</li>
             <li>Reduce the heavy parts that remain with <a href="../docs/decimate.html">Decimate</a>, or bring the whole scene to a number with <a href="../docs/fit-to-budget.html">Fit to budget</a>.</li>
             <li>Tidy up: <span class="ui">Remove empty parts</span> and <span class="ui">Delete empty groups</span> in the card <span class="ui">Auto cleanup</span>.</li>
             <li>Look at the whole model again in the normal view (<kbd>1</kbd>) and in clay (<kbd>5</kbd>). Open the <span class="ui">Optimisation report</span> to see what you saved.</li>
@@ -129,6 +137,7 @@
             <li>Stop when the number is reached. A model that is lighter than it needs to be has lost detail for nothing.</li>
           </ul>
           <div class="kb-see"><h2>Related</h2><ul>
+            <li><a href="../docs/smart-optimise.html">Smart optimise</a></li>
             <li><a href="../docs/read-the-numbers.html">How to read the numbers</a></li>
             <li><a href="../docs/save-scene.html">Save a scene</a></li>
             <li><a href="../docs/export.html">Export</a></li>
@@ -147,7 +156,7 @@
           <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.13.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.14.0</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
       </div>

@@ -67,10 +67,15 @@
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
+        <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html">How to read the numbers</a>
+        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
+        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -117,11 +122,27 @@
           <h2 id="what-it-finds">What it finds</h2>
           <dl class="table">
             <div><dt>Commands</dt><dd>Everything in the menus and on the toolbars, each with its shortcut. Before you type, the commands you ran lately come first, with suggestions that fit what is selected.</dd></div>
-            <div><dt>Sidebar controls</dt><dd>Every button, slider, switch and field in the sidebars, listed under the name of its card. Choosing a button runs it. Choosing anything else opens its card and scrolls to it.</dd></div>
+            <div><dt>Sidebar controls</dt><dd>Every button, slider, switch and field in the right sidebar, listed under the name of its card. Choosing a button runs it. Choosing anything else opens its card and scrolls to it.</dd></div>
             <div><dt>Parts</dt><dd>Parts of the scene by name. <kbd>Enter</kbd> selects the part and frames it, even when it is hidden.</dd></div>
             <div><dt>Library parts</dt><dd>Parts you can add. Type <code>add flange</code> or just <code>flange</code>, and <kbd>Enter</kbd> adds one.</dd></div>
           </dl>
           <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-search.webp" data-group="article" data-caption="Search for “bolt”: the parts in the scene by name, and the bolts in the library ready to add."><img src="../../../Images/apps/meshoptimiser-search.webp" alt="MeshOptimiser: Search for “bolt”: the parts in the scene by name, and the bolts in the library ready to add." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Search for “bolt”: the parts in the scene by name, and the bolts in the library ready to add.</figcaption></figure>
+          <h2 id="commands-worth-knowing">Commands worth knowing</h2>
+          <p>Some tools have no button in the sidebar, or no key of their own. The search is the easy way to reach them. Type a few letters of the name:</p>
+          <dl class="table">
+            <div><dt>Smart optimise</dt><dd>Runs every clean-up in one go. See <a href="../docs/smart-optimise.html">Smart optimise</a>.</dd></div>
+            <div><dt>Select fasteners…</dt><dd>Finds the bolts, screws, nuts and washers. See <a href="../docs/fasteners.html">Fasteners</a>.</dd></div>
+            <div><dt>Find stacked copies…</dt><dd>Finds parts that sit on an identical copy of themselves. See <a href="../docs/stacked-copies.html">Stacked copies</a>.</dd></div>
+            <div><dt>Select hidden parts…</dt><dd>Finds the parts that cannot be seen from outside. See <a href="../docs/select-hidden-parts.html">Select hidden parts</a>.</dd></div>
+            <div><dt>Align model to the floor…</dt><dd>Opens the card that stands the model on the floor. <span class="ui">Align model to the floor (with the last choices)</span> does it at once, without opening the card. See <a href="../docs/align-to-floor.html">Align to floor</a>.</dd></div>
+            <div><dt>Dynamic place</dt><dd>Turns on dragging the selected part over other surfaces (<kbd>D</kbd>). See <a href="../docs/move-rotate-scale.html">Move, rotate and scale</a>.</dd></div>
+            <div><dt>Fit to triangle budget</dt><dd>Takes you to the budget field so you can type a number.</dd></div>
+            <div><dt>Optimisation report</dt><dd>Shows the model as it was opened against what it is now.</dd></div>
+            <div><dt>Duplicate scene, Close other scenes, Close all scenes</dt><dd>Work on the scene tabs. See <a href="../docs/scene-tabs.html">Scene tabs</a>.</dd></div>
+            <div><dt>Revert to source file…</dt><dd>Throws away every edit and loads the file again.</dd></div>
+            <div><dt>Help &amp; docs</dt><dd>Opens the help window (<kbd>F1</kbd>). See <a href="../docs/help-window.html">The help window</a>.</dd></div>
+            <div><dt>Open welcome screen</dt><dd>Shows the start screen again.</dd></div>
+          </dl>
           <h2 id="a-calculator">A calculator</h2>
           <p>Type a sum or a length and the search works it out. <kbd>Enter</kbd> copies the answer, ready to paste into a field.</p>
           <dl class="table">
@@ -133,11 +154,11 @@
           <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-search-sum.webp" data-group="article" data-caption="The search works out a sum or a length. Enter copies the answer."><img src="../../../Images/apps/meshoptimiser-search-sum.webp" alt="MeshOptimiser: The search works out a sum or a length. Enter copies the answer." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>The search works out a sum or a length. Enter copies the answer.</figcaption></figure>
           <h2 id="the-list-of-all-commands">The list of all commands</h2>
           <p>The <code>…</code> button at the right end of the bottom toolbar opens every command that acts on the model in one list, with its shortcut. A command that cannot run right now is dimmed. Hover over it to see why, for example because nothing is selected.</p>
-          <h2 id="command-panels">Command panels</h2>
-          <p>Some commands have settings: Split, Fill holes, Smart fit and Select hidden parts. They open as a panel at the bottom left of the viewport.</p>
+          <h2 id="command-cards">Command cards</h2>
+          <p>Some commands have settings: Split, Fill holes, Smart fit, Select hidden parts, Fasteners, Stacked copies, Align to floor and Dynamic place. They open as a card over the bottom left of the viewport.</p>
           <dl class="kb-keys">
-            <div><dt><kbd>Enter</kbd></dt><dd>Run the open panel</dd></div>
-            <div><dt><kbd>Esc</kbd></dt><dd>Put the panel away. A second press clears the selection.</dd></div>
+            <div><dt><kbd>Enter</kbd></dt><dd>Run the open card</dd></div>
+            <div><dt><kbd>Esc</kbd></dt><dd>Put the card away. A second press clears the selection.</dd></div>
           </dl>
           <h2 id="numbers-you-can-drag">Numbers you can drag</h2>
           <p>Any number field in the app can be dragged sideways to change it, or clicked to type a value. Hold <kbd>Shift</kbd> while dragging to go ten times faster and <kbd>Alt</kbd> to go ten times finer.</p>
@@ -160,7 +181,7 @@
           <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.13.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.14.0</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
       </div>

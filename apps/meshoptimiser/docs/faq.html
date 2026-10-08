@@ -67,10 +67,15 @@
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
+        <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html">How to read the numbers</a>
+        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
+        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -113,7 +118,7 @@
           <h2 id="does-my-file-leave-my-computer">Does my file leave my computer?</h2>
           <p>No. The viewer and the converter both run on your machine. See <a href="../docs/privacy-offline.html">Privacy and offline use</a>.</p>
           <h2 id="do-i-need-an-internet-connection">Do I need an internet connection?</h2>
-          <p>Only for the first start, which downloads the Python add-ons. After that the app runs offline. A few rarely used converters are fetched the first time they are needed.</p>
+          <p>Only for the first start, which downloads the Python add-ons. After that the app runs offline, and so does the help window (<kbd>F1</kbd>). A few rarely used converters are fetched the first time they are needed.</p>
           <h2 id="which-browsers-work">Which browsers work?</h2>
           <p>A recent Chrome, Edge, Firefox or Safari. The viewer uses WebGPU and falls back to WebGL2. For the app to open in a window of its own, the launcher needs Chrome, Edge or Brave. Installing it as an app is offered by Chrome and Edge.</p>
           <h2 id="which-systems-does-it-run-on">Which systems does it run on?</h2>
@@ -127,17 +132,19 @@
           <h2 id="does-it-change-my-original-file">Does it change my original file?</h2>
           <p>No. Nothing reaches a file until you save a scene or export, and both write a new file.</p>
           <h2 id="can-it-write-step-files">Can it write STEP files?</h2>
-          <p>No. It reads STEP and writes mesh formats: GLB, glTF, FBX, USDZ, OBJ, STL and PLY.</p>
+          <p>No. It reads STEP and writes mesh formats: GLB, glTF, FBX, USDZ, OBJ, STL and PLY, and a parts list as CSV.</p>
           <h2 id="where-is-the-converted-file">Where is the converted file?</h2>
           <p>In the folder <code>inbox</code> inside the app folder. To put a file where you want it, save a scene or export.</p>
           <h2 id="can-i-undo-everything">Can I undo everything?</h2>
-          <p>Every editing action can be undone with <kbd>Ctrl</kbd><kbd>Z</kbd>, and <span class="ui">Revert to source…</span> in the <span class="ui">Menu</span> reloads the file as it was. See <a href="../docs/undo-redo.html">Undo and redo</a>.</p>
+          <p>Every editing action can be undone with <kbd>Ctrl</kbd><kbd>Z</kbd>. By default the history goes back 200 steps, and <span class="ui">Settings</span>, <span class="ui">General</span> can make it 50 or 500. <span class="ui">Revert to source…</span> in the <span class="ui">Menu</span> reloads the file as it was. See <a href="../docs/undo-redo.html">Undo and redo</a>.</p>
           <h2 id="why-do-i-have-to-start-it-with-a-launcher">Why do I have to start it with a launcher?</h2>
           <p>Because the converter is a Python program, and a web page cannot start one. The launcher starts a small local server that connects the two.</p>
           <h2 id="how-do-i-update">How do I update?</h2>
           <p>Download the new zip and unpack it into a new folder. See <a href="../docs/stop-restart-update.html">Stop, restart and update</a>.</p>
+          <h2 id="where-do-i-find-help-inside-the-app">Where do I find help inside the app?</h2>
+          <p>Press <kbd>F1</kbd>. The help window holds these same articles, with a search. See <a href="../docs/help-window.html">The help window</a>.</p>
           <h2 id="where-do-i-report-a-bug-or-ask-for-a-feature">Where do I report a bug or ask for a feature?</h2>
-          <p>At <code>https://github.com/xpayn3/MeshOptimiser/issues</code>. The app’s mark in the top bar has a link called <span class="ui">Report an issue</span>. Say what you did, what you expected and what happened, and add the version number and the log.</p>
+          <p>At <code>https://github.com/xpayn3/MeshOptimiser/issues</code>. The app’s mark in the top bar has a link called <span class="ui">Report an issue</span>. Say what you did, what you expected and what happened, and add the version number and the log. <span class="ui">Settings</span>, <span class="ui">About</span>, <span class="ui">Copy details</span> copies the version number, your browser and your graphics card for you.</p>
           <div class="kb-see"><h2>Related</h2><ul>
             <li><a href="../docs/troubleshooting.html">Troubleshooting</a></li>
             <li><a href="../docs/privacy-offline.html">Privacy and offline use</a></li>
@@ -157,7 +164,7 @@
           <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.13.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.14.0</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
       </div>

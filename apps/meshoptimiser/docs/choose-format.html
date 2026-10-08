@@ -67,10 +67,15 @@
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
+        <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html">How to read the numbers</a>
+        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
+        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -114,7 +119,7 @@
             <div><dt>Unreal</dt><dd>FBX. The app lists Unreal under FBX.</dd></div>
             <div><dt>Unity</dt><dd>The app does not name Unity for any format. FBX is the usual choice for game engines.</dd></div>
             <div><dt>AR on an iPhone or iPad</dt><dd>USDZ, the format of Apple Quick Look.</dd></div>
-            <div><dt>3D printing</dt><dd>STL. Switch on <span class="ui">Merge all parts into one mesh</span> if the printer software wants one object.</dd></div>
+            <div><dt>3D printing</dt><dd>STL. Switch on <span class="ui">Merge into one mesh</span> if the printer software wants one object.</dd></div>
             <div><dt>A program that reads nothing else</dt><dd>OBJ. It is understood almost everywhere, but it carries no hierarchy: the tree is flattened into the names of the parts.</dd></div>
             <div><dt>Research or scanning tools</dt><dd>PLY, which holds geometry and a colour for every vertex.</dd></div>
             <div><dt>A list of parts for a spreadsheet</dt><dd>CSV.</dd></div>
@@ -133,7 +138,7 @@
           <h2 id="two-settings-that-go-with-the-format">Two settings that go with the format</h2>
           <ul class="kb-points">
             <li>Scale. A CAD model is usually in millimetres. Many 3D programs and the glTF format work in metres. If the model arrives huge, export with <span class="ui">× 0.001 (mm → m)</span>.</li>
-            <li>Up axis. CAD uses Z as up. glTF, OBJ and Maya use Y. If the model arrives lying down, export with <span class="ui">Y-up (glTF, OBJ, Maya)</span>.</li>
+            <li>Up axis. CAD uses Z as up. glTF, OBJ and Maya use Y. If the model arrives lying down, export with <span class="ui">Turn Z-up into Y-up</span>.</li>
           </ul>
           <aside class="kb-note"><p>These are safe starting points. The program you are exporting to has the last word, so do one test export before you spend time on the model.</p></aside>
           <div class="kb-see"><h2>Related</h2><ul>
@@ -155,7 +160,7 @@
           <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.13.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.14.0</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
       </div>
