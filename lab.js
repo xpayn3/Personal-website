@@ -201,6 +201,8 @@
   const apps = window.labApps || [];
   // an app's page, or its own site when it has one (apps.js: site)
   const appHref = app => (app.site ? app.site.path : `apps/${app.id}.html`);
+  // an app's own site opens in a tab of its own: it is not part of this one
+  const appTab = (a, app) => { if (app.site) { a.target = '_blank'; a.rel = 'noopener'; } };
   function makeAppEntry(app) {
     const article = el('article', 'entry app-entry');
     article.dataset.app = '';
@@ -211,6 +213,7 @@
 
     const page = el('a', 'app-entry-link');
     page.href = appHref(app);
+    appTab(page, app);
     if (app.cover) {
       const cover = el('span', 'app-entry-cover');
       const img = el('img');
@@ -240,6 +243,7 @@
       const li = el('li');
       const a = el('a', 'rail-app');
       a.href = appHref(app);
+      appTab(a, app);
       const icon = window.labAppIcon(app);
       icon.style.setProperty('--icon', '44px');
       const text = el('span', 'rail-app-text');
