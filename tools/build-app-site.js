@@ -24,7 +24,8 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 19;
+const CSS_V = 22;
+const RP_V = 2;           // report.js
 const JS_V = 18;
 
 // The pages of an app's site, in the order of its navigation. `file` is
@@ -36,6 +37,7 @@ const PAGES = [
   { key: 'docs', file: 'docs.html', label: 'Docs' },
   { key: 'changelog', file: 'changelog.html', label: 'Changelog' },
   { key: 'download', file: 'download.html', label: 'Download', nav: false },
+  { key: 'report', file: 'report.html', label: 'Report a problem', nav: false },
 ];
 
 const esc = text => String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -144,7 +146,7 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
       </div>
     </section>`;
 
-  const footer = (page) => `${page.key === 'download' ? '' : getBand}
+  const footer = (page) => `${page.key === 'download' || page.key === 'report' ? '' : getBand}
   </main>
   <footer class="foot">
     <div class="wrap foot-in">
@@ -169,7 +171,8 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
       <nav aria-label="Project">
         <h2>Project</h2>
         <a href="${repo}" rel="noopener">Source on GitHub</a>
-        <a href="${repo}/issues" rel="noopener">Report a problem</a>
+        <a href="report.html">Report a problem</a>
+        <a href="${repo}/issues" rel="noopener">Issues on GitHub</a>
         <a href="${repo}/blob/main/LICENSE" rel="noopener">${esc(licence)} licence</a>
       </nav>
     </div>
@@ -710,6 +713,145 @@ ${app.info.map(([label, value]) => `          <div><dt>${esc(label)}</dt><dd>${e
         </dl>
       </div>
     </section>` + footer(page);
+
+  // The report page: a form that is put together in the browser (report.js). There is no server behind the site,
+  // so it ends in a zip to attach, a text through the portfolio's form service, a GitHub issue, or an email.
+  const reportKinds = [
+    ['install', 'It will not install or start'],
+    ['open', 'A file will not open or convert'],
+    ['looks', 'The model looks wrong'],
+    ['slow', 'It is slow, or freezes'],
+    ['export', 'An export is wrong'],
+    ['tool', 'A tool gives a wrong result'],
+    ['crash', 'It crashed or shows an error'],
+    ['other', 'Something else'],
+  ];
+  const rpField = (id, label, control, hint) => `
+            <div class="rp-field">
+              <label for="${id}">${label}</label>${control}${hint ? `
+              <p class="rp-hint">${hint}</p>` : ''}
+            </div>`;
+  const rpInput = (id, attrs = '') => `<input id="${id}" type="text" autocomplete="off" spellcheck="false" ${attrs} />`;
+  const rpArea = (id, rows, attrs = '') => `<textarea id="${id}" rows="${rows}" spellcheck="false" ${attrs}></textarea>`;
+  const rpLog = (tab, label, hint, placeholder) => `
+              <div class="rp-panel" role="tabpanel" id="rp-panel-${tab}" aria-labelledby="rp-tab-${tab}" data-tab="${tab}"${tab === 'conv' ? '' : ' hidden'}>
+                <p class="rp-hint">${hint}</p>
+                <textarea id="f-log-${tab}" class="mono" rows="9" spellcheck="false" placeholder="${placeholder}" aria-label="${label}"></textarea>
+              </div>`;
+
+  pages.report = (page) => head(page, `Report a problem — ${app.title}`, `Report a problem with ${app.title}. Describe it, paste the details and the log, add pictures and the file, and send it or download it as one zip.`) + header(page) + `
+    <section class="wrap page-head">
+      <p class="kicker">Report a problem</p>
+      <h1>Tell us what went wrong.</h1>
+      <p class="lead">Fill in what you can. The list on the right shows what is still missing, and what is missing depends on the kind of problem. Everything is put together here, in your browser: nothing leaves your computer until you press a send button, and your model never does unless you add it yourself.</p>
+    </section>
+
+    <section class="wrap rp" id="report">
+      <noscript><aside class="kb-note"><p>This form needs JavaScript. Without it, you can <a href="${repo}/issues/new">open a GitHub issue</a> or write to <a href="mailto:luka.grcar@me.com">luka.grcar@me.com</a>, and say what you did, what you expected and what happened.</p></aside></noscript>
+      <p class="rp-restored" id="rp-restored" hidden>Your unfinished report from earlier is back. Pictures and files are not kept between visits: add them again.</p>
+      <div class="rp-grid">
+        <form class="rp-form" id="rp-form" novalidate autocomplete="off">
+
+          <section class="rp-card" aria-labelledby="rp-h1">
+            <h2 id="rp-h1"><i>01</i>What kind of problem is it?</h2>
+            <div class="rp-chips" role="radiogroup" aria-labelledby="rp-h1">
+${reportKinds.map(([key, label]) => `              <label class="rp-chip"><input type="radio" name="cat" value="${key}" /><span>${esc(label)}</span></label>`).join('\n')}
+            </div>
+            <p class="rp-tip" id="rp-cat-tip" data-set="0">Pick the one that is closest. It decides what the list asks for.</p>
+          </section>
+
+          <section class="rp-card" aria-labelledby="rp-h2">
+            <h2 id="rp-h2"><i>02</i>What happened?</h2>${rpField('f-title', 'A short title <b>needed</b>', rpInput('f-title', 'maxlength="120" placeholder="For example: Fill holes leaves one hole open on a bracket"'))}${rpField('f-where', 'Where in the app?', rpInput('f-where', 'maxlength="160" placeholder="The tool, the menu, the export format, or the window"'), 'Optional, but it saves a question.')}${rpField('f-steps', 'What did you do? <b>needed</b>', rpArea('f-steps', 5, 'placeholder="1. I opened a STEP file of 400 parts&#10;2. I pressed P to open Fill holes&#10;3. I pressed Enter"'), 'Step by step, as if you were telling someone who has never used the app.')}
+            <div class="rp-two">${rpField('f-expected', 'What did you expect?', rpArea('f-expected', 3))}${rpField('f-actual', 'What happened instead?', rpArea('f-actual', 3, 'placeholder="The exact words of any message are the most useful part."'))}
+            </div>
+            <div class="rp-two">${rpField('f-often', 'How often does it happen?', '<select id="f-often"><option value="">I am not sure</option><option>Every time</option><option>Sometimes</option><option>Only once</option></select>')}${rpField('f-before', 'Did it work before?', '<select id="f-before"><option value="">I do not know</option><option>Yes, in an earlier version</option><option>No, it never worked</option></select>')}
+            </div>
+          </section>
+
+          <section class="rp-card" aria-labelledby="rp-h3">
+            <h2 id="rp-h3"><i>03</i>Your setup</h2>
+            <p class="rp-lead">The quickest way: in ${esc(app.title)} press <kbd>Ctrl</kbd> <kbd>,</kbd> to open Settings, choose <span class="ui">About</span>, press <span class="ui">Copy details</span>, and paste below. The boxes under it fill in by themselves.</p>${rpField('f-details', 'Details copied from the app', rpArea('f-details', 5, 'class="mono" placeholder="MeshOptimiser details&#10;Version: …"'))}
+            <div class="rp-detect"><button type="button" class="btn" id="rp-detect">Or fill in from this browser</button><span id="rp-detect-note" class="rp-hint">Use it on the computer where the problem happens. It only fills boxes that are empty.</span></div>
+            <div class="rp-fields">${rpField('f-version', 'App version', rpInput('f-version', 'maxlength="24" placeholder="0.14.0"'), 'Settings, About')}${rpField('f-os', 'System', rpInput('f-os', 'maxlength="60" placeholder="Windows 11, macOS 14.5"'))}${rpField('f-browser', 'Browser', rpInput('f-browser', 'maxlength="60" placeholder="Chrome 130"'))}${rpField('f-renderer', 'Renderer', '<select id="f-renderer"><option value="">I do not know</option><option>WebGPU</option><option>WebGL2</option></select>', 'Settings, Performance')}${rpField('f-gpu', 'Graphics card', rpInput('f-gpu', 'maxlength="100" placeholder="NVIDIA GeForce RTX 3060"'))}${rpField('f-python', 'Python version', rpInput('f-python', 'maxlength="24" placeholder="3.12.7"'), 'Printed by the launcher')}${rpField('f-scene', 'Size of the scene', rpInput('f-scene', 'maxlength="80" placeholder="1,583 parts, 5.4 million triangles"'))}
+            </div>
+          </section>
+
+          <section class="rp-card" aria-labelledby="rp-h4">
+            <h2 id="rp-h4"><i>04</i>Logs and messages</h2>
+            <p class="rp-lead">Paste text into the box, or drop a <code>.txt</code> or <code>.log</code> file below it. Keep long logs whole: the plain-text send cuts them short, the .zip keeps every word.</p>
+            <div class="rp-tabs" role="tablist" aria-label="Which log">
+              <button type="button" class="rp-tab" role="tab" id="rp-tab-conv" data-tab="conv" aria-controls="rp-panel-conv" aria-selected="true">Conversion log</button>
+              <button type="button" class="rp-tab" role="tab" id="rp-tab-launch" data-tab="launch" aria-controls="rp-panel-launch" aria-selected="false" tabindex="-1">Launcher window</button>
+              <button type="button" class="rp-tab" role="tab" id="rp-tab-console" data-tab="console" aria-controls="rp-panel-console" aria-selected="false" tabindex="-1">Browser console</button>
+            </div>${rpLog('conv', 'Conversion log', 'When a STEP conversion fails, its progress card has a <span class="ui">Copy log</span> button.', 'Paste the conversion log here')}${rpLog('launch', 'Launcher window', 'The black window on Windows, the Terminal on a Mac. On Windows: right-click its title bar, choose <span class="ui">Edit</span>, then <span class="ui">Select All</span>, press <kbd>Enter</kbd>, and paste. On a Mac: select the text and press <kbd>Cmd</kbd> <kbd>C</kbd>.', 'Paste the text of the launcher window here')}${rpLog('console', 'Browser console', 'In the app, press <span class="ui">Console</span> at the bottom right and use its copy button.', 'Paste the console text here')}
+            <label class="rp-drop is-slim" id="rp-drop-logs"><input type="file" accept=".txt,.log,text/*" multiple /><span>Drop a <code>.txt</code> or <code>.log</code> file here. It goes into the box of the tab that is open.</span></label>
+          </section>
+
+          <section class="rp-card" aria-labelledby="rp-h5">
+            <h2 id="rp-h5"><i>05</i>Pictures and recordings <span class="rp-count" id="rp-shots-count"></span></h2>
+            <label class="rp-drop" id="rp-drop-shots"><input type="file" accept="image/*,video/*" multiple /><strong>Drop pictures or a screen recording here</strong><span>or click to choose. You can also paste a screenshot with <kbd>Ctrl</kbd> <kbd>V</kbd>. Up to 50 MB each.</span></label>
+            <ul class="rp-files is-shots" id="rp-shots"></ul>
+          </section>
+
+          <section class="rp-card" aria-labelledby="rp-h6">
+            <h2 id="rp-h6"><i>06</i>The model</h2>
+            <p class="rp-lead">A problem with a file is easiest to fix with the file. It is yours: it is only added if you add it here, and the <span class="ui">Send</span> button never carries it. Only the .zip does.</p>
+            <div class="rp-chips" role="radiogroup" aria-labelledby="rp-h6">
+              <label class="rp-chip"><input type="radio" name="model" value="attach" /><span>I can attach it</span></label>
+              <label class="rp-chip"><input type="radio" name="model" value="link" /><span>I can share a link to it</span></label>
+              <label class="rp-chip"><input type="radio" name="model" value="nofile" /><span>I cannot share it</span></label>
+            </div>
+            <div id="rp-model-attach" hidden>
+              <label class="rp-drop" id="rp-drop-models"><input type="file" multiple /><strong>Drop the file here</strong><span>or click to choose. Up to 50 MB goes into the zip. A bigger file is listed with its name, size and fingerprint, so send it through a link.</span></label>
+              <ul class="rp-files" id="rp-models"></ul>
+            </div>
+            <div id="rp-model-link" hidden>${rpField('f-modellink', 'Link to the file', '<input id="f-modellink" type="url" autocomplete="off" spellcheck="false" maxlength="300" placeholder="https://" />', 'A shared folder or a transfer link. Make sure it is open for at least two weeks.')}
+            </div>
+            <div id="rp-model-info" hidden>${rpField('f-modelinfo', 'About the file', rpArea('f-modelinfo', 3, 'maxlength="600" placeholder="Format and size, the program it came from, how many parts it has, anything unusual about it"'), 'When you cannot share the file, this is what makes up for it.')}
+            </div>
+          </section>
+
+          <section class="rp-card" aria-labelledby="rp-h7">
+            <h2 id="rp-h7"><i>07</i>How to reach you <span class="rp-count">optional</span></h2>
+            <p class="rp-lead">Only used to answer this report. Without it there is no way to ask a question, so a report that needs one may wait.</p>
+            <div class="rp-two">${rpField('f-name', 'Name', rpInput('f-name', 'maxlength="60" autocomplete="name"'))}${rpField('f-email', 'Email', '<input id="f-email" type="email" autocomplete="email" spellcheck="false" maxlength="120" />')}
+            </div>
+            <input type="text" id="f-botcheck" name="botcheck" class="rp-trap" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          </section>
+        </form>
+
+        <aside class="rp-rail" aria-label="What is still needed, and how to send it">
+          <section class="rp-card">
+            <h2>What we still need</h2>
+            <p class="rp-meter"><span id="rp-meter">0 of 0 covered</span></p>
+            <div class="rp-track" aria-hidden="true"><i id="rp-bar"></i></div>
+            <ul class="rp-check" id="rp-check"></ul>
+          </section>
+          <section class="rp-card" aria-labelledby="rp-hs">
+            <h2 id="rp-hs">Send it</h2>
+            <p class="rp-ref">Your reference: <b id="rp-ref"></b></p>
+            <label class="rp-consent"><input type="checkbox" id="f-consent" /><span>I have read what is below. It can contain what I typed, pasted and added, and nothing else.</span></label>
+            <p class="rp-why" id="rp-why" role="status"></p>
+            <div class="rp-send">
+              <button type="button" class="btn is-primary is-large" data-act="send" disabled>Send the report</button>
+              <p class="rp-note">The text only, privately, to the person who fixes it. No pictures and no files.</p>
+              <button type="button" class="btn" data-act="download" disabled>Download everything as a .zip</button>
+              <p class="rp-note">The text, logs, pictures and files in one file. Attach it to an email or an issue.</p>
+              <div class="rp-row">
+                <button type="button" class="btn" data-act="github" disabled>Open a GitHub issue</button>
+                <button type="button" class="btn" data-act="email" disabled>Write an email</button>
+                <button type="button" class="btn" data-act="copy" disabled>Copy as text</button>
+              </div>
+              <p class="rp-note">A GitHub issue is public. An email needs the .zip attached by you.</p>
+            </div>
+            <p class="rp-status" id="rp-status" role="status" aria-live="polite"></p>
+            <aside class="rp-after" id="rp-after" hidden><p>Pictures and files travel only in the .zip. If you have not sent it yet, send it to <a href="mailto:luka.grcar@me.com">luka.grcar@me.com</a> or drag it into your GitHub issue, and mention the reference above.</p></aside>
+            <details class="rp-preview" id="rp-preview"><summary>See exactly what the text will say</summary><pre id="rp-preview-text"></pre></details>
+            <button type="button" class="rp-reset" id="rp-start-over">Start over</button>
+          </section>
+        </aside>
+      </div>
+    </section>` + footer(page).replace('</body>', `  <script defer src="report.js?v=${RP_V}"></script>\n</body>`);
 
   // the old one-page address forwards to the site
   const forward = `<!DOCTYPE html>
