@@ -146,6 +146,11 @@ window.labApps = [
             ['scene_summary', 'The file, parts, triangles, size, view mode and explode state.'],
             ['list_parts', 'Every part with its triangles, size and colour; sorted, filtered, paged.'],
             ['get_selection', 'What is selected right now.'],
+            ['check_model', 'A health check in one call: where the weight is, what is tiny, thin, hidden or drawn twice, the unit, and what to do first.'],
+            ['optimisation_report', 'The file as it was opened against now: triangles, parts, draw calls, memory, file size, with the change in percent.'],
+            ['estimate_export_size', 'What a GLB would weigh, plain and with Draco, against the app’s limits for a web page, Shopify, AR Quick Look and a phone app.'],
+            ['list_materials', 'The materials, with colour and how many parts use each.'],
+            ['list_recipes', 'Your saved Smart optimise recipes.'],
           ]],
           ['Pictures and film', 'paintbrush', 'Quick looks, and clean pictures for a client or a report. Files are saved on your computer.', [
             ['screenshot', 'A quick look at the viewport, so Claude can see what you see.'],
@@ -169,10 +174,14 @@ window.labApps = [
             ['find_hidden_parts', 'Parts nobody can see from outside, such as screws in a housing; selected so you can check them first.'],
             ['find_stacked_copies', 'Parts drawn twice in the same place; the extra copies are selected.'],
             ['measure_parts', 'The distance between two parts, and the gap between their boxes.'],
+            ['select_similar', 'The other copies of a shape: every washer of one kind.'],
+            ['select_by_colour', 'Every part with the colour of the chosen ones, or of a colour you give.'],
+            ['select_by_material', 'Every part that uses a material.'],
             ['list_groups', 'The groups in the tree.'],
           ]],
           ['Make it lighter', 'gauge', 'Each one asks you first, and each one is a single undo step.', [
             ['smart_optimise', 'The app’s whole clean-up in one run and one undo: light, balanced or strong.', true],
+            ['run_recipe', 'Your own saved settings: the same clean-up you ran last time, on this model.', true],
             ['decimate', 'Reduce the triangles of chosen parts, to a target or by a share.', true],
             ['fit_to_budget', 'Reduce the whole scene to a triangle budget.', true],
             ['fill_holes', 'Close bolt holes, slots and pockets up to a size.', true],
@@ -186,6 +195,8 @@ window.labApps = [
             ['untriangulate', 'Fewer triangles on flat faces, with no change of shape.', true],
           ]],
           ['Tidy and arrange', 'pencil-line', 'Names, groups and positions.', [
+            ['list_library', 'The app’s library of standard parts: bolts, nuts, pipes, profiles, gears and more.'],
+            ['add_library_part', 'Add a standard part to the scene.', true],
             ['rename_parts', 'Rename by id, or find and replace, prefix and suffix.', true],
             ['group_parts', 'Put parts in a group.', true],
             ['ungroup', 'Dissolve a group.', true],
@@ -200,6 +211,7 @@ window.labApps = [
           ]],
           ['Files', 'file-box', 'On your own computer; nothing is uploaded.', [
             ['open_file', 'Open a model from a path on this computer.'],
+            ['save_scene', 'Save the scene as a scene file, edits included, before a drastic step.'],
             ['export_model', 'Save a GLB, glTF, FBX, USDZ, OBJ or STL, or use a preset for the web, AR, Unreal, Unity or printing.'],
           ]],
           ['Know-how', 'lightbulb', 'The app’s own knowledge, on demand. Answered without the app being open.', [
@@ -251,6 +263,7 @@ window.labApps = [
         },
         prompts: [
           'Optimise this for the web, under 300,000 triangles, and tell me what you took out.',
+          'Check this model and tell me where the weight is.',
           'Find all the bolts and hide them.',
           'Get this under 300,000 triangles and tell me what you took out.',
           'Show it exploded 50% and take a screenshot.',
@@ -267,7 +280,8 @@ window.labApps = [
           ['Does it work in the demo?', 'No. The hosted demo has no connection to Claude. Run the app on your own computer.'],
           ['What if I want it to ask less, or not at all?', 'Switch off Ask before Claude edits. Deleting still asks unless you also switch off Always ask before deleting. Or turn a whole kind of edit off with its own switch.'],
           ['Does Claude know how to optimise a model?', 'Yes. It comes with the know-how of an experienced user: six playbooks (how to optimise, recipes by goal, judgement, the tools by job, what is safe, what to do when something fails) and about fifty of the app’s help articles, one per tool and job. It reads the playbook before it starts, and searches the articles for anything it has not done before.'],
-          ['Will it save tokens?', 'It should: it works in fewer, better-chosen steps instead of finding the order by trial, one Smart optimise call stands in for a dozen, and every reply is compact (about a fifth fewer characters than an indented one). The playbook costs about 2,000 tokens, read once; the articles cost nothing until Claude searches for one. How many tokens a job takes still depends on the model and on you, so there is no promise of a percentage.'],
+          ['How does Claude know how far to go?', 'It checks the scene against the app’s own guidelines, the ones in the Export dialog: about 5 MB and 100,000 triangles for a web page, 15 MB for a Shopify product page, 10 MB and 100,000 triangles for Apple AR Quick Look, 25 MB and 200,000 triangles for a phone app. It estimates what the file would weigh before it exports, uses your saved recipes if you have them, and tells you the before and after from the app’s own report. If you give it a number, yours wins.'],
+          ['Will it save tokens?', 'It should: it works in fewer, better-chosen steps instead of finding the order by trial, one Smart optimise call stands in for a dozen, and every reply is compact (about a fifth fewer characters than an indented one). The playbook costs about 2,500 tokens, read once; the articles cost nothing until Claude searches for one. How many tokens a job takes still depends on the model and on you, so there is no promise of a percentage.'],
           ['Can Claude make pictures of the result for a client?', 'Yes. It can render big, smooth pictures (up to 8192 pixels) from one or several angles, in clay or solid, on a white, dark or transparent background, and save them as PNG on your computer. It looks at a small preview of each to check the angle. It can also render the model before and after optimising with the same camera, for a before and after.'],
           ['Can Claude break my model?', 'Not past the undo history. Every change is a step you can take back, and your file on disk is only changed when you export.'],
         ],

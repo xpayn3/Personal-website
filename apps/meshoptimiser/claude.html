@@ -118,6 +118,11 @@
               <li><code>scene_summary</code><span>The file, parts, triangles, size, view mode and explode state.</span></li>
               <li><code>list_parts</code><span>Every part with its triangles, size and colour; sorted, filtered, paged.</span></li>
               <li><code>get_selection</code><span>What is selected right now.</span></li>
+              <li><code>check_model</code><span>A health check in one call: where the weight is, what is tiny, thin, hidden or drawn twice, the unit, and what to do first.</span></li>
+              <li><code>optimisation_report</code><span>The file as it was opened against now: triangles, parts, draw calls, memory, file size, with the change in percent.</span></li>
+              <li><code>estimate_export_size</code><span>What a GLB would weigh, plain and with Draco, against the app’s limits for a web page, Shopify, AR Quick Look and a phone app.</span></li>
+              <li><code>list_materials</code><span>The materials, with colour and how many parts use each.</span></li>
+              <li><code>list_recipes</code><span>Your saved Smart optimise recipes.</span></li>
             </ul>
           </article>
           <article class="cl-group" style="--ico: #0d99ff">
@@ -150,6 +155,9 @@
               <li><code>find_hidden_parts</code><span>Parts nobody can see from outside, such as screws in a housing; selected so you can check them first.</span></li>
               <li><code>find_stacked_copies</code><span>Parts drawn twice in the same place; the extra copies are selected.</span></li>
               <li><code>measure_parts</code><span>The distance between two parts, and the gap between their boxes.</span></li>
+              <li><code>select_similar</code><span>The other copies of a shape: every washer of one kind.</span></li>
+              <li><code>select_by_colour</code><span>Every part with the colour of the chosen ones, or of a colour you give.</span></li>
+              <li><code>select_by_material</code><span>Every part that uses a material.</span></li>
               <li><code>list_groups</code><span>The groups in the tree.</span></li>
             </ul>
           </article>
@@ -157,6 +165,7 @@
             <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg></i><div><h3>Make it lighter</h3><p>Each one asks you first, and each one is a single undo step.</p></div></header>
             <ul>
               <li><code>smart_optimise</code><span>The app’s whole clean-up in one run and one undo: light, balanced or strong.</span><em class="cl-asks">asks</em></li>
+              <li><code>run_recipe</code><span>Your own saved settings: the same clean-up you ran last time, on this model.</span><em class="cl-asks">asks</em></li>
               <li><code>decimate</code><span>Reduce the triangles of chosen parts, to a target or by a share.</span><em class="cl-asks">asks</em></li>
               <li><code>fit_to_budget</code><span>Reduce the whole scene to a triangle budget.</span><em class="cl-asks">asks</em></li>
               <li><code>fill_holes</code><span>Close bolt holes, slots and pockets up to a size.</span><em class="cl-asks">asks</em></li>
@@ -173,6 +182,8 @@
           <article class="cl-group" style="--ico: #2dd4bf">
             <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 21h8"/><path d="m15 5 4 4"/><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></i><div><h3>Tidy and arrange</h3><p>Names, groups and positions.</p></div></header>
             <ul>
+              <li><code>list_library</code><span>The app’s library of standard parts: bolts, nuts, pipes, profiles, gears and more.</span></li>
+              <li><code>add_library_part</code><span>Add a standard part to the scene.</span><em class="cl-asks">asks</em></li>
               <li><code>rename_parts</code><span>Rename by id, or find and replace, prefix and suffix.</span><em class="cl-asks">asks</em></li>
               <li><code>group_parts</code><span>Put parts in a group.</span><em class="cl-asks">asks</em></li>
               <li><code>ungroup</code><span>Dissolve a group.</span><em class="cl-asks">asks</em></li>
@@ -193,6 +204,7 @@
             <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2v5a1 1 0 001 1h5"/><path d="M14.692 22H18a2 2 0 002-2V8a2.4 2.4 0 00-.706-1.706l-3.588-3.588A2.4 2.4 0 0014 2H6a2 2 0 00-2 2v3.804"/><path d="M2.264 13.752 7 16.5l4.737-2.748"/><path d="M2.995 13.014A2 2 0 002 14.744v3.516a2 2 0 00.996 1.73l3 1.74a2 2 0 002.008 0l3-1.74A2 2 0 0012 18.26v-3.517a2 2 0 00-.995-1.73l-3-1.742a2 2 0 00-1.892-.064z"/><path d="M7 16.5V22"/></svg></i><div><h3>Files</h3><p>On your own computer; nothing is uploaded.</p></div></header>
             <ul>
               <li><code>open_file</code><span>Open a model from a path on this computer.</span></li>
+              <li><code>save_scene</code><span>Save the scene as a scene file, edits included, before a drastic step.</span></li>
               <li><code>export_model</code><span>Save a GLB, glTF, FBX, USDZ, OBJ or STL, or use a preset for the web, AR, Unreal, Unity or printing.</span></li>
             </ul>
           </article>
@@ -330,6 +342,7 @@
         </div>
         <ul class="cl-asklist">
           <li><p>Optimise this for the web, under 300,000 triangles, and tell me what you took out.</p><button type="button" class="copy" data-copy="Optimise this for the web, under 300,000 triangles, and tell me what you took out.">Copy</button></li>
+          <li><p>Check this model and tell me where the weight is.</p><button type="button" class="copy" data-copy="Check this model and tell me where the weight is.">Copy</button></li>
           <li><p>Find all the bolts and hide them.</p><button type="button" class="copy" data-copy="Find all the bolts and hide them.">Copy</button></li>
           <li><p>Get this under 300,000 triangles and tell me what you took out.</p><button type="button" class="copy" data-copy="Get this under 300,000 triangles and tell me what you took out.">Copy</button></li>
           <li><p>Show it exploded 50% and take a screenshot.</p><button type="button" class="copy" data-copy="Show it exploded 50% and take a screenshot.">Copy</button></li>
@@ -356,7 +369,8 @@
             <div><dt>Does it work in the demo?</dt><dd>No. The hosted demo has no connection to Claude. Run the app on your own computer.</dd></div>
             <div><dt>What if I want it to ask less, or not at all?</dt><dd>Switch off Ask before Claude edits. Deleting still asks unless you also switch off Always ask before deleting. Or turn a whole kind of edit off with its own switch.</dd></div>
             <div><dt>Does Claude know how to optimise a model?</dt><dd>Yes. It comes with the know-how of an experienced user: six playbooks (how to optimise, recipes by goal, judgement, the tools by job, what is safe, what to do when something fails) and about fifty of the app’s help articles, one per tool and job. It reads the playbook before it starts, and searches the articles for anything it has not done before.</dd></div>
-            <div><dt>Will it save tokens?</dt><dd>It should: it works in fewer, better-chosen steps instead of finding the order by trial, one Smart optimise call stands in for a dozen, and every reply is compact (about a fifth fewer characters than an indented one). The playbook costs about 2,000 tokens, read once; the articles cost nothing until Claude searches for one. How many tokens a job takes still depends on the model and on you, so there is no promise of a percentage.</dd></div>
+            <div><dt>How does Claude know how far to go?</dt><dd>It checks the scene against the app’s own guidelines, the ones in the Export dialog: about 5 MB and 100,000 triangles for a web page, 15 MB for a Shopify product page, 10 MB and 100,000 triangles for Apple AR Quick Look, 25 MB and 200,000 triangles for a phone app. It estimates what the file would weigh before it exports, uses your saved recipes if you have them, and tells you the before and after from the app’s own report. If you give it a number, yours wins.</dd></div>
+            <div><dt>Will it save tokens?</dt><dd>It should: it works in fewer, better-chosen steps instead of finding the order by trial, one Smart optimise call stands in for a dozen, and every reply is compact (about a fifth fewer characters than an indented one). The playbook costs about 2,500 tokens, read once; the articles cost nothing until Claude searches for one. How many tokens a job takes still depends on the model and on you, so there is no promise of a percentage.</dd></div>
             <div><dt>Can Claude make pictures of the result for a client?</dt><dd>Yes. It can render big, smooth pictures (up to 8192 pixels) from one or several angles, in clay or solid, on a white, dark or transparent background, and save them as PNG on your computer. It looks at a small preview of each to check the angle. It can also render the model before and after optimising with the same camera, for a before and after.</dd></div>
             <div><dt>Can Claude break my model?</dt><dd>Not past the undo history. Every change is a step you can take back, and your file on disk is only changed when you export.</dd></div>
           </dl>
