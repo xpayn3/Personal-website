@@ -7,13 +7,13 @@
   <meta name="theme-color" content="#101010" />
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
-  <title>MeshOptimiser — Heavy CAD, made light enough for a browser.</title>
-  <meta name="description" content="MeshOptimiser opens a heavy CAD assembly, keeps one copy of every part that repeats, and gives you a small GLB plus a viewer to look around, clean up and expor…" />
+  <title>MeshOptimiser — Make a CAD assembly light enough for the web. Free.</title>
+  <meta name="description" content="Turn a heavy STEP assembly into a small GLB on your own computer. Free and open source, the model never leaves your machine, and you see what you throw away." />
   <link rel="icon" type="image/svg+xml" href="../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/" />
   <meta property="og:site_name" content="MeshOptimiser" />
-  <meta property="og:title" content="MeshOptimiser — Heavy CAD, made light enough for a browser." />
-  <meta property="og:description" content="MeshOptimiser opens a heavy CAD assembly, keeps one copy of every part that repeats, and gives you a small GLB plus a viewer to look around, clean up and expor…" />
+  <meta property="og:title" content="MeshOptimiser — Make a CAD assembly light enough for the web. Free." />
+  <meta property="og:description" content="Turn a heavy STEP assembly into a small GLB on your own computer. Free and open source, the model never leaves your machine, and you see what you throw away." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/" />
   <meta property="og:type" content="website" />
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=17" />
+  <link rel="stylesheet" href="site.css?v=18" />
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/"}}</script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
@@ -30,10 +30,10 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "MeshOptimiser",
-  "description": "MeshOptimiser opens a heavy CAD assembly, keeps one copy of every part that repeats, and gives you a small GLB plus a viewer to look around, clean up and export. It’s free, it’s open source, and nothing leaves your computer.",
+  "description": "Turn a heavy STEP assembly into a small GLB on your own computer. Free and open source, the model never leaves your machine, and you see what you throw away.",
   "applicationCategory": "DesignApplication",
   "operatingSystem": "Windows, macOS",
-  "softwareVersion": "0.13.0",
+  "softwareVersion": "0.20.0",
   "url": "https://lukagrcar.com/apps/meshoptimiser/",
   "image": "https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp",
   "downloadUrl": "https://github.com/xpayn3/MeshOptimiser/archive/HEAD.zip",
@@ -73,9 +73,10 @@
   </header>
   <main id="main">
     <section class="wrap hero">
-      <p class="kicker">v0.13.0<b>·</b>Beta<b>·</b>MIT<b>·</b>Windows and macOS</p>
-      <h1>Heavy CAD, made light enough for a browser.</h1>
-      <p class="lead">MeshOptimiser opens a heavy CAD assembly, keeps one copy of every part that repeats, and gives you a small GLB plus a viewer to look around, clean up and export. It’s free, it’s open source, and nothing leaves your computer.</p>
+      <p class="kicker">v0.20.0<b>·</b>Beta<b>·</b>MIT<b>·</b>Windows and macOS</p>
+      <h1 class="is-statement">Make a CAD assembly light enough for the web, on your own computer. Free.</h1>
+      <p class="sub">Heavy CAD, made light enough for a browser.</p>
+      <p class="lead">MeshOptimiser opens a heavy CAD assembly, keeps one copy of every part that repeats, lets you take out what nobody will see, and exports a small GLB. It runs on your own computer, so the model never leaves it. Free and open source.</p>
       <div class="actions">
         <a class="btn is-primary is-large" href="download.html">Download</a>
         <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
@@ -102,11 +103,21 @@
 
     <section class="band">
       <div class="wrap">
+        <dl class="figures is-claims">
+          <div><dt>Private</dt><dd>The model never leaves your computer. No upload, no account, nothing to sign in to.</dd></div>
+          <div><dt>Free and open</dt><dd>MIT licence. No subscription and no seat to buy, and the code is on GitHub for anyone to read.</dd></div>
+          <div><dt>You see what you throw away</dt><dd>Every part has its own row. Check what a tool picked before it deletes, undo it, and read a before and after report.</dd></div>
+          <div><dt>Built for CAD assemblies</dt><dd>Repeated parts are kept once. Hidden parts are found by looking at the model from every side.</dd></div>
+        </dl>
+      </div>
+    </section>
+    <section class="band">
+      <div class="wrap">
         <dl class="figures">
           <div><dt>320 MB → 11 MB</dt><dd>The README’s example: a STEP assembly down to a compressed GLB.</dd></div>
           <div><dt>About 10× smaller</dt><dd>GLBs shrink that much with Meshopt compression, through gltfpack.</dd></div>
           <div><dt>1 mesh, many positions</dt><dd>Identical parts are found at any rotation or position and drawn once.</dd></div>
-          <div><dt>10,000+ nodes</dt><dd>The part tree stays quick and searchable at that size.</dd></div>
+          <div><dt>MIT licence</dt><dd>Free and open source. No account, no subscription, nothing to upload.</dd></div>
         </dl>
       </div>
     </section>
@@ -115,11 +126,11 @@
       <div class="wrap split">
         <div class="split-head">
           <p class="kicker">Why</p>
-          <h2>A tool for getting heavy CAD assemblies into the browser.</h2>
+          <h2>Made for the one STEP assembly you have to get onto a web page.</h2>
         </div>
         <div class="split-body">
           <p>The problem is a practical one. A real STEP file can hold 400 identical bolts, 80 duplicate brackets and half a million broken triangles, and a browser is still expected to draw it. MeshOptimiser reads the assembly, spots the parts that are the same and keeps one mesh with a list of positions, rebuilds the bad geometry, and drops what’s too small to see.</p>
-          <p>What you get back is a compressed GLB and a viewer to look at it in: the part tree, recolouring, mesh tools, a library of parts to add, and export. It runs on your own machine with Python and a browser, as an open take on what tools like Pixyz do.</p>
+          <p>What you get back is a compressed GLB and a viewer to look at it in: the part tree, recolouring, mesh tools, a library of parts to add, and export. It runs on your own machine with Python and a browser, so the model never leaves it, and you choose what goes: every part has a row, every action can be undone, and a report puts the scene as it was opened next to the scene now.</p>
           <table class="collapse">
             <caption>What the pipeline collapses</caption>
             <tr><th scope="row">400 bolts × 50 KB</th><td aria-hidden="true">→</td><td>1 mesh × 50 KB + 400 positions</td></tr>
@@ -145,6 +156,53 @@
       </div>
     </section>
 
+
+    <section class="band" id="story">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">A common job</p>
+          <h2>Send a customer your product without sending your design.</h2>
+        </div>
+        <p class="lead story-lead">A customer wants to see what you make. They don’t need the screws inside it, the board under the cover or the way you built it. Take out what they shouldn’t see, keep the rest light, and export one small GLB. All of it happens on your computer, and the STEP file stays where it is.</p>
+        <ol class="steps is-shots">
+          <li><a class="zoom" href="../../Images/apps/meshoptimiser-select-hidden-result.webp" data-group="story" data-caption="Take out what is inside"><img src="../../Images/apps/meshoptimiser-select-hidden-result.webp" alt="MeshOptimiser: Take out what is inside" width="1600" height="1000" loading="lazy" decoding="async" /></a><i>01</i><h3>Take out what is inside</h3><p>Select hidden parts looks at the model from every side and picks the parts that never show. Look at them on their own, then delete.</p></li>
+          <li><a class="zoom" href="../../Images/apps/meshoptimiser-fasteners.webp" data-group="story" data-caption="Take out the hardware"><img src="../../Images/apps/meshoptimiser-fasteners.webp" alt="MeshOptimiser: Take out the hardware" width="1600" height="1000" loading="lazy" decoding="async" /></a><i>02</i><h3>Take out the hardware</h3><p>Select one bolt, press Select similar, and every copy goes with it. The picture shows the Fasteners tool of the next version, 0.14, which finds them by shape.</p></li>
+          <li><a class="zoom" href="../../Images/apps/meshoptimiser-smart-fit.webp" data-group="story" data-caption="Simplify what is left"><img src="../../Images/apps/meshoptimiser-smart-fit.webp" alt="MeshOptimiser: Simplify what is left" width="1600" height="1000" loading="lazy" decoding="async" /></a><i>03</i><h3>Simplify what is left</h3><p>Smart fit swaps a detailed part for a box, a cylinder or blocks that keep its outline. Fill holes closes the bolt holes.</p></li>
+          <li><a class="zoom" href="../../Images/apps/meshoptimiser-export.webp" data-group="story" data-caption="Export one small GLB"><img src="../../Images/apps/meshoptimiser-export.webp" alt="MeshOptimiser: Export one small GLB" width="1600" height="1000" loading="lazy" decoding="async" /></a><i>04</i><h3>Export one small GLB</h3><p>Names stay, triangles shrink. Export, then open the file once more to check that it holds only what you meant to share.</p></li>
+        </ol>
+        <p class="story-foot"><span>It is not a lock. The outside of your product is still in the file.</span><a class="more" href="docs/make-model-safe-to-send.html">Read the guide</a></p>
+      </div>
+    </section>
+
+    <section class="band" id="who">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">Is it for you?</p>
+          <h2>Who it is for, and who it is not for.</h2>
+          <a class="more" href="docs/cad-files-step-first.html">How to get a STEP file from your CAD program</a>
+        </div>
+        <div class="fit">
+          <div class="is-yes">
+            <h3>It is for you if</h3>
+            <ul>
+              <li>You have a STEP assembly and need it in a browser, an AR viewer or a configurator, once or now and then.</li>
+              <li>You are a small manufacturer, a web developer, a visualiser or an engineer who shares models with customers.</li>
+              <li>The model has to stay on your computer.</li>
+              <li>You want to see and choose what is removed, part by part.</li>
+            </ul>
+          </div>
+          <div class="is-no">
+            <h3>Not yet, if</h3>
+            <ul>
+              <li>Your files are native SolidWorks, CATIA, NX or Creo files. Export STEP first. The docs have a guide for each program.</li>
+              <li>You need a pipeline: many files, the same clean-up, every week. The command line converts several STEP files in turn, but clean-ups can’t be saved and replayed yet.</li>
+              <li>You need levels of detail or baked textures. It writes one level and doesn’t bake textures.</li>
+              <li>You want to use it in a browser tab with nothing to install. It needs Python 3.10 to 3.12 on your computer.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
     <section class="band">
       <div class="wrap">
         <div class="band-head">
@@ -461,16 +519,16 @@
       <div class="wrap split">
         <div class="split-head">
           <p class="kicker">Latest release</p>
-          <h2>v0.13.0</h2>
+          <h2>v0.20.0</h2>
           <a class="more" href="changelog.html">Full changelog</a>
         </div>
         <div class="split-body">
-          <p>It now feels like an app. You can install it, it opens in a window with no address bar or browser tabs, and the title bar can fold away. The scene tabs got better too, and a view that’s moving skips what you couldn’t see anyway.</p>
+          <p>You can draw. A Draw tool makes lines and shapes, and they are real parts of the scene: rows in the tree, in groups, moved with the gizmo, with Shape and Spline cards in Properties and a Sweep that turns a path and a profile into a solid. The tree gets organising commands, the converter reads IGES and BREP, copies are found in files from other tools, and the app looks after itself.</p>
           <ul class="changes">
-            <li><b class="is-new">New</b><span>Install it from Chrome or Edge and you get a desktop icon and a window of its own. start.bat opens that window directly.</span></li>
-            <li><b class="is-new">New</b><span>In the installed app you can fold the title bar away. The window buttons float over the corner and the app’s own top bar takes over.</span></li>
-            <li><b class="is-new">New</b><span>Drag tabs into order. The tab follows the pointer, the others slide aside, and Esc puts it back.</span></li>
-            <li><b class="is-polish">Polish</b><span>Tabs have a dot on the icon (yellow for unsaved, green for saved), a click on the icon saves, and the close button moved to the right end.</span></li>
+            <li><b class="is-new">New</b><span>A Draw tool (L). Pen, rectangle, circle, arc, polygon, freehand and edit, in Bezier, Cubic, B-spline or Linear. Place a shape with two clicks and type its size: 20 x 10, Enter. Draw on the ground, the front, the side, the view, or on the face of a part.</span></li>
+            <li><b class="is-new">New</b><span>Snapping you can see. A field of dots fades in round the pointer, and a click a few pixels off a dot still lands on it. Bezier handles snap to the grid, and Shift snaps the angle in 15° steps.</span></li>
+            <li><b class="is-new">New</b><span>Edit any line. Drag points and handles, click a curve to add a point, double-click a point for smooth or sharp, Ctrl-drag a handle to break it from its partner. A ring on the corner of a rectangle or polygon rounds or cuts every corner when you drag it.</span></li>
+            <li><b class="is-new">New</b><span>A line is a part of the scene. It has a row in the tree, so you can rename it, hide it, group it, nest it and move it with the gizmo. Lines open from GLB and glTF files and go back into them.</span></li>
           </ul>
         </div>
       </div>
@@ -482,7 +540,7 @@
           <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="download.html">Download v0.13.0</a>
+          <a class="btn is-primary is-large" href="download.html">Download v0.20.0</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
       </div>

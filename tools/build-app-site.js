@@ -24,7 +24,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 17;
+const CSS_V = 18;
 const JS_V = 17;
 
 // The pages of an app's site, in the order of its navigation. `file` is
@@ -69,7 +69,7 @@ ${JSON.stringify({
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
     name: app.title,
-    description: site.lead,
+    description: site.description || site.lead,
     applicationCategory: 'DesignApplication',
     operatingSystem: platform.replace(/\s*·\s*/g, ', '),
     softwareVersion: version,
@@ -382,13 +382,72 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
     </section>`;
   };
 
+  // The four things the app stands for, in a row under the opening (site.claims: [claim, a line about it]).
+  const claimsBand = () => {
+    if (!site.claims) return '';
+    return `
+    <section class="band">
+      <div class="wrap">
+        <dl class="figures is-claims">
+${site.claims.map(([claim, line]) => `          <div><dt>${esc(claim)}</dt><dd>${esc(line)}</dd></div>`).join('\n')}
+        </dl>
+      </div>
+    </section>`;
+  };
+
+  // A job told in pictures (site.story): { kicker, title, line, steps: [[name, line, picture], …], foot, link: [label, docs slug] }.
+  const storyBand = () => {
+    const st = site.story;
+    if (!st) return '';
+    return `
+    <section class="band" id="story">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">${esc(st.kicker)}</p>
+          <h2>${esc(st.title)}</h2>
+        </div>
+        <p class="lead story-lead">${esc(st.line)}</p>
+        <ol class="steps is-shots">
+${st.steps.map(([name, line, image], i) => `          <li><a class="zoom" href="${asset(image)}" data-group="story" data-caption="${esc(name)}"><img src="${asset(image)}" alt="${esc(app.title + ': ' + name)}" width="1600" height="1000" loading="lazy" decoding="async" /></a><i>${pad2(i + 1)}</i><h3>${esc(name)}</h3><p>${esc(line)}</p></li>`).join('\n')}
+        </ol>${st.foot || st.link ? `
+        <p class="story-foot">${st.foot ? `<span>${esc(st.foot)}</span>` : ''}${st.link ? `<a class="more" href="${docLink(new RegExp('^' + st.link[1] + '$'))}">${esc(st.link[0])}</a>` : ''}</p>` : ''}
+      </div>
+    </section>`;
+  };
+
+  // Who it is for, and who it is not for (site.audience): { kicker, title, yes: [heading, [lines]], no: [heading, [lines]], link: [label, docs slug] }.
+  const audienceBand = () => {
+    const a = site.audience;
+    if (!a) return '';
+    const column = ([heading, items], cls) => `
+          <div class="${cls}">
+            <h3>${esc(heading)}</h3>
+            <ul>
+${items.map(x => `              <li>${esc(x)}</li>`).join('\n')}
+            </ul>
+          </div>`;
+    return `
+    <section class="band" id="who">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">${esc(a.kicker)}</p>
+          <h2>${esc(a.title)}</h2>${a.link ? `
+          <a class="more" href="${docLink(new RegExp('^' + a.link[1] + '$'))}">${esc(a.link[0])}</a>` : ''}
+        </div>
+        <div class="fit">${column(a.yes, 'is-yes')}${column(a.no, 'is-no')}
+        </div>
+      </div>
+    </section>`;
+  };
+
   // ---- the pages ----
   const pages = {};
 
-  pages.home = (page) => head(page, `${app.title} — ${app.subtitle}`, site.lead) + header(page) + `
+  pages.home = (page) => head(page, site.titleTag || `${app.title} — ${app.subtitle}`, site.description || site.lead) + header(page) + `
     <section class="wrap hero">
       <p class="kicker">${[version && 'v' + version, app.stage, licence, platform.replace(/\s*·\s*/g, ' and ')].filter(Boolean).map(esc).join('<b>·</b>')}</p>
-      <h1>${esc(app.subtitle)}</h1>
+      <h1${site.headline ? ' class="is-statement"' : ''}>${esc(site.headline || app.subtitle)}</h1>${site.headline ? `
+      <p class="sub">${esc(app.subtitle)}</p>` : ''}
       <p class="lead">${esc(site.lead)}</p>
       <div class="actions">
         <a class="btn is-primary is-large" href="download.html">Download</a>
@@ -397,7 +456,7 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
       </div>
     </section>
 ${popHero()}
-
+${claimsBand()}
     <section class="band">
       <div class="wrap">
         <dl class="figures">
@@ -434,6 +493,8 @@ ${app.steps.map(([name, line], i) => `          <li><i>${pad2(i + 1)}</i><h3>${e
       </div>
     </section>
 
+${storyBand()}
+${audienceBand()}
     <section class="band">
       <div class="wrap">
         <div class="band-head">

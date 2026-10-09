@@ -7,15 +7,15 @@
   <meta name="theme-color" content="#101010" />
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
-  <title>Move the view — MeshOptimiser Docs</title>
-  <meta name="description" content="Orbit, pan and zoom with the mouse, frame a part with F, and switch between the camera, Top, Front and Side views." />
+  <title>How to export a STEP assembly from PTC Creo — MeshOptimiser Docs</title>
+  <meta name="description" content="Save a Creo assembly as one STEP file with Save a Copy, set the application protocol and keep Export assembly as on Single File." />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
-  <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/move-the-view" />
+  <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/step-from-creo" />
   <meta property="og:site_name" content="MeshOptimiser" />
-  <meta property="og:title" content="Move the view — MeshOptimiser Docs" />
-  <meta property="og:description" content="Orbit, pan and zoom with the mouse, frame a part with F, and switch between the camera, Top, Front and Side views." />
+  <meta property="og:title" content="How to export a STEP assembly from PTC Creo — MeshOptimiser Docs" />
+  <meta property="og:description" content="Save a Creo assembly as one STEP file with Save a Copy, set the application protocol and keep Export assembly as on Single File." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
-  <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/move-the-view" />
+  <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/step-from-creo" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -61,11 +61,11 @@
         <a href="../docs/cad-files-step-first.html">Native CAD files: export a STEP file first</a>
         <a href="../docs/step-from-inventor.html">How to export a STEP assembly from Autodesk Inventor</a>
         <a href="../docs/step-from-onshape.html">How to export a STEP assembly from Onshape</a>
-        <a href="../docs/step-from-creo.html">How to export a STEP assembly from PTC Creo</a>
+        <a href="../docs/step-from-creo.html" aria-current="page">How to export a STEP assembly from PTC Creo</a>
         <a href="../docs/step-from-rhino.html">How to export a STEP file from Rhino</a>
         <h2>Find your way around</h2>
         <a href="../docs/the-window.html">The window</a>
-        <a href="../docs/move-the-view.html" aria-current="page">Move the view</a>
+        <a href="../docs/move-the-view.html">Move the view</a>
         <a href="../docs/select-parts.html">Select parts</a>
         <a href="../docs/hide-isolate.html">Hide, isolate, show all</a>
         <a href="../docs/parts-tree.html">The parts tree</a>
@@ -115,57 +115,49 @@
         <a href="../docs/self-test.html">Self-test</a>
       </nav>
       <article class="kb-article">
-        <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#around">Find your way around</a></p>
-        <h1>Move the view</h1>
-        <p class="lead">Orbit, pan and zoom with the mouse, frame a part with F, and switch between the camera, Top, Front and Side views.</p>
+        <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#cad">Getting your model out of your CAD program</a></p>
+        <h1>How to export a STEP assembly from PTC Creo</h1>
+        <p class="lead">Save a Creo assembly as one STEP file with Save a Copy, set the application protocol and keep Export assembly as on Single File.</p>
         <div class="kb-body">
-          <p>Moving the view never changes the model. You are only moving the camera.</p>
-          <h2 id="with-the-mouse">With the mouse</h2>
-          <dl class="kb-keys">
-            <div><dt><kbd>Drag</kbd></dt><dd>Orbit: turn the view around the model (left mouse button)</dd></div>
-            <div><dt><kbd>Middle drag</kbd></dt><dd>Pan: slide the view sideways (press the wheel and drag)</dd></div>
-            <div><dt><kbd>Right drag</kbd></dt><dd>Pan as well</dd></div>
-            <div><dt><kbd>Scroll</kbd></dt><dd>Zoom in and out</dd></div>
-            <div><dt><kbd>Alt</kbd><kbd>Right drag</kbd></dt><dd>Zoom smoothly: drag up to come closer</dd></div>
-          </dl>
-          <h2 id="bring-things-into-view">Bring things into view</h2>
-          <dl class="kb-keys">
-            <div><dt><kbd>F</kbd></dt><dd>Frame: fit the selected parts in the view, or the whole model when nothing is selected</dd></div>
-          </dl>
-          <p>If you get lost, click an empty spot to clear the selection and press <kbd>F</kbd>. The whole model comes back into view.</p>
-          <h2 id="standard-views">Standard views</h2>
-          <p>The pill at the top centre of the viewport names the current view. Click it to choose another.</p>
-          <dl class="kb-keys">
-            <div><dt><kbd>Ctrl</kbd><kbd>1</kbd></dt><dd>Cam: the free camera with perspective</dd></div>
-            <div><dt><kbd>Ctrl</kbd><kbd>2</kbd></dt><dd>Top</dd></div>
-            <div><dt><kbd>Ctrl</kbd><kbd>3</kbd></dt><dd>Front</dd></div>
-            <div><dt><kbd>Ctrl</kbd><kbd>4</kbd></dt><dd>Side</dd></div>
-          </dl>
-          <p>Top, Front and Side are flat views without perspective, like a technical drawing. As soon as you orbit out of one, the app returns to the free camera from where you are.</p>
-          <h2 id="the-view-cube">The view cube</h2>
-          <p>The small cube in the top right corner turns with the model. Click one of its faces, or the dot at the end of an axis, to look straight along that axis: Top, Bottom, Front, Back, Side or Left. The view pill shows the name.</p>
-          <h2 id="the-floor-grid">The floor grid</h2>
-          <p>The grid marks the floor of the scene. Press <kbd>G</kbd> to hide or show it.</p>
-          <h2 id="settings-that-change-how-the-view-moves">Settings that change how the view moves</h2>
-          <p>Under <span class="ui">Settings</span>, <span class="ui">Camera</span>:</p>
+          <p>Creo exports STEP with Save a Copy. The settings live in a window called STEP Export Profile Settings.</p>
+          <h2 id="steps">Steps</h2>
+          <ol class="kb-steps">
+            <li>Open the assembly.</li>
+            <li>Choose <span class="ui">File</span>, <span class="ui">Save As</span>, then <span class="ui">Save a Copy</span>.</li>
+            <li>In the <span class="ui">Type</span> list, choose <span class="ui">STEP (*.stp)</span>.</li>
+            <li>Enter a file name, or accept the default.</li>
+            <li>Click <span class="ui">Options</span>. The editor <span class="ui">STEP Export Profile Settings</span> opens.</li>
+            <li>Set <span class="ui">Application protocol</span> to <span class="ui">ap214_is</span>.</li>
+            <li>Check that <span class="ui">Export assembly as</span> is on <span class="ui">Single File</span>. That is the default.</li>
+            <li>Press <span class="ui">OK</span> in the editor, and <span class="ui">OK</span> in the Save a Copy window.</li>
+          </ol>
+          <h2 id="what-the-choices-mean">What the choices mean</h2>
           <dl class="table">
-            <div><dt>Projection</dt><dd>Perspective, where far things look smaller, or Orthographic, where they do not.</dd></div>
-            <div><dt>Field of view</dt><dd>How wide the lens is.</dd></div>
-            <div><dt>Clip planes</dt><dd>How near and how far the camera can see. Leave it on Auto unless parts of a very small or very large model are cut off.</dd></div>
-            <div><dt>Orbit around the selection</dt><dd>With something selected, the view turns around it. Off, or with nothing selected, it turns around the centre of the view.</dd></div>
-            <div><dt>Zoom toward the cursor</dt><dd>The wheel zooms toward the pointer instead of the centre.</dd></div>
+            <div><dt>Application protocol</dt><dd>Creo lists ap202_is, ap203_is (the default), ap203_is_ext, ap203_e2, ap209_dis, ap214_is, ap242 and ap242_e3. ap214_is is the AP214 protocol, the one that adds colours and layers in other CAD programs. Open the result in MeshOptimiser and check that the colours came through.</dd></div>
+            <div><dt>Export assembly as: Single File</dt><dd>Writes all the geometry of the assembly into one file. This is what MeshOptimiser needs.</dd></div>
+            <div><dt>Export assembly as: Separate Parts</dt><dd>Writes the structure to one file and every part as a file of its own. Do not use it for this.</dd></div>
+            <div><dt>Export assembly as: Separate All</dt><dd>Writes the assembly, every sub-assembly and every part as files of their own. Do not use it for this.</dd></div>
           </dl>
-          <aside class="kb-note"><p>On a heavy model, very small parts are left out while the view is moving and drawn again the moment it stops. This keeps movement smooth. You can turn it off under <span class="ui">Settings</span>, <span class="ui">Performance</span>, <span class="ui">Skip tiny parts</span>.</p></aside>
+          <p>The <span class="ui">Export assembly as</span> choice appears when the application protocol is ap214_is, ap203_e2, ap242 or ap242_e3. PTC’s help says Separate Parts and Separate All are offered only for those protocols.</p>
+          <h2 id="other-things-in-the-export">Other things in the export</h2>
+          <ul class="kb-points">
+            <li>Tick <span class="ui">Customize Export</span> in the Save a Copy window if you want to choose which layers go in, or the coordinate system. The defaults are fine to begin with.</li>
+            <li>The profile can be saved and loaded again with <span class="ui">Load Profile</span>, so you set it up once.</li>
+          </ul>
+          <h2 id="if-the-assembly-is-very-large">If the assembly is very large</h2>
+          <p>Work on a copy, remove what you will not show, such as hardware inside housings, and export that. A smaller file converts faster. See also <a href="../docs/troubleshooting.html">Troubleshooting</a> for ways to speed up the conversion.</p>
+          <aside class="kb-note"><p>Menus differ between Creo releases. If yours does, search PTC’s help for “Exporting Part or Assembly to STEP”.</p></aside>
+          <h2 id="next">Next</h2>
+          <p>Open the file in MeshOptimiser: see <a href="../docs/first-file.html">Open your first file</a>.</p>
           <div class="kb-see"><h2>Related</h2><ul>
-            <li><a href="../docs/select-parts.html">Select parts</a></li>
-            <li><a href="../docs/view-modes.html">View modes</a></li>
-            <li><a href="../docs/settings.html">Settings</a></li>
-            <li><a href="../docs/shortcuts.html">Keyboard shortcuts</a></li>
+            <li><a href="../docs/cad-files-step-first.html">Native CAD files: export a STEP file first</a></li>
+            <li><a href="../docs/first-file.html">Open your first file</a></li>
+            <li><a href="../docs/convert-step-to-glb.html">How to convert a STEP file to GLB</a></li>
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">
-          <a class="is-before" href="../docs/the-window.html"><span>Before</span><strong>The window</strong></a>
-          <a class="is-after" href="../docs/select-parts.html"><span>Next</span><strong>Select parts</strong></a>
+          <a class="is-before" href="../docs/step-from-onshape.html"><span>Before</span><strong>How to export a STEP assembly from Onshape</strong></a>
+          <a class="is-after" href="../docs/step-from-rhino.html"><span>Next</span><strong>How to export a STEP file from Rhino</strong></a>
         </nav>
       </article>
     </section>

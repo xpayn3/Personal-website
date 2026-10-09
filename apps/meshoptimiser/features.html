@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=17" />
+  <link rel="stylesheet" href="site.css?v=18" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -88,6 +88,10 @@
           <li><strong>Finds repeats</strong><span>The same shape at any angle or position becomes one mesh drawn many times.</span></li>
           <li><strong>Rebuilds the surfaces</strong><span>Set the detail in millimetres or as a share of the model’s size, and let it drop what’s too small to matter.</span></li>
           <li><strong>Compresses</strong><span>Meshopt, through gltfpack, makes GLBs about ten times smaller.</span></li>
+          <li><strong>Reads IGES and BREP too</strong><span>The converter and the upload take .iges, .igs, .brep and .brp as well as STEP. IGES keeps the names, colours and layers the file has.</span></li>
+          <li><strong>A whole folder at once</strong><span>--batch converts every CAD file in a folder, one process each so a damaged file can’t stop the run, and writes a table of what happened.</span></li>
+          <li><strong>Level-of-detail files</strong><span>--lod 100,50,25 writes the same model three times, lighter each time, with the same nodes, names and instances.</span></li>
+          <li><strong>Keeps what the CAD file knew</strong><span>Each node carries its name in the CAD tree, its assembly path, part number, colour, layers and volume, wherever the file has them.</span></li>
           <li><strong>One click to start</strong><span>start.bat or start.command sets up Python and opens the browser.</span></li>
           <li><strong>Long jobs in the background</strong><span>A big conversion runs as a job and its progress shows in the window.</span></li>
         </ul>
@@ -120,7 +124,11 @@
           <li><strong>Smart optimise</strong><span>Runs every clean-up in one go and undoes in one step.</span></li>
           <li><strong>Fasteners</strong><span>Finds bolts, screws, nuts and washers by their shape and selects them.</span></li>
           <li><strong>Select hidden parts</strong><span>Picks the parts that can’t be seen from outside, ready to delete.</span></li>
-          <li><strong>Stacked copies</strong><span>Finds parts drawn twice in the same place and keeps one.</span></li>
+          <li><strong>Stacked copies</strong><span>Finds parts drawn twice in the same place and keeps one. It only removes a part when an identical one sits in the same place, so 400 placed bolts stay 400.</span></li>
+          <li><strong>Finds copies in other tools’ files</strong><span>A GLB, FBX, OBJ or 3MF that writes the same bolt out again for every place it is used is searched for repeats when it opens. A 600-mesh test file went from 2.72 MB to 186 KB.</span></li>
+          <li><strong>Decimate within a distance</strong><span>Type a number of millimetres and triangles go for as long as no point of the surface moves further than that. The result is measured, not trusted.</span></li>
+          <li><strong>Recipes</strong><span>Smart optimise saves its settings under a name and runs them again later, or hands them to someone as a small file.</span></li>
+          <li><strong>Merge by colour</strong><span>One mesh per colour for the selection or for everything you can see. One undo.</span></li>
           <li><strong>Fill holes</strong><span>Closes bolt holes, slots and pockets in flat faces and leaves the rest. You can set the size, the depth and which kinds of hole.</span></li>
           <li><strong>Decimate</strong><span>Reduces the selection by a percentage or to a triangle count, and keeps normals, UVs and vertex colours.</span></li>
           <li><strong>Split</strong><span>Brings back the separate solids of a mesh that was fused on export.</span></li>
@@ -143,8 +151,27 @@
           <li><strong>Search and filters</strong><span>Find parts by name, and tint the small ones.</span></li>
           <li><strong>Flatten, dissolve, ungroup</strong><span>Collapse chains of single groups, dissolve a group, or ungroup a branch.</span></li>
           <li><strong>Batch rename (F2)</strong><span>Templates, find and replace with regular expressions, and presets.</span></li>
+          <li><strong>Organise from the right-click menu</strong><span>Take a group out and keep what was in it, flatten a group, sort inside it A to Z or Z to A, move it up or down, delete the empty ones, open or close a whole branch.</span></li>
+          <li><strong>Groups and parts together</strong><span>Ctrl toggles a row as a unit, Shift picks the range from the last row you clicked, groups and parts alike.</span></li>
           <li><strong>Undo and redo</strong><span>Tree edits, recolouring, renames and clean-ups share one history.</span></li>
           <li><strong>Right-click menu</strong><span>Hide, isolate, recolour, rename or frame a part from one menu.</span></li>
+        </ul>
+      </div>
+    </section>
+    <section class="band" id="draw-and-sweep">
+      <div class="wrap split">
+        <div class="split-head">
+          <p class="kicker">Lines are parts</p>
+          <h2>Draw and sweep</h2>
+        </div>
+        <ul class="features">
+          <li><strong>A Draw tool (L)</strong><span>Pen, rectangle, circle, arc, polygon, freehand and edit, on the ground, the front, the side, the view or the face of a part.</span></li>
+          <li><strong>Dots you can snap to</strong><span>A field of dots follows the grid near the pointer and a click a few pixels off still lands on a dot. Handles snap too.</span></li>
+          <li><strong>Edit any line</strong><span>Drag points and handles, click a curve to add a point, double-click for smooth or sharp. Ctrl-drag breaks a handle from its partner.</span></li>
+          <li><strong>Round or cut the corners</strong><span>Drag the ring on the corner of a rectangle or polygon and every corner follows. Round or Bevel is one click.</span></li>
+          <li><strong>A line is a row in the tree</strong><span>Rename it, hide it, group it, nest it, move it with the gizmo. One undo for everything.</span></li>
+          <li><strong>Properties like Cinema 4D</strong><span>A Shape card for width, radius, sides and corners, and a Spline card with Type, Close and Interpolation: None, Natural, Uniform, Adaptive or Subdivided.</span></li>
+          <li><strong>Sweep</strong><span>Carry a circle, a rectangle or another line along a path, with scale at both ends, a twist and closed ends. The result is a normal part.</span></li>
         </ul>
       </div>
     </section>
@@ -172,6 +199,7 @@
           <li><strong>GLB and glTF</strong><span>With Draco or Meshopt compression, and textures embedded if you want them.</span></li>
           <li><strong>FBX, USDZ, OBJ, STL, PLY</strong><span>Common 3D and AR formats, with scale presets for mm, cm, m and inches.</span></li>
           <li><strong>Parts list</strong><span>A CSV bill of materials: every part and its size.</span></li>
+          <li><strong>Check against where it’s going</strong><span>Compare the scene with the published guidance for a web page, a Shopify product, Apple AR Quick Look or a phone app, before and after exporting.</span></li>
           <li><strong>Save scene</strong><span>Keeps the view, the selection and the recolouring in a small file next to the model.</span></li>
         </ul>
       </div>
@@ -191,6 +219,7 @@
           <li><strong>Search (Ctrl or ⌘ + K)</strong><span>Every command, every part in the scene and every part in the library.</span></li>
           <li><strong>Shortcuts</strong><span>A searchable list of every key.</span></li>
           <li><strong>Comes back where you left it</strong><span>Your files and saved scenes are still there after a reload.</span></li>
+          <li><strong>Looks after itself</strong><span>The server closes with the window, a crash is noticed at the next start and offers Reopen and Safe mode, and a warning shows when the graphics card is not in use.</span></li>
           <li><strong>Non-destructive</strong><span>The original geometry isn’t touched until you export.</span></li>
           <li><strong>No build step</strong><span>Plain JavaScript and CSS. Edit a file, refresh, done.</span></li>
         </ul>
@@ -271,7 +300,7 @@
           <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="download.html">Download v0.13.0</a>
+          <a class="btn is-primary is-large" href="download.html">Download v0.20.0</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
       </div>

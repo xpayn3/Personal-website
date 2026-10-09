@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>Changelog — MeshOptimiser</title>
-  <meta name="description" content="What changed in each version of MeshOptimiser, newest first. Latest: v0.13.0." />
+  <meta name="description" content="What changed in each version of MeshOptimiser, newest first. Latest: v0.20.0." />
   <link rel="icon" type="image/svg+xml" href="../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/changelog" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="Changelog — MeshOptimiser" />
-  <meta property="og:description" content="What changed in each version of MeshOptimiser, newest first. Latest: v0.13.0." />
+  <meta property="og:description" content="What changed in each version of MeshOptimiser, newest first. Latest: v0.20.0." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/changelog" />
   <meta property="og:type" content="website" />
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=17" />
+  <link rel="stylesheet" href="site.css?v=18" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -52,12 +52,56 @@
     </section>
     <section class="wrap">
       <ol class="log">
-        <li id="v0.14.0">
+        <li id="v0.20.0">
           <div class="log-head">
-            <strong>v0.14.0</strong><em>Next</em><span>In the repository, not tagged yet</span><span>59 fixes</span>
+            <strong>v0.20.0</strong><em>Latest</em><span>9 Oct 2026 · 14:50</span><span>9 fixes</span>
           </div>
           <div class="log-body">
-            <p>The biggest round of fixes the app has had. We read the whole code base and tested it hard on assemblies with thousands of parts, and fixed what we found: 59 fixes, most of them in the things you only notice when they go wrong, like undo, exports and big files. Three new tools and a calmer viewport came along. It’s all in the repository now, and the release is to follow.</p>
+            <p>You can draw. A Draw tool makes lines and shapes, and they are real parts of the scene: rows in the tree, in groups, moved with the gizmo, with Shape and Spline cards in Properties and a Sweep that turns a path and a profile into a solid. The tree gets organising commands, the converter reads IGES and BREP, copies are found in files from other tools, and the app looks after itself.</p>
+            <ul>
+              <li><b class="is-new">New</b><span>A Draw tool (L). Pen, rectangle, circle, arc, polygon, freehand and edit, in Bezier, Cubic, B-spline or Linear. Place a shape with two clicks and type its size: 20 x 10, Enter. Draw on the ground, the front, the side, the view, or on the face of a part.</span></li>
+              <li><b class="is-new">New</b><span>Snapping you can see. A field of dots fades in round the pointer, and a click a few pixels off a dot still lands on it. Bezier handles snap to the grid, and Shift snaps the angle in 15° steps.</span></li>
+              <li><b class="is-new">New</b><span>Edit any line. Drag points and handles, click a curve to add a point, double-click a point for smooth or sharp, Ctrl-drag a handle to break it from its partner. A ring on the corner of a rectangle or polygon rounds or cuts every corner when you drag it.</span></li>
+              <li><b class="is-new">New</b><span>A line is a part of the scene. It has a row in the tree, so you can rename it, hide it, group it, nest it and move it with the gizmo. Lines open from GLB and glTF files and go back into them.</span></li>
+              <li><b class="is-new">New</b><span>Properties for lines, as in Cinema 4D. A Shape card (width, radius, sides, corners) and a Spline card: Type, Close Spline, and Interpolation with Points, Angle and Maximum length.</span></li>
+              <li><b class="is-new">New</b><span>Sweep. Carry a circle, a rectangle or another line along a path, with a scale at both ends, a twist and closed ends. The result is a normal part.</span></li>
+              <li><b class="is-new">New</b><span>Organise the tree from a group’s right-click menu: Remove group (keep contents), Flatten this group, Sort A to Z and Z to A, Move up and down, Delete empty groups, Expand or Collapse a branch. Ctrl and Shift pick groups and parts together.</span></li>
+              <li><b class="is-new">New</b><span>The converter reads IGES and BREP, converts a whole folder with --batch, writes LOD files with --lod, and keeps each node’s CAD data in its extras.</span></li>
+              <li><b class="is-new">New</b><span>Copies are found in files from other tools, so a GLB, FBX, OBJ or 3MF that repeats a bolt a hundred times becomes one mesh. Decimate can work “within” a distance in millimetres, Export can check against a web page, Shopify, AR Quick Look or a phone app, and Smart optimise keeps recipes.</span></li>
+              <li><b class="is-new">New</b><span>The server closes ten seconds after the last window and takes its converters with it. A crash is noticed at the next start, with Reopen last file and Safe mode, and a warning shows when Chrome is not using the graphics card.</span></li>
+              <li><b class="is-fix">Fix</b><span>Deduplicate geometry no longer deletes real parts. It removed every part whose shape it had seen before, so 400 placed copies of one bolt became one. Now a part goes only when an identical one sits in the same place.</span></li>
+              <li><b class="is-fix">Fix</b><span>Scan whole model no longer freezes the app. It works in slices, with progress and a Cancel button.</span></li>
+              <li><b class="is-fix">Fix</b><span>A leak in Split is closed: each split and undo left about 130 outline shapes on the graphics card.</span></li>
+              <li><b class="is-fix">Fix</b><span>The floor grid is no longer cut off when you zoom in close, and changing the scene scale keeps the view where it was.</span></li>
+              <li><b class="is-fix">Fix</b><span>A slip of the mouse no longer eats a click in the tree. Ctrl and Shift clicks never start a drag, and a press that lets go on its own row is a click.</span></li>
+              <li><b class="is-fix">Fix</b><span>Shift no longer lights up the button you just clicked.</span></li>
+              <li><b class="is-polish">Polish</b><span>The Draw card is compact, and the next tooltip appears at once while one is showing. Smart fit is tidier, and its Advanced section has its own reset button.</span></li>
+            </ul>
+          </div>
+        </li>
+        <li id="v0.15.0">
+          <div class="log-head">
+            <strong>v0.15.0</strong><span>9 Oct 2026 · 02:07</span>
+          </div>
+          <div class="log-body">
+            <p>The commands come to the pointer. Hold W and a ring of commands opens round it, four clean-up tools join the list, Untriangulate takes out the triangles that only cut a flat face up, and Dynamic place gets a scale handle.</p>
+            <ul>
+              <li><b class="is-new">New</b><span>Quick wand. Hold W over the viewport and a ring opens round the pointer. Move toward a slice and let go. With a selection it has Hide, Reduce, Delete and More; with nothing selected it has Fit view, Select all, View, Show all, File and Clean.</span></li>
+              <li><b class="is-new">New</b><span>Repair mesh joins doubled vertices, removes empty and doubled triangles and turns faces so neighbours agree on which side is out. Remove hidden faces deletes the faces that never show: the inside of a housing, where two parts press together.</span></li>
+              <li><b class="is-new">New</b><span>Merge by material or by group, and Select by rule: rules on a part’s name, material, group, triangles, size, and whether it is shown, flagged or instanced.</span></li>
+              <li><b class="is-new">New</b><span>Untriangulate turns flat neighbouring triangles into one polygon and cuts it again with the fewest triangles. A flat plate of 200 triangles becomes 38, with no change of shape.</span></li>
+              <li><b class="is-new">New</b><span>Wireframe is the solid surfaces with a thin black line on every edge, as in Cinema 4D. Settings can show triangles, polygons or only the sharp edges.</span></li>
+              <li><b class="is-new">New</b><span>Dynamic place has a scale handle: a small cube on the part’s top face that grows or shrinks it evenly, with a ghost of the old size behind.</span></li>
+              <li><b class="is-polish">Polish</b><span>Decimate and Fit to budget look after normals, UVs and vertex colours, and the report says how far the surfaces moved.</span></li>
+            </ul>
+          </div>
+        </li>
+        <li id="v0.14.0">
+          <div class="log-head">
+            <strong>v0.14.0</strong><span>8 Oct 2026 · 23:39</span><span>59 fixes</span>
+          </div>
+          <div class="log-body">
+            <p>The biggest round of fixes the app has had. We read the whole code base and tested it hard on assemblies with thousands of parts, and fixed what we found: 59 fixes, most of them in the things you only notice when they go wrong, like undo, exports and big files. Three new tools and a calmer viewport came along.</p>
             <ul>
               <li><b class="is-new">New</b><span>Smart optimise. One card, one button, at the top of Reduce. It runs every clean-up the app has, one after another: empty and broken parts, parts hidden inside, bolts and nuts, small parts, holes in flat faces, and a reduction to the triangle count you set. Light, Balanced or Strong, or Auto. The whole run is one undo step.</span></li>
               <li><b class="is-new">New</b><span>Fasteners finds bolts, screws, nuts and washers by their shape, whatever they’re called, and selects them. Stacked copies finds parts drawn twice in the same place. Select similar has a strictness slider, from “about the same size” to “the very same shape”.</span></li>
@@ -94,7 +138,7 @@
         </li>
         <li id="v0.13.0">
           <div class="log-head">
-            <strong>v0.13.0</strong><em>Latest</em><span>8 Oct 2026 · 03:04</span><span>1 fix</span>
+            <strong>v0.13.0</strong><span>8 Oct 2026 · 03:04</span><span>1 fix</span>
           </div>
           <div class="log-body">
             <p>It now feels like an app. You can install it, it opens in a window with no address bar or browser tabs, and the title bar can fold away. The scene tabs got better too, and a view that’s moving skips what you couldn’t see anyway.</p>
@@ -301,7 +345,7 @@
           <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="download.html">Download v0.13.0</a>
+          <a class="btn is-primary is-large" href="download.html">Download v0.20.0</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
       </div>
