@@ -24,16 +24,15 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 27;
+const CSS_V = 31;
 const RP_V = 2;           // report.js
-const JS_V = 20;
+const JS_V = 21;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
 const PAGES = [
   { key: 'home', file: 'index.html', label: 'Overview', nav: false },
   { key: 'features', file: 'features.html', label: 'Features' },
-  { key: 'screenshots', file: 'screenshots.html', label: 'Screenshots' },
   { key: 'docs', file: 'docs.html', label: 'Docs' },
   { key: 'changelog', file: 'changelog.html', label: 'Changelog' },
   { key: 'download', file: 'download.html', label: 'Download', nav: false },
@@ -166,7 +165,6 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
         <h2>Product</h2>
         <a href="./">Overview</a>
         <a href="features.html">Features</a>
-        <a href="screenshots.html">Screenshots</a>
         <a href="download.html">Download</a>
       </nav>
       <nav aria-label="Resources">
@@ -315,28 +313,26 @@ ${d.tips.map(([key, line]) => `              <li><kbd>${esc(key)}</kbd><span>${e
     if (!d) return '';
     const shapes = ['plate', 'pulley', 'bolt'];
     return `
-    <section class="band" id="try-wand">
+    <section class="band wand-band" id="try-wand">
       <div class="wrap">
         <div class="band-head">
           <p class="kicker">${esc(d.kicker)}</p>
           <h2>${esc(d.title)}</h2>
         </div>
-        <div class="demo-row">
-          <div class="demo-copy">
-            <p>${esc(d.line)}</p>
-            <ul>
-${d.tips.map(([key, line]) => `              <li><kbd>${esc(key)}</kbd><span>${esc(line)}</span></li>`).join('\n')}
-            </ul>
+        <p class="lead wand-lead">${esc(d.line)}</p>
+        <div class="wand-demo" data-wand>
+          <div class="wand-stage" data-wand-stage role="group" aria-label="The Quick wand ring, open in the middle. Point at a slice and click a command."></div>
+          <p class="wand-out" aria-live="polite" data-wand-out></p>
+          <div class="wand-modes" role="group" aria-label="What the ring works on">
+            <button type="button" data-wand-mode="none" aria-pressed="true">Nothing selected</button>
+            <button type="button" data-wand-mode="part" aria-pressed="false">A part selected</button>
+            <button type="button" class="wand-reset" data-wand-reset>Start over</button>
           </div>
-          <div class="demo wand-demo" data-wand>
-            <div class="wand-stage" data-wand-stage role="group" aria-label="A stage with three parts and the Quick wand ring open in the middle. Point at a slice and click a command; click a part first to work on it.">
-${d.parts.map(([name, tris], i) => `              <div class="wand-part wp-${shapes[i % shapes.length]}" data-i="${i}"><b></b><span class="wp-label"></span></div>`).join('\n')}
-            </div>
-            <p class="demo-out wand-out" aria-live="polite" data-wand-out></p>
-            <button type="button" class="wand-reset" data-wand-reset>Reset</button>
-            <script type="application/json" data-wand-data>${JSON.stringify({ parts: d.parts, icons: ICONS.wand || {} })}</script>
-          </div>
+          <script type="application/json" data-wand-data>${JSON.stringify({ parts: d.parts, icons: ICONS.wand || {} })}</script>
         </div>
+        <ul class="wand-tips">
+${d.tips.map(([key, line]) => `          <li><kbd>${esc(key)}</kbd><span>${esc(line)}</span></li>`).join('\n')}
+        </ul>
       </div>
     </section>`;
   };
@@ -376,6 +372,51 @@ ${items.map(([key, label]) => `              <li><button type="button" class="li
 
   // The design band: close-ups of the controls, the app's layout drawn as a
   // plan, and the numbers it is built from. `site.design` holds the words.
+  // What the optimiser saves, drawn as bars from numbers measured in the app (site.savings in apps.js)
+  const savingsBand = () => {
+    const s = site.savings;
+    if (!s) return '';
+    const fmtN = (n) => (n >= 100 ? Math.round(n).toLocaleString('en-US') : String(Math.round(n * 10) / 10));
+    const pct = (a, b) => Math.round((1 - b / a) * 100);
+    const [t0, t1] = [s.metrics[0][1], s.metrics[0][2]];
+    const rows = s.metrics.map(([name, a, b, unit]) => `
+          <div class="sv-row">
+            <div class="sv-label"><span>${esc(name)}</span><em>−${pct(a, b)}%</em></div>
+            <div class="sv-bar is-before"><i style="--w:100%"></i><b>${fmtN(a)}${unit ? ' ' + esc(unit) : ''}</b></div>
+            <div class="sv-bar is-after"><i style="--w:${(b / a * 100).toFixed(1)}%"></i><b>${fmtN(b)}${unit ? ' ' + esc(unit) : ''}</b></div>
+          </div>`).join('');
+    const top = Math.max(t0, ...s.levels.map(l => l[1]));
+    const cols = [['Original', t0, 'is-original']].concat(s.levels.map(([n, v]) => [n, v, ''])).map(([n, v, cls], i) => `
+            <div class="sv-col ${cls}" style="--h:${(v / top * 100).toFixed(1)}%;--i:${i}">
+              <b>${fmtN(v)}</b><i></i><span>${esc(n)}</span>${cls ? '' : '<em>−' + pct(t0, v) + '%</em>'}
+            </div>`).join('');
+    return `
+    <section class="band savings" id="savings">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">${esc(s.kicker)}</p>
+          <h2>${esc(s.title)}</h2>
+        </div>
+        <p class="lead sv-lead">${esc(s.line)}</p>
+        <div class="sv" data-reveal>
+          <div class="sv-big">
+            <b>−${pct(t0, t1)}<small>%</small></b>
+            <span>triangles</span>
+            <em>${fmtN(t0)} → ${fmtN(t1)}</em>
+          </div>
+          <div class="sv-rows">${rows}
+          </div>
+          <div class="sv-levels" role="img" aria-label="Triangles left after Smart optimise at each level">
+            <p class="sv-sub">Triangles left, by level</p>
+            <div class="sv-cols" style="--n:${s.levels.length + 1}">${cols}
+            </div>
+          </div>
+        </div>
+        <p class="sv-note">${esc(s.note)}</p>
+      </div>
+    </section>`;
+  };
+
   const designBand = () => {
     const d = site.design;
     if (!d) return '';
@@ -390,8 +431,6 @@ ${items.map(([key, label]) => `              <li><button type="button" class="li
         <p class="lead design-lead">${esc(d.lead)}</p>
         <div class="appui" data-appui>
           <div class="appui-stage">
-            <div class="appui-floor" aria-hidden="true"></div>
-            <img class="appui-model" src="${asset(site.pop.model)}?v=${site.pop.v || 1}" alt="" width="${site.pop.modelSize[0]}" height="${site.pop.modelSize[1]}" loading="lazy" decoding="async" />
 ${d.stage.map(([part, x, y, z, r, delay]) => `            <div class="ap ap-${part}" data-part="${part}" style="--x:${x}px;--y:${y}px;--z:${z};--r:${r}deg;--d:${delay}ms"></div>`).join('\n')}
           </div>
         </div>
@@ -501,6 +540,7 @@ ${app.steps.map(([name, line], i) => `          <li><i>${pad2(i + 1)}</i><h3>${e
         </div>
       </div>
     </section>
+${savingsBand()}
 ${designBand()}
 ${libraryBand()}
 ${searchDemo()}
@@ -510,13 +550,15 @@ ${wandDemo()}
         <div class="band-head">
           <p class="kicker">Screenshots</p>
           <h2>The whole app, one screen at a time.</h2>
-          <a class="more" href="screenshots.html">All ${app.shots.length} screenshots</a>
         </div>
       </div>
       <div class="strip" data-strip>
-        ${app.shots.slice(1, 11).map(s => shot(s, 'strip')).join('\n        ')}
+        ${app.shots.map(s => shot(s, 'strip')).join('\n        ')}
       </div>
       <div class="dots" aria-hidden="true"></div>
+      <div class="wrap">
+        <p class="credit">The assembly in these pictures is Gearbox Assy from Khronos’s <a href="https://github.com/KhronosGroup/glTF-Sample-Models/tree/main/2.0/GearboxAssy" rel="noopener">glTF-Sample-Models</a>, a JT CAD sample converted by Okino Computer Graphics. The bolts, nuts, washers and gears come from the app’s own library.</p>
+      </div>
     </section>
 
     <section class="band">
@@ -560,26 +602,18 @@ ${group.items.map(([name, line]) => `          <li><i class="ico">${svgIcon(ICON
       </div>
     </section>`).join('')}
 
+${savingsBand()}
     <section class="band">
       <div class="wrap">
         <div class="band-head">
           <p class="kicker">A closer look</p>
           <h2>The details, in pictures.</h2>
-          <a class="more" href="screenshots.html">All screenshots</a>
         </div>
         <div class="spots">${spotRows(app.spotlights, 'spots')}
         </div>
       </div>
     </section>` + footer(page);
 
-  pages.screenshots = (page) => head(page, `Screenshots — ${app.title}`, `${app.shots.length} screenshots of ${app.title}: the viewer, the command panels, the parts library, view modes, export and settings.`) + header(page) +
-    pageHead('Screenshots', 'The whole app, one screen at a time.', 'Click a picture to see it full size; the arrow keys move between them.') + `
-    <section class="wrap">
-      <div class="gallery">
-        ${app.shots.map((s, i) => shot(s, 'gallery', i < 2)).join('\n        ')}
-      </div>
-      <p class="credit">The watch in most of these pictures is “Chronograph Watch Mudmaster” by graphiccompressor (<a href="https://skfb.ly/oAsPA" rel="noopener">Sketchfab</a>), prepared by Darmstadt Graphics Group for the <a href="https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/ChronographWatch" rel="noopener">Khronos glTF Sample Assets</a> and used under <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a>. In several pictures it has been changed by the app’s own tools, as the captions say. The bolts, nuts, washers and gears come from the app’s library.</p>
-    </section>` + footer(page);
 
   // ---- docs: a knowledge base (docs-content.js) ----
   // Text in an article may hold: `code`, [[Ctrl + K]] for keys, {{Fill holes}}

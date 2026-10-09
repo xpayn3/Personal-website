@@ -39,7 +39,7 @@ module.exports = {
           'The viewer. A page that opens in a window of its own and shows the model. Here you look around, select parts, remove what you do not need, reduce triangles, recolour, and export.',
         ]],
         ['p', 'You do not have to run the two halves yourself. One launcher starts everything, and you drop a file on the window.'],
-        ['img', 'Images/apps/meshoptimiser-viewer.webp', 'A watch in 19 parts and 100,002 triangles: the parts tree on the left, the scene’s totals on the right.'],
+        ['img', 'Images/apps/meshoptimiser-viewer.webp', 'A gearbox assembly in 95 parts and 646,064 triangles: the parts tree on the left, the scene’s totals on the right.'],
         ['h', 'What you can do with it'],
         ['list', [
           'Open STEP, GLB, glTF, FBX, OBJ, 3MF and STL files.',
@@ -842,7 +842,7 @@ module.exports = {
         ['steps', [
           'Select the parts you want to look at.',
           'Press [[S]]. Everything else disappears.',
-          'A pill at the top of the viewport says so, for example “Isolated · 10 of 19 parts”.',
+          'A pill at the top of the viewport says so, for example “Isolated · 1 of 95 parts”.',
           'Press [[S]] again, or click the pill, to show everything.',
         ]],
         ['img', 'Images/apps/meshoptimiser-isolate.webp', 'A set of parts on their own, isolated.'],
@@ -1360,7 +1360,7 @@ module.exports = {
       summary: 'One card, one button: every clean-up the app has, run one after another on the whole scene. Choose how far to go, read the plan, press Optimise.',
       blocks: [
         ['p', 'The other tools in this group each do one job. Smart optimise runs them for you, one after another, on the whole scene. Use it when you want a lighter model and do not want to choose the order yourself.'],
-        ['img', 'Images/apps/meshoptimiser-smart-optimise.webp', 'Smart optimise at the top of Reduce, with Reduce triangles on and a target of 50,000. The line under the controls says what the run will do.'],
+        ['img', 'Images/apps/meshoptimiser-smart-optimise.webp', 'Smart optimise at the top of Reduce, with Reduce triangles on and a target of 323,000. The line under the controls says what the run will do.'],
         ['p', 'It is lossy: it removes parts and triangles. The whole run is one undo step, so one [[Ctrl + Z]] takes everything back.'],
         ['h', 'Steps'],
         ['steps', [
@@ -1446,8 +1446,8 @@ module.exports = {
       summary: 'Find every part that cannot be seen from outside the model, such as screws inside a housing, and delete them in one step.',
       blocks: [
         ['p', 'Much of an assembly is inside it: the screws in a housing, the board under a cover, a bearing in its seat. If the model is only ever seen from outside, those parts are dead weight. This command looks at the model from every side and selects the parts that never show.'],
-        ['p', 'On the watch used in these pictures it found ten parts, 500 triangles, set inside the case: its hands. On a bigger assembly there are usually many more.'],
-        ['img', 'Images/apps/meshoptimiser-select-hidden-result.webp', 'Ten parts inside the case can’t be seen from any side: 500 triangles, selected.'],
+        ['p', 'On the gearbox used in these pictures it finds nothing, because every part can be seen from outside, and the card says so. On an assembly with a housing it finds what is inside it. On a bigger assembly there are usually many more.'],
+        ['img', 'Images/apps/meshoptimiser-select-hidden-result.webp', 'The card on the gearbox: every part can be seen from outside, so nothing is selected.'],
         ['h', 'When to use it'],
         ['p', 'When the model will be shown closed, from outside. Not when someone will open a cover, look through a window in the casing, or show an exploded view.'],
         ['h', 'Steps'],
@@ -1490,7 +1490,7 @@ module.exports = {
       blocks: [
         ['p', 'A machine can hold hundreds of fasteners: the small metal parts that hold other parts together. In a CAD export their names are often useless, for example `=>0_1_1_9_000009`, so searching by name does not work. Fasteners looks at the shape of every part instead, and selects the ones shaped like a bolt, a screw, a nut or a washer.'],
         ['p', 'It cuts each part across its own axis and reads the outline: a round shank with a wider head, six flats around a hole, a flat ring. It compares that with the proportions of standard fasteners. Bushings, bearings, O-rings, shafts, pipe fittings and cable glands have other shapes, and are left alone.'],
-        ['img', 'Images/apps/meshoptimiser-fasteners.webp', 'Fasteners found fifteen by their shape in a scene of the library’s own parts: seven bolts and screws, four nuts and four washers, selected and ready to isolate or delete.'],
+        ['img', 'Images/apps/meshoptimiser-fasteners.webp', 'Fasteners found 48 by their shape on the gearbox: 18 bolts and screws, 20 nuts and 10 washers, selected and ready to isolate or delete.'],
         ['h', 'When to use it'],
         ['p', 'Before you delete or simplify the hardware, when the names do not help. Not when the fasteners are the point of the picture.'],
         ['h', 'Steps'],
@@ -1499,7 +1499,7 @@ module.exports = {
           'Set {{up to M}} to the largest thread to look for. It starts at 30. A thread size is written M and the width in millimetres: M6 is a bolt 6 mm wide. A bolt, nut or washer for a bigger thread is left alone.',
           'Leave the three switches on: {{Bolts and screws}}, {{Nuts}} and {{Washers}}. Switch off a kind you do not want.',
           'Press {{Select fasteners}}, or [[Enter]]. It looks at every visible part. On a large assembly it shows its progress and takes a few seconds.',
-          'The fasteners are selected. A line says how many, how many triangles they hold and what share of the scene that is, for example “15 fasteners selected: 4,676 triangles, 100.0% of the scene”.',
+          'The fasteners are selected. A line says how many, how many triangles they hold and what share of the scene that is, for example “48 fasteners selected: 22,760 triangles, 3.5% of the scene”.',
           'Under it is a short list with one row per kind and the sizes found, for example “12 bolts and screws · M3.5 ×6 · M4 ×4 · M5 ×2”. Click a row to select only that kind. Click it again to go back to all of them.',
           'Press {{Isolate}} to look at them on their own. Check that nothing you need is among them.',
           'Press {{Delete}} to remove them, or leave them selected and use another tool on them, such as [Smart fit](#smart-fit).',
@@ -1623,7 +1623,7 @@ module.exports = {
       summary: 'Take apart a mesh that arrived as one piece but is really several separate solids, so each can be selected on its own.',
       blocks: [
         ['p', 'Some files arrive with several solid pieces fused into one part: a bracket, its pin and two bolts as a single row in the tree. You cannot hide, delete or simplify one of them without the others. Split finds the pieces that do not touch and makes each one a part of its own.'],
-        ['img', 'Images/apps/meshoptimiser-split.webp', 'Split: recovers the separate solids of a mesh that was fused on export. Here a watch merged into one mesh comes back as 59 parts.'],
+        ['img', 'Images/apps/meshoptimiser-split.webp', 'Split: recovers the separate solids of a mesh that was fused on export. Here the whole gearbox, merged into one mesh, comes back as 206 parts.'],
         ['h', 'When to use it'],
         ['p', 'When clicking one thing selects several things that are clearly separate objects. An STL file, for example, holds a whole model as a single mesh.'],
         ['h', 'Steps'],
@@ -1684,7 +1684,7 @@ module.exports = {
           ['Blocks', 'The part rebuilt from a coarse grid of boxes. It looks boxy, but its steps, arms and openings stay where they are.'],
         ]],
         ['p', 'One box says where a part is and nothing about what it is: a bracket becomes a brick. {{A few boxes}} and {{Blocks}} keep the outline. Both fall back to a plain box when they would not be clearly lighter than the part.'],
-        ['img', 'Images/apps/meshoptimiser-blocks.webp', 'Smart fit with Blocks on the two heaviest parts of the watch: 57,168 triangles down to 168, the outline kept.'],
+        ['img', 'Images/apps/meshoptimiser-blocks.webp', 'Smart fit with Blocks on two heavy parts of the gearbox: 72,666 triangles down to 212, the outline kept.'],
         ['h', 'What the options mean'],
         ['terms', [
           ['At most … boxes', 'For {{A few boxes}}: the most boxes a part may become. Simple parts use fewer. It starts at 6.'],

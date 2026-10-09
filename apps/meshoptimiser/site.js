@@ -504,7 +504,7 @@
   $$('[data-wand]').forEach((demo) => {
     const stage = $('[data-wand-stage]', demo), out = $('[data-wand-out]', demo);
     const data = JSON.parse($('[data-wand-data]', demo).textContent), ICONS = data.icons || {};
-    const parts = data.parts.map(([name, tris], i) => ({ name, orig: tris, tris, el: $$('.wand-part', stage)[i], hidden: false, gone: false, on: false }));
+    const parts = data.parts.map(([name, tris], i) => ({ name, orig: tris, tris, hidden: false, gone: false, on: false }));
     const fmt = (n) => n.toLocaleString('en-US');
     const R_IN = 31, R_OUT = 82, F_IN = 89, F_OUT = 122, DEAD = 16, V = F_OUT + 24, R_ICON = (R_IN + R_OUT) / 2, POP = 0.075, POP2 = 0.03;
     let isolated = false, view = 'solid', grid = true, root = null, open = false, sticky = false, rested = false, viaPointer = false;
@@ -519,15 +519,11 @@
       return nodes ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + nodes.map(([t, a]) => '<' + t + Object.entries(a).map(([k, v]) => ' ' + k + '="' + v + '"').join('') + '/>').join('') + '</svg>' : '';
     };
     const paint = () => {
-      parts.forEach((p) => {
-        const away = p.gone || p.hidden;
-        p.el.classList.toggle('is-hidden', away);
-        p.el.classList.toggle('is-selected', p.on && !away);
-        $('.wp-label', p.el).textContent = fmt(p.tris) + ' triangles' + (p.tris < p.orig ? ' · −' + Math.round((1 - p.tris / p.orig) * 100) + ' %' : '');
-      });
       stage.classList.toggle('v-wire', view === 'wire');
       stage.classList.toggle('v-xray', view === 'xray');
       stage.classList.toggle('no-grid', !grid);
+      const one = sel().length > 0;
+      $$('[data-wand-mode]', demo).forEach((b) => b.setAttribute('aria-pressed', String((b.dataset.wandMode === 'part') === one)));
     };
     const HINT = 'Point at a slice and click a command. Click a part first, and the ring changes to work on it.';
     const reset = () => {
@@ -807,6 +803,13 @@
     window.addEventListener('resize', () => { if (open && rested) { centre(); ox = px = lastX; oy = py = lastY; place(); } else if (open) close(false); });
     document.addEventListener('visibilitychange', () => { if (document.hidden && open && !rested) close(false); });
 
+    $$('[data-wand-mode]', demo).forEach((b) => b.addEventListener('click', () => {
+      const on = b.dataset.wandMode === 'part';
+      if (open && !rested) hide();
+      parts.forEach((q, i) => { q.on = on && i === 0 && !q.gone; });
+      paint(); say(on ? parts[0].name + ' is selected. The ring now works on it.' : 'Nothing is selected, so the ring works on the whole scene.');
+      if (rested) rebuild(); else rest();
+    }));
     $('[data-wand-reset]', demo).addEventListener('click', () => { if (open && !rested) hide(); reset(); if (!open) rest(); });
     reset();
     rest();
