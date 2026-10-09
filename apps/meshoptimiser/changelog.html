@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=33" />
+  <link rel="stylesheet" href="site.css?v=58" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -37,7 +37,7 @@
         <a href="features.html">Features</a>
         <a href="docs.html">Docs</a>
         <a href="changelog.html" aria-current="page">Changelog</a>
-        <a class="nav-out" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">GitHub</a>
+        <a class="nav-out" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>GitHub</a>
       </nav>
       <a class="btn is-primary bar-get" href="download.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
       <button class="bar-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
@@ -62,7 +62,7 @@
               <li><b class="is-new">New</b><span>Snapping you can see. A field of dots fades in round the pointer, and a click a few pixels off a dot still lands on it. Bezier handles snap to the grid, and Shift snaps the angle in 15° steps.</span></li>
               <li><b class="is-new">New</b><span>Edit any line. Drag points and handles, click a curve to add a point, double-click a point for smooth or sharp, Ctrl-drag a handle to break it from its partner. A ring on the corner of a rectangle or polygon rounds or cuts every corner when you drag it.</span></li>
               <li><b class="is-new">New</b><span>A line is a part of the scene. It has a row in the tree, so you can rename it, hide it, group it, nest it and move it with the gizmo. Lines open from GLB and glTF files and go back into them.</span></li>
-              <li><b class="is-new">New</b><span>Properties for lines, as in Cinema 4D. A Shape card (width, radius, sides, corners) and a Spline card: Type, Close Spline, and Interpolation with Points, Angle and Maximum length.</span></li>
+              <li><b class="is-new">New</b><span>Properties for lines. A Shape card (width, radius, sides, corners) and a Spline card: Type, Close Spline, and Interpolation with Points, Angle and Maximum length.</span></li>
               <li><b class="is-new">New</b><span>Sweep. Carry a circle, a rectangle or another line along a path, with a scale at both ends, a twist and closed ends. The result is a normal part.</span></li>
               <li><b class="is-new">New</b><span>Organise the tree from a group’s right-click menu: Remove group (keep contents), Flatten this group, Sort A to Z and Z to A, Move up and down, Delete empty groups, Expand or Collapse a branch. Ctrl and Shift pick groups and parts together.</span></li>
               <li><b class="is-new">New</b><span>The converter reads IGES and BREP, converts a whole folder with --batch, writes LOD files with --lod, and keeps each node’s CAD data in its extras.</span></li>
@@ -282,7 +282,7 @@
             <strong>v0.6.0</strong><span>11 May 2026 · 09:18</span><span>3 fixes</span>
           </div>
           <div class="log-body">
-            <p>A live Cloner in the style of Cinema 4D, a Ctrl-click measure tool, an origin marker for every group, a two-panel Export window, simplification and Meshopt on by default, and mouse buttons that work the way CAD programs expect.</p>
+            <p>A live Cloner, a Ctrl-click measure tool, an origin marker for every group, a two-panel Export window, simplification and Meshopt on by default, and mouse buttons that work the way CAD programs expect.</p>
             <ul>
               <li><b class="is-fix">Fix</b><span>Face winding. Only truly reversed faces are flipped now. The old check also flipped internal and external faces and left back-face artefacts on cellular geometry.</span></li>
               <li><b class="is-fix">Fix</b><span>Two different shapes could end up with the same hash, so a cube and its diagonal mirror were treated as one. They aren’t any more.</span></li>

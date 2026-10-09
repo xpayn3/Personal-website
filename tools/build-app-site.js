@@ -24,7 +24,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 33;
+const CSS_V = 58;
 const RP_V = 2;           // report.js
 const JS_V = 22;
 
@@ -39,6 +39,7 @@ const PAGES = [
   { key: 'report', file: 'report.html', label: 'Report a problem', nav: false },
 ];
 
+const GH_ICON = '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>';
 const esc = text => String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const clamp = (text, max) => (text.length > max ? text.slice(0, max - 1).trim() + '…' : text);
 const slug = text => String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -131,7 +132,7 @@ ${JSON.stringify({
       </a>
       <nav class="nav" id="nav" aria-label="${esc(app.title)}">
 ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.key === page.key || p.key === page.under ? ' aria-current="page"' : ''}>${p.label}</a>`).join('\n')}
-        <a class="nav-out" href="${repo}" rel="noopener">GitHub</a>
+        <a class="nav-out" href="${repo}" rel="noopener">${GH_ICON}GitHub</a>
       </nav>
       <a class="btn is-primary bar-get" href="download.html"${page.key === 'download' ? ' aria-current="page"' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
       <button class="bar-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
@@ -191,6 +192,33 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
 </body>
 </html>
 `;
+
+  // hairline drawings for the three steps on the home page (strokes only, in the page's own colours)
+  const STEP_ART = [
+    `<svg viewBox="0 0 320 160" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect class="f" x="28" y="20" width="264" height="120" rx="8" stroke-dasharray="3 5"/>
+      <path class="o" d="M138 36h44l22 22v66a2 2 0 0 1-2 2h-64a2 2 0 0 1-2-2V38a2 2 0 0 1 2-2Z"/>
+      <path class="o" d="M182 36v22h22"/>
+      <text x="160" y="100" text-anchor="middle" class="t a">.STEP</text>
+      <path class="f" d="M160 6v13m-5-5 5 5 5-5"/>
+    </svg>`,
+    `<svg viewBox="0 0 320 160" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <g class="o"><circle cx="46" cy="50" r="7"/><circle cx="72" cy="50" r="7"/><circle cx="98" cy="50" r="7"/><circle cx="46" cy="80" r="7"/><circle cx="72" cy="80" r="7"/><circle cx="98" cy="80" r="7"/><circle cx="46" cy="110" r="7"/><circle cx="72" cy="110" r="7"/><circle cx="98" cy="110" r="7"/></g>
+      <g class="f"><path d="M107 50 196 80M107 80h89M107 110 196 80"/></g>
+      <circle class="a" cx="236" cy="80" r="26"/>
+      <path class="a" d="m236 64 14 8v16l-14 8-14-8V72Z"/>
+      <circle class="a" cx="236" cy="80" r="5"/>
+      <text x="236" y="130" text-anchor="middle" class="t">1 mesh + 9 positions</text>
+    </svg>`,
+    `<svg viewBox="0 0 320 160" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect class="f" x="28" y="16" width="264" height="128" rx="8"/>
+      <path class="f" d="M28 38h264"/>
+      <circle class="f" cx="43" cy="27" r="3"/><circle class="f" cx="55" cy="27" r="3"/><circle class="f" cx="67" cy="27" r="3"/>
+      <path class="a" d="M160 54 193 73v38l-33 19-33-19V73Z"/>
+      <path class="a" d="m127 73 33 19 33-19M160 92v38"/>
+      <text x="44" y="132" class="t">.GLB</text>
+    </svg>`
+  ];
 
   const pageHead = (kicker, title, lead) => `
     <section class="wrap page-head">
@@ -342,6 +370,9 @@ ${d.tips.map(([key, line]) => `          <li><kbd>${esc(key)}</kbd><span>${esc(l
   const libraryBand = () => {
     const l = site.library;
     if (!l) return '';
+    // two rows of ten, a few from every shelf, so the strip shows the range without the whole catalogue
+    const pick = [];
+    for (let i = 0; pick.length < 20 && i < 20; i++) l.shelves.forEach(([, items]) => { if (items[i] && pick.length < 20) pick.push(items[i]); });
     return `
     <section class="band" id="library">
       <div class="wrap">
@@ -351,12 +382,9 @@ ${d.tips.map(([key, line]) => `          <li><kbd>${esc(key)}</kbd><span>${esc(l
         </div>
         <p class="lead lib-lead">${esc(l.line)}</p>
         <div class="lib-show">
-${l.shelves.map(([name, items]) => `          <section class="lib-set">
-            <h3>${esc(name)}<i>${items.length}</i></h3>
-            <ul class="lib-tiles">
-${items.map(([key, label]) => `              <li><img src="library/${esc(key)}.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>${esc(label)}</span></li>`).join('\n')}
-            </ul>
-          </section>`).join('\n')}
+          <ul class="lib-tiles">
+${pick.map(([key, label]) => `            <li><img src="library/${esc(key)}.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>${esc(label)}</span></li>`).join('\n')}
+          </ul>
         </div>
       </div>
     </section>`;
@@ -392,11 +420,13 @@ ${items.map(([key, label]) => `              <li><img src="library/${esc(key)}.w
         <p class="lead sv-lead">${esc(s.line)}</p>
         <div class="sv" data-reveal>
           <div class="sv-big">
+            <p class="sv-sub">Result</p>
             <b>−${pct(t0, t1)}<small>%</small></b>
             <span>triangles</span>
             <em>${fmtN(t0)} → ${fmtN(t1)}</em>
           </div>
-          <div class="sv-rows">${rows}
+          <div class="sv-rows">
+            <p class="sv-sub">Before and after</p>${rows}
           </div>
           <div class="sv-levels" role="img" aria-label="Triangles left after Smart optimise at each level">
             <p class="sv-sub">Triangles left, by level</p>
@@ -472,7 +502,6 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
         <a class="more" href="docs.html">Read the docs</a>
       </div>
     </section>
-${popHero()}
 
     <section class="band">
       <div class="wrap">
@@ -498,14 +527,16 @@ ${site.collapse.map(([from, to], i, all) => `            <tr${i === all.length -
       </div>
     </section>
 
+${popHero()}
+
     <section class="band">
       <div class="wrap">
         <div class="band-head">
           <p class="kicker">How it works</p>
-          <h2>Three steps from STEP to the browser.</h2>
+          <h2>Three steps to a lighter model.</h2>
         </div>
-        <ol class="steps">
-${app.steps.map(([name, line], i) => `          <li><i>${pad2(i + 1)}</i><h3>${esc(name)}</h3><p>${esc(line)}</p></li>`).join('\n')}
+        <ol class="steps is-visual">
+${app.steps.map(([name, line], i) => `          <li>${STEP_ART[i] ? `<div class="st-fig">${STEP_ART[i]}</div>` : ''}<i>${pad2(i + 1)}</i><h3>${esc(name)}</h3><p>${esc(line)}</p></li>`).join('\n')}
         </ol>
       </div>
     </section>
@@ -528,12 +559,12 @@ ${app.steps.map(([name, line], i) => `          <li><i>${pad2(i + 1)}</i><h3>${e
           <p class="kicker">A closer look</p>
           <h2>Built for assemblies with thousands of parts.</h2>
         </div>
-        <div class="spots">${spotRows(app.spotlights.slice(0, 4), 'spots')}
+        <div class="spots">${spotRows(app.spotlights.slice(0, 3), 'spots')}
         </div>
       </div>
     </section>
 ${savingsBand()}
-${designBand()}
+${/* designBand() is switched off: the band is not shown on the home page */ ''}
 ${libraryBand()}
 ${searchDemo()}
 ${wandDemo()}
@@ -570,7 +601,7 @@ ${(latest.items || []).slice(0, 4).map(([tag, line]) => `            <li><b clas
     </section>` + footer(page);
 
   pages.features = (page) => head(page, `Features — ${app.title}`, `Everything ${app.title} does: the STEP to GLB pipeline, the WebGPU viewer, mesh tools, hierarchy editing and export.`) + header(page) +
-    pageHead('Features', 'A CAD preprocessor, viewer, hierarchy editor and exporter in one local app.', '') + `
+    pageHead('Features', 'A free, private viewer and optimiser for complex CAD and 3D files.', '') + `
     <section class="band is-first">
       <div class="wrap">
         <div class="band-head">
@@ -589,7 +620,7 @@ ${app.featureGroups.map((group, gi) => `
           <h2>${esc(group.title)}</h2>
         </div>
         <ul class="tools">
-${group.items.map(([name, line]) => `          <li><i class="ico">${svgIcon(ICONS.items[name])}</i><div><strong>${esc(name)}</strong><span>${esc(line)}</span></div></li>`).join('\n')}
+${group.items.map(([name, line, flag]) => `          <li><i class="ico">${svgIcon(ICONS.items[name])}</i><div><strong>${esc(name)}${flag === 'new' ? '<em class="tag-new">New</em>' : ''}</strong><span>${esc(line)}</span></div></li>`).join('\n')}
         </ul>
       </div>
     </section>`).join('')}
@@ -649,9 +680,25 @@ ${docs.groups.map(group => `        <h2>${esc(group.title)}</h2>
 ${docs.articles.filter(a => a.group === group.id).map(a => `        <a href="docs/${a.slug}.html"${a === current ? ' aria-current="page"' : ''}>${esc(a.title)}</a>`).join('\n')}`).join('\n')}
       </nav>`;
 
+  // quick links in a rail beside the docs: the places people go next
+  const docsRail = () => `
+      <aside class="kb-rail" aria-label="Quick links">
+        <h2>Quick links</h2>
+        <a href="${repo}" rel="noopener">${GH_ICON}GitHub</a>
+        <a href="${repo}/releases" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>Releases</a>
+        <a href="download.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>Download</a>
+        <a href="changelog.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>Changelog</a>
+        <a href="report.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8v4"/><path d="M12 16h.01"/><circle cx="12" cy="12" r="10"/></svg>Report a problem</a>
+        <h2>Popular</h2>
+        <a href="docs/shortcuts.html">Shortcuts</a>
+        <a href="docs/troubleshooting.html">Troubleshooting</a>
+        <a href="docs/faq.html">FAQ</a>
+      </aside>`;
+
   pages.docs = (page) => head(page, `Docs — ${app.title}`, `The ${app.title} knowledge base: ${docs.articles.length} short articles for beginners, from installing it to exporting a lighter model.`) + header(page) +
     pageHead('Docs', 'Everything, from the first download.', `${docs.articles.length} short articles, written for someone who has never opened a CAD file in a browser. Start at the top and read down, or search.`) + `
-    <section class="wrap kb">
+    <section class="wrap kb-layout">
+     <div class="kb">
       <div class="kb-search">
         <input type="search" id="kbSearch" placeholder="Search the docs" aria-label="Search the docs" autocomplete="off" spellcheck="false" />
         <p class="kb-none" id="kbNone" hidden>Nothing matches. Try a single word, or <a href="${repo}/issues" rel="noopener">ask on GitHub</a>.</p>
@@ -665,6 +712,7 @@ ${docs.groups.map(group => `      <section class="kb-group" id="${esc(group.id)}
 ${docs.articles.filter(a => a.group === group.id).map(a => `          <li data-words="${esc(docWords(a))}"><a href="docs/${a.slug}.html"><strong>${esc(a.title)}</strong><span>${esc(a.summary)}</span></a></li>`).join('\n')}
         </ol>
       </section>`).join('\n')}
+     </div>${docsRail()}
     </section>` + footer(page);
 
   // an article: the index of all of them beside it, the one before and after under it
@@ -684,7 +732,7 @@ ${docs.articles.filter(a => a.group === group.id).map(a => `          <li data-w
           ${before ? `<a class="is-before" href="docs/${before.slug}.html"><span>Before</span><strong>${esc(before.title)}</strong></a>` : '<span></span>'}
           ${after ? `<a class="is-after" href="docs/${after.slug}.html"><span>Next</span><strong>${esc(after.title)}</strong></a>` : '<span></span>'}
         </nav>
-      </article>
+      </article>${docsRail()}
     </section>` + footer(page);
     // the page was written as if it stood beside the others; it stands one folder down
     return html.replace(/\b(href|src|poster|data-src)="(?!https?:|#|mailto:|data:)([^"]*)"/g, (_, attr, to) => `${attr}="../${to === './' ? '' : to}"`);

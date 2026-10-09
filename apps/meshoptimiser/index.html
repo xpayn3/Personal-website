@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>MeshOptimiser — Heavy CAD, made light enough for a browser.</title>
-  <meta name="description" content="MeshOptimiser opens a heavy CAD assembly, keeps one copy of every part that repeats, lets you take out what nobody will see, and exports a small GLB. It runs o…" />
+  <meta name="description" content="View complex CAD and 3D files, clear out what nobody sees, and export a lighter model. Free, and it never leaves your computer." />
   <link rel="icon" type="image/svg+xml" href="../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="MeshOptimiser — Heavy CAD, made light enough for a browser." />
-  <meta property="og:description" content="MeshOptimiser opens a heavy CAD assembly, keeps one copy of every part that repeats, lets you take out what nobody will see, and exports a small GLB. It runs o…" />
+  <meta property="og:description" content="View complex CAD and 3D files, clear out what nobody sees, and export a lighter model. Free, and it never leaves your computer." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/" />
   <meta property="og:type" content="website" />
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=33" />
+  <link rel="stylesheet" href="site.css?v=58" />
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/"}}</script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
@@ -30,7 +30,7 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "MeshOptimiser",
-  "description": "MeshOptimiser opens a heavy CAD assembly, keeps one copy of every part that repeats, lets you take out what nobody will see, and exports a small GLB. It runs on your own computer, so the model never leaves it. Free and open source.",
+  "description": "View complex CAD and 3D files, clear out what nobody sees, and export a lighter model. Free, and it never leaves your computer.",
   "applicationCategory": "DesignApplication",
   "operatingSystem": "Windows, macOS",
   "softwareVersion": "0.20.0",
@@ -64,7 +64,7 @@
         <a href="features.html">Features</a>
         <a href="docs.html">Docs</a>
         <a href="changelog.html">Changelog</a>
-        <a class="nav-out" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">GitHub</a>
+        <a class="nav-out" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>GitHub</a>
       </nav>
       <a class="btn is-primary bar-get" href="download.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
       <button class="bar-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
@@ -74,38 +74,21 @@
     <section class="wrap hero">
       <p class="kicker">v0.20.0<b>·</b>Beta<b>·</b>MIT<b>·</b>Windows and macOS</p>
       <h1>Heavy CAD, made light enough for a browser.</h1>
-      <p class="lead">MeshOptimiser opens a heavy CAD assembly, keeps one copy of every part that repeats, lets you take out what nobody will see, and exports a small GLB. It runs on your own computer, so the model never leaves it. Free and open source.</p>
+      <p class="lead">View complex CAD and 3D files, clear out what nobody sees, and export a lighter model. Free, and it never leaves your computer.</p>
       <div class="actions">
         <a class="btn is-primary is-large" href="download.html">Download</a>
         <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         <a class="more" href="docs.html">Read the docs</a>
       </div>
     </section>
-    <section class="pop" data-pop aria-label="A rear derailleur comes out of the MeshOptimiser window and pulls itself apart">
-      <div class="pop-pin">
-        <div class="wrap pop-stage">
-          <div class="pop-art">
-            <a class="zoom pop-frame" href="../../Images/apps/meshoptimiser-hero.webp" data-group="hero" data-caption="A gearbox assembly open in MeshOptimiser: 95 parts, 646,064 triangles. The parts tree is on the left, the totals and the tools on the right.">
-              <img class="pop-ui" src="../../Images/apps/meshoptimiser-hero-ui.webp?v=4" alt="MeshOptimiser: A gearbox assembly open in MeshOptimiser: 95 parts, 646,064 triangles. The parts tree is on the left, the totals and the tools on the right." width="2400" height="1551" decoding="async" fetchpriority="high" />
-            </a>
-            <img class="pop-model" src="../../Images/apps/meshoptimiser-hero-model.webp?v=4" alt="" width="1074" height="1231" decoding="async" style="left:34.46%;top:18.13%;width:31.08%" />
-          </div>
-          <div class="pop-copy" aria-hidden="false">
-            <p class="kicker">See what is inside</p>
-            <h2>Pull it apart, and look inside.</h2>
-            <p>This is a real mesh, a rear derailleur in 43 parts, and it comes apart as you scroll. In the app every pin, bolt and bushing has its own row, its own triangle count, and a button to hide it, simplify it or take it out.</p>
-          </div>
-        </div>
-      </div>
-    </section>
 
     <section class="band">
       <div class="wrap">
         <dl class="figures">
-          <div><dt>320 MB → 11 MB</dt><dd>The README’s example: a STEP assembly down to a compressed GLB.</dd></div>
-          <div><dt>About 10× smaller</dt><dd>GLBs shrink that much with Meshopt compression, through gltfpack.</dd></div>
-          <div><dt>1 mesh, many positions</dt><dd>Identical parts are found at any rotation or position and drawn once.</dd></div>
-          <div><dt>MIT licence</dt><dd>Free and open source. No account, no subscription, nothing to upload.</dd></div>
+          <div><dt>320 → 11 MB</dt><dd>A STEP assembly down to a compressed GLB. The README’s example, with Meshopt compression through gltfpack.</dd></div>
+          <div><dt>−50% triangles</dt><dd>One press of Smart optimise on a real assembly. The model looks the same, and one undo takes it all back.</dd></div>
+          <div><dt>400 → 1 mesh</dt><dd>Identical parts are found at any rotation or position, kept once, and placed again from a list.</dd></div>
+          <div><dt>0 uploads</dt><dd>It runs on your own computer, so the model never leaves it. Free and open source, MIT licence.</dd></div>
         </dl>
       </div>
     </section>
@@ -130,16 +113,54 @@
       </div>
     </section>
 
+    <section class="pop" data-pop aria-label="A rear derailleur comes out of the MeshOptimiser window and pulls itself apart">
+      <div class="pop-pin">
+        <div class="wrap pop-stage">
+          <div class="pop-art">
+            <a class="zoom pop-frame" href="../../Images/apps/meshoptimiser-hero.webp" data-group="hero" data-caption="A gearbox assembly open in MeshOptimiser: 95 parts, 646,064 triangles. The parts tree is on the left, the totals and the tools on the right.">
+              <img class="pop-ui" src="../../Images/apps/meshoptimiser-hero-ui.webp?v=4" alt="MeshOptimiser: A gearbox assembly open in MeshOptimiser: 95 parts, 646,064 triangles. The parts tree is on the left, the totals and the tools on the right." width="2400" height="1551" decoding="async" fetchpriority="high" />
+            </a>
+            <img class="pop-model" src="../../Images/apps/meshoptimiser-hero-model.webp?v=4" alt="" width="1074" height="1231" decoding="async" style="left:34.46%;top:18.13%;width:31.08%" />
+          </div>
+          <div class="pop-copy" aria-hidden="false">
+            <p class="kicker">Exploded view</p>
+            <h2>Take it apart. Inspect every part.</h2>
+            <p>Scroll to pull this real rear derailleur, 43 parts, apart. In the app one slider does it along any axis, so no part hides behind another. Every pin, bolt and bushing has its own row and triangle count, and a button to hide it, isolate it or take it out.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="band">
       <div class="wrap">
         <div class="band-head">
           <p class="kicker">How it works</p>
-          <h2>Three steps from STEP to the browser.</h2>
+          <h2>Three steps to a lighter model.</h2>
         </div>
-        <ol class="steps">
-          <li><i>01</i><h3>STEP in</h3><p>Drop a .step or .stp file on the start screen, or run the converter from the command line.</p></li>
-          <li><i>02</i><h3>Convert</h3><p>OpenCascade reads the whole assembly with its names and colours. Repeated parts become one mesh, surfaces are rebuilt, tiny parts are dropped and the result is compressed.</p></li>
-          <li><i>03</i><h3>GLB out</h3><p>Open it in the viewer to look around, recolour, reduce, tidy the tree and export.</p></li>
+        <ol class="steps is-visual">
+          <li><div class="st-fig"><svg viewBox="0 0 320 160" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect class="f" x="28" y="20" width="264" height="120" rx="8" stroke-dasharray="3 5"/>
+      <path class="o" d="M138 36h44l22 22v66a2 2 0 0 1-2 2h-64a2 2 0 0 1-2-2V38a2 2 0 0 1 2-2Z"/>
+      <path class="o" d="M182 36v22h22"/>
+      <text x="160" y="100" text-anchor="middle" class="t a">.STEP</text>
+      <path class="f" d="M160 6v13m-5-5 5 5 5-5"/>
+    </svg></div><i>01</i><h3>Drop in a file</h3><p>Drag a STEP, GLB, FBX or OBJ file onto the start screen. STEP files are converted first. The others open straight away.</p></li>
+          <li><div class="st-fig"><svg viewBox="0 0 320 160" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <g class="o"><circle cx="46" cy="50" r="7"/><circle cx="72" cy="50" r="7"/><circle cx="98" cy="50" r="7"/><circle cx="46" cy="80" r="7"/><circle cx="72" cy="80" r="7"/><circle cx="98" cy="80" r="7"/><circle cx="46" cy="110" r="7"/><circle cx="72" cy="110" r="7"/><circle cx="98" cy="110" r="7"/></g>
+      <g class="f"><path d="M107 50 196 80M107 80h89M107 110 196 80"/></g>
+      <circle class="a" cx="236" cy="80" r="26"/>
+      <path class="a" d="m236 64 14 8v16l-14 8-14-8V72Z"/>
+      <circle class="a" cx="236" cy="80" r="5"/>
+      <text x="236" y="130" text-anchor="middle" class="t">1 mesh + 9 positions</text>
+    </svg></div><i>02</i><h3>Clean it up</h3><p>Repeated parts become one mesh, hidden and tiny parts go, and Smart optimise reduces the rest. Names and colours stay, and every step can be undone.</p></li>
+          <li><div class="st-fig"><svg viewBox="0 0 320 160" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect class="f" x="28" y="16" width="264" height="128" rx="8"/>
+      <path class="f" d="M28 38h264"/>
+      <circle class="f" cx="43" cy="27" r="3"/><circle class="f" cx="55" cy="27" r="3"/><circle class="f" cx="67" cy="27" r="3"/>
+      <path class="a" d="M160 54 193 73v38l-33 19-33-19V73Z"/>
+      <path class="a" d="m127 73 33 19 33-19M160 92v38"/>
+      <text x="44" y="132" class="t">.GLB</text>
+    </svg></div><i>03</i><h3>Look inside, then export</h3><p>Pull the model apart, pick any part, recolour it or reduce it. When it looks right, export a light GLB, FBX or OBJ.</p></li>
         </ol>
       </div>
     </section>
@@ -203,14 +224,6 @@
             <p>Smart fit used to turn a bracket into a brick. Blocks rebuilds a part from a coarse grid, so its steps, arms and openings stay where they were. Here it took two heavy parts of a gearbox from 72,666 triangles to 212.</p>
           </div>
         </article>
-        <article class="spot is-flipped">
-          <a class="zoom" href="../../Images/apps/meshoptimiser-bolt-nut.webp" data-group="spots" data-caption="A bolt that brings its own nut"><img src="../../Images/apps/meshoptimiser-bolt-nut.webp" alt="MeshOptimiser: A bolt that brings its own nut" width="2400" height="1350" loading="lazy" decoding="async" /></a>
-          <div>
-            <i>04</i>
-            <h3>A bolt that brings its own nut</h3>
-            <p>Tick it on, pick the nut and set how far from the head it sits. The nut is part of the bolt’s own shape, in the bolt’s thread. It’s one part in the tree and one undo step, and it can’t slide off the end.</p>
-          </div>
-        </article>
         </div>
       </div>
     </section>
@@ -224,11 +237,13 @@
         <p class="lead sv-lead">One press of Optimise on a real CAD assembly. These are the app’s own numbers, read off its Properties card after each run.</p>
         <div class="sv" data-reveal>
           <div class="sv-big">
+            <p class="sv-sub">Result</p>
             <b>−50<small>%</small></b>
             <span>triangles</span>
             <em>646,064 → 322,988</em>
           </div>
           <div class="sv-rows">
+            <p class="sv-sub">Before and after</p>
           <div class="sv-row">
             <div class="sv-label"><span>Triangles</span><em>−50%</em></div>
             <div class="sv-bar is-before"><i style="--w:100%"></i><b>646,064</b></div>
@@ -264,59 +279,6 @@
       </div>
     </section>
 
-    <section class="band design" id="design">
-      <div class="wrap">
-        <div class="band-head">
-          <p class="kicker">Design</p>
-          <h2>Every gap is on purpose.</h2>
-        </div>
-        <p class="lead design-lead">None of this is a screenshot. Each card, switch, slider and button below is the app’s own markup and stylesheet, lifted out of the running window and set on the page. Press a switch, drag a slider, hit Optimise.</p>
-        <div class="appui" data-appui>
-          <div class="appui-stage">
-            <div class="ap ap-smart" data-part="smart" style="--x:10px;--y:40px;--z:1;--r:-1deg;--d:0ms"></div>
-            <div class="ap ap-fasteners" data-part="fasteners" style="--x:312px;--y:0px;--z:1.2;--r:0.8deg;--d:120ms"></div>
-            <div class="ap ap-props" data-part="props" style="--x:640px;--y:60px;--z:0.8;--r:-0.6deg;--d:240ms"></div>
-            <div class="ap ap-explode" data-part="explode" style="--x:948px;--y:110px;--z:0.9;--r:1.2deg;--d:360ms"></div>
-          </div>
-        </div>
-        <p class="appui-note">The real components, at their real size. Move the pointer over them.</p>
-
-        <div class="plan" data-reveal>
-          <div class="plan-head">
-            <h3>The whole window, as a plan</h3>
-            <p>Five areas and nothing else. The tools float over the model instead of squeezing it, so the picture never changes size when you open one.</p>
-          </div>
-          <div class="plan-art" role="img" aria-label="A plan of the MeshOptimiser window: a top bar, the parts tree on the left, the viewport in the middle, the properties on the right and a status bar underneath">
-            <div class="plan-window" style="grid-template-columns:248fr 1200fr 268fr;grid-template-rows:44fr 1051fr 22fr">
-              <div class="plan-top"><span>Top bar</span><b>44</b></div>
-              <div class="plan-left"><span>Parts tree</span><b>248</b></div>
-              <div class="plan-view"><span>Viewport</span><b>1200</b>
-                <i class="plan-dock"><u></u><u></u><u></u><u></u><u></u><u></u><u></u></i>
-                <i class="plan-card"></i>
-                <i class="plan-cube"></i>
-              </div>
-              <div class="plan-right"><span>Properties</span><b>268</b></div>
-              <div class="plan-foot"><span>Status bar</span><b>22</b></div>
-            </div>
-          </div>
-          <ol class="plan-notes">
-            <li><strong>Top bar</strong><span>Menu and tabs on the left, export on the right. Nothing else competes with the model.</span></li>
-            <li><strong>Parts tree</strong><span>The same width in every tab, unless you switch that off in Settings.</span></li>
-            <li><strong>Viewport</strong><span>Cards and the toolbar float over it. The library and the materials drawer slide up from below.</span></li>
-            <li><strong>Properties</strong><span>Totals first, then the tools in three groups: Inspect, Clean up and Reduce.</span></li>
-          </ol>
-        </div>
-
-        <dl class="tokens" data-reveal>
-          <div><dt>#101010</dt><dd>the one background</dd></div>
-          <div><dt>13 px</dt><dd>Inter, the body text</dd></div>
-          <div><dt>30 px</dt><dd>every toolbar button</dd></div>
-          <div><dt>28 px</dt><dd>every number field</dd></div>
-          <div><dt>6 px</dt><dd>corner radius of a control</dd></div>
-          <div><dt>10 px</dt><dd>corner radius of a card</dd></div>
-        </dl>
-      </div>
-    </section>
 
     <section class="band" id="library">
       <div class="wrap">
@@ -326,122 +288,28 @@
         </div>
         <p class="lead lib-lead">Bolts, nuts, pipe fittings, profiles, gears, a stepper motor. In the app each of these is a real part, with sizes you can change before it goes in.</p>
         <div class="lib-show">
-          <section class="lib-set">
-            <h3>Shapes<i>17</i></h3>
-            <ul class="lib-tiles">
-              <li><img src="library/cube.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Cube</span></li>
-              <li><img src="library/sphere.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Sphere</span></li>
-              <li><img src="library/cylinder.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Cylinder</span></li>
-              <li><img src="library/cone.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Cone</span></li>
-              <li><img src="library/torus.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Torus</span></li>
-              <li><img src="library/plane.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Plane</span></li>
-              <li><img src="library/capsule.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Capsule</span></li>
-              <li><img src="library/wedge.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Wedge</span></li>
-              <li><img src="library/pyramid.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Pyramid</span></li>
-              <li><img src="library/prism.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Prism</span></li>
-              <li><img src="library/hemisphere.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Hemisphere</span></li>
-              <li><img src="library/roundedbox.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Rounded box</span></li>
-              <li><img src="library/halfcyl.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Half cylinder</span></li>
-              <li><img src="library/tetra.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Tetrahedron</span></li>
-              <li><img src="library/star.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Star</span></li>
-              <li><img src="library/plus.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Cross</span></li>
-              <li><img src="library/arrow.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Arrow</span></li>
-            </ul>
-          </section>
-          <section class="lib-set">
-            <h3>Fasteners<i>16</i></h3>
-            <ul class="lib-tiles">
-              <li><img src="library/hexbolt.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Hex bolt</span></li>
-              <li><img src="library/allen.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Socket head screw</span></li>
-              <li><img src="library/countersunk.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Countersunk screw</span></li>
-              <li><img src="library/buttonhead.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Button head screw</span></li>
-              <li><img src="library/threadedrod.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Threaded rod</span></li>
-              <li><img src="library/eyebolt.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Eye bolt</span></li>
-              <li><img src="library/washer.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Washer</span></li>
-              <li><img src="library/pin.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Dowel pin</span></li>
-              <li><img src="library/rivet.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Rivet</span></li>
-              <li><img src="library/key.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Parallel key</span></li>
-              <li><img src="library/standoff.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Hex standoff</span></li>
-              <li><img src="library/setscrew.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Set screw</span></li>
-              <li><img src="library/carriagebolt.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Carriage bolt</span></li>
-              <li><img src="library/ubolt.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>U bolt</span></li>
-              <li><img src="library/circlip.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Retaining ring</span></li>
-              <li><img src="library/springwasher.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Spring washer</span></li>
-            </ul>
-          </section>
-          <section class="lib-set">
-            <h3>Nuts<i>12</i></h3>
-            <ul class="lib-tiles">
-              <li><img src="library/hexnut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Hex nut</span></li>
-              <li><img src="library/jamnut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Thin nut</span></li>
-              <li><img src="library/locknut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Lock nut</span></li>
-              <li><img src="library/flangenut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Flange nut</span></li>
-              <li><img src="library/capnut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Cap nut</span></li>
-              <li><img src="library/castlenut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Castle nut</span></li>
-              <li><img src="library/squarenut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Square nut</span></li>
-              <li><img src="library/couplingnut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Coupling nut</span></li>
-              <li><img src="library/wingnut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Wing nut</span></li>
-              <li><img src="library/thumbnut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Knurled nut</span></li>
-              <li><img src="library/tslotnut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>T-slot nut</span></li>
-              <li><img src="library/eyenut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Eye nut</span></li>
-            </ul>
-          </section>
-          <section class="lib-set">
-            <h3>Pipes and flanges<i>7</i></h3>
-            <ul class="lib-tiles">
-              <li><img src="library/tube.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Tube</span></li>
-              <li><img src="library/elbow.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Pipe elbow</span></li>
-              <li><img src="library/tee.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Pipe tee</span></li>
-              <li><img src="library/reducer.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Pipe reducer</span></li>
-              <li><img src="library/endcap.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Pipe cap</span></li>
-              <li><img src="library/flange.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Flange</span></li>
-              <li><img src="library/pipecross.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Pipe cross</span></li>
-            </ul>
-          </section>
-          <section class="lib-set">
-            <h3>Profiles and plates<i>16</i></h3>
-            <ul class="lib-tiles">
-              <li><img src="library/plate.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Plate</span></li>
-              <li><img src="library/flatbar.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Flat bar</span></li>
-              <li><img src="library/angle.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Angle profile</span></li>
-              <li><img src="library/channel.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>U channel</span></li>
-              <li><img src="library/tprofile.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>T profile</span></li>
-              <li><img src="library/zprofile.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Z profile</span></li>
-              <li><img src="library/ibeam.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>I beam</span></li>
-              <li><img src="library/boxtube.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Box tube</span></li>
-              <li><img src="library/extrusion.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>T-slot extrusion</span></li>
-              <li><img src="library/roundbar.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Round bar</span></li>
-              <li><img src="library/hexbar.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Hex bar</span></li>
-              <li><img src="library/cchannel.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>C channel</span></li>
-              <li><img src="library/gusset.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Gusset plate</span></li>
-              <li><img src="library/perfplate.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Perforated plate</span></li>
-              <li><img src="library/slotplate.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Slotted plate</span></li>
-              <li><img src="library/hinge.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Hinge</span></li>
-            </ul>
-          </section>
-          <section class="lib-set">
-            <h3>Machine parts<i>18</i></h3>
-            <ul class="lib-tiles">
-              <li><img src="library/gear.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Spur gear</span></li>
-              <li><img src="library/rack.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Gear rack</span></li>
-              <li><img src="library/sprocket.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Sprocket</span></li>
-              <li><img src="library/pulley.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>V pulley</span></li>
-              <li><img src="library/bearing.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Ball bearing</span></li>
-              <li><img src="library/bushing.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Flanged bushing</span></li>
-              <li><img src="library/spring.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Spring</span></li>
-              <li><img src="library/handwheel.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Handwheel</span></li>
-              <li><img src="library/knob.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Star knob</span></li>
-              <li><img src="library/bracket.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Corner bracket</span></li>
-              <li><img src="library/stepper.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Stepper motor</span></li>
-              <li><img src="library/collar.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Shaft collar</span></li>
-              <li><img src="library/pillowblock.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Pillow block</span></li>
-              <li><img src="library/wheel.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Wheel</span></li>
-              <li><img src="library/rail.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Linear rail</span></li>
-              <li><img src="library/foot.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Levelling foot</span></li>
-              <li><img src="library/handle.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Pull handle</span></li>
-              <li><img src="library/enclosure.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Enclosure</span></li>
-            </ul>
-          </section>
+          <ul class="lib-tiles">
+            <li><img src="library/cube.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Cube</span></li>
+            <li><img src="library/hexbolt.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Hex bolt</span></li>
+            <li><img src="library/hexnut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Hex nut</span></li>
+            <li><img src="library/tube.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Tube</span></li>
+            <li><img src="library/plate.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Plate</span></li>
+            <li><img src="library/gear.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Spur gear</span></li>
+            <li><img src="library/sphere.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Sphere</span></li>
+            <li><img src="library/allen.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Socket head screw</span></li>
+            <li><img src="library/jamnut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Thin nut</span></li>
+            <li><img src="library/elbow.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Pipe elbow</span></li>
+            <li><img src="library/flatbar.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Flat bar</span></li>
+            <li><img src="library/rack.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Gear rack</span></li>
+            <li><img src="library/cylinder.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Cylinder</span></li>
+            <li><img src="library/countersunk.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Countersunk screw</span></li>
+            <li><img src="library/locknut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Lock nut</span></li>
+            <li><img src="library/tee.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Pipe tee</span></li>
+            <li><img src="library/angle.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Angle profile</span></li>
+            <li><img src="library/sprocket.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Sprocket</span></li>
+            <li><img src="library/cone.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Cone</span></li>
+            <li><img src="library/buttonhead.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Button head screw</span></li>
+          </ul>
         </div>
       </div>
     </section>
