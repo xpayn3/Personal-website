@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=23" />
+  <link rel="stylesheet" href="../site.css?v=24" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -122,7 +122,7 @@
         <div class="kb-body">
           <p>A machine can hold hundreds of fasteners: the small metal parts that hold other parts together. In a CAD export their names are often useless, for example <code>=&gt;0_1_1_9_000009</code>, so searching by name does not work. Fasteners looks at the shape of every part instead, and selects the ones shaped like a bolt, a screw, a nut or a washer.</p>
           <p>It cuts each part across its own axis and reads the outline: a round shank with a wider head, six flats around a hole, a flat ring. It compares that with the proportions of standard fasteners. Bushings, bearings, O-rings, shafts, pipe fittings and cable glands have other shapes, and are left alone.</p>
-          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-fasteners.webp" data-group="article" data-caption="Fasteners found twelve bolts and screws by their shape: 129,460 triangles, selected and ready to isolate or delete."><img src="../../../Images/apps/meshoptimiser-fasteners.webp" alt="MeshOptimiser: Fasteners found twelve bolts and screws by their shape: 129,460 triangles, selected and ready to isolate or delete." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Fasteners found twelve bolts and screws by their shape: 129,460 triangles, selected and ready to isolate or delete.</figcaption></figure>
+          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-fasteners.webp" data-group="article" data-caption="Fasteners found fifteen by their shape in a scene of the library’s own parts: seven bolts and screws, four nuts and four washers, selected and ready to isolate or delete."><img src="../../../Images/apps/meshoptimiser-fasteners.webp" alt="MeshOptimiser: Fasteners found fifteen by their shape in a scene of the library’s own parts: seven bolts and screws, four nuts and four washers, selected and ready to isolate or delete." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Fasteners found fifteen by their shape in a scene of the library’s own parts: seven bolts and screws, four nuts and four washers, selected and ready to isolate or delete.</figcaption></figure>
           <h2 id="when-to-use-it">When to use it</h2>
           <p>Before you delete or simplify the hardware, when the names do not help. Not when the fasteners are the point of the picture.</p>
           <h2 id="steps">Steps</h2>
@@ -131,7 +131,7 @@
             <li>Set <span class="ui">up to M</span> to the largest thread to look for. It starts at 30. A thread size is written M and the width in millimetres: M6 is a bolt 6 mm wide. A bolt, nut or washer for a bigger thread is left alone.</li>
             <li>Leave the three switches on: <span class="ui">Bolts and screws</span>, <span class="ui">Nuts</span> and <span class="ui">Washers</span>. Switch off a kind you do not want.</li>
             <li>Press <span class="ui">Select fasteners</span>, or <kbd>Enter</kbd>. It looks at every visible part. On a large assembly it shows its progress and takes a few seconds.</li>
-            <li>The fasteners are selected. A line says how many, how many triangles they hold and what share of the scene that is, for example “12 fasteners selected: 129,460 triangles, 11.7% of the scene”.</li>
+            <li>The fasteners are selected. A line says how many, how many triangles they hold and what share of the scene that is, for example “15 fasteners selected: 4,676 triangles, 100.0% of the scene”.</li>
             <li>Under it is a short list with one row per kind and the sizes found, for example “12 bolts and screws · M3.5 ×6 · M4 ×4 · M5 ×2”. Click a row to select only that kind. Click it again to go back to all of them.</li>
             <li>Press <span class="ui">Isolate</span> to look at them on their own. Check that nothing you need is among them.</li>
             <li>Press <span class="ui">Delete</span> to remove them, or leave them selected and use another tool on them, such as <a href="../docs/smart-fit.html">Smart fit</a>.</li>

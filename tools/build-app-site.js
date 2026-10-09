@@ -24,7 +24,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 23;
+const CSS_V = 24;
 const RP_V = 2;           // report.js
 const JS_V = 18;
 
@@ -197,7 +197,7 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
 
   // a picture that opens in the lightbox; `group` ties the pictures of one set together
   const shot = ([src, caption], group, eager) =>
-    `<figure><a class="zoom" href="${asset(src)}" data-group="${group}" data-caption="${esc(caption)}"><img src="${asset(src)}" alt="${esc(app.title + ': ' + caption)}" width="1600" height="1000"${eager ? '' : ' loading="lazy"'} decoding="async" /></a><figcaption>${esc(caption)}</figcaption></figure>`;
+    `<figure><a class="zoom" href="${asset(src)}" data-group="${group}" data-caption="${esc(caption)}"><img src="${asset(src)}" alt="${esc(app.title + ': ' + caption)}" width="2400" height="1350"${eager ? '' : ' loading="lazy"'} decoding="async" /></a><figcaption>${esc(caption)}</figcaption></figure>`;
 
   const clipCards = () => (app.clips || []).map(([name, line, src, doc], i) => `
         <figure class="clip">
@@ -207,7 +207,7 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
 
   const spotRows = (list, group) => list.map(([name, line, image], i) => `
         <article class="spot${i % 2 ? ' is-flipped' : ''}">
-          <a class="zoom" href="${asset(image)}" data-group="${group}" data-caption="${esc(name)}"><img src="${asset(image)}" alt="${esc(app.title + ': ' + name)}" width="1600" height="1000" loading="lazy" decoding="async" /></a>
+          <a class="zoom" href="${asset(image)}" data-group="${group}" data-caption="${esc(name)}"><img src="${asset(image)}" alt="${esc(app.title + ': ' + name)}" width="2400" height="1350" loading="lazy" decoding="async" /></a>
           <div>
             <i>${pad2(i + 1)}</i>
             <h3>${esc(name)}</h3>
@@ -572,6 +572,7 @@ ${group.items.map(([name, line]) => `          <li><strong>${esc(name)}</strong>
       <div class="gallery">
         ${app.shots.map((s, i) => shot(s, 'gallery', i < 2)).join('\n        ')}
       </div>
+      <p class="credit">The watch in most of these pictures is “Chronograph Watch Mudmaster” by graphiccompressor (<a href="https://skfb.ly/oAsPA" rel="noopener">Sketchfab</a>), prepared by Darmstadt Graphics Group for the <a href="https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/ChronographWatch" rel="noopener">Khronos glTF Sample Assets</a> and used under <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a>. In several pictures it has been changed by the app’s own tools, as the captions say. The bolts, nuts, washers and gears come from the app’s library.</p>
     </section>` + footer(page);
 
   // ---- docs: a knowledge base (docs-content.js) ----
@@ -599,7 +600,7 @@ ${group.items.map(([name, line]) => `          <li><strong>${esc(name)}</strong>
     if (type === 'keys') return `<dl class="kb-keys">\n${a.map(([k, d]) => `            <div><dt>${k.split(/\s+\+\s+/).map(x => `<kbd>${esc(x)}</kbd>`).join('')}</dt><dd>${rich(d)}</dd></div>`).join('\n')}\n          </dl>`;
     if (type === 'code') return `<div class="kb-code"><code>${esc(a)}</code><button type="button" class="copy" data-copy="${esc(a)}">Copy</button></div>`;
     if (type === 'note') return `<aside class="kb-note"><p>${rich(a)}</p></aside>`;
-    if (type === 'img') return `<figure class="kb-figure"><a class="zoom" href="${asset(a)}" data-group="article" data-caption="${esc(b || '')}"><img src="${asset(a)}" alt="${esc(app.title + ': ' + (b || ''))}" width="1600" height="1000" loading="lazy" decoding="async" /></a>${b ? `<figcaption>${rich(b)}</figcaption>` : ''}</figure>`;
+    if (type === 'img') return `<figure class="kb-figure"><a class="zoom" href="${asset(a)}" data-group="article" data-caption="${esc(b || '')}"><img src="${asset(a)}" alt="${esc(app.title + ': ' + (b || ''))}" width="2400" height="1350" loading="lazy" decoding="async" /></a>${b ? `<figcaption>${rich(b)}</figcaption>` : ''}</figure>`;
     if (type === 'see') return `<div class="kb-see"><h2>Related</h2><ul>\n${a.filter(x => bySlug.has(x)).map(x => `            <li><a href="docs/${x}.html">${esc(bySlug.get(x).title)}</a></li>`).join('\n')}\n          </ul></div>`;
     throw new Error('docs-content.js: unknown block type ' + type);
   };

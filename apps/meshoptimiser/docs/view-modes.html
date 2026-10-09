@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=23" />
+  <link rel="stylesheet" href="../site.css?v=24" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -133,16 +133,16 @@
           <p>The everyday view. Parts have their own colours and are lit by a soft studio and a light that follows the camera, so dark parts keep an edge and a sheen.</p>
           <h2 id="wireframe">Wireframe</h2>
           <p>Shows the triangles themselves. Use it to see how dense a mesh is, and to check what Decimate has done. Where the lines are so close that they merge into a solid patch, the mesh is very dense.</p>
-          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-wireframe.webp" data-group="article" data-caption="Wireframe: every edge of every part."><img src="../../../Images/apps/meshoptimiser-wireframe.webp" alt="MeshOptimiser: Wireframe: every edge of every part." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Wireframe: every edge of every part.</figcaption></figure>
+          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-wireframe.webp" data-group="article" data-caption="Wireframe: every edge of every part."><img src="../../../Images/apps/meshoptimiser-wireframe.webp" alt="MeshOptimiser: Wireframe: every edge of every part." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Wireframe: every edge of every part.</figcaption></figure>
           <h2 id="x-ray">X-ray</h2>
           <p>Makes every part translucent, so you can see what is inside without hiding anything.</p>
-          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-xray.webp" data-group="article" data-caption="X-ray: the whole assembly as translucent shells."><img src="../../../Images/apps/meshoptimiser-xray.webp" alt="MeshOptimiser: X-ray: the whole assembly as translucent shells." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>X-ray: the whole assembly as translucent shells.</figcaption></figure>
+          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-xray.webp" data-group="article" data-caption="X-ray: the whole assembly as translucent shells."><img src="../../../Images/apps/meshoptimiser-xray.webp" alt="MeshOptimiser: X-ray: the whole assembly as translucent shells." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>X-ray: the whole assembly as translucent shells.</figcaption></figure>
           <h2 id="heatmap">Heatmap</h2>
           <p>Colours each part by how many triangles it has for its size. It answers the question “where is the weight?” at a glance. See <a href="../docs/read-the-numbers.html">How to read the numbers</a>.</p>
           <h2 id="clay">Clay</h2>
           <p>Takes the colours away. Every part gets the same plain material, so all that is left is form: edges, curvature, and what stands in front of what. It is a good view for judging whether a simplified model still reads as the same object.</p>
           <p>Clay has four looks: <span class="ui">Clay</span> (matte grey), <span class="ui">Porcelain</span> (pale and glossy), <span class="ui">Steel</span> (metal) and <span class="ui">Red wax</span>. You choose the look on the Shading card.</p>
-          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-clay.webp" data-group="article" data-caption="Clay: every part in one plain material, so only the form is left."><img src="../../../Images/apps/meshoptimiser-clay.webp" alt="MeshOptimiser: Clay: every part in one plain material, so only the form is left." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Clay: every part in one plain material, so only the form is left.</figcaption></figure>
+          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-clay.webp" data-group="article" data-caption="Clay: every part in one plain material, so only the form is left."><img src="../../../Images/apps/meshoptimiser-clay.webp" alt="MeshOptimiser: Clay: every part in one plain material, so only the form is left." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Clay: every part in one plain material, so only the form is left.</figcaption></figure>
           <h2 id="cad">CAD</h2>
           <p>The look of a CAD program. There are no lights, no reflections and no shadows. A surface gets its shade only from the way it faces the camera: lighter where it looks left, darker where it looks right, and a warm sand tone where it looks up. (This kind of shading is called a matcap: a picture of one lit ball, and every surface takes the colour of the spot on the ball that faces the same way.)</p>
           <p>A grey or white part takes the shading as it is. A coloured part keeps its colour, with the same shading on top. A fine dark line follows the sharp edges of every part, and the sides of round parts get a thin dark outline too, so the form stays easy to read.</p>

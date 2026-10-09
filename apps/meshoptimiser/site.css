@@ -238,6 +238,9 @@ b.is-refactor { color: var(--refactor); }
 .gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 3.4vw, 48px) clamp(14px, 2vw, 28px); }
 .gallery img { width: 100%; border-radius: var(--r); background: var(--surface); transition: opacity 0.15s ease; }
 .gallery .zoom:hover img { opacity: 0.86; }
+.credit { max-width: 72ch; margin-top: clamp(40px, 5vw, 72px); color: var(--tx-3); font-size: 14px; line-height: 1.6; }
+.credit a { text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+.credit a:hover { text-decoration-color: currentColor; }
 
 /* ---- docs: a knowledge base. The home lists every article by group, with
    a search; an article has the index of all of them beside it ---- */
