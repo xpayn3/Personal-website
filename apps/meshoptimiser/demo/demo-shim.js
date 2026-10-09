@@ -48,11 +48,18 @@
     try { if (sessionStorage.getItem('meshopt-demo-note') === 'gone') return; } catch (_) {}
     var bar = document.createElement('div');
     bar.setAttribute('role', 'note');
-    bar.style.cssText = 'position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:2147483000;display:flex;align-items:center;gap:12px;max-width:calc(100vw - 24px);padding:7px 8px 7px 14px;border-radius:999px;background:rgba(22,22,22,.92);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);color:#bdbdbd;font:400 12px/1.3 Inter,system-ui,sans-serif;white-space:nowrap';
-    bar.innerHTML = '<span style="overflow:hidden;text-overflow:ellipsis">Demo. It runs in your browser and nothing is uploaded.</span>' +
-      '<a href="../download.html" style="color:#fff;background:#0d99ff;border-radius:999px;padding:5px 12px;text-decoration:none">Get the full app</a>' +
-      '<button type="button" aria-label="Hide this note" style="all:unset;cursor:pointer;color:#8a8a8a;padding:2px 8px;font-size:16px;line-height:1">\u00d7</button>';
+    bar.style.cssText = 'position:fixed;left:50%;top:6px;transform:translate(-50%,-14px);opacity:0;transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .4s ease;z-index:2147483000;display:flex;align-items:center;gap:14px;max-width:calc(100vw - 24px);height:32px;padding:0 4px 0 12px;border-radius:10px;background:#161616;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),0 14px 36px rgba(0,0,0,.5),0 2px 8px rgba(0,0,0,.4);color:#a8a8a8;font:400 12.5px/1 Inter,system-ui,sans-serif;white-space:nowrap';
+    bar.innerHTML =
+      '<span style="display:inline-flex;align-items:center;gap:8px;color:#e9e9e9;letter-spacing:.09em;font:400 10.5px/1 ui-monospace,Menlo,Consolas,monospace;text-transform:uppercase"><i style="width:6px;height:6px;border-radius:50%;background:#0d99ff;display:block"></i>Demo</span>' +
+      '<span style="width:1px;height:14px;background:rgba(255,255,255,.12)"></span>' +
+      '<span style="overflow:hidden;text-overflow:ellipsis">Runs in your browser. Nothing is uploaded.</span>' +
+      '<a href="../download.html" style="display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:6px;background:#0d99ff;color:#fff;font-weight:500;text-decoration:none">Get the full app<span aria-hidden="true">→</span></a>' +
+      '<button type="button" aria-label="Hide this note" style="all:unset;cursor:pointer;display:grid;place-items:center;width:24px;height:24px;border-radius:6px;color:#7d7d7d;font-size:15px;line-height:1">×</button>';
     bar.querySelector('button').addEventListener('click', function () { bar.remove(); try { sessionStorage.setItem('meshopt-demo-note', 'gone'); } catch (_) {} });
     document.body.appendChild(bar);
+    // it drifts down into place a moment after the app has drawn its first frame
+    var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (calm) bar.style.transition = 'none';
+    setTimeout(function () { bar.style.opacity = '1'; bar.style.transform = 'translate(-50%,0)'; }, calm ? 0 : 1200);
   });
 })();
