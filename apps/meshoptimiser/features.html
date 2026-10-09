@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=18" />
+  <link rel="stylesheet" href="site.css?v=19" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -105,6 +105,7 @@
           <li><strong>Dark parts you can still read</strong><span>A studio to reflect on plain backgrounds and a headlight that follows the view, so black parts keep an edge and a sheen.</span></li>
           <li><strong>Click what you see</strong><span>Hover, click and box-select work on the parts you see, copies included.</span></li>
           <li><strong>Hide, isolate, solo</strong><span>One key each, to cut the noise and focus.</span></li>
+          <li><strong>Quick wand (W)</strong><span>Hold W over the model and a ring of commands opens under the pointer. Flick toward one and let go. It works on the selection, or on the whole scene when nothing is selected.</span></li>
           <li><strong>Recolour</strong><span>By group, by material or per part, with a reset.</span></li>
           <li><strong>Six ways to see it</strong><span>Solid, wireframe, x-ray, heatmap, clay and CAD. Clay shows every part in one plain material. CAD shades by which way a face looks, with a dark line on every sharp edge.</span></li>
           <li><strong>A Shading card with every look</strong><span>Default, Clay, Porcelain, Steel and Red wax, and the CAD looks Ceramic, Light and Mono, each as a small 3D nut. One switch draws the outlines in every view.</span></li>
@@ -129,6 +130,11 @@
           <li><strong>Fit to budget</strong><span>Give it a triangle count for the whole scene and it reduces the heaviest meshes first, with a preview.</span></li>
           <li><strong>Align to floor</strong><span>Stands a model that arrived on its side on the grid. A small 3D drawing shows what it will do, and nothing moves until you press the button.</span></li>
           <li><strong>Delete small parts</strong><span>Removes parts too small to see, plus empty, duplicate and broken ones.</span></li>
+          <li><strong>Repair mesh</strong><span>Joins doubled vertices, removes empty and doubled triangles, and turns faces so that neighbours agree which side is out.</span></li>
+          <li><strong>Remove hidden faces</strong><span>Looks at each part from many sides and deletes the faces that never show: the inside of a housing, the faces where two parts press together.</span></li>
+          <li><strong>Merge by material or group</strong><span>One mesh per material, or one per group. A merged mesh keeps its material.</span></li>
+          <li><strong>Select by rule</strong><span>Pick parts by name, material, group, triangles, size, or whether they are shown, flagged or instanced, and see how many fit as you type.</span></li>
+          <li><strong>Untriangulate</strong><span>Turns neighbouring flat triangles into one polygon and cuts it again with the fewest triangles. The shape does not change: a flat plate of 200 triangles becomes 38.</span></li>
           <li><strong>What it saved</strong><span>Every action shows the triangles it removed, and every part remembers what it arrived with.</span></li>
         </ul>
       </div>
@@ -160,7 +166,7 @@
           <li><strong>A library of 86 parts</strong><span>Bolts, nuts, pipe fittings, profiles, gears and a stepper motor. Look at one, change its size, then drag it in.</span></li>
           <li><strong>A bolt with its own nut</strong><span>The nut is part of the bolt, so it moves and undoes with it.</span></li>
           <li><strong>Exploded view</strong><span>Pull the parts apart with one slider, choose the axes with three pills, and fine-tune each axis.</span></li>
-          <li><strong>Dynamic place (D)</strong><span>Drag the selected part over other surfaces: it rests on them and turns to face them, like dragging a part out of a library onto a model.</span></li>
+          <li><strong>Dynamic place (D)</strong><span>Drag the selected part over other surfaces: it rests on them and turns to face them, like dragging a part out of a library onto a model. A small cube on top of the part scales it: drag it up or down.</span></li>
           <li><strong>Measure</strong><span>Click two points. The measurements stay in a list and can be picked again.</span></li>
         </ul>
       </div>
@@ -277,7 +283,7 @@
           <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="download.html">Download v0.14.0</a>
+          <a class="btn is-primary is-large" href="download.html">Download v0.15.0</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
       </div>
@@ -299,7 +305,7 @@
       <nav aria-label="Resources">
         <h2>Resources</h2>
         <a href="docs.html">Docs</a>
-        <a href="docs/shortcuts.html">Keyboard shortcuts</a>
+        <a href="docs/desktop-shortcut.html">Keyboard shortcuts</a>
         <a href="changelog.html">Changelog</a>
         <a href="docs/troubleshooting.html">Troubleshooting</a>
       </nav>
@@ -315,6 +321,6 @@
       <span><a href="../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="site.js?v=17"></script>
+  <script defer src="site.js?v=18"></script>
 </body>
 </html>

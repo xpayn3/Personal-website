@@ -24,8 +24,8 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 18;
-const JS_V = 17;
+const CSS_V = 19;
+const JS_V = 18;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -296,6 +296,40 @@ ${d.tips.map(([key, line]) => `              <li><kbd>${esc(key)}</kbd><span>${e
     </section>`;
   };
 
+  // The Quick wand of the app, working on the page: a ring that opens round the
+  // pointer on three parts. The words and parts are in `site.wand` (apps.js);
+  // site.js draws the ring and does what each slice says.
+  const wandDemo = () => {
+    const d = site.wand;
+    if (!d) return '';
+    const shapes = ['plate', 'pulley', 'bolt'];
+    return `
+    <section class="band" id="try-wand">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">${esc(d.kicker)}</p>
+          <h2>${esc(d.title)}</h2>
+        </div>
+        <div class="demo-row">
+          <div class="demo-copy">
+            <p>${esc(d.line)}</p>
+            <ul>
+${d.tips.map(([key, line]) => `              <li><kbd>${esc(key)}</kbd><span>${esc(line)}</span></li>`).join('\n')}
+            </ul>
+          </div>
+          <div class="demo wand-demo" data-wand>
+            <div class="wand-stage" data-wand-stage role="group" aria-label="A stage with three parts. Hold W, or press and hold, then flick toward a command.">
+${d.parts.map(([name, tris], i) => `              <div class="wand-part wp-${shapes[i % shapes.length]}" data-i="${i}"><b></b><span class="wp-label"></span></div>`).join('\n')}
+            </div>
+            <p class="demo-out wand-out" aria-live="polite" data-wand-out></p>
+            <button type="button" class="wand-reset" data-wand-reset>Reset</button>
+            <script type="application/json" data-wand-data>${JSON.stringify({ parts: d.parts })}</script>
+          </div>
+        </div>
+      </div>
+    </section>`;
+  };
+
   // The library, working on the page: shelves of the app's own part pictures,
   // dragged (or double-clicked) into a scene. site.js does the dragging.
   const libraryBand = () => {
@@ -459,6 +493,7 @@ ${app.steps.map(([name, line], i) => `          <li><i>${pad2(i + 1)}</i><h3>${e
 ${designBand()}
 ${libraryBand()}
 ${searchDemo()}
+${wandDemo()}
     <section class="band">
       <div class="wrap">
         <div class="band-head">

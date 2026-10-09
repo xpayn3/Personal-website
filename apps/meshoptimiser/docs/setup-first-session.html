@@ -7,15 +7,15 @@
   <meta name="theme-color" content="#101010" />
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
-  <title>Stacked copies — MeshOptimiser Docs</title>
-  <meta name="description" content="Find parts that sit exactly on top of an identical copy of themselves, drawn twice, and remove the extra ones." />
+  <title>Set it up after installing — MeshOptimiser Docs</title>
+  <meta name="description" content="A checklist for the first session: check the renderer, choose the units, set the look and the performance options, and know where your settings are kept." />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
-  <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/stacked-copies" />
+  <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/setup-first-session" />
   <meta property="og:site_name" content="MeshOptimiser" />
-  <meta property="og:title" content="Stacked copies — MeshOptimiser Docs" />
-  <meta property="og:description" content="Find parts that sit exactly on top of an identical copy of themselves, drawn twice, and remove the extra ones." />
+  <meta property="og:title" content="Set it up after installing — MeshOptimiser Docs" />
+  <meta property="og:description" content="A checklist for the first session: check the renderer, choose the units, set the look and the performance options, and know where your settings are kept." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
-  <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/stacked-copies" />
+  <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/setup-first-session" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -60,7 +60,7 @@
         <h2>Install and set up</h2>
         <a href="../docs/install-windows.html">Install on Windows, step by step</a>
         <a href="../docs/install-macos.html">Install on macOS, step by step</a>
-        <a href="../docs/setup-first-session.html">Set it up after installing</a>
+        <a href="../docs/setup-first-session.html" aria-current="page">Set it up after installing</a>
         <a href="../docs/install-gltfpack.html">Add gltfpack for smaller files</a>
         <a href="../docs/desktop-shortcut.html">Add a shortcut or an icon</a>
         <a href="../docs/move-or-remove.html">Move, copy or remove the app</a>
@@ -84,7 +84,7 @@
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
         <a href="../docs/fasteners.html">Fasteners</a>
-        <a href="../docs/stacked-copies.html" aria-current="page">Stacked copies</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -116,43 +116,63 @@
         <a href="../docs/self-test.html">Self-test</a>
       </nav>
       <article class="kb-article">
-        <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#lighter">Make it lighter</a></p>
-        <h1>Stacked copies</h1>
-        <p class="lead">Find parts that sit exactly on top of an identical copy of themselves, drawn twice, and remove the extra ones.</p>
+        <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#install">Install and set up</a></p>
+        <h1>Set it up after installing</h1>
+        <p class="lead">A checklist for the first session: check the renderer, choose the units, set the look and the performance options, and know where your settings are kept.</p>
         <div class="kb-body">
-          <p>Some files hold the same part twice, in the same place. From a distance nothing looks wrong. But the two surfaces lie on each other, so the screen flickers where they meet, because the graphics card cannot tell which one is in front. And the triangles are stored and drawn twice. Stacked copies finds these parts and keeps one of each.</p>
-          <p>Ten identical bolts in ten different places are not stacked copies. Only parts in the same place count.</p>
-          <h2 id="open-the-card">Open the card</h2>
-          <p>Press <kbd>Ctrl</kbd><kbd>K</kbd> to open the search, type <code>stacked</code>, and choose <span class="ui">Find stacked copies…</span>. The card opens over the viewport, at the bottom left, like <a href="../docs/split.html">Split</a> and <a href="../docs/fill-holes.html">Fill holes</a>. <kbd>Esc</kbd> puts it away.</p>
-          <h2 id="steps">Steps</h2>
+          <p>The app works the moment it opens, so none of this is required. It is a short checklist of the choices that are worth a minute on the first day, in the order that is most useful. Everything here is in <span class="ui">Settings</span>: press <kbd>Ctrl</kbd><kbd>,</kbd> (on a Mac, <kbd>Cmd</kbd><kbd>,</kbd>) or use <span class="ui">Menu</span>, then <span class="ui">Settings…</span>. Changes apply as you make them, with nothing to confirm.</p>
+          <h2 id="1-check-which-renderer-you-have">1. Check which renderer you have</h2>
+          <p>The viewer draws with WebGPU when your browser and graphics card support it, and with WebGL2 when they do not. Both give the same picture. WebGPU is faster on heavy models.</p>
           <ol class="kb-steps">
-            <li>Open the card <span class="ui">Stacked copies</span> as above.</li>
-            <li>Set <span class="ui">Same place within</span>. The slider goes from 0 to 5 percent of the part’s size, and starts at 0.5. At 0 the parts must lie almost exactly on each other. A higher value also accepts copies that are a little off.</li>
-            <li>Switch on <span class="ui">Also near copies</span> if the copies may differ a little. Off, two parts count as copies only when they have the same number of triangles. On, the number may differ by up to a quarter, as with another export of the same part, or a copy that was rebuilt with a different mesh.</li>
-            <li>Press <span class="ui">Find stacked copies</span>.</li>
-            <li>The extra copies are selected, and a line says how many, for example “6 extra copies of 6 parts selected; the first of each is kept”. The part that was loaded first stays. If there are none, it says “No stacked copies found”.</li>
-            <li>Press <span class="ui">Isolate</span> to look at the extra copies on their own. Check them.</li>
-            <li>Press <span class="ui">Delete</span> to remove them.</li>
+            <li>Open <span class="ui">Settings</span>, then <span class="ui">About</span>. The details list the renderer, your browser and the size of your screen.</li>
+            <li>Open <span class="ui">Performance</span>. <span class="ui">Renderer</span> shows what is in use. Change it to WebGL2 only if the 3D view is empty or glitchy. The page reloads when you change it.</li>
           </ol>
-          <aside class="kb-note"><p>The command only selects. Nothing is deleted until you press <span class="ui">Delete</span>.</p></aside>
-          <h2 id="good-to-know">Good to know</h2>
+          <p>If you are on WebGL2 and want WebGPU, update your browser and your graphics driver first.</p>
+          <h2 id="2-choose-the-units-you-think-in">2. Choose the units you think in</h2>
+          <p>Under <span class="ui">Scene</span>, <span class="ui">Display units</span> sets the unit for sizes and distances on screen: millimetres, centimetres, metres, inches, feet, or none. A STEP file normally comes in millimetres. This setting belongs to the open scene and is saved with it, so check it again for a scene from a different source.</p>
+          <p>Under <span class="ui">Scene</span>, <span class="ui">Up axis (viewport)</span> is Z for most CAD files and Y for glTF files and some 3D programs. It changes how the model is shown. What the exported file uses is chosen in the Export window.</p>
+          <h2 id="3-make-it-comfortable-to-look-at">3. Make it comfortable to look at</h2>
+          <p>Under <span class="ui">Appearance</span> you can change the accent colour, the surfaces, the typeface, the text size, the roundness of corners and the height of buttons and fields. None of it touches your models. <span class="ui">Reset</span> at the bottom of the section puts everything back.</p>
+          <p>Under <span class="ui">Viewport</span>, check <span class="ui">Background</span> and <span class="ui">Ground grid</span>. Switch <span class="ui">Outlines</span> off if you prefer shading without edge lines.</p>
+          <h2 id="4-set-the-performance-options-for-your-computer">4. Set the performance options for your computer</h2>
+          <dl class="table">
+            <div><dt>A fast computer, models up to a few hundred thousand triangles</dt><dd>Leave everything as it is.</dd></div>
+            <div><dt>A heavy assembly, or a modest graphics card</dt><dd>Keep <span class="ui">Skip tiny parts</span> and <span class="ui">Lower the resolution if it stutters</span> on. Set <span class="ui">Quality</span> to Low if the view still stutters.</dd></div>
+            <div><dt>Only the exported result matters, not the view</dt><dd>Make the model lighter first. See <a href="../docs/workflow.html">A sensible order to work in</a>.</dd></div>
+          </dl>
+          <h2 id="5-decide-how-the-app-starts">5. Decide how the app starts</h2>
+          <p>Under <span class="ui">General</span>:</p>
           <ul class="kb-points">
-            <li>Hidden parts are not looked at. Show all parts first (<kbd>Alt</kbd><kbd>H</kbd>).</li>
-            <li>The card remembers <span class="ui">Same place within</span> and <span class="ui">Also near copies</span> for next time.</li>
-            <li>Faces that lie exactly on each other still flicker in the viewport. This card is the way to find the parts that cause it.</li>
+            <li><span class="ui">Start screen</span> and <span class="ui">Offer the last file</span> control whether the start screen opens with a Resume button for the file you had last.</li>
+            <li><span class="ui">Splash screen</span> is the short splash with the version number. Switch it off if you would rather have the app fade straight in.</li>
+            <li><span class="ui">Warn before leaving with unsaved changes</span> is on by default. It asks before a window with unsaved edits is closed. Leave it on.</li>
+            <li><span class="ui">Undo history</span> is 50, 200 or 500 steps. A longer history uses more memory.</li>
           </ul>
-          <h2 id="undo">Undo</h2>
-          <p>Selecting changes nothing. The delete is one undo step: <kbd>Ctrl</kbd><kbd>Z</kbd> brings the copies back.</p>
+          <h2 id="6-learn-the-three-keys-that-find-everything">6. Learn the three keys that find everything</h2>
+          <dl class="kb-keys">
+            <div><dt><kbd>F1</kbd></dt><dd>The help window: every article of this knowledge base, with a search, and it works offline.</dd></div>
+            <div><dt><kbd>Ctrl</kbd><kbd>K</kbd></dt><dd>Search: every menu item and every control in the sidebars, with suggestions for what is selected.</dd></div>
+            <div><dt><kbd>?</kbd></dt><dd>The list of every keyboard shortcut.</dd></div>
+          </dl>
+          <h2 id="where-your-settings-are-kept">Where your settings are kept</h2>
+          <p>In your browser’s storage, on this computer, not in the app folder. That has three consequences:</p>
+          <ul class="kb-points">
+            <li>They survive an update of the app.</li>
+            <li>They are separate for each browser. The app window the launcher opens uses your usual browser profile, so an installed app in Chrome and a tab in Edge each have their own settings.</li>
+            <li>The folder can be deleted and unpacked again without losing them. See <a href="../docs/move-or-remove.html">Move, copy or remove the app</a>.</li>
+            <li>They belong to the address the app runs at. If the launcher ever has to choose another port than 4242, the browser treats it as a different site, and the settings seem to be gone. They come back when the app runs at its usual address again.</li>
+          </ul>
+          <p>The buttons under <span class="ui">Storage</span> clear each kind of remembered thing, one at a time: the list of recent files, file permissions, the “don’t ask again” import answers, panel sizes, or all settings at once.</p>
           <div class="kb-see"><h2>Related</h2><ul>
-            <li><a href="../docs/select-hidden-parts.html">Select hidden parts</a></li>
-            <li><a href="../docs/cleanup.html">Auto cleanup and Tidy geometry</a></li>
-            <li><a href="../docs/delete-small-parts.html">Delete small parts</a></li>
+            <li><a href="../docs/settings.html">Settings</a></li>
+            <li><a href="../docs/install-gltfpack.html">Add gltfpack for smaller files</a></li>
+            <li><a href="../docs/privacy-offline.html">Privacy and offline use</a></li>
             <li><a href="../docs/workflow.html">A sensible order to work in</a></li>
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">
-          <a class="is-before" href="../docs/fasteners.html"><span>Before</span><strong>Fasteners</strong></a>
-          <a class="is-after" href="../docs/fill-holes.html"><span>Next</span><strong>Fill holes</strong></a>
+          <a class="is-before" href="../docs/install-macos.html"><span>Before</span><strong>Install on macOS, step by step</strong></a>
+          <a class="is-after" href="../docs/install-gltfpack.html"><span>Next</span><strong>Add gltfpack for smaller files</strong></a>
         </nav>
       </article>
     </section>

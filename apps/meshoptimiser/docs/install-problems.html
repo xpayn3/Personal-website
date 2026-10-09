@@ -7,15 +7,15 @@
   <meta name="theme-color" content="#101010" />
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
-  <title>Words you will meet — MeshOptimiser Docs</title>
-  <meta name="description" content="A plain-language glossary: STEP, mesh, triangle, GLB, instancing, decimation, WebGPU, virtual environment and the other terms these pages use." />
+  <title>Install problems, message by message — MeshOptimiser Docs</title>
+  <meta name="description" content="Every message the launcher can print when the setup stops, what it means, and exactly what to do about it. Windows and macOS." />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
-  <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/glossary" />
+  <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/install-problems" />
   <meta property="og:site_name" content="MeshOptimiser" />
-  <meta property="og:title" content="Words you will meet — MeshOptimiser Docs" />
-  <meta property="og:description" content="A plain-language glossary: STEP, mesh, triangle, GLB, instancing, decimation, WebGPU, virtual environment and the other terms these pages use." />
+  <meta property="og:title" content="Install problems, message by message — MeshOptimiser Docs" />
+  <meta property="og:description" content="Every message the launcher can print when the setup stops, what it means, and exactly what to do about it. Windows and macOS." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
-  <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/glossary" />
+  <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/install-problems" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -50,7 +50,7 @@
         <a class="kb-nav-home" href="../docs.html">All docs</a>
         <h2>Start here</h2>
         <a href="../docs/what-it-is.html">What MeshOptimiser is</a>
-        <a href="../docs/glossary.html" aria-current="page">Words you will meet</a>
+        <a href="../docs/glossary.html">Words you will meet</a>
         <a href="../docs/requirements.html">What you need</a>
         <a href="../docs/download.html">Download and unzip</a>
         <a href="../docs/first-start.html">Start it the first time</a>
@@ -64,7 +64,7 @@
         <a href="../docs/install-gltfpack.html">Add gltfpack for smaller files</a>
         <a href="../docs/desktop-shortcut.html">Add a shortcut or an icon</a>
         <a href="../docs/move-or-remove.html">Move, copy or remove the app</a>
-        <a href="../docs/install-problems.html">Install problems, message by message</a>
+        <a href="../docs/install-problems.html" aria-current="page">Install problems, message by message</a>
         <h2>Find your way around</h2>
         <a href="../docs/the-window.html">The window</a>
         <a href="../docs/move-the-view.html">Move the view</a>
@@ -116,75 +116,60 @@
         <a href="../docs/self-test.html">Self-test</a>
       </nav>
       <article class="kb-article">
-        <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#start">Start here</a></p>
-        <h1>Words you will meet</h1>
-        <p class="lead">A plain-language glossary: STEP, mesh, triangle, GLB, instancing, decimation, WebGPU, virtual environment and the other terms these pages use.</p>
+        <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#install">Install and set up</a></p>
+        <h1>Install problems, message by message</h1>
+        <p class="lead">Every message the launcher can print when the setup stops, what it means, and exactly what to do about it. Windows and macOS.</p>
         <div class="kb-body">
-          <p>You do not need to learn these before you start. Come back to this page when a word is new.</p>
-          <h2 id="files-and-formats">Files and formats</h2>
+          <p>When the setup cannot go on, the launcher says why in plain words and stops. Find your message below. If none matches, run the launcher from a terminal so that the window stays open, and read the last lines. On Windows: open the app folder, click the address bar, type <code>cmd</code>, press <kbd>Enter</kbd>, then type <code>start.bat</code>. On a Mac: open Terminal, type <code>cd </code> and a space, drag the folder onto the window, press <kbd>Enter</kbd>, then type <code>./start.command</code>.</p>
+          <h2 id="python">Python</h2>
           <dl class="table">
-            <div><dt>CAD</dt><dd>Computer-aided design. The programs engineers use to design real objects, such as SolidWorks or NX.</dd></div>
-            <div><dt>STEP (.step, .stp)</dt><dd>A file format for exchanging CAD designs between programs. It stores exact surfaces, part names, colours and how the parts fit together.</dd></div>
-            <div><dt>GLB</dt><dd>A compact 3D file made of triangles, with colours and part names inside one file. Browsers and most 3D programs can open it. This is the format MeshOptimiser writes by default.</dd></div>
-            <div><dt>glTF</dt><dd>The same format as GLB, written as readable text. The app’s own format sheet describes it as the same capabilities, larger.</dd></div>
-            <div><dt>FBX, OBJ, STL, PLY, USDZ, 3MF</dt><dd>Other 3D file formats. <a href="../docs/file-formats.html">File formats</a> says what each one is for.</dd></div>
-            <div><dt>XCAF</dt><dd>The part of a STEP file that holds names, colours and the assembly tree. You see the word in the import settings.</dd></div>
+            <div><dt>“Python was not found on this PC”</dt><dd>Windows. Press <kbd>Y</kbd> to let the launcher install Python 3.12. If you press <kbd>N</kbd>, install Python 3.12 from <code>https://www.python.org/downloads/</code>, tick “Add Python to PATH”, close the window, and start again.</dd></div>
+            <div><dt>“Found Python 3.13, but MeshOptimiser needs Python 3.10, 3.11 or 3.12”</dt><dd>Your Python is too new for the CAD reader. Let the launcher install 3.12 next to it, or install 3.12 yourself. Both versions can stay.</dd></div>
+            <div><dt>“Auto-install failed”</dt><dd>Windows. Both ways of installing Python failed, usually for lack of an internet connection or because of a restriction on the computer. Install Python 3.12 by hand and start again.</dd></div>
+            <div><dt>“Python was installed but is not yet visible on PATH”</dt><dd>Windows. The install worked, but this window does not know yet. Close the launcher window, open the folder again, and double-click <code>start.bat</code> once more.</dd></div>
+            <div><dt>“python3 is not installed” or “Homebrew is available - installing Python 3.12”</dt><dd>macOS. The first means no Python was found and Homebrew is not there either: install Python 3.12 from python.org or install Homebrew, and start again. The second is the launcher doing it for you; wait for it.</dd></div>
+            <div><dt>“That did not give a usable Python”</dt><dd>macOS. Homebrew ran but there is still no supported Python. Install Python 3.12 from <code>https://www.python.org/downloads/</code> and double-click <code>start.command</code> again.</dd></div>
           </dl>
-          <h2 id="what-a-model-is-made-of">What a model is made of</h2>
+          <h2 id="the-python-environment">The Python environment</h2>
           <dl class="table">
-            <div><dt>Part</dt><dd>One piece of the model: a bolt, a cover, a bracket. Each part has a row in the parts tree.</dd></div>
-            <div><dt>Assembly</dt><dd>A model made of many parts, often arranged in groups inside groups.</dd></div>
-            <div><dt>Group</dt><dd>A folder in the parts tree. It holds parts or other groups.</dd></div>
-            <div><dt>Mesh</dt><dd>The surface of a part, built from many small flat triangles.</dd></div>
-            <div><dt>Triangle (tri)</dt><dd>The smallest piece of a mesh. The app counts everything in triangles: more triangles mean a heavier model.</dd></div>
-            <div><dt>Polygon</dt><dd>Another word for the flat pieces of a mesh. In this app it means the same as triangle.</dd></div>
-            <div><dt>Vertex</dt><dd>A corner point of a triangle. The plural is vertices.</dd></div>
-            <div><dt>Normal</dt><dd>A hidden arrow on the surface that tells the light which way the surface faces. Wrong normals make a part look oddly shaded.</dd></div>
-            <div><dt>Bounding box (bbox)</dt><dd>The smallest box that a part fits inside. The app uses it to measure how big a part is.</dd></div>
-            <div><dt>Origin and pivot</dt><dd>The origin is the point 0,0,0 of the scene. A pivot is the point a part turns around.</dd></div>
-            <div><dt>Material</dt><dd>What a surface looks like: its colour and how shiny or metallic it is. Many parts can share one material.</dd></div>
+            <div><dt>“Failed to create virtual environment”</dt><dd>The <code>venv</code> part of Python is missing, or the folder is not writable. Move the app folder to somewhere you may write to, such as Documents, and make sure a normal Python from python.org is installed.</dd></div>
+            <div><dt>“The Python environment in the .venv folder no longer works”</dt><dd>The Python it was made from has been removed or replaced. Delete the <code>.venv</code> folder and start again.</dd></div>
+            <div><dt>“The environment in the .venv folder was made with the Python above”</dt><dd>An older environment, made with a version outside 3.10 to 3.12. Delete the <code>.venv</code> folder and start again.</dd></div>
+            <div><dt>“Detected a non-macOS .venv (probably built on Windows). Rebuilding...”</dt><dd>Not a problem: the folder came from a Windows computer, and the launcher is making a new environment for the Mac.</dd></div>
+            <div><dt>“ModuleNotFoundError: No module named ‘OCP’”</dt><dd>The environment is incomplete. Delete the <code>.venv</code> folder and start again. The same goes for a missing <code>numpy</code> or <code>trimesh</code>.</dd></div>
           </dl>
-          <h2 id="what-the-app-does-to-a-model">What the app does to a model</h2>
+          <h2 id="downloading-the-add-ons">Downloading the add-ons</h2>
           <dl class="table">
-            <div><dt>Tessellation</dt><dd>Turning the exact curved surfaces of a CAD file into triangles. Finer tessellation means smoother curves and more triangles.</dd></div>
-            <div><dt>Instancing</dt><dd>Storing one mesh for a shape that repeats, plus the list of places where it sits. 400 identical bolts become one bolt and 400 positions.</dd></div>
-            <div><dt>Decimation</dt><dd>Removing triangles from a mesh while keeping its overall shape. It is lossy: detail that is removed does not come back, except through undo.</dd></div>
-            <div><dt>Lossy</dt><dd>An action that throws detail away to save size.</dd></div>
-            <div><dt>Compression</dt><dd>Packing the same data into a smaller file. Meshopt and Draco are two methods for 3D files.</dd></div>
-            <div><dt>Meshopt</dt><dd>A compression method for GLB files. The converter applies it through a separate tool called gltfpack, when that tool is installed.</dd></div>
-            <div><dt>Draco</dt><dd>Another compression method for GLB files. It is a switch in the Export window.</dd></div>
-            <div><dt>Scene</dt><dd>Everything in one tab of the app: the parts, their materials, the camera and the undo history.</dd></div>
-            <div><dt>BOM</dt><dd>Bill of materials: a parts list. The CSV export writes one.</dd></div>
+            <div><dt>“ERROR: pip install failed”</dt><dd>The add-ons could not be downloaded. Check your internet connection, check that Python is 3.10 to 3.12, and check that the drive has about 2 GB free. Then start again: the launcher picks up where it stopped.</dd></div>
+            <div><dt>Slow or stuck at “Installing dependencies”</dt><dd>The CAD reader is a large download. On a slow connection it takes longer than the three minutes mentioned. Let it finish. If nothing has moved for more than ten minutes, close the window, delete the <code>.venv</code> folder and start again.</dd></div>
+            <div><dt>A network that needs a proxy</dt><dd>The installer that downloads the add-ons (pip) reads the standard <code>HTTPS_PROXY</code> setting. In a terminal opened in the app folder, set it first, then run the launcher. On Windows: <code>set HTTPS_PROXY=http://your-proxy:port</code>. On a Mac: <code>export HTTPS_PROXY=http://your-proxy:port</code>. Your network administrator knows the address.</dd></div>
           </dl>
-          <h2 id="the-screen">The screen</h2>
+          <h2 id="the-app-does-not-open">The app does not open</h2>
           <dl class="table">
-            <div><dt>Viewport</dt><dd>The large 3D view in the middle of the window.</dd></div>
-            <div><dt>Parts tree</dt><dd>The list of parts and groups in the left sidebar.</dd></div>
-            <div><dt>Gizmo</dt><dd>The coloured arrows, rings or handles that appear on a selected part, for moving, rotating or scaling it.</dd></div>
-            <div><dt>Orbit, pan, zoom</dt><dd>Turning the view around the model, sliding it sideways, and moving closer or further away.</dd></div>
-            <div><dt>Isolate</dt><dd>Showing only the selected parts and hiding everything else for a moment.</dd></div>
-            <div><dt>Draw call</dt><dd>One instruction to the graphics card to draw something. Fewer draw calls usually mean a smoother view. The optimisation report counts them.</dd></div>
+            <div><dt>The window does not appear, but the launcher window says it is running</dt><dd>Look at the address in the launcher window and open it in a browser by hand. Normally <code>http://localhost:4242</code>.</dd></div>
+            <div><dt>The address is not localhost:4242</dt><dd>Something else on your computer was using that number, so the server picked another one. This is fine. The launcher prints the address it chose. You can also ask for a number yourself, from a terminal opened in the app folder: <code>./start.command --port 5000</code> on a Mac, <code>.venv\Scripts\python serve.py --port 5000</code> on Windows.</dd></div>
+            <div><dt>“Operation not permitted” on a Mac</dt><dd>Right-click <code>start.command</code>, choose <span class="ui">Open</span>, and confirm. Only needed once.</dd></div>
+            <div><dt>An empty page, or “This page needs a local server”</dt><dd>The page was opened straight from the file, or the server is not running. Start the app with its launcher. Do not open <code>index.html</code> by double-clicking it.</dd></div>
+            <div><dt>“MeshOptimiser stopped with an error”</dt><dd>Windows, when started with <code>start_hidden.vbs</code>. Double-click <code>start.bat</code> instead, which shows what went wrong.</dd></div>
           </dl>
-          <h2 id="the-technical-side">The technical side</h2>
+          <h2 id="starting-with-a-file">Starting with a file</h2>
           <dl class="table">
-            <div><dt>Python</dt><dd>A programming language. The converter and the small local server are written in it, so Python has to be installed.</dd></div>
-            <div><dt>Virtual environment (.venv)</dt><dd>A private folder of Python add-ons that belongs to this app only. The launcher creates it inside the app folder the first time, so nothing else on your computer is changed.</dd></div>
-            <div><dt>Terminal</dt><dd>A window where you type commands. On Windows it is called Command Prompt or PowerShell, on macOS it is called Terminal.</dd></div>
-            <div><dt>Local server</dt><dd>A small program on your own computer that hands the app’s pages to your browser. Its address is normally <code>http://localhost:4242</code>. Localhost means this computer.</dd></div>
-            <div><dt>PATH</dt><dd>The list of folders where your computer looks for programs. Python has to be on it for the launcher to find it.</dd></div>
-            <div><dt>WebGPU</dt><dd>The modern way for a browser to use the graphics card. The viewer uses it when the browser has it.</dd></div>
-            <div><dt>WebGL2</dt><dd>An older way to do the same. The viewer uses it when WebGPU is not available.</dd></div>
-            <div><dt>Installing the app (PWA)</dt><dd>Chrome and Edge can add a web page to your desktop and Start menu as if it were a program. A page that supports this is called a progressive web app, or PWA.</dd></div>
+            <div><dt>“ERROR: file not found”</dt><dd>The path you gave does not exist. Drag the file onto the launcher instead of typing the path.</dd></div>
+            <div><dt>“Unsupported file type”</dt><dd>Starting the app with a file works for <code>.step</code>, <code>.stp</code>, <code>.glb</code> and <code>.gltf</code>. Open the other formats from inside the app.</dd></div>
+            <div><dt>“keeps part of the model in separate files”</dt><dd>A <code>.gltf</code> that has its geometry or textures in files beside it cannot be handed over as one file. Save it as a single <code>.glb</code>, or open it from inside the app.</dd></div>
           </dl>
+          <h2 id="still-stuck">Still stuck?</h2>
+          <p>Report it at <code>https://github.com/xpayn3/MeshOptimiser/issues</code>. Say which system you use, which version of Python the launcher printed, and paste the last lines of the launcher window. See <a href="../docs/troubleshooting.html">Troubleshooting</a> for problems that come after the install, such as an empty 3D view or a slow conversion.</p>
           <div class="kb-see"><h2>Related</h2><ul>
-            <li><a href="../docs/what-it-is.html">What MeshOptimiser is</a></li>
-            <li><a href="../docs/file-formats.html">File formats</a></li>
-            <li><a href="../docs/read-the-numbers.html">How to read the numbers</a></li>
+            <li><a href="../docs/install-windows.html">Install on Windows, step by step</a></li>
+            <li><a href="../docs/install-macos.html">Install on macOS, step by step</a></li>
+            <li><a href="../docs/requirements.html">What you need</a></li>
+            <li><a href="../docs/troubleshooting.html">Troubleshooting</a></li>
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">
-          <a class="is-before" href="../docs/what-it-is.html"><span>Before</span><strong>What MeshOptimiser is</strong></a>
-          <a class="is-after" href="../docs/requirements.html"><span>Next</span><strong>What you need</strong></a>
+          <a class="is-before" href="../docs/move-or-remove.html"><span>Before</span><strong>Move, copy or remove the app</strong></a>
+          <a class="is-after" href="../docs/the-window.html"><span>Next</span><strong>The window</strong></a>
         </nav>
       </article>
     </section>

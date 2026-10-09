@@ -7,15 +7,15 @@
   <meta name="theme-color" content="#101010" />
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
-  <title>Stacked copies — MeshOptimiser Docs</title>
-  <meta name="description" content="Find parts that sit exactly on top of an identical copy of themselves, drawn twice, and remove the extra ones." />
+  <title>Quick wand — MeshOptimiser Docs</title>
+  <meta name="description" content="Hold W and a ring of commands opens under the pointer. Flick toward one and let go." />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
-  <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/stacked-copies" />
+  <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/quick-wand" />
   <meta property="og:site_name" content="MeshOptimiser" />
-  <meta property="og:title" content="Stacked copies — MeshOptimiser Docs" />
-  <meta property="og:description" content="Find parts that sit exactly on top of an identical copy of themselves, drawn twice, and remove the extra ones." />
+  <meta property="og:title" content="Quick wand — MeshOptimiser Docs" />
+  <meta property="og:description" content="Hold W and a ring of commands opens under the pointer. Flick toward one and let go." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
-  <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/stacked-copies" />
+  <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/quick-wand" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -72,7 +72,7 @@
         <a href="../docs/hide-isolate.html">Hide, isolate, show all</a>
         <a href="../docs/parts-tree.html">The parts tree</a>
         <a href="../docs/search-and-commands.html">Search and commands</a>
-        <a href="../docs/quick-wand.html">Quick wand</a>
+        <a href="../docs/quick-wand.html" aria-current="page">Quick wand</a>
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
@@ -84,7 +84,7 @@
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
         <a href="../docs/fasteners.html">Fasteners</a>
-        <a href="../docs/stacked-copies.html" aria-current="page">Stacked copies</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -116,43 +116,60 @@
         <a href="../docs/self-test.html">Self-test</a>
       </nav>
       <article class="kb-article">
-        <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#lighter">Make it lighter</a></p>
-        <h1>Stacked copies</h1>
-        <p class="lead">Find parts that sit exactly on top of an identical copy of themselves, drawn twice, and remove the extra ones.</p>
+        <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#around">Find your way around</a></p>
+        <h1>Quick wand</h1>
+        <p class="lead">Hold W and a ring of commands opens under the pointer. Flick toward one and let go.</p>
         <div class="kb-body">
-          <p>Some files hold the same part twice, in the same place. From a distance nothing looks wrong. But the two surfaces lie on each other, so the screen flickers where they meet, because the graphics card cannot tell which one is in front. And the triangles are stored and drawn twice. Stacked copies finds these parts and keeps one of each.</p>
-          <p>Ten identical bolts in ten different places are not stacked copies. Only parts in the same place count.</p>
-          <h2 id="open-the-card">Open the card</h2>
-          <p>Press <kbd>Ctrl</kbd><kbd>K</kbd> to open the search, type <code>stacked</code>, and choose <span class="ui">Find stacked copies…</span>. The card opens over the viewport, at the bottom left, like <a href="../docs/split.html">Split</a> and <a href="../docs/fill-holes.html">Fill holes</a>. <kbd>Esc</kbd> puts it away.</p>
-          <h2 id="steps">Steps</h2>
+          <p>The Quick wand puts the commands you use most under your hand, so you do not have to go to a button. Hold <kbd>W</kbd> with the pointer over the viewport and a ring opens around the pointer. Move toward a slice and let go of <kbd>W</kbd>. That runs it.</p>
+          <p>Only the direction counts, not the distance, so a short flick is enough. The slices are always in the same places, so after a while your hand knows where Hide is without looking.</p>
+          <h2 id="hold-flick-let-go">Hold, flick, let go</h2>
           <ol class="kb-steps">
-            <li>Open the card <span class="ui">Stacked copies</span> as above.</li>
-            <li>Set <span class="ui">Same place within</span>. The slider goes from 0 to 5 percent of the part’s size, and starts at 0.5. At 0 the parts must lie almost exactly on each other. A higher value also accepts copies that are a little off.</li>
-            <li>Switch on <span class="ui">Also near copies</span> if the copies may differ a little. Off, two parts count as copies only when they have the same number of triangles. On, the number may differ by up to a quarter, as with another export of the same part, or a copy that was rebuilt with a different mesh.</li>
-            <li>Press <span class="ui">Find stacked copies</span>.</li>
-            <li>The extra copies are selected, and a line says how many, for example “6 extra copies of 6 parts selected; the first of each is kept”. The part that was loaded first stays. If there are none, it says “No stacked copies found”.</li>
-            <li>Press <span class="ui">Isolate</span> to look at the extra copies on their own. Check them.</li>
-            <li>Press <span class="ui">Delete</span> to remove them.</li>
+            <li>Put the pointer over the viewport and hold <kbd>W</kbd>. The ring opens around the pointer.</li>
+            <li>Move the pointer toward a slice. It lights up.</li>
+            <li>Let go of <kbd>W</kbd>. The command runs.</li>
           </ol>
-          <aside class="kb-note"><p>The command only selects. Nothing is deleted until you press <span class="ui">Delete</span>.</p></aside>
-          <h2 id="good-to-know">Good to know</h2>
+          <p>To change your mind, let go with the pointer in the middle of the ring, or press <kbd>Esc</kbd>. Nothing happens.</p>
+          <h2 id="with-something-selected">With something selected</h2>
+          <p>The ring works on the selection, and has four slices.</p>
+          <dl class="table">
+            <div><dt>Hide</dt><dd>Hides the selected parts.</dd></div>
+            <div><dt>Reduce</dt><dd>Opens a fan of commands: Decimate −50 %, −25 %, −75 % and −90 % (each shows how many triangles there are before and after), Smart fit, Split and Fill holes.</dd></div>
+            <div><dt>Delete</dt><dd>Deletes the selection. It is red, so it is hard to pick by mistake.</dd></div>
+            <div><dt>More</dt><dd>Opens a fan of commands: Isolate, Select similar, Select same colour, Group, Duplicate, Merge, Frame, Hide others and Show all.</dd></div>
+          </dl>
+          <h2 id="with-nothing-selected">With nothing selected</h2>
+          <p>The ring works on the whole scene, and has six slices.</p>
+          <dl class="table">
+            <div><dt>Fit view</dt><dd>Zooms to the whole model.</dd></div>
+            <div><dt>Select all</dt><dd>Selects every part.</dd></div>
+            <div><dt>View</dt><dd>Opens a fan of commands: Camera, Top, Front and Side views, Solid, Wireframe and X-ray, and the ground grid.</dd></div>
+            <div><dt>Show all</dt><dd>Shows every hidden part.</dd></div>
+            <div><dt>File</dt><dd>Opens a fan of commands: Save screenshot, Save scene and Revert to source file.</dd></div>
+            <div><dt>Clean</dt><dd>Opens a fan of commands: Recentre on origin, Align to the floor, Smart fit all parts, Remove empty parts, Deduplicate geometry and Fix degenerate parts.</dd></div>
+          </dl>
+          <h2 id="the-fans">The fans</h2>
+          <p>A slice that holds a group opens its fan as soon as the pointer is on it. Keep going outward onto a command and let go. You can head straight for a command: the ring remembers which group you were going for, so it does not turn into another slice on the way.</p>
+          <p>Every command shows its shortcut. A command that cannot run right now stays on the ring, dimmed, and says why: “Nothing is hidden”, “Select two or more parts” or “Too few triangles to take away”.</p>
+          <h2 id="tap-instead-of-hold">Tap instead of hold</h2>
+          <p>A quick tap of <kbd>W</kbd> leaves the ring open. Click a slice or a command to run it. Press <kbd>W</kbd> or <kbd>Esc</kbd> to close it. The same thing is in the command palette: press <kbd>Ctrl</kbd><kbd>K</kbd> and type “wand”.</p>
+          <h2 id="it-will-not-act-by-accident">It will not act by accident</h2>
           <ul class="kb-points">
-            <li>Hidden parts are not looked at. Show all parts first (<kbd>Alt</kbd><kbd>H</kbd>).</li>
-            <li>The card remembers <span class="ui">Same place within</span> and <span class="ui">Also near copies</span> for next time.</li>
-            <li>Faces that lie exactly on each other still flicker in the viewport. This card is the way to find the parts that cause it.</li>
+            <li>Esc, any other key, the scroll wheel, a click outside the ring, a window that loses focus and a resize all close it without running anything.</li>
+            <li>It does not open while a mouse button is down (when you are orbiting or dragging a gizmo), in a text field, behind a dialog, or when the pointer is not over the viewport.</li>
+            <li>The right-click menu does not open on top of it.</li>
+            <li>The ring stays inside the window, however close to the edge you are.</li>
           </ul>
-          <h2 id="undo">Undo</h2>
-          <p>Selecting changes nothing. The delete is one undo step: <kbd>Ctrl</kbd><kbd>Z</kbd> brings the copies back.</p>
+          <aside class="kb-note"><p>What a command does is what it does anywhere else, and the same Undo takes it back.</p></aside>
           <div class="kb-see"><h2>Related</h2><ul>
-            <li><a href="../docs/select-hidden-parts.html">Select hidden parts</a></li>
-            <li><a href="../docs/cleanup.html">Auto cleanup and Tidy geometry</a></li>
-            <li><a href="../docs/delete-small-parts.html">Delete small parts</a></li>
-            <li><a href="../docs/workflow.html">A sensible order to work in</a></li>
+            <li><a href="../docs/hide-isolate.html">Hide, isolate, show all</a></li>
+            <li><a href="../docs/select-parts.html">Select parts</a></li>
+            <li><a href="../docs/search-and-commands.html">Search and commands</a></li>
+            <li><a href="../docs/shortcuts.html">Keyboard shortcuts</a></li>
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">
-          <a class="is-before" href="../docs/fasteners.html"><span>Before</span><strong>Fasteners</strong></a>
-          <a class="is-after" href="../docs/fill-holes.html"><span>Next</span><strong>Fill holes</strong></a>
+          <a class="is-before" href="../docs/search-and-commands.html"><span>Before</span><strong>Search and commands</strong></a>
+          <a class="is-after" href="../docs/undo-redo.html"><span>Next</span><strong>Undo and redo</strong></a>
         </nav>
       </article>
     </section>

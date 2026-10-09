@@ -85,6 +85,19 @@ window.labApps = [
     ],
     site: {
       path: 'apps/meshoptimiser/',
+      // the Quick wand on the page (see wandDemo in tools/build-app-site.js): the app's own ring on three parts
+      wand: {
+        kicker: 'Try it',
+        title: 'The commands come to you.',
+        line: 'This is the app’s Quick wand, on three parts of a rear derailleur. Hold W with the pointer over the stage, or press and hold with the mouse or a finger. Flick toward a slice and let go. Click a part to select it, and the ring changes to work on it.',
+        tips: [
+          ['Hold W', 'The ring opens round the pointer. Move toward a slice and let go to run it.'],
+          ['Press and hold', 'The same with a mouse button or a finger, for when there is no keyboard.'],
+          ['Tap W', 'A quick tap leaves the ring open. Click a command to run it.'],
+          ['Esc', 'Closes it and runs nothing. So does letting go in the middle.'],
+        ],
+        parts: [['Cage plate', 165071], ['Upper pulley', 109430], ['Pivot bolt M5', 4812]],
+      },
       // the search on the page (see searchDemo in tools/build-app-site.js): [name, shortcut / note, detail]
       demo: {
         kicker: 'Try it',
@@ -254,7 +267,7 @@ window.labApps = [
       ['Select hidden parts', 'Screws, bearings and brackets inside a housing light up: everything you can’t see from outside.', 'Images/apps/meshoptimiser-clip-select-hidden.webm', 'select-hidden-parts'],
       ['Smart fit', 'A dense part becomes a box, a cylinder, a few boxes or blocks that keep its outline.', 'Images/apps/meshoptimiser-clip-smart-fit.webm', 'smart-fit'],
     ],
-    stats: [['Version', '0.14.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
+    stats: [['Version', '0.15.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
     about: [
       'A tool for getting heavy CAD assemblies into the browser.',
       'The problem is a practical one. A real STEP file can hold 400 identical bolts, 80 duplicate brackets and half a million broken triangles, and a browser is still expected to draw it. MeshOptimiser reads the assembly, spots the parts that are the same and keeps one mesh with a list of positions, rebuilds the bad geometry, and drops what’s too small to see.',
@@ -286,6 +299,7 @@ window.labApps = [
         ['Dark parts you can still read', 'A studio to reflect on plain backgrounds and a headlight that follows the view, so black parts keep an edge and a sheen.'],
         ['Click what you see', 'Hover, click and box-select work on the parts you see, copies included.'],
         ['Hide, isolate, solo', 'One key each, to cut the noise and focus.'],
+        ['Quick wand (W)', 'Hold W over the model and a ring of commands opens under the pointer. Flick toward one and let go. It works on the selection, or on the whole scene when nothing is selected.'],
         ['Recolour', 'By group, by material or per part, with a reset.'],
         ['Six ways to see it', 'Solid, wireframe, x-ray, heatmap, clay and CAD. Clay shows every part in one plain material. CAD shades by which way a face looks, with a dark line on every sharp edge.'],
         ['A Shading card with every look', 'Default, Clay, Porcelain, Steel and Red wax, and the CAD looks Ceramic, Light and Mono, each as a small 3D nut. One switch draws the outlines in every view.'],
@@ -302,6 +316,11 @@ window.labApps = [
         ['Fit to budget', 'Give it a triangle count for the whole scene and it reduces the heaviest meshes first, with a preview.'],
         ['Align to floor', 'Stands a model that arrived on its side on the grid. A small 3D drawing shows what it will do, and nothing moves until you press the button.'],
         ['Delete small parts', 'Removes parts too small to see, plus empty, duplicate and broken ones.'],
+        ['Repair mesh', 'Joins doubled vertices, removes empty and doubled triangles, and turns faces so that neighbours agree which side is out.'],
+        ['Remove hidden faces', 'Looks at each part from many sides and deletes the faces that never show: the inside of a housing, the faces where two parts press together.'],
+        ['Merge by material or group', 'One mesh per material, or one per group. A merged mesh keeps its material.'],
+        ['Select by rule', 'Pick parts by name, material, group, triangles, size, or whether they are shown, flagged or instanced, and see how many fit as you type.'],
+        ['Untriangulate', 'Turns neighbouring flat triangles into one polygon and cuts it again with the fewest triangles. The shape does not change: a flat plate of 200 triangles becomes 38.'],
         ['What it saved', 'Every action shows the triangles it removed, and every part remembers what it arrived with.'],
       ] },
       { title: 'The part tree', items: [
@@ -317,7 +336,7 @@ window.labApps = [
         ['A library of 86 parts', 'Bolts, nuts, pipe fittings, profiles, gears and a stepper motor. Look at one, change its size, then drag it in.'],
         ['A bolt with its own nut', 'The nut is part of the bolt, so it moves and undoes with it.'],
         ['Exploded view', 'Pull the parts apart with one slider, choose the axes with three pills, and fine-tune each axis.'],
-        ['Dynamic place (D)', 'Drag the selected part over other surfaces: it rests on them and turns to face them, like dragging a part out of a library onto a model.'],
+        ['Dynamic place (D)', 'Drag the selected part over other surfaces: it rests on them and turns to face them, like dragging a part out of a library onto a model. A small cube on top of the part scales it: drag it up or down.'],
         ['Measure', 'Click two points. The measurements stay in a list and can be picked again.'],
       ] },
       { title: 'Export', items: [
@@ -353,7 +372,19 @@ window.labApps = [
     changelog: {
       link: 'https://github.com/xpayn3/MeshOptimiser/blob/main/CHANGELOG.md',
       versions: [
-        { version: '0.14.0', fixes: 72, date: '8 Oct 2026 · 23:50', latest: true,
+        { version: '0.15.0', date: '9 Oct 2026 · 02:07', latest: true,
+          summary: 'The commands come to the pointer. Hold W and a ring of commands opens under it. The rest is about making a model lighter without breaking it: a repair, a way to remove the faces nobody sees, merging and selecting by rule, Untriangulate, a wireframe that shows polygons, and a simplifier that now looks after normals, UVs and colours.',
+          items: [
+            ['New', 'Quick wand (hold W). A ring of commands opens round the pointer; move toward a slice and let go of W. Only the direction counts, so a short flick is enough. With a selection it has Hide, Reduce, Delete and More; with nothing selected it has Fit view, Select all, View, Show all, File and Clean. A slice that holds a group fans out when the pointer is on it (Decimate −25 % to −90 %, Smart fit, Split and Fill holes; the views; Save; the clean-ups). A command that cannot run stays on the ring, dimmed, and says why. A quick tap of W leaves the ring open to click; Esc, any other key, the wheel or a click outside closes it, and it never runs anything by accident. You can try it on the home page.'],
+            ['New', 'Repair mesh joins doubled vertices, removes empty and doubled triangles and turns faces so that neighbours agree which side is out. Remove hidden faces looks at each part from many sides and deletes the faces that never show: the inside of a housing, the faces where two parts press together. Both undo in one step.'],
+            ['New', 'Merge by material or by group joins parts into one mesh per material or per group. Select by rule picks parts by name, material, group, triangles and size, or by whether they are shown, flagged, instanced or selected, and says how many fit as you type.'],
+            ['New', 'Untriangulate turns neighbouring flat triangles into one polygon and cuts it again with the fewest triangles, without changing the shape: a flat plate of 200 triangles becomes 38. Wireframe is now the solid surfaces with a thin black line on every edge, drawn as Triangles, Polygons or Outline.'],
+            ['New', 'Decimate and Fit to budget now weigh normals, UVs and vertex colours, so a crease or a UV seam is not flattened as readily as a smooth patch. The report shows an estimate of how far the surfaces moved.'],
+            ['New', 'Dynamic place has a scale handle: a small cube on top of the part. Drag it up to grow the part, down to shrink it, with a see-through ghost of the old size behind.'],
+            ['Polish', 'The animations at the top of the Help cards are redrawn so that they match, with one lighting and the accent blue for what is selected. The sidebar drag handles sit on the status-bar row.'],
+          ],
+        },
+        { version: '0.14.0', fixes: 72, date: '8 Oct 2026 · 23:50',
           summary: 'The biggest release so far. A CAD view and a Shading card, Dynamic place, an Align to floor that shows what it will do, Help inside the app, a Settings window that can change the look of the interface, a rebuilt Export window, and three tools that clean a scene up for you. I also read the whole code base, tested it hard on assemblies with thousands of parts and fixed 72 things, most of them in the places you only notice when they go wrong: undo, exports and big files. Opening a big model is faster, too.',
           items: [
             ['New', 'A CAD view (key 6) and a Shading card. The CAD view has no lights or reflections: every surface is shaded by which way it faces the camera, with a dark line on every sharp edge. The card under Properties holds every look as a small 3D nut: Default, Clay, Porcelain, Steel and Red wax, and the CAD looks Ceramic, Light and Mono. One Outlines switch draws the edge lines in every view.'],

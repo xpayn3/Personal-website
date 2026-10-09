@@ -7,15 +7,15 @@
   <meta name="theme-color" content="#101010" />
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
-  <title>Stacked copies — MeshOptimiser Docs</title>
-  <meta name="description" content="Find parts that sit exactly on top of an identical copy of themselves, drawn twice, and remove the extra ones." />
+  <title>Add a shortcut or an icon — MeshOptimiser Docs</title>
+  <meta name="description" content="Start the app from the desktop, the Start menu or the Dock instead of opening the folder every time. Windows and macOS, with and without the launcher window." />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
-  <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/stacked-copies" />
+  <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/desktop-shortcut" />
   <meta property="og:site_name" content="MeshOptimiser" />
-  <meta property="og:title" content="Stacked copies — MeshOptimiser Docs" />
-  <meta property="og:description" content="Find parts that sit exactly on top of an identical copy of themselves, drawn twice, and remove the extra ones." />
+  <meta property="og:title" content="Add a shortcut or an icon — MeshOptimiser Docs" />
+  <meta property="og:description" content="Start the app from the desktop, the Start menu or the Dock instead of opening the folder every time. Windows and macOS, with and without the launcher window." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
-  <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/stacked-copies" />
+  <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/desktop-shortcut" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -62,7 +62,7 @@
         <a href="../docs/install-macos.html">Install on macOS, step by step</a>
         <a href="../docs/setup-first-session.html">Set it up after installing</a>
         <a href="../docs/install-gltfpack.html">Add gltfpack for smaller files</a>
-        <a href="../docs/desktop-shortcut.html">Add a shortcut or an icon</a>
+        <a href="../docs/desktop-shortcut.html" aria-current="page">Add a shortcut or an icon</a>
         <a href="../docs/move-or-remove.html">Move, copy or remove the app</a>
         <a href="../docs/install-problems.html">Install problems, message by message</a>
         <h2>Find your way around</h2>
@@ -84,7 +84,7 @@
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
         <a href="../docs/fasteners.html">Fasteners</a>
-        <a href="../docs/stacked-copies.html" aria-current="page">Stacked copies</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -116,43 +116,43 @@
         <a href="../docs/self-test.html">Self-test</a>
       </nav>
       <article class="kb-article">
-        <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#lighter">Make it lighter</a></p>
-        <h1>Stacked copies</h1>
-        <p class="lead">Find parts that sit exactly on top of an identical copy of themselves, drawn twice, and remove the extra ones.</p>
+        <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#install">Install and set up</a></p>
+        <h1>Add a shortcut or an icon</h1>
+        <p class="lead">Start the app from the desktop, the Start menu or the Dock instead of opening the folder every time. Windows and macOS, with and without the launcher window.</p>
         <div class="kb-body">
-          <p>Some files hold the same part twice, in the same place. From a distance nothing looks wrong. But the two surfaces lie on each other, so the screen flickers where they meet, because the graphics card cannot tell which one is in front. And the triangles are stored and drawn twice. Stacked copies finds these parts and keeps one of each.</p>
-          <p>Ten identical bolts in ten different places are not stacked copies. Only parts in the same place count.</p>
-          <h2 id="open-the-card">Open the card</h2>
-          <p>Press <kbd>Ctrl</kbd><kbd>K</kbd> to open the search, type <code>stacked</code>, and choose <span class="ui">Find stacked copies…</span>. The card opens over the viewport, at the bottom left, like <a href="../docs/split.html">Split</a> and <a href="../docs/fill-holes.html">Fill holes</a>. <kbd>Esc</kbd> puts it away.</p>
-          <h2 id="steps">Steps</h2>
+          <p>You start the app by running its launcher, which lives in the app folder. A shortcut saves you opening the folder. Make the shortcut to the launcher, not a copy of the launcher: the launcher finds everything relative to its own folder, so it has to stay where it is.</p>
+          <h2 id="windows">Windows</h2>
+          <p>There are two launchers. <code>start.bat</code> shows its black window, which is useful when you want to see what is happening. <code>start_hidden.vbs</code> does the same without the black window, so only the app opens. The first time, when the Python environment does not exist yet, even <code>start_hidden.vbs</code> shows a normal window, because that run asks questions and takes minutes.</p>
           <ol class="kb-steps">
-            <li>Open the card <span class="ui">Stacked copies</span> as above.</li>
-            <li>Set <span class="ui">Same place within</span>. The slider goes from 0 to 5 percent of the part’s size, and starts at 0.5. At 0 the parts must lie almost exactly on each other. A higher value also accepts copies that are a little off.</li>
-            <li>Switch on <span class="ui">Also near copies</span> if the copies may differ a little. Off, two parts count as copies only when they have the same number of triangles. On, the number may differ by up to a quarter, as with another export of the same part, or a copy that was rebuilt with a different mesh.</li>
-            <li>Press <span class="ui">Find stacked copies</span>.</li>
-            <li>The extra copies are selected, and a line says how many, for example “6 extra copies of 6 parts selected; the first of each is kept”. The part that was loaded first stays. If there are none, it says “No stacked copies found”.</li>
-            <li>Press <span class="ui">Isolate</span> to look at the extra copies on their own. Check them.</li>
-            <li>Press <span class="ui">Delete</span> to remove them.</li>
+            <li>Open the app folder in File Explorer.</li>
+            <li>Right-click <code>start_hidden.vbs</code> (or <code>start.bat</code>) and choose <span class="ui">Show more options</span> if you are on Windows 11, then <span class="ui">Send to</span>, then <span class="ui">Desktop (create shortcut)</span>.</li>
+            <li>Optional: give it the app’s icon. Right-click the new shortcut, choose <span class="ui">Properties</span>, then <span class="ui">Change Icon…</span>, <span class="ui">Browse…</span>, and pick <code>start.ico</code> from the app folder.</li>
+            <li>Optional: rename the shortcut to “MeshOptimiser”.</li>
+            <li>Optional: right-click the shortcut and choose <span class="ui">Pin to Start</span>.</li>
           </ol>
-          <aside class="kb-note"><p>The command only selects. Nothing is deleted until you press <span class="ui">Delete</span>.</p></aside>
-          <h2 id="good-to-know">Good to know</h2>
-          <ul class="kb-points">
-            <li>Hidden parts are not looked at. Show all parts first (<kbd>Alt</kbd><kbd>H</kbd>).</li>
-            <li>The card remembers <span class="ui">Same place within</span> and <span class="ui">Also near copies</span> for next time.</li>
-            <li>Faces that lie exactly on each other still flicker in the viewport. This card is the way to find the parts that cause it.</li>
-          </ul>
-          <h2 id="undo">Undo</h2>
-          <p>Selecting changes nothing. The delete is one undo step: <kbd>Ctrl</kbd><kbd>Z</kbd> brings the copies back.</p>
+          <aside class="kb-note"><p>With <code>start_hidden.vbs</code>, if something goes wrong the app shows a message that MeshOptimiser stopped with an error and asks you to double-click <code>start.bat</code> to see what happened. That is the cue to use the visible launcher.</p></aside>
+          <h2 id="macos">macOS</h2>
+          <ol class="kb-steps">
+            <li>Open the app folder in Finder.</li>
+            <li>Click <code>start.command</code> once, then choose <span class="ui">File</span>, <span class="ui">Make Alias</span>. An alias is a shortcut that points to the original.</li>
+            <li>Drag the alias to the Desktop, and rename it if you like.</li>
+            <li>To keep it in the Dock, drag the alias onto the right-hand end of the Dock, next to the Trash. It sits there as a file.</li>
+          </ol>
+          <p>On a Mac the launcher opens a Terminal window and keeps it open. To avoid seeing it, minimise it. Closing it stops the app.</p>
+          <h2 id="the-installed-app-icon-as-well">The installed-app icon, as well</h2>
+          <p>Chrome and Edge can install the page as an app of its own, with its own icon in the Start menu or Dock. That icon opens a window onto the local server, so the server still has to be started first. The shortcut above is what starts the server. See <a href="../docs/install-as-app.html">Install it as an app window</a>.</p>
+          <h2 id="start-with-a-file">Start with a file</h2>
+          <p>On Windows, drag a <code>.step</code>, <code>.stp</code>, <code>.glb</code> or <code>.gltf</code> file onto <code>start.bat</code> or onto a shortcut to it, and the app starts with that file open. On a Mac, give <code>start.command</code> the file name in the Terminal. See <a href="../docs/first-start.html">Start it the first time</a>.</p>
           <div class="kb-see"><h2>Related</h2><ul>
-            <li><a href="../docs/select-hidden-parts.html">Select hidden parts</a></li>
-            <li><a href="../docs/cleanup.html">Auto cleanup and Tidy geometry</a></li>
-            <li><a href="../docs/delete-small-parts.html">Delete small parts</a></li>
-            <li><a href="../docs/workflow.html">A sensible order to work in</a></li>
+            <li><a href="../docs/install-as-app.html">Install it as an app window</a></li>
+            <li><a href="../docs/first-start.html">Start it the first time</a></li>
+            <li><a href="../docs/stop-restart-update.html">Stop, restart and update</a></li>
+            <li><a href="../docs/files-in-folder.html">Files in the folder</a></li>
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">
-          <a class="is-before" href="../docs/fasteners.html"><span>Before</span><strong>Fasteners</strong></a>
-          <a class="is-after" href="../docs/fill-holes.html"><span>Next</span><strong>Fill holes</strong></a>
+          <a class="is-before" href="../docs/install-gltfpack.html"><span>Before</span><strong>Add gltfpack for smaller files</strong></a>
+          <a class="is-after" href="../docs/move-or-remove.html"><span>Next</span><strong>Move, copy or remove the app</strong></a>
         </nav>
       </article>
     </section>

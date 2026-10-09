@@ -2,7 +2,7 @@
 // The few things the app's site (apps/meshoptimiser/*.html) does beyond
 // being read: the menu on a phone, the paged strip of screenshots,
 // pictures that open full size, clips that play while they are on screen,
-// commands that copy, and the search of the docs. Look: site.css.
+// commands that copy, the search of the docs, and the Quick wand demo. Look: site.css.
 // Nothing here runs while the page is idle.
 (function () {
   const $ = (sel, root) => (root || document).querySelector(sel);
@@ -478,6 +478,242 @@
     list.addEventListener('mousemove', (e) => { const row = e.target.closest('.pal-r'); if (row && +row.dataset.i !== at) { at = +row.dataset.i; mark_on(); } });
     list.addEventListener('click', (e) => { const row = e.target.closest('.pal-r,.pal-sum'); if (!row) return; if (row.dataset.i) { at = +row.dataset.i; mark_on(); } run(row.dataset.i ? at : 0); });
     draw();
+  });
+
+  // ---- the Quick wand, working ----
+  // The app's ring, on three parts. Hold W over the stage (or press and hold
+  // with a mouse or a finger): a ring opens round the pointer. Move toward a
+  // slice and let go to run it; a slice that holds a group fans its commands
+  // out. A quick tap of W leaves the ring open to click. Esc, any other key,
+  // the wheel or a lost focus closes it and runs nothing. The shapes are the
+  // app's (see _Wand in its app-v2.js): the numbers below are the same.
+  $$('[data-wand]').forEach((demo) => {
+    const stage = $('[data-wand-stage]', demo), out = $('[data-wand-out]', demo);
+    const parts = JSON.parse($('[data-wand-data]', demo).textContent).parts.map(([name, tris], i) => ({ name, orig: tris, tris, el: $$('.wand-part', stage)[i], hidden: false, gone: false, on: false }));
+    const fmt = (n) => n.toLocaleString('en-US');
+    const R_IN = 31, R_OUT = 82, F_IN = 89, F_OUT = 122, DEAD = 16, V = F_OUT + 24, R_ICON = (R_IN + R_OUT) / 2;
+    let isolated = false, view = 'solid', root = null, open = false, sticky = false, viaPointer = false;
+    let startedAt = 0, moved = false, ox = 0, oy = 0, px = 0, py = 0, lastX = 0, lastY = 0, over = false, closedAt = -1e9;
+    let slots = [], slice = 90, hot = -1, sub = -1, fanFor = -1, entryD = 0, committed = false, hold = null;
+    const live = () => parts.filter((p) => !p.gone), sel = () => live().filter((p) => p.on);
+    const say = (text) => { out.textContent = text; };
+    const names = (a) => (a.length === 1 ? a[0].name : a.length + ' parts');
+    const paint = () => {
+      parts.forEach((p) => {
+        const away = p.gone || p.hidden;
+        p.el.classList.toggle('is-hidden', away);
+        p.el.classList.toggle('is-selected', p.on && !away);
+        $('.wp-label', p.el).textContent = fmt(p.tris) + ' triangles' + (p.tris < p.orig ? ' · −' + Math.round((1 - p.tris / p.orig) * 100) + ' %' : '');
+      });
+      stage.classList.toggle('v-wire', view === 'wire');
+      stage.classList.toggle('v-xray', view === 'xray');
+    };
+    const reset = () => {
+      parts.forEach((p) => { p.tris = p.orig; p.hidden = p.gone = p.on = false; });
+      isolated = false; view = 'solid';
+      paint(); say('Hold W over the stage, or press and hold. Click a part to select it first, and the ring changes.');
+    };
+
+    // what the commands do to the three parts
+    const cmd = {
+      hide: () => { const a = sel(); a.forEach((p) => { p.hidden = true; p.on = false; }); say('Hid ' + names(a) + '.'); },
+      del: () => { const a = sel(); a.forEach((p) => { p.gone = true; p.on = false; }); say('Deleted ' + names(a) + '.'); },
+      dec: (v) => () => {
+        const a = sel(); a.forEach((p) => { p.tris = Math.max(12, Math.round(p.tris * (1 - v))); });
+        say('Decimate −' + Math.round(v * 100) + ' %: ' + a.map((p) => p.name + ' is now ' + fmt(p.tris)).join(', ') + ' triangles.');
+      },
+      isolate: () => { const a = sel(); live().forEach((p) => { if (!p.on) p.hidden = true; }); isolated = true; say('Isolated ' + names(a) + '.'); },
+      others: () => { live().forEach((p) => { if (!p.on) p.hidden = true; }); say('Hid everything that was not selected.'); },
+      showAll: () => { parts.forEach((p) => { p.hidden = false; }); isolated = false; say('Every part is shown.'); },
+      selAll: () => { live().forEach((p) => { p.on = !p.hidden; }); say('Selected ' + sel().length + ' parts.'); },
+      view: (m, label) => () => { view = m; say(label + '.'); },
+    };
+    // what is on the ring: with a selection it works on that, with none on the whole scene; what cannot run stays, dimmed
+    const layout = () => {
+      const a = sel(), anyHidden = live().some((p) => p.hidden);
+      const showAll = { label: 'Show all', right: 'Alt+H', off: anyHidden ? false : 'Nothing is hidden', fn: cmd.showAll };
+      if (a.length) {
+        const total = a.reduce((n, p) => n + p.tris, 0), none = total < 12 ? 'Too few triangles to take away' : false;
+        const dec = (v) => ({ label: 'Decimate −' + Math.round(v * 100) + ' %', right: fmt(total) + ' → ' + fmt(Math.round(total * (1 - v))), off: none, fn: cmd.dec(v) });
+        return [
+          { leaf: { label: 'Hide', fn: cmd.hide } },
+          { group: 'Reduce', items: [dec(0.5), dec(0.25), dec(0.75), dec(0.9)] },
+          { leaf: { label: 'Delete', fn: cmd.del, danger: true } },
+          { group: 'More', items: [isolated ? { label: 'Show all', right: 'Alt+H', fn: cmd.showAll } : { label: 'Isolate', right: 'S', fn: cmd.isolate }, { label: 'Hide others', right: 'Shift+H', fn: cmd.others }].concat(isolated ? [] : [showAll]) },
+        ];
+      }
+      return [
+        { leaf: { label: 'Select all', fn: cmd.selAll, off: live().length ? false : 'The scene is empty' } },
+        { group: 'View', items: [{ label: 'Solid view', right: '1', fn: cmd.view('solid', 'Solid view') }, { label: 'Wireframe view', right: '2', fn: cmd.view('wire', 'Wireframe view') }, { label: 'X-ray view', right: '3', fn: cmd.view('xray', 'X-ray view') }] },
+        { leaf: { label: 'Show all', right: 'Alt+H', off: anyHidden ? false : 'Nothing is hidden', fn: cmd.showAll } },
+      ];
+    };
+
+    // drawing: a ring segment, with some corners softened for the fan
+    const pol = (r, a) => [r * Math.sin(a * Math.PI / 180), -r * Math.cos(a * Math.PI / 180)];
+    const f2 = (n) => n.toFixed(2);
+    const arc = (r0, r1, a0, a1) => {
+      const [x0, y0] = pol(r1, a0), [x1, y1] = pol(r1, a1), [x2, y2] = pol(r0, a1), [x3, y3] = pol(r0, a0), big = (a1 - a0) > 180 ? 1 : 0;
+      return 'M' + f2(x0) + ' ' + f2(y0) + 'A' + r1 + ' ' + r1 + ' 0 ' + big + ' 1 ' + f2(x1) + ' ' + f2(y1) + 'L' + f2(x2) + ' ' + f2(y2) + 'A' + r0 + ' ' + r0 + ' 0 ' + big + ' 0 ' + f2(x3) + ' ' + f2(y3) + 'Z';
+    };
+    const arcR = (r0, r1, a0, a1, c, rho) => {
+      const k = (on) => (on ? rho : 0), d = (on, r) => (on ? rho / r * 180 / Math.PI : 0), P = (r, a) => pol(r, a), f = (p) => f2(p[0]) + ' ' + f2(p[1]);
+      return 'M' + f(P(r1, a0 + d(c[0], r1))) + 'A' + r1 + ' ' + r1 + ' 0 0 1 ' + f(P(r1, a1 - d(c[1], r1))) +
+        'Q' + f(P(r1, a1)) + ' ' + f(P(r1 - k(c[1]), a1)) + 'L' + f(P(r0 + k(c[2]), a1)) +
+        'Q' + f(P(r0, a1)) + ' ' + f(P(r0, a1 - d(c[2], r0))) + 'A' + r0 + ' ' + r0 + ' 0 0 0 ' + f(P(r0, a0 + d(c[3], r0))) +
+        'Q' + f(P(r0, a0)) + ' ' + f(P(r0 + k(c[3]), a0)) + 'L' + f(P(r1 - k(c[0]), a0)) +
+        'Q' + f(P(r1, a0)) + ' ' + f(P(r1, a0 + d(c[0], r1))) + 'Z';
+    };
+    const build = () => {
+      if (!root) { root = el('div', 'wq'); root.setAttribute('aria-hidden', 'true'); stage.appendChild(root); }
+      slots = layout(); slice = 360 / slots.length;
+      let svg = '', items = '';
+      slots.forEach((sl, i) => {
+        const a = i * slice, leaf = sl.leaf;
+        sl.off = leaf ? leaf.off : (sl.items.every((x) => x.off) ? 'Nothing here can run now' : false);
+        const label = leaf ? leaf.label : sl.group, danger = leaf && leaf.danger, [x, y] = pol(R_ICON, a);
+        svg += '<path class="wq-slice' + (sl.off ? ' is-off' : '') + (danger ? ' danger' : '') + '" data-i="' + i + '" d="' + arc(R_IN, R_OUT, a - slice / 2, a + slice / 2) + '"/>';
+        items += '<div class="wq-item' + (sl.off ? ' is-off' : '') + (danger ? ' danger' : '') + '" data-i="' + i + '" style="left:' + x.toFixed(1) + 'px;top:' + y.toFixed(1) + 'px">' + label + '</div>';
+      });
+      root.innerHTML = '<svg class="wq-svg" viewBox="-' + V + ' -' + V + ' ' + 2 * V + ' ' + 2 * V + '" width="' + 2 * V + '" height="' + 2 * V + '" style="left:-' + V + 'px;top:-' + V + 'px"><g>' + svg + '</g><g class="wq-fan"></g></svg><div class="wq-items">' + items + '</div><div class="wq-fanlabels"></div>';
+    };
+    const place = () => {
+      const w = stage.clientWidth, h = stage.clientHeight;
+      const cx = w < 2 * V ? w / 2 : Math.max(V, Math.min(w - V, ox)), cy = h < 2 * V ? h / 2 : Math.max(V, Math.min(h - V, oy));
+      root.style.left = cx + 'px'; root.style.top = cy + 'px';
+    };
+    const fanOpen = (i) => {
+      const g = $('.wq-fan', root), lab = $('.wq-fanlabels', root);
+      fanFor = i; sub = -1;
+      if (i < 0) { g.innerHTML = ''; lab.innerHTML = ''; return; }
+      const sl = slots[i], n = sl.items.length, step = n <= 5 ? 30 : n <= 7 ? 26 : 22, total = step * n, a0 = i * slice - total / 2;
+      sl.fan = { step, total, a0 };
+      let paths = '', labels = '';
+      sl.items.forEach((it, j) => {
+        const aa = a0 + j * step, am = aa + step / 2, first = j === 0, last = j === n - 1;
+        paths += '<path class="wq-sub' + (it.off ? ' is-off' : '') + '" data-j="' + j + '" d="' + arcR(F_IN, F_OUT, aa, aa + step, [first, last, last, first], 6) + '" style="--j:' + j + '"/>';
+        const [lx, ly] = pol(F_OUT + 10, am), sx = Math.sin(am * Math.PI / 180);
+        const al = Math.abs(sx) > 0.2 ? (sx > 0 ? '0 -50%' : '-100% -50%') : '-50% ' + (-Math.cos(am * Math.PI / 180) > 0 ? '0' : '-100%');
+        labels += '<div class="wq-lab' + (it.off ? ' is-off' : '') + '" data-j="' + j + '" style="--j:' + j + ';left:' + lx.toFixed(1) + 'px;top:' + ly.toFixed(1) + 'px;translate:' + al + '">' + it.label + ((it.off || it.right) ? '<span>' + (it.off || it.right) + '</span>' : '') + '</div>';
+      });
+      g.innerHTML = paths; lab.innerHTML = labels;
+    };
+    // following the pointer: the slice it is toward, and the command of the fan it has gone out onto
+    const aim = () => {
+      const dx = px - ox, dy = py - oy, d = Math.hypot(dx, dy);
+      let a = Math.atan2(dx, -dy) * 180 / Math.PI; if (a < 0) a += 360;
+      let h = -1, sj = -1;
+      if (d >= DEAD) {
+        h = Math.round(a / slice) % slots.length;
+        if (fanFor >= 0) {                                          // heading for a command of the fan does not turn into another slice on the way
+          if (d - entryD > 12) committed = true; else if (d < entryD + 2) committed = false;
+          if (committed && d > R_IN + 6) h = fanFor;
+        }
+        if (fanFor >= 0 && d > R_OUT + 4 && slots[fanFor] && slots[fanFor].fan) {
+          const { step, total, a0 } = slots[fanFor].fan, rel = ((a - a0) % 360 + 360) % 360;
+          if (rel < total) sj = Math.floor(rel / step);
+          h = fanFor;
+        }
+      }
+      if (h !== hot) {
+        hot = h;
+        const grp = h >= 0 && slots[h] && slots[h].items && !slots[h].off ? h : -1;
+        if (grp !== fanFor) { fanOpen(grp); entryD = d; committed = false; }
+        $$('.wq-slice,.wq-item', root).forEach((n) => n.classList.toggle('is-hot', +n.dataset.i === h));
+      }
+      if (sj !== sub) {
+        sub = sj;
+        $$('.wq-sub,.wq-lab', root).forEach((n) => n.classList.toggle('is-hot', +n.dataset.j === sj));
+      }
+      root.classList.toggle('is-aim', d >= DEAD);
+    };
+    const current = () => {
+      if (hot < 0 || !slots[hot]) return null;
+      const sl = slots[hot];
+      if (sub >= 0 && sl.items && sl.items[sub]) return sl.items[sub];
+      return sl.leaf || { isGroup: true };
+    };
+    const show = (asSticky) => {
+      if (open) return;
+      ox = px = lastX; oy = py = lastY; sticky = !!asSticky; moved = false; startedAt = performance.now(); hot = -1; sub = -1; fanFor = -1; committed = false;
+      build(); place();
+      open = true; demo.classList.add('is-open'); root.classList.add('is-in');
+      aim();
+    };
+    const close = (run) => {
+      if (!open) return false;
+      const c = run ? current() : null, go = !!(c && !c.isGroup && !c.off);
+      open = false; sticky = false; viaPointer = false; closedAt = performance.now();
+      root.classList.remove('is-in'); demo.classList.remove('is-open');
+      if (go) setTimeout(() => { c.fn(); paint(); }, 0);
+      else if (run) say('Nothing run. Flick toward a slice, or a command of its fan, before you let go.');
+      return go;
+    };
+
+    // the pointer: a click selects, a press held for a moment opens the ring (like W held)
+    const local = (e) => { const r = stage.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    stage.addEventListener('pointerenter', () => { over = true; });
+    stage.addEventListener('pointerleave', () => { over = false; });
+    stage.addEventListener('contextmenu', (e) => { if (open || performance.now() - closedAt < 400) e.preventDefault(); });
+    stage.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      const [x, y] = local(e); lastX = x; lastY = y;
+      if (open) { e.preventDefault(); close(true); return; }          // a ring left open: the press picks
+      const h = hold = { x: e.clientX, y: e.clientY, id: e.pointerId, part: e.target.closest('.wand-part'), fired: false, t: 0 };
+      h.t = setTimeout(() => {
+        if (hold !== h) return;
+        h.fired = true; viaPointer = true;
+        try { stage.setPointerCapture(h.id); } catch (_) { /* a pointer that is gone */ }
+        show(false);
+      }, 230);
+    });
+    window.addEventListener('pointermove', (e) => {
+      const [x, y] = local(e); lastX = x; lastY = y;
+      if (hold && !hold.fired && Math.hypot(e.clientX - hold.x, e.clientY - hold.y) > 8) { clearTimeout(hold.t); hold = null; }
+      if (!open) return;
+      px = x; py = y;
+      if (Math.hypot(px - ox, py - oy) >= DEAD) moved = true;
+      aim();
+    }, true);
+    window.addEventListener('pointerup', (e) => {
+      if (!hold || e.pointerId !== hold.id) return;
+      const h = hold; hold = null; clearTimeout(h.t);
+      if (h.fired) { viaPointer = false; close(true); return; }
+      const p = h.part ? parts[+h.part.dataset.i] : null;               // a click: select the part under it
+      parts.forEach((q) => { q.on = q === p; });
+      paint();
+      say(p ? p.name + ' is selected. Hold W, or press and hold, to open the ring.' : 'Nothing is selected, so the ring works on the whole scene.');
+    }, true);
+    window.addEventListener('pointercancel', () => { if (hold) { clearTimeout(hold.t); hold = null; } close(false); }, true);
+
+    // the keyboard: W held, a quick tap leaves it open; anything else closes it
+    const typing = (e) => { const t = e.target; return !!(t && (t.isContentEditable || /^(input|textarea|select)$/i.test(t.tagName))); };
+    const isW = (e) => e.key === 'w' || e.key === 'W';
+    window.addEventListener('keydown', (e) => {
+      if (e.isComposing || typing(e)) return;
+      if (e.key === 'Escape' && open) { e.preventDefault(); close(false); return; }
+      if (isW(e) && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
+        if (open) { e.preventDefault(); if (sticky && !e.repeat) close(false); return; }
+        if (e.repeat || !over) return;
+        e.preventDefault(); show(false);
+        return;
+      }
+      if (open && !/^(Shift|Control|Alt|Meta|CapsLock)$/.test(e.key)) close(false);
+    }, true);
+    window.addEventListener('keyup', (e) => {
+      if (!open || !isW(e) || viaPointer) return;
+      e.preventDefault();
+      if (sticky) return;
+      if (performance.now() - startedAt < 260 && !moved) { sticky = true; aim(); say('The ring stays open. Click a command to run it, Esc to close.'); return; }
+      close(true);
+    }, true);
+    window.addEventListener('wheel', () => { if (open) close(false); }, { capture: true, passive: true });
+    window.addEventListener('blur', () => close(false));
+    window.addEventListener('resize', () => close(false));
+    document.addEventListener('visibilitychange', () => { if (document.hidden) close(false); });
+
+    $('[data-wand-reset]', demo).addEventListener('click', () => { close(false); reset(); });
+    reset();
   });
 
   // ---- clips ----
