@@ -89,7 +89,10 @@ window.labApps = [
           ], ['Reduce the whole scene to 300000 triangles', 'The parts that can best spare triangles give them up. Undo (Ctrl+Z) takes it back.'], '646,064 → 299,984 triangles, 53.6% fewer'],
           ['claude', 'Done: 299,984 triangles. Both steps are in the app’s undo history, so Ctrl + Z takes them back.'],
         ],
-        chatNote: 'An example session on the Gearbox Assy. The numbers are what the app returned.',
+        chatNote: 'An example session on the Gearbox Assy. The numbers are what the app returned. On a wide screen the 3D part beside it is a light copy of the model, made for this page.',
+        // the part beside the chat (chat3d.js): the app's own export of the Gearbox Assy at about 90,000 triangles, and the names of the 48 fasteners find_fasteners selected
+        view: { glb: 'chat-gearbox.glb', parts: 95, tris: [646064, 299984], fasteners: ["body_1", "body_2_instance_0", "mesh_33", "body_2_instance_1", "body_20_instance_0", "body_20_instance_1", "body_20_instance_2", "body_21_instance_0", "body_21_instance_1", "body_21_instance_2", "body_21_instance_3", "body_21_instance_4", "body_21_instance_5", "body_23_instance_0", "body_23_instance_1", "body_26_instance_0", "body_28_instance_0", "body_29_instance_0", "body_29_instance_1", "body_29_instance_2", "body_31_instance_0", "body_31_instance_1", "body_31_instance_2", "body_21_instance_6", "body_21_instance_7", "body_21_instance_8", "body_20_instance_3", "body_20_instance_4", "body_20_instance_5", "body_21_instance_9", "body_21_instance_10", "body_21_instance_11", "body_21_instance_12", "body_21_instance_13", "body_21_instance_14", "body_23_instance_2", "body_23_instance_3", "body_26_instance_1", "body_28_instance_1", "body_29_instance_3", "body_29_instance_4", "body_29_instance_5", "body_31_instance_3", "body_31_instance_4", "body_31_instance_5", "body_21_instance_15", "body_21_instance_16", "body_21_instance_17"] },
+        soon: 'Claude is not in the release you can download today. This page shows what is on the way.',
         command: 'claude mcp add --transport http meshoptimiser http://localhost:4242/mcp',
         steps: [
           ['Switch it on', 'In MeshOptimiser open Settings, choose Claude, and turn on Let Claude connect. A small “Claude connected” pill shows in the top bar while it is on.'],

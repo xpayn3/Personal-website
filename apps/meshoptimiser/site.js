@@ -176,6 +176,17 @@
   // The scroll through .pop sets --p (0 to 1); the styles do the rest. The
   // listener exists only while the section is on screen, and only one frame
   // is scheduled per scroll event, so nothing runs while the page is still.
+  // the part beside the example session on claude.html (chat3d.js): a real mesh, on a wide screen with motion allowed
+  const cx3d = $('[data-cx3d]');
+  if (cx3d && window.matchMedia('(min-width: 1000px) and (hover: hover)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const when = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      when.disconnect();
+      import('./chat3d.js?v=4').then((m) => m.start(cx3d, '')).catch(() => {});
+    }, { rootMargin: '600px 0px' });
+    when.observe(cx3d.closest('[data-cx-grid]') || cx3d);
+  }
+
   const pop = $('[data-pop]');
   if (pop && !calm && 'IntersectionObserver' in window && window.matchMedia('(min-width: 861px)').matches) {
     let queued = false, last = -1, hero3d = null, asked = false;

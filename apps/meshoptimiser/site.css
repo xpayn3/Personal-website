@@ -896,31 +896,42 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 .cl-band-art img { width: 100%; border-radius: var(--r); background: var(--surface); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 30px 70px -20px rgba(0, 0, 0, 0.55); }
 .cl-band-art figcaption { margin-top: 12px; color: var(--tx-3); font-size: 13px; }
 
-/* the example session */
-.cx { max-width: 880px; margin: 0 auto; border-radius: 16px; background: var(--surface); box-shadow: 0 0 0 1px var(--line), var(--shadow); overflow: hidden; }
-.cx-head { display: flex; align-items: center; gap: 8px; padding: 12px 18px; border-bottom: 1px solid var(--line); color: var(--tx-3); font-size: 13px; }
-.cx-head i { width: 8px; height: 8px; border-radius: 50%; background: var(--new); }
-.cx-thread { display: flex; flex-direction: column; gap: 22px; padding: clamp(18px, 3vw, 32px); list-style: none; }
-.cx-who { display: block; margin-bottom: 6px; color: var(--tx-3); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
-.cx-you { align-self: flex-end; max-width: min(86%, 600px); }
-.cx-you p { padding: 12px 16px; border-radius: 14px 14px 4px 14px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); color: var(--tx); font-size: 16px; line-height: 1.5; }
-.cx-you .cx-who { text-align: right; }
-.cx-ai { align-self: flex-start; max-width: min(100%, 720px); }
-.cx-ai > p { color: var(--tx); font-size: 16px; line-height: 1.55; }
-.cx-tools { display: grid; gap: 6px; margin-top: 12px; list-style: none; }
-.cx-tools li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; padding: 9px 14px; border-radius: var(--r-s); background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); }
-.cx-tools code { padding: 0; background: none; color: var(--accent-hover); font: 400 13px/1.4 var(--mono); }
-.cx-tools span { color: var(--tx-2); font-size: 14px; }
-.cx-ask { display: grid; gap: 4px; max-width: 460px; margin-top: 12px; padding: 16px 18px; border-radius: 12px; background: #1b1b1d; box-shadow: 0 0 0 1px var(--line-strong), var(--shadow); }
+/* the example session: drawn like a Claude conversation (warm dark, the reply in a serif, tool calls as quiet rows) */
+.cx-wrap { max-width: 860px; margin: 0 auto; }
+.cx { --cx-bg: #262624; --cx-user: #30302e; --cx-tx: #faf9f5; --cx-mu: #9c9a92; --cx-line: rgba(255, 255, 255, 0.09); --cx-coral: #d97757;
+  display: flex; flex-direction: column; border-radius: 18px; background: var(--cx-bg); box-shadow: 0 0 0 1px var(--cx-line), var(--shadow); color: var(--cx-tx); overflow: hidden; }
+.cx-bar { display: flex; align-items: center; justify-content: center; height: 48px; padding: 0 18px; border-bottom: 1px solid var(--cx-line); color: var(--cx-mu); font-size: 14px; }
+.cx-thread { display: flex; flex-direction: column; gap: 26px; padding: clamp(20px, 4vw, 40px) clamp(18px, 4vw, 44px) clamp(24px, 3vw, 32px); list-style: none; }
+.cx-you { align-self: flex-end; max-width: min(88%, 600px); }
+.cx-you p { padding: 11px 16px; border-radius: 16px; background: var(--cx-user); color: var(--cx-tx); font-size: 16px; line-height: 1.5; }
+.cx-ai { align-self: flex-start; width: 100%; max-width: 720px; }
+.cx-ai > p { color: var(--cx-tx); font: 400 17px/1.6 ui-serif, Georgia, Cambria, 'Times New Roman', serif; }
+.cx-tools { display: grid; gap: 6px; margin-top: 14px; list-style: none; }
+.cx-tools li { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 9px 12px; border-radius: 10px; box-shadow: inset 0 0 0 1px var(--cx-line); color: var(--cx-mu); font-size: 14px; }
+.cx-ico { flex: none; width: 16px; height: 16px; color: var(--cx-mu); }
+.cx-tools code { flex: none; padding: 0; background: none; color: var(--cx-tx); font: 400 13px/1.4 var(--mono); }
+.cx-tools span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cx-chev { flex: none; width: 15px; height: 15px; color: var(--cx-mu); opacity: 0.7; }
+.cx-app { margin-top: 14px; }
+.cx-wait { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; color: var(--cx-mu); font: 400 14px/1.4 var(--font); }
+.cx-wait i { width: 7px; height: 7px; border-radius: 50%; background: var(--cx-coral); animation: cx-pulse 1.4s ease-in-out infinite; }
+@keyframes cx-pulse { 50% { opacity: 0.25; } }
+@media (prefers-reduced-motion: reduce) { .cx-wait i { animation: none; } }
+.cx-ask { display: grid; gap: 4px; max-width: 440px; padding: 16px 18px; border-radius: 12px; background: #161616; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 18px 40px rgba(0, 0, 0, 0.35); font-family: var(--font); }
 .cx-ask small { color: var(--tx-3); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
 .cx-ask small::before { content: ''; display: inline-block; width: 7px; height: 7px; margin-right: 8px; border-radius: 50%; background: var(--new); vertical-align: 1px; }
-.cx-ask b { margin-top: 4px; font-size: 15px; font-weight: 500; }
+.cx-ask b { margin-top: 4px; color: var(--tx); font-size: 15px; font-weight: 500; }
 .cx-ask span { color: var(--tx-2); font-size: 14px; line-height: 1.45; }
 .cx-ask div { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
 .cx-ask em { padding: 7px 14px; border-radius: var(--r-s); background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line-strong); color: var(--tx); font-size: 13px; font-style: normal; }
 .cx-ask em.is-yes { background: var(--accent); box-shadow: none; color: #fff; }
-.cx-ai > p.cx-result { margin-top: 12px; padding-left: 12px; border-left: 2px solid var(--new); color: var(--new); font-size: 15px; font-variant-numeric: tabular-nums; }
-.cx figcaption { padding: 12px 18px 16px; border-top: 1px solid var(--line); color: var(--tx-3); font-size: 13px; }
+.cx-ai > p.cx-result { margin-top: 14px; padding: 0; border: 0; color: var(--cx-tx); font: 400 17px/1.6 ui-serif, Georgia, Cambria, 'Times New Roman', serif; font-variant-numeric: tabular-nums; }
+.cx-ai > p.cx-result::before { content: ''; display: inline-block; width: 8px; height: 8px; margin-right: 10px; border-radius: 50%; background: var(--new); vertical-align: 1px; }
+.cx-spark { display: block; width: 22px; height: 22px; margin-top: 18px; color: var(--cx-coral); }
+.cx-composer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 clamp(14px, 3vw, 28px) clamp(14px, 3vw, 24px); padding: 14px 14px 14px 20px; border-radius: 22px; background: var(--cx-user); box-shadow: inset 0 0 0 1px var(--cx-line); color: var(--cx-mu); font-size: 16px; }
+.cx-composer i { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 10px; background: var(--cx-coral); color: #fff; opacity: 0.55; }
+.cx-composer svg { width: 17px; height: 17px; }
+.cx-wrap figcaption { margin-top: 14px; color: var(--tx-3); font-size: 13px; text-align: center; }
 
 .cl-fine { max-width: 70ch; margin-top: 16px; color: var(--tx-3); font-size: 14px; line-height: 1.55; }
 .cl-fine code, .cl-groups code { padding: 1px 6px; border-radius: 4px; background: var(--surface-2); font: 400 13px/1.4 var(--mono); }
@@ -970,3 +981,30 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
   .cl-faq > div { grid-template-columns: minmax(0, 1fr); gap: 6px; }
   .cx-you { max-width: 100%; }
 }
+
+/* Coming soon, made obvious: a banner across the page, a larger tag, a ribbon on the home picture and a badge in the menu */
+.tag-soon.is-large { height: 30px; padding: 0 14px; background: var(--accent); box-shadow: none; color: #fff; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
+.soon-banner { border-bottom: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); background: color-mix(in srgb, var(--accent) 11%, var(--bg)); }
+.soon-banner-in { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 16px; padding-block: 13px; font-size: 15px; text-align: center; }
+.soon-banner strong { padding: 3px 12px; border-radius: 999px; background: var(--accent); color: #fff; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
+.soon-banner span { color: var(--tx); }
+.nav-soon { margin-left: 7px; padding: 1px 7px; border-radius: 999px; background: var(--accent); color: #fff; font-size: 10px; font-style: normal; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; vertical-align: 1px; }
+.cl-band-art { position: relative; }
+.soon-ribbon { position: absolute; top: 14px; left: 14px; padding: 6px 14px; border-radius: 999px; background: var(--accent); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); color: #fff; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* the chat and the part beside it */
+.cx-grid { display: block; }
+.cx-view { display: none; }
+@media (min-width: 1000px) and (hover: hover) {
+  .cx-grid.has-3d { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr); gap: clamp(24px, 3vw, 48px); align-items: start; max-width: 1240px; margin: 0 auto; }
+  .cx-grid.has-3d .cx-wrap { max-width: none; width: 100%; }
+  .cx-view { display: block; position: sticky; top: calc(var(--bar-h) + 24px); height: min(640px, calc(100vh - var(--bar-h) - 56px)); border-radius: 18px; background: radial-gradient(120% 90% at 50% 40%, #232326, #141415 70%); box-shadow: 0 0 0 1px var(--line-strong), var(--shadow); overflow: hidden; }
+  .cx-view[hidden] { display: none; }
+  .cx-view canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+}
+.cx3d-hud { position: absolute; left: 20px; top: 18px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; max-width: 80%; }
+.cx3d-hud b { font-size: 30px; font-weight: 300; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.cx3d-hud span { color: var(--tx-2); font-size: 14px; }
+.cx3d-hud em { flex-basis: 100%; color: var(--tx-3); font-size: 13px; font-style: normal; }
+.cx3d-tool { position: absolute; left: 20px; bottom: 18px; padding: 6px 12px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 18%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent); color: color-mix(in srgb, var(--accent) 70%, #fff); font: 400 13px/1.4 var(--mono); }
+.cx3d-tool[hidden] { display: none; }

@@ -21,7 +21,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=72" />
+  <link rel="stylesheet" href="site.css?v=74" />
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/"}}</script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -35,7 +36,7 @@
       </a>
       <nav class="nav" id="nav" aria-label="MeshOptimiser">
         <a href="features.html">Features</a>
-        <a href="claude.html" aria-current="page">Claude</a>
+        <a href="claude.html" aria-current="page">Claude<em class="nav-soon">Soon</em></a>
         <a href="docs.html">Docs</a>
         <a href="changelog.html">Changelog</a>
         <a class="nav-out" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>GitHub</a>
@@ -45,8 +46,9 @@
     </div>
   </header>
   <main id="main">
+    <div class="soon-banner" role="note"><div class="wrap soon-banner-in"><strong>Coming soon</strong><span>Claude is not in the release you can download today. This page shows what is on the way.</span></div></div>
     <section class="wrap page-head">
-      <p class="kicker">Claude<b>·</b><span class="tag-soon">Coming soon</span></p>
+      <p class="kicker">Claude<b>·</b><span class="tag-soon is-large">Coming soon</span></p>
       <h1>Ask Claude to work on your model.</h1>
       <p class="lead">Connect MeshOptimiser to Claude and describe the job in plain words. Claude looks at the scene, finds what is heavy and does the clean-up in the app, in front of you. Anything that changes the model asks first, and every change can be undone.</p>
       <div class="actions">
@@ -57,20 +59,31 @@
 
     <section class="band is-first">
       <div class="wrap">
-        <figure class="cx">
-          <div class="cx-head"><i></i><span>Example session · Gearbox Assy</span></div>
-          <ol class="cx-thread">
-            <li class="cx-you"><span class="cx-who">You</span><p>This gearbox is too heavy for the web. Take the bolts out of the way, then get the whole thing under 300,000 triangles.</p></li>
-            <li class="cx-ai"><span class="cx-who">Claude</span><p>I’ll start by looking at what is in the scene.</p>
-              <ul class="cx-tools"><li><code>scene_summary</code><span>95 parts, 646,064 triangles</span></li><li><code>find_fasteners</code><span>48 bolts, nuts and washers selected</span></li><li><code>hide_parts</code><span>48 parts hidden</span></li></ul></li>
-            <li class="cx-ai"><span class="cx-who">Claude</span><p>The fasteners are out of the way. To get under 300,000 triangles I need to take triangles from the parts that can spare them.</p>
-              <ul class="cx-tools"><li><code>fit_to_budget</code><span>target 300,000</span></li></ul>
-              <div class="cx-ask"><small>Claude wants to</small><b>Reduce the whole scene to 300000 triangles</b><span>The parts that can best spare triangles give them up. Undo (Ctrl+Z) takes it back.</span><div><em>Don’t allow</em><em class="is-yes">Allow</em></div></div>
-              <p class="cx-result">646,064 → 299,984 triangles, 53.6% fewer</p></li>
-            <li class="cx-ai"><span class="cx-who">Claude</span><p>Done: 299,984 triangles. Both steps are in the app’s undo history, so Ctrl + Z takes them back.</p></li>
-          </ol>
-          <figcaption>An example session on the Gearbox Assy. The numbers are what the app returned.</figcaption>
+      <div class="cx-grid" data-cx-grid>
+        <figure class="cx-wrap">
+          <div class="cx">
+            <div class="cx-bar"><span>Lighten the gearbox</span></div>
+            <ol class="cx-thread">
+              <li class="cx-you"><p>This gearbox is too heavy for the web. Take the bolts out of the way, then get the whole thing under 300,000 triangles.</p></li>
+              <li class="cx-ai" data-stage="1"><p>I’ll start by looking at what is in the scene.</p>
+                <ul class="cx-tools"><li><svg class="cx-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94Z"/></svg><code>scene_summary</code><span>95 parts, 646,064 triangles</span><svg class="cx-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></li><li><svg class="cx-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94Z"/></svg><code>find_fasteners</code><span>48 bolts, nuts and washers selected</span><svg class="cx-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></li><li><svg class="cx-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94Z"/></svg><code>hide_parts</code><span>48 parts hidden</span><svg class="cx-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></li></ul></li>
+              <li class="cx-ai" data-stage="2"><p>The fasteners are out of the way. To get under 300,000 triangles I need to take triangles from the parts that can spare them.</p>
+                <ul class="cx-tools"><li><svg class="cx-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94Z"/></svg><code>fit_to_budget</code><span>target 300,000</span><svg class="cx-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></li></ul>
+                <div class="cx-app"><p class="cx-wait"><i></i>Waiting for you to allow it in MeshOptimiser</p><div class="cx-ask"><small>Claude wants to</small><b>Reduce the whole scene to 300000 triangles</b><span>The parts that can best spare triangles give them up. Undo (Ctrl+Z) takes it back.</span><div><em>Don’t allow</em><em class="is-yes">Allow</em></div></div></div>
+                <p class="cx-result">646,064 → 299,984 triangles, 53.6% fewer</p></li>
+              <li class="cx-ai" data-stage="3"><p>Done: 299,984 triangles. Both steps are in the app’s undo history, so Ctrl + Z takes them back.</p><svg class="cx-spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 1.5c.7 0 1.2.5 1.3 1.2l.5 5.1 3.6-3.7c.5-.5 1.3-.5 1.8 0s.5 1.3 0 1.8l-3.7 3.6 5.1.5c.7.1 1.2.6 1.2 1.3s-.5 1.2-1.2 1.3l-5.1.5 3.7 3.6c.5.5.5 1.3 0 1.8s-1.3.5-1.8 0l-3.6-3.7-.5 5.1c-.1.7-.6 1.2-1.3 1.2s-1.2-.5-1.3-1.2l-.5-5.1-3.6 3.7c-.5.5-1.3.5-1.8 0s-.5-1.3 0-1.8l3.7-3.6-5.1-.5C2 13.4 1.5 12.9 1.5 12.2s.5-1.2 1.2-1.3l5.1-.5-3.7-3.6c-.5-.5-.5-1.3 0-1.8s1.3-.5 1.8 0l3.6 3.7.5-5.1c.1-.7.6-1.2 1.3-1.2Z"/></svg></li>
+            </ol>
+            <div class="cx-composer"><span>Reply to Claude…</span><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></i></div>
+          </div>
+          <figcaption>An example session on the Gearbox Assy. The numbers are what the app returned. On a wide screen the 3D part beside it is a light copy of the model, made for this page.</figcaption>
         </figure>
+        <aside class="cx-view" data-cx3d hidden aria-hidden="true">
+          <canvas></canvas>
+          <div class="cx3d-hud"><b data-hud-tris>646,064</b><span>triangles</span><em data-hud-note>95 parts</em></div>
+          <div class="cx3d-tool" data-hud-tool hidden></div>
+          <script type="application/json" data-cx3d-data>{"glb":"chat-gearbox.glb","parts":95,"tris":[646064,299984],"fasteners":["body_1","body_2_instance_0","mesh_33","body_2_instance_1","body_20_instance_0","body_20_instance_1","body_20_instance_2","body_21_instance_0","body_21_instance_1","body_21_instance_2","body_21_instance_3","body_21_instance_4","body_21_instance_5","body_23_instance_0","body_23_instance_1","body_26_instance_0","body_28_instance_0","body_29_instance_0","body_29_instance_1","body_29_instance_2","body_31_instance_0","body_31_instance_1","body_31_instance_2","body_21_instance_6","body_21_instance_7","body_21_instance_8","body_20_instance_3","body_20_instance_4","body_20_instance_5","body_21_instance_9","body_21_instance_10","body_21_instance_11","body_21_instance_12","body_21_instance_13","body_21_instance_14","body_23_instance_2","body_23_instance_3","body_26_instance_1","body_28_instance_1","body_29_instance_3","body_29_instance_4","body_29_instance_5","body_31_instance_3","body_31_instance_4","body_31_instance_5","body_21_instance_15","body_21_instance_16","body_21_instance_17"]}</script>
+        </aside>
+      </div>
       </div>
     </section>
 
@@ -295,6 +308,6 @@
       <span><a href="../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="site.js?v=22"></script>
+  <script defer src="site.js?v=26"></script>
 </body>
 </html>

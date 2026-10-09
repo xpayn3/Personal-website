@@ -24,16 +24,16 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 72;
+const CSS_V = 74;
 const RP_V = 2;           // report.js
-const JS_V = 22;
+const JS_V = 26;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
 const PAGES = [
   { key: 'home', file: 'index.html', label: 'Overview', nav: false },
   { key: 'features', file: 'features.html', label: 'Features' },
-  { key: 'claude', file: 'claude.html', label: 'Claude' },
+  { key: 'claude', file: 'claude.html', label: 'Claude', soon: true },
   { key: 'docs', file: 'docs.html', label: 'Docs' },
   { key: 'changelog', file: 'changelog.html', label: 'Changelog' },
   { key: 'download', file: 'download.html', label: 'Download', nav: false },
@@ -116,7 +116,7 @@ ${JSON.stringify({
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=${CSS_V}" />${page.key === 'home' && site.pop ? `
+  <link rel="stylesheet" href="site.css?v=${CSS_V}" />${(page.key === 'home' && site.pop) || (page.key === 'claude' && site.claude && site.claude.view) ? `
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/"}}</script>` : ''}
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>${structured}
@@ -133,7 +133,7 @@ ${JSON.stringify({
         <span>${esc(app.title)}</span>${app.stage ? `<i>${esc(app.stage)}</i>` : ''}
       </a>
       <nav class="nav" id="nav" aria-label="${esc(app.title)}">
-${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.key === page.key || p.key === page.under ? ' aria-current="page"' : ''}>${p.label}</a>`).join('\n')}
+${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.key === page.key || p.key === page.under ? ' aria-current="page"' : ''}>${p.label}${p.soon && site.claude ? '<em class="nav-soon">Soon</em>' : ''}</a>`).join('\n')}
         <a class="nav-out" href="${repo}" rel="noopener">${GH_ICON}GitHub</a>
       </nav>
       <a class="btn is-primary bar-get" href="download.html"${page.key === 'download' ? ' aria-current="page"' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
@@ -443,7 +443,7 @@ ${pick.map(([key, label]) => `            <li><img src="library/${esc(key)}.webp
   };
 
   // Claude: the strip on the home page and the page of its own (claude.html). All words are `site.claude` in apps.js.
-  const SOON = (c) => `<span class="tag-soon">${esc(c.badge)}</span>`;
+  const SOON = (c, large) => `<span class="tag-soon${large ? ' is-large' : ''}">${esc(c.badge)}</span>`;
   const claudeBand = () => {
     const c = site.claude;
     if (!c) return '';
@@ -452,7 +452,7 @@ ${pick.map(([key, label]) => `            <li><img src="library/${esc(key)}.webp
     <section class="band cl-band" id="claude">
       <div class="wrap cl-band-in">
         <div class="cl-band-copy">
-          <p class="kicker">${esc(c.band.kicker)}<b>·</b>${SOON(c)}</p>
+          <p class="kicker">${esc(c.band.kicker)}<b>·</b>${SOON(c, true)}</p>
           <h2>${esc(c.band.title)}</h2>
           <p class="lead">${esc(c.band.line)}</p>
           <ul class="cl-say">
@@ -462,6 +462,7 @@ ${c.band.prompts.map(p => `            <li>${esc(p)}</li>`).join('\n')}
         </div>
         <figure class="cl-band-art">
           <a class="zoom" href="${asset(src)}" data-group="claude" data-caption="${esc(caption)}"><img src="${asset(src)}" alt="${esc(app.title + ': ' + caption)}" width="2400" height="1350" loading="lazy" decoding="async" /></a>
+          <span class="soon-ribbon">${esc(c.badge)}</span>
           <figcaption>${esc(caption)}</figcaption>
         </figure>
       </div>
@@ -470,19 +471,37 @@ ${c.band.prompts.map(p => `            <li>${esc(p)}</li>`).join('\n')}
 
   const claudeChat = () => {
     const c = site.claude;
+    const SPARK = '<svg class="cx-spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 1.5c.7 0 1.2.5 1.3 1.2l.5 5.1 3.6-3.7c.5-.5 1.3-.5 1.8 0s.5 1.3 0 1.8l-3.7 3.6 5.1.5c.7.1 1.2.6 1.2 1.3s-.5 1.2-1.2 1.3l-5.1.5 3.7 3.6c.5.5.5 1.3 0 1.8s-1.3.5-1.8 0l-3.6-3.7-.5 5.1c-.1.7-.6 1.2-1.3 1.2s-1.2-.5-1.3-1.2l-.5-5.1-3.6 3.7c-.5.5-1.3.5-1.8 0s-.5-1.3 0-1.8l3.7-3.6-5.1-.5C2 13.4 1.5 12.9 1.5 12.2s.5-1.2 1.2-1.3l5.1-.5-3.7-3.6c-.5-.5-.5-1.3 0-1.8s1.3-.5 1.8 0l3.6 3.7.5-5.1c.1-.7.6-1.2 1.3-1.2Z"/></svg>';
+    const TOOL = '<svg class="cx-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94Z"/></svg>';
+    const CHEV = '<svg class="cx-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
+    const lastAi = c.chat.map(m => m[0]).lastIndexOf('claude');
+    const v = c.view;
+    let stageNo = 0;
+    const viewer = v ? `
+        <aside class="cx-view" data-cx3d hidden aria-hidden="true">
+          <canvas></canvas>
+          <div class="cx3d-hud"><b data-hud-tris>${v.tris[0].toLocaleString('en-US')}</b><span>triangles</span><em data-hud-note>${v.parts} parts</em></div>
+          <div class="cx3d-tool" data-hud-tool hidden></div>
+          <script type="application/json" data-cx3d-data>${JSON.stringify(v)}</script>
+        </aside>` : '';
     return `
-        <figure class="cx">
-          <div class="cx-head"><i></i><span>Example session · Gearbox Assy</span></div>
-          <ol class="cx-thread">
-${c.chat.map(([who, text, tools, ask, result]) => who === 'you'
-    ? `            <li class="cx-you"><span class="cx-who">You</span><p>${esc(text)}</p></li>`
-    : `            <li class="cx-ai"><span class="cx-who">Claude</span><p>${esc(text)}</p>${tools ? `
-              <ul class="cx-tools">${tools.map(([name, out]) => `<li><code>${esc(name)}</code><span>${esc(out)}</span></li>`).join('')}</ul>` : ''}${ask ? `
-              <div class="cx-ask"><small>Claude wants to</small><b>${esc(ask[0])}</b><span>${esc(ask[1])}</span><div><em>Don’t allow</em><em class="is-yes">Allow</em></div></div>` : ''}${result ? `
-              <p class="cx-result">${esc(result)}</p>` : ''}</li>`).join('\n')}
-          </ol>
+      <div class="cx-grid" data-cx-grid>
+        <figure class="cx-wrap">
+          <div class="cx">
+            <div class="cx-bar"><span>${esc(c.chatTitle || 'Lighten the gearbox')}</span></div>
+            <ol class="cx-thread">
+${c.chat.map(([who, text, tools, ask, result], i) => who === 'you'
+    ? `              <li class="cx-you"><p>${esc(text)}</p></li>`
+    : `              <li class="cx-ai" data-stage="${++stageNo}"><p>${esc(text)}</p>${tools ? `
+                <ul class="cx-tools">${tools.map(([name, out]) => `<li>${TOOL}<code>${esc(name)}</code><span>${esc(out)}</span>${CHEV}</li>`).join('')}</ul>` : ''}${ask ? `
+                <div class="cx-app"><p class="cx-wait"><i></i>Waiting for you to allow it in MeshOptimiser</p><div class="cx-ask"><small>Claude wants to</small><b>${esc(ask[0])}</b><span>${esc(ask[1])}</span><div><em>Don’t allow</em><em class="is-yes">Allow</em></div></div></div>` : ''}${result ? `
+                <p class="cx-result">${esc(result)}</p>` : ''}${i === lastAi ? SPARK : ''}</li>`).join('\n')}
+            </ol>
+            <div class="cx-composer"><span>Reply to Claude…</span><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></i></div>
+          </div>
           <figcaption>${esc(c.chatNote)}</figcaption>
-        </figure>`;
+        </figure>${viewer}
+      </div>`;
   };
 
   const designBand = () => {
@@ -652,8 +671,9 @@ ${(latest.items || []).slice(0, 4).map(([tag, line]) => `            <li><b clas
     const c = site.claude;
     const docsLink = docs && docs.articles.some(a => a.slug === 'work-with-claude') ? 'docs/work-with-claude.html' : 'docs.html';
     return head(page, c.titleTag, c.description) + header(page) + `
+    <div class="soon-banner" role="note"><div class="wrap soon-banner-in"><strong>${esc(c.badge)}</strong><span>${esc(c.soon)}</span></div></div>
     <section class="wrap page-head">
-      <p class="kicker">${esc(c.kicker)}<b>·</b>${SOON(c)}</p>
+      <p class="kicker">${esc(c.kicker)}<b>·</b>${SOON(c, true)}</p>
       <h1>${esc(c.headline)}</h1>
       <p class="lead">${esc(c.lead)}</p>
       <div class="actions">
