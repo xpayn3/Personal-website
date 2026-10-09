@@ -289,7 +289,7 @@ window.labApps = [
       ['Fasteners', 'Bolts, nuts and washers light up by their shape, whatever they are called, and are taken away. The bracket and the plate stay.', 'Images/apps/meshoptimiser-clip-fasteners.webm', 'fasteners'],
       ['Smart fit', 'A dense part becomes a box, a cylinder, a few boxes or blocks that keep its outline.', 'Images/apps/meshoptimiser-clip-smart-fit.webm', 'smart-fit'],
     ],
-    stats: [['Version', '0.20.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
+    stats: [['Version', '0.21.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
     about: [
       'Made for the one STEP assembly you have to get onto a web page.',
       'The problem is a practical one. A real STEP file can hold 400 identical bolts, 80 duplicate brackets and half a million broken triangles, and a browser is still expected to draw it. MeshOptimiser reads the assembly, spots the parts that are the same and keeps one mesh with a list of positions, rebuilds the bad geometry, and drops what’s too small to see.',
@@ -403,7 +403,15 @@ window.labApps = [
     changelog: {
       link: 'https://github.com/xpayn3/MeshOptimiser/blob/main/CHANGELOG.md',
       versions: [
-        { version: '0.20.0', fixes: 9, date: '9 Oct 2026 · 14:50', latest: true,
+        { version: '0.21.0', date: '9 Oct 2026 · 19:37', latest: true,
+          summary: 'Show it and ship it. A turntable video saves one slow turn round the model as a WebM, the Export dialog has presets for where the file is going, and the Selection bar has the actions I reach for most.',
+          items: [
+            ['New', 'Turntable video. The film button next to the camera takes the camera once round the model and saves a WebM: 720p to 1440p, square or portrait, 4 to 12 seconds, 24, 30 or 60 frames a second. It fits the model to the frame, loops, and is encoded in the browser, so nothing is uploaded.'],
+            ['New', 'Where is it going? Web viewer, AR on iPhone, Unreal Engine, Unity and 3D print in the Export dialog. One press sets the format, the unit scale, the up axis, the origin, merge and Draco, and the size meter checks against the same place.'],
+            ['New', 'Hide, Isolate, Frame and Duplicate are buttons in the Selection bar, next to the others.'],
+            ['Polish', 'The Selection bar is calmer: outlined buttons directly on the panel, the Delete count in the header, and the selection actions in one bar under Properties.'],
+          ] },
+        { version: '0.20.0', fixes: 9, date: '9 Oct 2026 · 14:50',
           summary: 'You can draw. A Draw tool makes lines and shapes, and they are real parts of the scene: rows in the tree, in groups, moved with the gizmo, with Shape and Spline cards in Properties and a Sweep that turns a path and a profile into a solid. The tree gets organising commands, the converter reads IGES and BREP, copies are found in files from other tools, and the app looks after itself.',
           items: [
             ['New', 'A Draw tool (L). Pen, rectangle, circle, arc, polygon, freehand and edit, in Bezier, Cubic, B-spline or Linear. Place a shape with two clicks and type its size: 20 x 10, Enter. Draw on the ground, the front, the side, the view, or on the face of a part.'],
