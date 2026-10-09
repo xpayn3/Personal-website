@@ -511,6 +511,8 @@ ${app.highlights.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt>
       </div>
     </section>
 
+${popHero()}
+
     <section class="band">
       <div class="wrap split">
         <div class="split-head">
@@ -527,7 +529,17 @@ ${site.collapse.map(([from, to], i, all) => `            <tr${i === all.length -
       </div>
     </section>
 
-${popHero()}
+    <section class="band">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">Clean-up tools</p>
+          <h2>Advanced STEP clean-up tools, free in your browser.</h2>
+          <a class="more" href="features.html">All features</a>
+        </div>
+        <div class="clips">${clipCards()}
+        </div>
+      </div>
+    </section>
 
     <section class="band">
       <div class="wrap">
@@ -538,18 +550,6 @@ ${popHero()}
         <ol class="steps is-visual">
 ${app.steps.map(([name, line], i) => `          <li>${STEP_ART[i] ? `<div class="st-fig">${STEP_ART[i]}</div>` : ''}<i>${pad2(i + 1)}</i><h3>${esc(name)}</h3><p>${esc(line)}</p></li>`).join('\n')}
         </ol>
-      </div>
-    </section>
-
-    <section class="band">
-      <div class="wrap">
-        <div class="band-head">
-          <p class="kicker">In motion</p>
-          <h2>Tools that do one job, and say what it saved.</h2>
-          <a class="more" href="features.html">All features</a>
-        </div>
-        <div class="clips">${clipCards()}
-        </div>
       </div>
     </section>
 
@@ -602,18 +602,8 @@ ${(latest.items || []).slice(0, 4).map(([tag, line]) => `            <li><b clas
 
   pages.features = (page) => head(page, `Features — ${app.title}`, `Everything ${app.title} does: the STEP to GLB pipeline, the WebGPU viewer, mesh tools, hierarchy editing and export.`) + header(page) +
     pageHead('Features', 'A free, private viewer and optimiser for complex CAD and 3D files.', '') + `
-    <section class="band is-first">
-      <div class="wrap">
-        <div class="band-head">
-          <p class="kicker">In motion</p>
-          <h2>Four tools at work.</h2>
-        </div>
-        <div class="clips">${clipCards()}
-        </div>
-      </div>
-    </section>
 ${app.featureGroups.map((group, gi) => `
-    <section class="band" id="${slug(group.title)}" style="--ico: ${GROUP_COLOURS[gi % GROUP_COLOURS.length]}">
+    <section class="band${gi === 0 ? ' is-first' : ''}" id="${slug(group.title)}" style="--ico: ${GROUP_COLOURS[gi % GROUP_COLOURS.length]}">
       <div class="wrap tools-wrap">
         <div class="split-head">
           <p class="kicker">${esc(group.note || 'Features')}</p>
