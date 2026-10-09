@@ -24,7 +24,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 58;
+const CSS_V = 68;
 const RP_V = 2;           // report.js
 const JS_V = 22;
 
@@ -602,8 +602,15 @@ ${(latest.items || []).slice(0, 4).map(([tag, line]) => `            <li><b clas
 
   pages.features = (page) => head(page, `Features — ${app.title}`, `Everything ${app.title} does: the STEP to GLB pipeline, the WebGPU viewer, mesh tools, hierarchy editing and export.`) + header(page) +
     pageHead('Features', 'A free, private viewer and optimiser for complex CAD and 3D files.', '') + `
+    <section class="band is-first">
+      <div class="strip" data-strip>
+${app.spotlights.map(([name, line, image], i) => `        <figure><a class="zoom" href="${asset(image)}" data-group="spots" data-caption="${esc(name)}"><img src="${asset(image)}" alt="${esc(app.title + ': ' + name)}" width="2400" height="1350"${i < 2 ? '' : ' loading="lazy"'} decoding="async" /></a><figcaption><i>${pad2(i + 1)}</i><strong>${esc(name)}</strong><span>${esc(line)}</span></figcaption></figure>`).join('\n')}
+      </div>
+      <div class="dots" aria-hidden="true"></div>
+    </section>
+${savingsBand()}
 ${app.featureGroups.map((group, gi) => `
-    <section class="band${gi === 0 ? ' is-first' : ''}" id="${slug(group.title)}" style="--ico: ${GROUP_COLOURS[gi % GROUP_COLOURS.length]}">
+    <section class="band" id="${slug(group.title)}" style="--ico: ${GROUP_COLOURS[gi % GROUP_COLOURS.length]}">
       <div class="wrap tools-wrap">
         <div class="split-head">
           <p class="kicker">${esc(group.note || 'Features')}</p>
@@ -613,19 +620,7 @@ ${app.featureGroups.map((group, gi) => `
 ${group.items.map(([name, line, flag]) => `          <li><i class="ico">${svgIcon(ICONS.items[name])}</i><div><strong>${esc(name)}${flag === 'new' ? '<em class="tag-new">New</em>' : ''}</strong><span>${esc(line)}</span></div></li>`).join('\n')}
         </ul>
       </div>
-    </section>`).join('')}
-
-${savingsBand()}
-    <section class="band">
-      <div class="wrap">
-        <div class="band-head">
-          <p class="kicker">A closer look</p>
-          <h2>The details, in pictures.</h2>
-        </div>
-        <div class="spots">${spotRows(app.spotlights, 'spots')}
-        </div>
-      </div>
-    </section>` + footer(page);
+    </section>`).join('')}` + footer(page);
 
 
   // ---- docs: a knowledge base (docs-content.js) ----

@@ -136,6 +136,7 @@ figcaption { margin-top: 12px; color: var(--tx-3); font-size: 13px; line-height:
 .band { margin-top: var(--band); padding-top: var(--band); border-top: 1px solid var(--line); }
 .band.is-first { margin-top: clamp(48px, 6vw, 88px); border-top: 0; }
 .page-head + .band, .hero + .band { border-top: 0; }
+.page-head + .band.is-first { padding-top: 0; margin-top: calc(clamp(48px, 6vw, 88px) + 32px); }
 .band-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 12px 32px; margin-bottom: clamp(32px, 4vw, 56px); }
 .band-head .kicker { grid-column: 1 / -1; }
 .band-head h2 { max-width: 22ch; }
@@ -222,19 +223,24 @@ figcaption { margin-top: 12px; color: var(--tx-3); font-size: 13px; line-height:
    .is-free, while it has it) */
 .strip {
   display: flex;
-  gap: clamp(12px, 1.6vw, 22px);
+  gap: clamp(28px, 4.2vw, 72px);
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
-  padding: 8px max(var(--gutter), (100% - var(--max)) / 2) 0;
+  margin: -32px 0 -64px;
+  padding: 40px max(var(--gutter), (100% - var(--max)) / 2) 100px;
   scroll-padding-inline: max(var(--gutter), (100% - var(--max)) / 2);
 }
 .strip::-webkit-scrollbar { display: none; }
 .strip.is-free { scroll-snap-type: none; }
 .strip figure { flex: none; width: min(72%, 900px); scroll-snap-align: center; scroll-snap-stop: always; }
-.strip img { width: 100%; border-radius: var(--r); background: var(--surface); }
+.strip img { width: 100%; border-radius: var(--r); background: var(--surface); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 30px 70px -20px rgba(0, 0, 0, 0.55); }
 .strip .zoom { cursor: inherit; }
+.strip figcaption { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 14px; margin-top: 20px; max-width: 62ch; }
+.strip figcaption i { color: var(--tx-3); font: 400 12px/1.9 var(--mono); font-style: normal; }
+.strip figcaption strong { color: var(--tx); font-size: 18px; font-weight: 500; line-height: 1.4; }
+.strip figcaption span { grid-column: 2; color: var(--tx-2); font-size: 15px; line-height: 1.55; }
 @media (hover: hover) and (pointer: fine) {
   .strip { cursor: grab; user-select: none; -webkit-user-select: none; }
   .strip.is-held { cursor: grabbing; }

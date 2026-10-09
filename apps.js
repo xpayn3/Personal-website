@@ -281,7 +281,6 @@ window.labApps = [
       ['72,666 triangles down to 212', 'Smart fit used to turn a bracket into a brick. Blocks rebuilds a part from a coarse grid, so its steps, arms and openings stay where they were. Here it took two heavy parts of a gearbox from 72,666 triangles to 212.', 'Images/apps/meshoptimiser-blocks.webp', 'cube'],
       ['A bolt that brings its own nut', 'Tick it on, pick the nut and set how far from the head it sits. The nut is part of the bolt’s own shape, in the bolt’s thread. It’s one part in the tree and one undo step, and it can’t slide off the end.', 'Images/apps/meshoptimiser-bolt-nut.webp', 'cube'],
       ['Pull it apart', 'The exploded view has one slider and a pill for each axis, so you can open a gearbox along one direction only. Put it back with one click on the pill next to the camera.', 'Images/apps/meshoptimiser-exploded.webp', 'cube'],
-      ['It starts like an app', 'Installed, it opens in a window of its own with no address bar and no browser tabs. Drop a STEP, GLB, glTF, FBX, OBJ, 3MF or STL file anywhere on the start screen, or begin from a shape.', 'Images/apps/meshoptimiser-start.webp', 'upload'],
     ],
     clips: [
       ['Fill holes', 'Bolt holes, slots and pockets in flat faces close a few at a time. Everything else stays as it was.', 'Images/apps/meshoptimiser-clip-fill-holes.webm', 'fill-holes'],
