@@ -89,12 +89,12 @@ window.labApps = [
       wand: {
         kicker: 'Try it',
         title: 'The commands come to you.',
-        line: 'This is the app’s Quick wand, on three parts of a rear derailleur. Hold W with the pointer over the stage, or press and hold with the mouse or a finger. Flick toward a slice and let go. Click a part to select it, and the ring changes to work on it.',
+        line: 'This is the app’s own Quick wand, on three parts of a rear derailleur, drawn with the app’s shapes, icons and colours. Point at a slice and it lights up; a slice with a group fans its commands out; click one to run it. Click a part first and the ring changes to work on it.',
         tips: [
-          ['Hold W', 'The ring opens round the pointer. Move toward a slice and let go to run it.'],
-          ['Press and hold', 'The same with a mouse button or a finger, for when there is no keyboard.'],
-          ['Tap W', 'A quick tap leaves the ring open. Click a command to run it.'],
-          ['Esc', 'Closes it and runs nothing. So does letting go in the middle.'],
+          ['Point', 'Point at a slice and it lights up. A slice that holds a group fans its commands out.'],
+          ['Click', 'Click a command to run it. Click a part first, and the ring changes to work on that part.'],
+          ['Hold W', 'In the app the ring opens round the pointer. Here it moves to it: let go on a slice to run it.'],
+          ['Esc', 'Puts the ring back in the middle and runs nothing.'],
         ],
         parts: [['Cage plate', 165071], ['Upper pulley', 109430], ['Pivot bolt M5', 4812]],
       },

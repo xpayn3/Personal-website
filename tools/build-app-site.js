@@ -24,9 +24,9 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 26;
+const CSS_V = 27;
 const RP_V = 2;           // report.js
-const JS_V = 19;
+const JS_V = 20;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -329,12 +329,12 @@ ${d.tips.map(([key, line]) => `              <li><kbd>${esc(key)}</kbd><span>${e
             </ul>
           </div>
           <div class="demo wand-demo" data-wand>
-            <div class="wand-stage" data-wand-stage role="group" aria-label="A stage with three parts. Hold W, or press and hold, then flick toward a command.">
+            <div class="wand-stage" data-wand-stage role="group" aria-label="A stage with three parts and the Quick wand ring open in the middle. Point at a slice and click a command; click a part first to work on it.">
 ${d.parts.map(([name, tris], i) => `              <div class="wand-part wp-${shapes[i % shapes.length]}" data-i="${i}"><b></b><span class="wp-label"></span></div>`).join('\n')}
             </div>
             <p class="demo-out wand-out" aria-live="polite" data-wand-out></p>
             <button type="button" class="wand-reset" data-wand-reset>Reset</button>
-            <script type="application/json" data-wand-data>${JSON.stringify({ parts: d.parts })}</script>
+            <script type="application/json" data-wand-data>${JSON.stringify({ parts: d.parts, icons: ICONS.wand || {} })}</script>
           </div>
         </div>
       </div>

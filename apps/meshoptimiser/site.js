@@ -494,23 +494,30 @@
   });
 
   // ---- the Quick wand, working ----
-  // The app's ring, on three parts. Hold W over the stage (or press and hold
-  // with a mouse or a finger): a ring opens round the pointer. Move toward a
-  // slice and let go to run it; a slice that holds a group fans its commands
-  // out. A quick tap of W leaves the ring open to click. Esc, any other key,
-  // the wheel or a lost focus closes it and runs nothing. The shapes are the
-  // app's (see _Wand in its app-v2.js): the numbers below are the same.
+  // The app's ring (see _Wand in its app-v2.js: the numbers, the icons and the
+  // styles are the same), on three parts. It rests open in the middle of the
+  // stage: point at a slice and it lights up, a slice that holds a group fans
+  // its commands out, and a click runs the one you are on. Click a part first
+  // and the ring changes to work on it. Hold W over the stage, or press and
+  // hold, and the ring moves to the pointer as it does in the app: let go on a
+  // slice to run it. Esc, any other key, the wheel or a lost focus put it back.
   $$('[data-wand]').forEach((demo) => {
     const stage = $('[data-wand-stage]', demo), out = $('[data-wand-out]', demo);
-    const parts = JSON.parse($('[data-wand-data]', demo).textContent).parts.map(([name, tris], i) => ({ name, orig: tris, tris, el: $$('.wand-part', stage)[i], hidden: false, gone: false, on: false }));
+    const data = JSON.parse($('[data-wand-data]', demo).textContent), ICONS = data.icons || {};
+    const parts = data.parts.map(([name, tris], i) => ({ name, orig: tris, tris, el: $$('.wand-part', stage)[i], hidden: false, gone: false, on: false }));
     const fmt = (n) => n.toLocaleString('en-US');
-    const R_IN = 31, R_OUT = 82, F_IN = 89, F_OUT = 122, DEAD = 16, V = F_OUT + 24, R_ICON = (R_IN + R_OUT) / 2;
-    let isolated = false, view = 'solid', root = null, open = false, sticky = false, viaPointer = false;
+    const R_IN = 31, R_OUT = 82, F_IN = 89, F_OUT = 122, DEAD = 16, V = F_OUT + 24, R_ICON = (R_IN + R_OUT) / 2, POP = 0.075, POP2 = 0.03;
+    let isolated = false, view = 'solid', grid = true, root = null, open = false, sticky = false, rested = false, viaPointer = false;
     let startedAt = 0, moved = false, ox = 0, oy = 0, px = 0, py = 0, lastX = 0, lastY = 0, over = false, closedAt = -1e9;
     let slots = [], slice = 90, hot = -1, sub = -1, fanFor = -1, entryD = 0, committed = false, hold = null;
     const live = () => parts.filter((p) => !p.gone), sel = () => live().filter((p) => p.on);
     const say = (text) => { out.textContent = text; };
     const names = (a) => (a.length === 1 ? a[0].name : a.length + ' parts');
+    const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    const ico = (name) => {
+      const nodes = ICONS[name];
+      return nodes ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + nodes.map(([t, a]) => '<' + t + Object.entries(a).map(([k, v]) => ' ' + k + '="' + v + '"').join('') + '/>').join('') + '</svg>' : '';
+    };
     const paint = () => {
       parts.forEach((p) => {
         const away = p.gone || p.hidden;
@@ -520,14 +527,18 @@
       });
       stage.classList.toggle('v-wire', view === 'wire');
       stage.classList.toggle('v-xray', view === 'xray');
+      stage.classList.toggle('no-grid', !grid);
     };
+    const HINT = 'Point at a slice and click a command. Click a part first, and the ring changes to work on it.';
     const reset = () => {
       parts.forEach((p) => { p.tris = p.orig; p.hidden = p.gone = p.on = false; });
-      isolated = false; view = 'solid';
-      paint(); say('Hold W over the stage, or press and hold. Click a part to select it first, and the ring changes.');
+      isolated = false; view = 'solid'; grid = true;
+      paint(); say(HINT);
+      if (rested) rebuild();
     };
 
-    // what the commands do to the three parts
+    // what the commands do to the three parts; the ones that open a card or touch a file in the app only say what they do there
+    const note = (text) => () => say(text);
     const cmd = {
       hide: () => { const a = sel(); a.forEach((p) => { p.hidden = true; p.on = false; }); say('Hid ' + names(a) + '.'); },
       del: () => { const a = sel(); a.forEach((p) => { p.gone = true; p.on = false; }); say('Deleted ' + names(a) + '.'); },
@@ -535,30 +546,62 @@
         const a = sel(); a.forEach((p) => { p.tris = Math.max(12, Math.round(p.tris * (1 - v))); });
         say('Decimate −' + Math.round(v * 100) + ' %: ' + a.map((p) => p.name + ' is now ' + fmt(p.tris)).join(', ') + ' triangles.');
       },
+      fit: (all) => () => {
+        const a = all ? live() : sel(); a.forEach((p) => { p.tris = Math.max(12, Math.round(p.orig * 0.0016)); });
+        say('Smart fit: ' + a.map((p) => p.name + ' is now ' + fmt(p.tris)).join(', ') + ' triangles, and the outline is kept.');
+      },
       isolate: () => { const a = sel(); live().forEach((p) => { if (!p.on) p.hidden = true; }); isolated = true; say('Isolated ' + names(a) + '.'); },
       others: () => { live().forEach((p) => { if (!p.on) p.hidden = true; }); say('Hid everything that was not selected.'); },
       showAll: () => { parts.forEach((p) => { p.hidden = false; }); isolated = false; say('Every part is shown.'); },
       selAll: () => { live().forEach((p) => { p.on = !p.hidden; }); say('Selected ' + sel().length + ' parts.'); },
+      colour: () => { live().forEach((p) => { p.on = !p.hidden; }); say('Selected every part of the same colour: all ' + sel().length + '.'); },
       view: (m, label) => () => { view = m; say(label + '.'); },
+      grid: () => { grid = !grid; say(grid ? 'The ground grid is shown.' : 'The ground grid is hidden.'); },
     };
-    // what is on the ring: with a selection it works on that, with none on the whole scene; what cannot run stays, dimmed
+    const L = (label, icon, right, fn, o) => Object.assign({ label, icon, right, fn }, o || {});
+    // what is on the ring: the app's own slices. With a selection it works on that, with none on the whole scene; what cannot run stays, dimmed
     const layout = () => {
-      const a = sel(), anyHidden = live().some((p) => p.hidden);
-      const showAll = { label: 'Show all', right: 'Alt+H', off: anyHidden ? false : 'Nothing is hidden', fn: cmd.showAll };
+      const a = sel(), anyHidden = live().some((p) => p.hidden), none = live().length ? false : 'The scene is empty';
+      const showAll = L('Show all', 'eye', 'Alt+H', cmd.showAll, { off: anyHidden ? false : 'Nothing is hidden' });
       if (a.length) {
-        const total = a.reduce((n, p) => n + p.tris, 0), none = total < 12 ? 'Too few triangles to take away' : false;
-        const dec = (v) => ({ label: 'Decimate −' + Math.round(v * 100) + ' %', right: fmt(total) + ' → ' + fmt(Math.round(total * (1 - v))), off: none, fn: cmd.dec(v) });
+        const total = a.reduce((n, p) => n + p.tris, 0), few = total < 12 ? 'Too few triangles to take away' : false;
+        const dec = (v) => L('Decimate −' + Math.round(v * 100) + '%', 'triangle', fmt(total) + ' → ' + fmt(Math.round(total * (1 - v))), cmd.dec(v), { off: few });
         return [
-          { leaf: { label: 'Hide', fn: cmd.hide } },
-          { group: 'Reduce', items: [dec(0.5), dec(0.25), dec(0.75), dec(0.9)] },
-          { leaf: { label: 'Delete', fn: cmd.del, danger: true } },
-          { group: 'More', items: [isolated ? { label: 'Show all', right: 'Alt+H', fn: cmd.showAll } : { label: 'Isolate', right: 'S', fn: cmd.isolate }, { label: 'Hide others', right: 'Shift+H', fn: cmd.others }].concat(isolated ? [] : [showAll]) },
+          { leaf: L('Hide', 'eye-off', 'H', cmd.hide) },
+          { group: 'Reduce', icon: 'triangle', items: [dec(0.5), dec(0.25), dec(0.75), dec(0.9), L('Smart fit', 'wand-2', 'Ctrl+B', cmd.fit(false)), L('Split…', 'split', 'X', note('Split… opens a card in the app, where you choose how strict to be.')), L('Fill holes…', 'circle-off', 'P', note('Fill holes… opens a card in the app, where you set the size and the depth.'))] },
+          { leaf: L('Delete', 'trash-2', 'Del', cmd.del, { danger: true }) },
+          { group: 'More', icon: 'ellipsis', items: [
+            isolated ? L('Show all', 'eye', 'Alt+H', cmd.showAll) : L('Isolate', 'focus', 'S', cmd.isolate),
+            L('Frame', 'scan', 'F', note('Frame zooms the camera to the selection.')),
+            L('Select similar', 'shapes', '', note('Select similar picks every part of the same shape. No other part here has this one.')),
+            L('Select same colour', 'palette', '', cmd.colour),
+            L('Group', 'folder-plus', 'Ctrl+G', note('Group puts the selection in a new group in the tree.')),
+            L('Duplicate', 'copy-plus', 'Ctrl+D', note('Duplicate makes a copy in place.')),
+            L('Merge', 'combine', 'Ctrl+M', note('Merge joins the selection into one part.'), { off: a.length > 1 ? false : 'Select two or more parts' }),
+            L('Hide others', 'eye-off', 'Shift+H', cmd.others)].concat(isolated ? [] : [showAll]) },
         ];
       }
+      const mode = (m, label, kbd, icon) => L(label, icon, kbd, cmd.view(m, label));
       return [
-        { leaf: { label: 'Select all', fn: cmd.selAll, off: live().length ? false : 'The scene is empty' } },
-        { group: 'View', items: [{ label: 'Solid view', right: '1', fn: cmd.view('solid', 'Solid view') }, { label: 'Wireframe view', right: '2', fn: cmd.view('wire', 'Wireframe view') }, { label: 'X-ray view', right: '3', fn: cmd.view('xray', 'X-ray view') }] },
-        { leaf: { label: 'Show all', right: 'Alt+H', off: anyHidden ? false : 'Nothing is hidden', fn: cmd.showAll } },
+        { leaf: L('Fit view', 'maximize', 'F', note('Fit view zooms the camera to the whole model.'), { off: none }) },
+        { leaf: L('Select all', 'check', 'Ctrl+A', cmd.selAll, { off: none }) },
+        { group: 'View', icon: 'video', items: [
+          L('Camera view', 'video', 'Ctrl+1', note('Camera view is the perspective camera.')), L('Top view', 'square', 'Ctrl+2', note('Top view looks from above.')),
+          L('Front view', 'square', 'Ctrl+3', note('Front view looks from the front.')), L('Side view', 'square', 'Ctrl+4', note('Side view looks from the side.')),
+          mode('solid', 'Solid view', '1', 'box'), mode('wire', 'Wireframe view', '2', 'grid-3x3'), mode('xray', 'X-ray view', '3', 'crosshair'),
+          L(grid ? 'Hide ground grid' : 'Show ground grid', grid ? 'eye-off' : 'eye', 'G', cmd.grid)] },
+        { leaf: showAll },
+        { group: 'File', icon: 'folder', items: [
+          L('Save screenshot…', 'camera', '', note('Save screenshot saves an image of the viewport.'), { off: none }),
+          L('Save scene…', 'save', 'Ctrl+S', note('Save scene keeps the view, the selection and the recolouring in a small file.'), { off: none }),
+          L('Revert to source file…', 'rotate-ccw', '', note('Revert goes back to the file as it was opened.'), { off: none })] },
+        { group: 'Clean', icon: 'sparkles', items: [
+          L('Recentre on origin', 'target', '', note('Recentre moves the model to the origin.'), { off: none }),
+          L('Align to the floor…', 'arrow-down-to-line', '', note('Align to the floor stands a model that arrived on its side on the grid.'), { off: none }),
+          L('Smart fit all parts', 'box-select', '', cmd.fit(true), { off: none }),
+          L('Remove empty parts', 'circle-minus', '', note('Remove empty parts deletes parts without geometry. All three here have some.'), { off: none }),
+          L('Deduplicate geometry', 'copy', '', note('Deduplicate shares geometry between equal parts. These three are all different.'), { off: none }),
+          L('Fix degenerate parts', 'asterisk', '', note('Fix degenerate parts repairs broken triangles. These are sound.'), { off: none })] },
       ];
     };
 
@@ -579,53 +622,68 @@
     };
     const build = () => {
       if (!root) { root = el('div', 'wq'); root.setAttribute('aria-hidden', 'true'); stage.appendChild(root); }
-      slots = layout(); slice = 360 / slots.length;
-      let svg = '', items = '';
+      slots = layout().filter((sl) => sl && (sl.leaf || (sl.items && sl.items.length))); slice = 360 / slots.length;
+      let svg = '<g class="wq-slices">', items = '';
       slots.forEach((sl, i) => {
         const a = i * slice, leaf = sl.leaf;
         sl.off = leaf ? leaf.off : (sl.items.every((x) => x.off) ? 'Nothing here can run now' : false);
-        const label = leaf ? leaf.label : sl.group, danger = leaf && leaf.danger, [x, y] = pol(R_ICON, a);
+        const label = leaf ? leaf.label : sl.group, icon = leaf ? leaf.icon : sl.icon, danger = leaf && leaf.danger;
+        const [x, y] = pol(R_ICON, a), [gx, gy] = pol(R_ICON * POP, a);
         svg += '<path class="wq-slice' + (sl.off ? ' is-off' : '') + (danger ? ' danger' : '') + '" data-i="' + i + '" d="' + arc(R_IN, R_OUT, a - slice / 2, a + slice / 2) + '"/>';
-        items += '<div class="wq-item' + (sl.off ? ' is-off' : '') + (danger ? ' danger' : '') + '" data-i="' + i + '" style="left:' + x.toFixed(1) + 'px;top:' + y.toFixed(1) + 'px">' + label + '</div>';
+        items += '<div class="wq-item' + (sl.off ? ' is-off' : '') + (danger ? ' danger' : '') + '" data-i="' + i + '" style="left:' + x.toFixed(1) + 'px;top:' + y.toFixed(1) + 'px;--dx:' + gx.toFixed(1) + 'px;--dy:' + gy.toFixed(1) + 'px">' + ico(icon) + '<span>' + esc(label) + '</span></div>';
       });
-      root.innerHTML = '<svg class="wq-svg" viewBox="-' + V + ' -' + V + ' ' + 2 * V + ' ' + 2 * V + '" width="' + 2 * V + '" height="' + 2 * V + '" style="left:-' + V + 'px;top:-' + V + 'px"><g>' + svg + '</g><g class="wq-fan"></g></svg><div class="wq-items">' + items + '</div><div class="wq-fanlabels"></div>';
+      svg += '</g><g class="wq-fan"></g><path class="wq-pop" d=""/><path class="wq-pop2" d=""/><g class="wq-fanico"></g>';
+      root.innerHTML = '<div class="wq-ring"><svg class="wq-svg" viewBox="-' + V + ' -' + V + ' ' + 2 * V + ' ' + 2 * V + '" width="' + 2 * V + '" height="' + 2 * V + '" style="left:-' + V + 'px;top:-' + V + 'px">' + svg + '</svg><div class="wq-items">' + items + '</div><div class="wq-fanlabels"></div></div>';
     };
     const place = () => {
       const w = stage.clientWidth, h = stage.clientHeight;
       const cx = w < 2 * V ? w / 2 : Math.max(V, Math.min(w - V, ox)), cy = h < 2 * V ? h / 2 : Math.max(V, Math.min(h - V, oy));
       root.style.left = cx + 'px'; root.style.top = cy + 'px';
     };
+    // The lit slice grows out of the ring a little: a copy of its shape drawn above its neighbours, scaled up with a small overshoot
+    const popTo = (p, d, danger) => {
+      if (!p) return;
+      p.style.transition = 'none'; p.classList.remove('is-on');
+      if (!d) { void p.getBoundingClientRect(); p.style.transition = ''; return; }
+      p.setAttribute('d', d); p.classList.toggle('danger', !!danger);
+      void p.getBoundingClientRect(); p.style.transition = ''; p.classList.add('is-on');
+    };
     const fanOpen = (i) => {
-      const g = $('.wq-fan', root), lab = $('.wq-fanlabels', root);
+      const g = $('.wq-fan', root), lab = $('.wq-fanlabels', root), fi = $('.wq-fanico', root);
       fanFor = i; sub = -1;
-      if (i < 0) { g.innerHTML = ''; lab.innerHTML = ''; return; }
+      popTo($('.wq-pop2', root), null);
+      if (i < 0) { g.innerHTML = ''; lab.innerHTML = ''; fi.innerHTML = ''; return; }
       const sl = slots[i], n = sl.items.length, step = n <= 5 ? 30 : n <= 7 ? 26 : 22, total = step * n, a0 = i * slice - total / 2;
       sl.fan = { step, total, a0 };
-      let paths = '', labels = '';
+      let paths = '', labels = '', icons = '';
       sl.items.forEach((it, j) => {
         const aa = a0 + j * step, am = aa + step / 2, first = j === 0, last = j === n - 1;
-        paths += '<path class="wq-sub' + (it.off ? ' is-off' : '') + '" data-j="' + j + '" d="' + arcR(F_IN, F_OUT, aa, aa + step, [first, last, last, first], 6) + '" style="--j:' + j + '"/>';
+        const dn = arcR(F_IN, F_OUT, aa, aa + step, [first, last, last, first], 6), dl = arcR(F_IN, F_OUT, aa, aa + step, [true, true, true, true], 6);
+        paths += '<path class="wq-sub' + (it.off ? ' is-off' : '') + (it.danger ? ' danger' : '') + '" data-j="' + j + '" data-d="' + dn + '" data-dh="' + dl + '" d="' + dn + '" style="--j:' + j + '"/>';
+        const [ix, iy] = pol((F_IN + F_OUT) / 2, am), [kx, ky] = pol((F_IN + F_OUT) / 2 * POP2, am);
+        icons += '<foreignObject x="' + (ix - 9).toFixed(1) + '" y="' + (iy - 9).toFixed(1) + '" width="18" height="18" class="wq-subico' + (it.off ? ' is-off' : '') + '" data-j="' + j + '" style="--j:' + j + ';--dx:' + kx.toFixed(1) + 'px;--dy:' + ky.toFixed(1) + 'px"><div xmlns="http://www.w3.org/1999/xhtml">' + ico(it.icon) + '</div></foreignObject>';
         const [lx, ly] = pol(F_OUT + 10, am), sx = Math.sin(am * Math.PI / 180);
         const al = Math.abs(sx) > 0.2 ? (sx > 0 ? '0 -50%' : '-100% -50%') : '-50% ' + (-Math.cos(am * Math.PI / 180) > 0 ? '0' : '-100%');
-        labels += '<div class="wq-lab' + (it.off ? ' is-off' : '') + '" data-j="' + j + '" style="--j:' + j + ';left:' + lx.toFixed(1) + 'px;top:' + ly.toFixed(1) + 'px;translate:' + al + '">' + it.label + ((it.off || it.right) ? '<span>' + (it.off || it.right) + '</span>' : '') + '</div>';
+        labels += '<div class="wq-lab' + (it.off ? ' is-off' : '') + '" data-j="' + j + '" style="--j:' + j + ';left:' + lx.toFixed(1) + 'px;top:' + ly.toFixed(1) + 'px;translate:' + al + '">' + esc(it.label) + ((it.off || it.right) ? '<span class="wq-lab-r">' + esc(it.off ? String(it.off) : it.right) + '</span>' : '') + '</div>';
       });
-      g.innerHTML = paths; lab.innerHTML = labels;
+      g.innerHTML = paths; lab.innerHTML = labels; fi.innerHTML = icons;
     };
     // following the pointer: the slice it is toward, and the command of the fan it has gone out onto
     const aim = () => {
       const dx = px - ox, dy = py - oy, d = Math.hypot(dx, dy);
       let a = Math.atan2(dx, -dy) * 180 / Math.PI; if (a < 0) a += 360;
       let h = -1, sj = -1;
-      if (d >= DEAD) {
+      const reach = rested ? (fanFor >= 0 ? F_OUT + 16 : R_OUT + 12) : Infinity;
+      if (d >= DEAD && d <= reach) {
         h = Math.round(a / slice) % slots.length;
-        if (fanFor >= 0) {                                          // heading for a command of the fan does not turn into another slice on the way
+        // a fan lies across the directions of other slices: once the pointer has gone on outward from the group it was on, the group is kept
+        if (fanFor >= 0) {
           if (d - entryD > 12) committed = true; else if (d < entryD + 2) committed = false;
           if (committed && d > R_IN + 6) h = fanFor;
         }
         if (fanFor >= 0 && d > R_OUT + 4 && slots[fanFor] && slots[fanFor].fan) {
           const { step, total, a0 } = slots[fanFor].fan, rel = ((a - a0) % 360 + 360) % 360;
-          if (rel < total) sj = Math.floor(rel / step);
-          h = fanFor;
+          if (rel < total) { sj = Math.floor(rel / step); h = fanFor; } else h = fanFor;
         }
       }
       if (h !== hot) {
@@ -633,10 +691,15 @@
         const grp = h >= 0 && slots[h] && slots[h].items && !slots[h].off ? h : -1;
         if (grp !== fanFor) { fanOpen(grp); entryD = d; committed = false; }
         $$('.wq-slice,.wq-item', root).forEach((n) => n.classList.toggle('is-hot', +n.dataset.i === h));
+        const hs = h >= 0 ? slots[h] : null, hp = hs && !hs.off ? $('.wq-slice[data-i="' + h + '"]', root) : null;
+        popTo($('.wq-pop', root), hp ? hp.getAttribute('d') : null, hs && hs.leaf && hs.leaf.danger);
       }
       if (sj !== sub) {
         sub = sj;
-        $$('.wq-sub,.wq-lab', root).forEach((n) => n.classList.toggle('is-hot', +n.dataset.j === sj));
+        $$('.wq-sub,.wq-lab,.wq-subico', root).forEach((n) => n.classList.toggle('is-hot', +n.dataset.j === sj));
+        $$('.wq-sub', root).forEach((n) => n.setAttribute('d', +n.dataset.j === sj ? n.dataset.dh : n.dataset.d));
+        const sp = sj >= 0 ? $('.wq-sub[data-j="' + sj + '"]', root) : null, si = sp && slots[fanFor] ? slots[fanFor].items[sj] : null;
+        popTo($('.wq-pop2', root), sp && si && !si.off ? sp.dataset.dh : null, si && si.danger);
       }
       root.classList.toggle('is-aim', d >= DEAD);
     };
@@ -646,44 +709,61 @@
       if (sub >= 0 && sl.items && sl.items[sub]) return sl.items[sub];
       return sl.leaf || { isGroup: true };
     };
+    const runnable = (c) => !!(c && !c.isGroup && !c.off);
+    const centre = () => { lastX = stage.clientWidth / 2; lastY = stage.clientHeight / 2; };
     const show = (asSticky) => {
       if (open) return;
       ox = px = lastX; oy = py = lastY; sticky = !!asSticky; moved = false; startedAt = performance.now(); hot = -1; sub = -1; fanFor = -1; committed = false;
       build(); place();
-      open = true; demo.classList.add('is-open'); root.classList.add('is-in');
+      open = true; demo.classList.add('is-open');
+      root.classList.remove('is-in'); root.style.display = 'block'; void root.offsetWidth; root.classList.add('is-in');
       aim();
     };
+    // the ring comes back to rest in the middle of the stage, built again for what is there now
+    const rest = () => { if (open) return; centre(); show(true); rested = true; };
+    const rebuild = () => { hot = -1; sub = -1; fanFor = -1; committed = false; build(); place(); root.style.display = 'block'; root.classList.add('is-in'); px = ox; py = oy; aim(); };
+    const hide = () => { open = false; sticky = false; rested = false; viaPointer = false; closedAt = performance.now(); root.classList.remove('is-in'); root.style.display = 'none'; demo.classList.remove('is-open'); };
+    // run: whether to run what the pointer is on. A ring at rest stays where it is; a ring that was moved to the pointer goes back to rest.
     const close = (run) => {
       if (!open) return false;
-      const c = run ? current() : null, go = !!(c && !c.isGroup && !c.off);
-      open = false; sticky = false; viaPointer = false; closedAt = performance.now();
-      root.classList.remove('is-in'); demo.classList.remove('is-open');
-      if (go) setTimeout(() => { c.fn(); paint(); }, 0);
-      else if (run) say('Nothing run. Flick toward a slice, or a command of its fan, before you let go.');
+      const c = run ? current() : null, go = runnable(c);
+      if (rested) {
+        if (go) { c.fn(); paint(); rebuild(); }
+        else { px = ox; py = oy; aim(); }
+        return go;
+      }
+      hide();
+      setTimeout(() => { if (go) { c.fn(); paint(); } else if (run) say('Nothing run. Flick toward a slice, or a command of its fan, before you let go.'); rest(); }, 0);
       return go;
     };
+    const moveToPointer = () => { if (!rested) return; hide(); show(false); };
 
-    // the pointer: a click selects, a press held for a moment opens the ring (like W held)
+    // the pointer: a click runs what is lit, or selects the part under it; a press held for a moment moves the ring to the pointer (like W held)
     const local = (e) => { const r = stage.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
     stage.addEventListener('pointerenter', () => { over = true; });
-    stage.addEventListener('pointerleave', () => { over = false; });
+    stage.addEventListener('pointerleave', (e) => { over = false; if (e.pointerType === 'mouse' && rested && open) { px = ox; py = oy; aim(); } });
     stage.addEventListener('contextmenu', (e) => { if (open || performance.now() - closedAt < 400) e.preventDefault(); });
     stage.addEventListener('pointerdown', (e) => {
       if (e.button !== 0) return;
       const [x, y] = local(e); lastX = x; lastY = y;
-      if (open) { e.preventDefault(); close(true); return; }          // a ring left open: the press picks
+      if (open && rested) {                                              // a press on the resting ring: aim there, then run or fan out
+        px = x; py = y; aim();
+        const c = current();
+        if (c) { e.preventDefault(); if (runnable(c)) close(true); return; }
+      } else if (open) { e.preventDefault(); close(true); return; }      // a ring left open by a tap of W: the press picks
       const h = hold = { x: e.clientX, y: e.clientY, id: e.pointerId, part: e.target.closest('.wand-part'), fired: false, t: 0 };
       h.t = setTimeout(() => {
         if (hold !== h) return;
         h.fired = true; viaPointer = true;
         try { stage.setPointerCapture(h.id); } catch (_) { /* a pointer that is gone */ }
-        show(false);
+        moveToPointer(); if (!open) show(false);
       }, 230);
     });
     window.addEventListener('pointermove', (e) => {
       const [x, y] = local(e); lastX = x; lastY = y;
       if (hold && !hold.fired && Math.hypot(e.clientX - hold.x, e.clientY - hold.y) > 8) { clearTimeout(hold.t); hold = null; }
       if (!open) return;
+      if (rested && !over) return;
       px = x; py = y;
       if (Math.hypot(px - ox, py - oy) >= DEAD) moved = true;
       aim();
@@ -695,38 +775,41 @@
       const p = h.part ? parts[+h.part.dataset.i] : null;               // a click: select the part under it
       parts.forEach((q) => { q.on = q === p; });
       paint();
-      say(p ? p.name + ' is selected. Hold W, or press and hold, to open the ring.' : 'Nothing is selected, so the ring works on the whole scene.');
+      say(p ? p.name + ' is selected. The ring now works on it.' : 'Nothing is selected, so the ring works on the whole scene.');
+      if (rested) rebuild();
     }, true);
     window.addEventListener('pointercancel', () => { if (hold) { clearTimeout(hold.t); hold = null; } close(false); }, true);
 
-    // the keyboard: W held, a quick tap leaves it open; anything else closes it
+    // the keyboard: W held moves the ring to the pointer, a quick tap leaves it open there; anything else puts it back
     const typing = (e) => { const t = e.target; return !!(t && (t.isContentEditable || /^(input|textarea|select)$/i.test(t.tagName))); };
     const isW = (e) => e.key === 'w' || e.key === 'W';
     window.addEventListener('keydown', (e) => {
       if (e.isComposing || typing(e)) return;
-      if (e.key === 'Escape' && open) { e.preventDefault(); close(false); return; }
+      if (e.key === 'Escape' && open && !rested) { e.preventDefault(); close(false); return; }
       if (isW(e) && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
+        if (open && rested) { if (e.repeat || !over) return; e.preventDefault(); ox = px = lastX; oy = py = lastY; moveToPointer(); return; }
         if (open) { e.preventDefault(); if (sticky && !e.repeat) close(false); return; }
         if (e.repeat || !over) return;
         e.preventDefault(); show(false);
         return;
       }
-      if (open && !/^(Shift|Control|Alt|Meta|CapsLock)$/.test(e.key)) close(false);
+      if (open && !rested && !/^(Shift|Control|Alt|Meta|CapsLock)$/.test(e.key)) close(false);
     }, true);
     window.addEventListener('keyup', (e) => {
-      if (!open || !isW(e) || viaPointer) return;
+      if (!open || rested || !isW(e) || viaPointer) return;
       e.preventDefault();
       if (sticky) return;
-      if (performance.now() - startedAt < 260 && !moved) { sticky = true; aim(); say('The ring stays open. Click a command to run it, Esc to close.'); return; }
+      if (performance.now() - startedAt < 260 && !moved) { sticky = true; aim(); say('The ring stays open here. Click a command to run it, Esc to put it back.'); return; }
       close(true);
     }, true);
-    window.addEventListener('wheel', () => { if (open) close(false); }, { capture: true, passive: true });
-    window.addEventListener('blur', () => close(false));
-    window.addEventListener('resize', () => close(false));
-    document.addEventListener('visibilitychange', () => { if (document.hidden) close(false); });
+    window.addEventListener('wheel', () => { if (open && !rested) close(false); }, { capture: true, passive: true });
+    window.addEventListener('blur', () => { if (open && !rested) close(false); });
+    window.addEventListener('resize', () => { if (open && rested) { centre(); ox = px = lastX; oy = py = lastY; place(); } else if (open) close(false); });
+    document.addEventListener('visibilitychange', () => { if (document.hidden && open && !rested) close(false); });
 
-    $('[data-wand-reset]', demo).addEventListener('click', () => { close(false); reset(); });
+    $('[data-wand-reset]', demo).addEventListener('click', () => { if (open && !rested) hide(); reset(); if (!open) rest(); });
     reset();
+    rest();
   });
 
   // ---- clips ----
