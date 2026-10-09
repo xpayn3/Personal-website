@@ -24,7 +24,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 22;
+const CSS_V = 23;
 const RP_V = 2;           // report.js
 const JS_V = 18;
 
@@ -58,6 +58,8 @@ function siteFor(app, docs) {
   const repo = app.repo.replace(/\/+$/, '');
   const zip = app.download || repo + '/archive/HEAD.zip';
   const latest = app.changelog.versions.find(v => v.latest) || app.changelog.versions[0];
+  // the last three tagged releases, each as GitHub's zip of that tag
+  const releases = app.changelog.versions.filter(v => !v.next).slice(0, 3);
 
   // the address of the docs article whose slug matches, or the docs home
   const docLink = (re) => { const hit = docs && docs.articles.find(a => re.test(a.slug)); return hit ? `docs/${hit.slug}.html` : 'docs.html'; };
@@ -686,6 +688,22 @@ ${docs.articles.filter(a => a.group === group.id).map(a => `          <li data-w
           <li><i>02</i><h3>Start it</h3><p>${esc(app.start.text)}</p></li>
           <li><i>03</i><h3>Drop a file</h3><p>${esc(app.steps[0][1])}</p></li>
         </ol>${commands(app.start.commands)}
+      </div>
+    </section>
+
+    <section class="band" id="versions">
+      <div class="wrap split">
+        <div class="split-head">
+          <p class="kicker">Versions</p>
+          <h2>The last three releases.</h2>
+          <p class="split-note">Need an older one? Each is the exact code of that release, as a zip.</p>
+        </div>
+        <ol class="releases">
+${releases.map(r => `          <li>
+            <div class="rel-name"><strong>v${esc(r.version)}</strong>${r.latest ? '<em>Latest</em>' : ''}${r.date ? `<span>${esc(r.date.split(' · ')[0])}</span>` : ''}</div>
+            <div class="rel-actions"><a class="more" href="changelog.html#v${esc(r.version)}">What changed</a><a class="btn" href="${repo}/archive/refs/tags/v${esc(r.version)}.zip" download rel="noopener" aria-label="Download v${esc(r.version)} as a zip">Download .zip</a></div>
+          </li>`).join('\n')}
+        </ol>
       </div>
     </section>
 

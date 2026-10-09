@@ -323,6 +323,16 @@ b.is-refactor { color: var(--refactor); }
 .table dt { color: var(--tx); }
 .table dd { color: var(--tx-2); }
 
+.releases { list-style: none; }
+.releases li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding: 18px 0; border-top: 1px solid var(--line); }
+.releases li:last-child { border-bottom: 1px solid var(--line); }
+.rel-name { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+.rel-name strong { font-size: 20px; font-weight: 500; }
+.rel-name em { color: var(--accent); font-size: 12px; font-style: normal; letter-spacing: 0.1em; text-transform: uppercase; }
+.rel-name span { color: var(--tx-3); font-size: 14px; }
+.rel-actions { display: flex; align-items: center; gap: 16px; }
+.split-note { color: var(--tx-2); font-size: 15px; max-width: 32ch; }
+
 .commands { display: grid; gap: 8px; margin-top: 4px; }
 .commands > div { display: grid; grid-template-columns: minmax(110px, 0.22fr) minmax(0, 1fr); align-items: center; gap: 16px; padding: 8px 8px 8px 18px; border-radius: var(--r); background: var(--surface); }
 .commands dt { color: var(--tx-2); font-size: 14px; font-weight: 400; }
