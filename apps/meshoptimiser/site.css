@@ -689,7 +689,6 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
    window. The stage is drawn at 1240 x 880 and scaled to fit (--k). */
 .appui { --k: 1; --mx: 0; --my: 0; position: relative; width: 100%; aspect-ratio: 1240 / 560; contain: layout; }
 .appui-stage { position: absolute; left: 0; top: 0; width: 1240px; height: 560px; transform: scale(var(--k)); transform-origin: 0 0; }
-  transform: translate3d(calc(var(--mx) * -10px), calc(var(--my) * -8px), 0) rotate(calc(var(--mx) * 1.5deg)); transition: transform 0.25s ease-out; }
 .ap { position: absolute; left: var(--x); top: var(--y); z-index: calc(var(--z) * 10); border-radius: 10px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 2px 10px rgba(0, 0, 0, 0.35);
   transform: translate3d(calc(var(--mx) * var(--z) * 14px), calc(var(--my) * var(--z) * 10px), 0) rotate(var(--r));
   transition: transform 0.28s ease-out, box-shadow 0.28s ease-out, opacity 0.8s ease var(--d), translate 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) var(--d); }

@@ -24,7 +24,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 31;
+const CSS_V = 32;
 const RP_V = 2;           // report.js
 const JS_V = 21;
 
