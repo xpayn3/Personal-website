@@ -200,8 +200,21 @@ window.labApps = [
             ['Four switches', 'Settings › Claude has one switch each for changing the model, moving and renaming, deleting, and files. A switch that is off refuses the request, and Claude is told why.'],
             ['Deleting always asks', 'Even if you turn asking off for everything else.'],
             ['One undo each', 'Every change is a step in the app’s own history. Ctrl + Z takes it back, and so can Claude.'],
-            ['Off until you switch it on', 'One switch connects it, one switch ends it, and the top bar says when it is on. Settings lists what Claude asked for, and what you answered.'],
+            ['Off until you switch it on', 'One switch connects it, one switch ends it, and the top bar says when it is on. Settings lists what Claude asked for, what you answered and how long each request took. Every request is also written to the app’s console and to the window that runs it.'],
           ],
+          // the badge in the top bar and its dropdown (the picture is a close-up of the app's top right corner)
+          badge: {
+            kicker: 'Always in view',
+            title: 'The badge in the top bar is a small control panel.',
+            line: 'While Claude is connected, a badge sits at the right of the top bar. Click it for a dropdown with the numbers and the basic switches. For everything else, More opens Settings.',
+            points: [
+              ['The state', 'Listening, working, or waiting for your answer, with how long it has been connected and what Claude asked for last.'],
+              ['The numbers', 'Requests, done, said no and failed this session, and the last three requests with how long each took.'],
+              ['The switches', 'Let Claude connect, ask before Claude edits, and always ask before deleting. Switch the connection off from here in one click.'],
+              ['The rest', 'Copy the connect command, open the console where every request is written, or open Settings › Claude with More.'],
+            ],
+            shot: ['Images/apps/meshoptimiser-claude-badge.webp', 'The Claude badge in the top bar, and its dropdown.', 470, 540],
+          },
           shots: [
             ['Images/apps/meshoptimiser-claude-allow.webp', 'The prompt that comes before every change to the model.'],
             ['Images/apps/meshoptimiser-claude-settings.webp', 'Settings › Claude: the connection, what Claude may do, and what it asked for.'],

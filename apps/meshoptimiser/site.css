@@ -1030,3 +1030,12 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 .kn-figures dd { margin-top: 10px; max-width: 30ch; color: var(--tx-2); font-size: 14px; line-height: 1.5; }
 @media (max-width: 1020px) { .kn-grid { grid-template-columns: minmax(0, 1fr); } .kn-figures { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; } }
 @media (max-width: 560px) { .kn-figures { grid-template-columns: minmax(0, 1fr); } }
+
+/* the badge and its dropdown */
+.cl-badge { display: grid; grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr); gap: clamp(28px, 5vw, 80px); align-items: center; margin-top: clamp(48px, 6vw, 88px); }
+.cl-badge img { width: 100%; height: auto; border-radius: var(--r); background: var(--surface); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.07), 0 30px 70px -20px rgba(0, 0, 0, 0.55); }
+.cl-badge figcaption { margin-top: 12px; color: var(--tx-3); font-size: 13px; }
+.cl-badge h3 { margin-top: 14px; max-width: 24ch; font-size: clamp(24px, 2.6vw, 34px); font-weight: 300; line-height: 1.15; letter-spacing: -0.02em; }
+.cl-badge .lead { margin-top: 14px; font-size: 16px; }
+.cl-points.is-one { grid-template-columns: minmax(0, 1fr); margin-top: 24px; }
+@media (max-width: 860px) { .cl-badge { grid-template-columns: minmax(0, 1fr); } .cl-badge figure { max-width: 420px; } }

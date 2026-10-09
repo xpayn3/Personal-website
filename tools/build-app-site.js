@@ -24,7 +24,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 75;
+const CSS_V = 76;
 const RP_V = 2;           // report.js
 const JS_V = 26;
 
@@ -469,6 +469,22 @@ ${c.band.prompts.map(p => `            <li>${esc(p)}</li>`).join('\n')}
     </section>`;
   };
 
+  const claudeBadge = () => {
+    const b = site.claude.control.badge, [src, caption, w, h] = b.shot;
+    return `
+        <div class="cl-badge">
+          <figure><a class="zoom" href="${asset(src)}" data-group="claude" data-caption="${esc(caption)}"><img src="${asset(src)}" alt="${esc(app.title + ': ' + caption)}" width="${w}" height="${h}" loading="lazy" decoding="async" /></a><figcaption>${esc(caption)}</figcaption></figure>
+          <div>
+            <p class="kicker">${esc(b.kicker)}</p>
+            <h3>${esc(b.title)}</h3>
+            <p class="lead">${esc(b.line)}</p>
+            <dl class="cl-points is-one">
+${b.points.map(([name, line]) => `              <div><dt>${esc(name)}</dt><dd>${esc(line)}</dd></div>`).join('\n')}
+            </dl>
+          </div>
+        </div>`;
+  };
+
   const claudeKnows = () => {
     const k = site.claude.knows;
     return `
@@ -765,6 +781,7 @@ ${c.control.points.map(([name, line]) => `          <div><dt>${esc(name)}</dt><d
         <div class="cl-shots">
           ${c.control.shots.map(s => shot(s, 'claude')).join('\n          ')}
         </div>
+${c.control.badge ? claudeBadge() : ''}
         <div class="cl-privacy">
           <h3>${esc(c.privacy.title)}</h3>
 ${c.privacy.lines.map(l => `          <p>${esc(l)}</p>`).join('\n')}

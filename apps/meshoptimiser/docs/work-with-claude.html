@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=75" />
+  <link rel="stylesheet" href="../site.css?v=76" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -175,7 +175,11 @@
             <div><dt>Show the Claude pill in the top bar</dt><dd>A small pill that says when Claude is listening, working or waiting for you.</dd></div>
             <div><dt>Show a note when Claude acts</dt><dd>A short message names what Claude is doing.</dd></div>
           </dl>
-          <p>A switch that is off refuses the request, and Claude is told why. At the bottom of the section, <span class="ui">Recent requests</span> lists what Claude asked for and what happened: done, you said no, turned off, or failed.</p>
+          <p>A switch that is off refuses the request, and Claude is told why.</p>
+          <h2 id="the-badge-in-the-top-bar">The badge in the top bar</h2>
+          <p>While Claude is connected, a <span class="ui">Claude connected</span> badge sits at the right of the top bar. Click it for a dropdown: whether the app is listening, working or waiting for you, the number of requests, how many were done, declined or failed, the last three requests with how long each took, and three switches: <span class="ui">Let Claude connect</span>, <span class="ui">Ask before Claude edits</span> and <span class="ui">Always ask before deleting</span>. <span class="ui">Copy command</span> copies the connect command, <span class="ui">Console</span> opens the console, and <span class="ui">More…</span> opens Settings, Claude. <span class="ui">Esc</span> or a click elsewhere closes it.</p>
+          <h2 id="what-claude-asked-for">What Claude asked for</h2>
+          <p>At the bottom of the Claude section, <span class="ui">This session</span> counts the requests and names the ones asked for most, with how long each takes, and <span class="ui">Recent requests</span> lists what Claude asked for and what happened: done, you said no, turned off, or failed. <span class="ui">Copy report</span> puts the numbers and the recent requests on the clipboard, for a bug report. Every request and every change of the connection is also written to the console (the button in the status bar), tagged claude, and to the window that runs the app.</p>
           <h2 id="what-claude-already-knows">What Claude already knows</h2>
           <p>Claude does not start from nothing. The app gives it the know-how of an experienced user, so it works in the order a person would and asks the questions a person would ask.</p>
           <ul class="kb-points">

@@ -3380,7 +3380,11 @@ module.exports = {
           ['Show the Claude pill in the top bar', 'A small pill that says when Claude is listening, working or waiting for you.'],
           ['Show a note when Claude acts', 'A short message names what Claude is doing.'],
         ]],
-        ['p', 'A switch that is off refuses the request, and Claude is told why. At the bottom of the section, {{Recent requests}} lists what Claude asked for and what happened: done, you said no, turned off, or failed.'],
+        ['p', 'A switch that is off refuses the request, and Claude is told why.'],
+        ['h', 'The badge in the top bar'],
+        ['p', 'While Claude is connected, a {{Claude connected}} badge sits at the right of the top bar. Click it for a dropdown: whether the app is listening, working or waiting for you, the number of requests, how many were done, declined or failed, the last three requests with how long each took, and three switches: {{Let Claude connect}}, {{Ask before Claude edits}} and {{Always ask before deleting}}. {{Copy command}} copies the connect command, {{Console}} opens the console, and {{More…}} opens Settings, Claude. {{Esc}} or a click elsewhere closes it.'],
+        ['h', 'What Claude asked for'],
+        ['p', 'At the bottom of the Claude section, {{This session}} counts the requests and names the ones asked for most, with how long each takes, and {{Recent requests}} lists what Claude asked for and what happened: done, you said no, turned off, or failed. {{Copy report}} puts the numbers and the recent requests on the clipboard, for a bug report. Every request and every change of the connection is also written to the console (the button in the status bar), tagged claude, and to the window that runs the app.'],
         ['h', 'What Claude already knows'],
         ['p', 'Claude does not start from nothing. The app gives it the know-how of an experienced user, so it works in the order a person would and asks the questions a person would ask.'],
         ['list', [

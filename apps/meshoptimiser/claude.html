@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=75" />
+  <link rel="stylesheet" href="site.css?v=76" />
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/"}}</script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
@@ -264,11 +264,26 @@
           <div><dt>Four switches</dt><dd>Settings › Claude has one switch each for changing the model, moving and renaming, deleting, and files. A switch that is off refuses the request, and Claude is told why.</dd></div>
           <div><dt>Deleting always asks</dt><dd>Even if you turn asking off for everything else.</dd></div>
           <div><dt>One undo each</dt><dd>Every change is a step in the app’s own history. Ctrl + Z takes it back, and so can Claude.</dd></div>
-          <div><dt>Off until you switch it on</dt><dd>One switch connects it, one switch ends it, and the top bar says when it is on. Settings lists what Claude asked for, and what you answered.</dd></div>
+          <div><dt>Off until you switch it on</dt><dd>One switch connects it, one switch ends it, and the top bar says when it is on. Settings lists what Claude asked for, what you answered and how long each request took. Every request is also written to the app’s console and to the window that runs it.</dd></div>
         </dl>
         <div class="cl-shots">
           <figure><a class="zoom" href="../../Images/apps/meshoptimiser-claude-allow.webp" data-group="claude" data-caption="The prompt that comes before every change to the model."><img src="../../Images/apps/meshoptimiser-claude-allow.webp" alt="MeshOptimiser: The prompt that comes before every change to the model." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>The prompt that comes before every change to the model.</figcaption></figure>
           <figure><a class="zoom" href="../../Images/apps/meshoptimiser-claude-settings.webp" data-group="claude" data-caption="Settings › Claude: the connection, what Claude may do, and what it asked for."><img src="../../Images/apps/meshoptimiser-claude-settings.webp" alt="MeshOptimiser: Settings › Claude: the connection, what Claude may do, and what it asked for." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Settings › Claude: the connection, what Claude may do, and what it asked for.</figcaption></figure>
+        </div>
+
+        <div class="cl-badge">
+          <figure><a class="zoom" href="../../Images/apps/meshoptimiser-claude-badge.webp" data-group="claude" data-caption="The Claude badge in the top bar, and its dropdown."><img src="../../Images/apps/meshoptimiser-claude-badge.webp" alt="MeshOptimiser: The Claude badge in the top bar, and its dropdown." width="470" height="540" loading="lazy" decoding="async" /></a><figcaption>The Claude badge in the top bar, and its dropdown.</figcaption></figure>
+          <div>
+            <p class="kicker">Always in view</p>
+            <h3>The badge in the top bar is a small control panel.</h3>
+            <p class="lead">While Claude is connected, a badge sits at the right of the top bar. Click it for a dropdown with the numbers and the basic switches. For everything else, More opens Settings.</p>
+            <dl class="cl-points is-one">
+              <div><dt>The state</dt><dd>Listening, working, or waiting for your answer, with how long it has been connected and what Claude asked for last.</dd></div>
+              <div><dt>The numbers</dt><dd>Requests, done, said no and failed this session, and the last three requests with how long each took.</dd></div>
+              <div><dt>The switches</dt><dd>Let Claude connect, ask before Claude edits, and always ask before deleting. Switch the connection off from here in one click.</dd></div>
+              <div><dt>The rest</dt><dd>Copy the connect command, open the console where every request is written, or open Settings › Claude with More.</dd></div>
+            </dl>
+          </div>
         </div>
         <div class="cl-privacy">
           <h3>What leaves the computer</h3>
