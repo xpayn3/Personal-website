@@ -24,9 +24,9 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 32;
+const CSS_V = 33;
 const RP_V = 2;           // report.js
-const JS_V = 21;
+const JS_V = 22;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -350,21 +350,13 @@ ${d.tips.map(([key, line]) => `          <li><kbd>${esc(key)}</kbd><span>${esc(l
           <h2>${esc(l.title)}</h2>
         </div>
         <p class="lead lib-lead">${esc(l.line)}</p>
-        <div class="lib" data-lib>
-          <div class="lib-shelf">
-            <div class="lib-tabs" role="tablist" aria-label="Shelves">
-${l.shelves.map(([name, items], i) => `              <button type="button" role="tab" aria-selected="${i === 0}" data-shelf="${i}">${esc(name)}<i>${items.length}</i></button>`).join('\n')}
-            </div>
-${l.shelves.map(([name, items], i) => `            <ul class="lib-grid" data-shelf-grid="${i}"${i ? ' hidden' : ''} role="tabpanel" aria-label="${esc(name)}">
-${items.map(([key, label]) => `              <li><button type="button" class="lib-card" data-key="${esc(key)}" data-name="${esc(label)}" aria-label="${esc(label)}: drag into the scene, or press Enter to add it"><img src="library/${esc(key)}.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>${esc(label)}</span></button></li>`).join('\n')}
-            </ul>`).join('\n')}
-          </div>
-          <div class="lib-scene">
-            <div class="lib-view" data-view tabindex="0" aria-label="A scene. Drop parts here, drag them around, press Delete to remove the selected one.">
-              <p class="lib-hint">${esc(l.hint)}</p>
-            </div>
-            <div class="lib-bar"><span class="lib-count" aria-live="polite">Nothing in the scene yet</span><button type="button" class="lib-clear" hidden>Clear scene</button></div>
-          </div>
+        <div class="lib-show">
+${l.shelves.map(([name, items]) => `          <section class="lib-set">
+            <h3>${esc(name)}<i>${items.length}</i></h3>
+            <ul class="lib-tiles">
+${items.map(([key, label]) => `              <li><img src="library/${esc(key)}.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>${esc(label)}</span></li>`).join('\n')}
+            </ul>
+          </section>`).join('\n')}
         </div>
       </div>
     </section>`;
@@ -591,7 +583,7 @@ ${(latest.items || []).slice(0, 4).map(([tag, line]) => `            <li><b clas
     </section>
 ${app.featureGroups.map((group, gi) => `
     <section class="band" id="${slug(group.title)}" style="--ico: ${GROUP_COLOURS[gi % GROUP_COLOURS.length]}">
-      <div class="wrap split">
+      <div class="wrap tools-wrap">
         <div class="split-head">
           <p class="kicker">${esc(group.note || 'Features')}</p>
           <h2>${esc(group.title)}</h2>

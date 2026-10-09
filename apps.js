@@ -156,8 +156,8 @@ window.labApps = [
       // the library on the page: shelves of [file name in Images, name]; the pictures are the app’s own
       library: {
         kicker: 'The library',
-        title: 'Eighty-six parts, one drag away.',
-        line: 'Bolts, nuts, pipe fittings, profiles, gears, a stepper motor. Pick a shelf, then drag a part into the scene on the right, or double-click it. In the app each of these is a real part with sizes you can change before it goes in.',
+        title: 'Eighty-six parts, ready to use.',
+        line: 'Bolts, nuts, pipe fittings, profiles, gears, a stepper motor. In the app each of these is a real part, with sizes you can change before it goes in.',
         hint: 'Drag a part here',
         shelves: [
           ['Shapes', [['cube', 'Cube'], ['sphere', 'Sphere'], ['cylinder', 'Cylinder'], ['cone', 'Cone'], ['torus', 'Torus'], ['plane', 'Plane'], ['capsule', 'Capsule'], ['wedge', 'Wedge'], ['pyramid', 'Pyramid'], ['prism', 'Prism'], ['hemisphere', 'Hemisphere'], ['roundedbox', 'Rounded box'], ['halfcyl', 'Half cylinder'], ['tetra', 'Tetrahedron'], ['star', 'Star'], ['plus', 'Cross'], ['arrow', 'Arrow']]],

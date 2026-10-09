@@ -235,7 +235,9 @@ b.is-refactor { color: var(--refactor); }
 
 /* features: a list per group */
 .features { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 clamp(24px, 3vw, 48px); list-style: none; }
-.tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 clamp(24px, 3vw, 48px); list-style: none; }
+.tools-wrap { display: grid; gap: clamp(24px, 3vw, 40px); }
+.tools-wrap .split-head { position: static; }
+.tools { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 clamp(24px, 3vw, 48px); list-style: none; }
 .tools li { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 16px; align-items: start; padding: 18px 0 20px; border-top: 1px solid var(--line); }
 .tools .ico { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 11px; color: var(--ico, var(--accent)); background: color-mix(in srgb, var(--ico, var(--accent)) 13%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ico, var(--accent)) 26%, transparent); transition: background-color 0.2s ease, box-shadow 0.2s ease; }
 .tools .ico svg { width: 20px; height: 20px; }
@@ -642,46 +644,16 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 @media (prefers-reduced-motion: reduce) { .wq-sub, .wq-subico, .wq-lab { animation: none; } .wq-pop, .wq-pop2, .wand-part { transition: none; } .wq-pop.is-on, .wq-pop2.is-on { transform: none; } .wq-item.is-hot { scale: 1; translate: -50% -50%; } }
 @media (max-width: 1000px) { .wand-demo { height: 480px; } }
 
-/* ---- the library, working ---- */
+/* ---- the library: the parts, to look at ---- */
 .lib-lead { margin-bottom: clamp(28px, 3.4vw, 48px); }
-.lib { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(12px, 1.4vw, 20px); align-items: start; }
-.lib-shelf, .lib-scene { border-radius: clamp(14px, 1.6vw, 22px); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
-.lib-shelf { padding: 14px; height: 640px; display: flex; flex-direction: column; min-width: 0; }
-.lib-tabs { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
-.lib-tabs::-webkit-scrollbar { display: none; }
-.lib-tabs button { flex: none; display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 12px; border: 0; border-radius: 7px; background: none; color: var(--tx-2); font: 500 13px/1 var(--font); cursor: pointer; transition: background-color 0.15s ease, color 0.15s ease; }
-.lib-tabs button i { color: var(--tx-3); font: 400 11px/1 var(--mono); }
-.lib-tabs button:hover { background: var(--surface-2); color: var(--tx); }
-.lib-tabs button[aria-selected='true'] { background: var(--surface-2); color: var(--tx); }
-.lib-grid { list-style: none; flex: 1; min-height: 0; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); grid-auto-rows: 118px; gap: 8px; padding: 2px; align-content: start; scrollbar-width: thin; }
-.lib-grid[hidden] { display: none; }
-.lib-card { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 8px 6px 6px; border: 0; border-radius: 10px; background: var(--surface-2); color: var(--tx-2); font: 400 12px/1.25 var(--font); text-align: center; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; transition: background-color 0.15s ease, color 0.15s ease, transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1); }
-.lib-card:hover { background: #26262a; color: var(--tx); }
-.lib-card:active { cursor: grabbing; }
-.lib-card img { width: 72px; height: 72px; object-fit: contain; pointer-events: none; }
-.lib-card span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.lib-scene { padding: 12px; height: 640px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-.lib-view { position: relative; flex: 1; min-height: 0; overflow: hidden; border-radius: 10px; background-color: #1c1c1e; background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px); background-size: 32px 32px; outline: 0; transition: box-shadow 0.15s ease; touch-action: none; }
-.lib-view.is-over { box-shadow: inset 0 0 0 2px var(--accent); }
-.lib-view:focus-visible { box-shadow: inset 0 0 0 2px var(--accent); }
-.lib-hint { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; color: var(--tx-3); font-size: 14px; pointer-events: none; transition: opacity 0.2s ease; }
-.lib-view.has-parts .lib-hint { opacity: 0; }
-.lib-part { position: absolute; width: 96px; margin: -48px 0 0 -48px; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px; border-radius: 8px; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; animation: lib-in 0.32s cubic-bezier(0.2, 0.8, 0.2, 1); }
-.lib-part img { width: 80px; height: 80px; object-fit: contain; pointer-events: none; filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.45)); }
-.lib-part span { color: var(--tx-2); font-size: 11px; line-height: 1.2; text-align: center; pointer-events: none; }
-.lib-part.is-on { box-shadow: 0 0 0 1.5px var(--accent); background: rgba(13, 153, 255, 0.1); }
-.lib-part.is-held { cursor: grabbing; z-index: 3; }
-@keyframes lib-in { from { opacity: 0; transform: translateY(-14px) scale(1.12); } to { opacity: 1; transform: none; } }
-.lib-ghost { position: fixed; left: 0; top: 0; z-index: 60; width: 96px; margin: -48px 0 0 -48px; display: flex; flex-direction: column; align-items: center; pointer-events: none; opacity: 0.8; will-change: transform; }
-.lib-ghost img { width: 84px; height: 84px; object-fit: contain; filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.5)); }
-.lib-bar { display: flex; align-items: center; justify-content: space-between; min-height: 30px; color: var(--tx-2); font-size: 13px; }
-.lib-clear { height: 28px; padding: 0 12px; border: 0; border-radius: 6px; background: var(--surface-2); color: var(--tx); font: 500 13px/1 var(--font); cursor: pointer; }
-.lib-clear:hover { background: #28282b; }
-@media (max-width: 900px) {
-  .lib { grid-template-columns: minmax(0, 1fr); }
-  .lib-shelf { height: 440px; }
-  .lib-scene { height: 380px; }
-}
+.lib-show { display: grid; gap: clamp(36px, 5vw, 64px); }
+.lib-set h3 { display: flex; align-items: baseline; gap: 10px; margin-bottom: 18px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 15px; font-weight: 500; letter-spacing: -0.005em; }
+.lib-set h3 i { color: var(--tx-3); font: 400 12px/1 var(--mono); font-style: normal; }
+.lib-tiles { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 10px; }
+.lib-tiles li { display: grid; justify-items: center; gap: 8px; padding: 16px 6px 12px; border-radius: 12px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+.lib-tiles img { width: 76px; height: 76px; object-fit: contain; filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.35)); }
+.lib-tiles span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--tx-2); font-size: 12px; }
+@media (max-width: 760px) { .lib-tiles { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; } }
 
 /* ---- the design band: the app's own parts on a stage ----
    Each .ap is a shadow root that site.js fills from ui-parts.json with the
@@ -706,7 +678,6 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: 0.01ms !important; }
   .has-reveal [data-reveal] { opacity: 1; transform: none; }
-  .lib-part { animation: none; }
   .appui:not(.is-in) .ap, .appui .ap { translate: none !important; opacity: 1 !important; transition: none; }
 }
 
@@ -849,3 +820,5 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
   .wand-stage { height: 360px; }
   .wand-tips { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 20px; }
 }
+
+@media (min-width: 761px) and (max-width: 1060px) { .tools { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

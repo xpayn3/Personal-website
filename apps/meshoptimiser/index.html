@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=32" />
+  <link rel="stylesheet" href="site.css?v=33" />
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/"}}</script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
@@ -322,124 +322,126 @@
       <div class="wrap">
         <div class="band-head">
           <p class="kicker">The library</p>
-          <h2>Eighty-six parts, one drag away.</h2>
+          <h2>Eighty-six parts, ready to use.</h2>
         </div>
-        <p class="lead lib-lead">Bolts, nuts, pipe fittings, profiles, gears, a stepper motor. Pick a shelf, then drag a part into the scene on the right, or double-click it. In the app each of these is a real part with sizes you can change before it goes in.</p>
-        <div class="lib" data-lib>
-          <div class="lib-shelf">
-            <div class="lib-tabs" role="tablist" aria-label="Shelves">
-              <button type="button" role="tab" aria-selected="true" data-shelf="0">Shapes<i>17</i></button>
-              <button type="button" role="tab" aria-selected="false" data-shelf="1">Fasteners<i>16</i></button>
-              <button type="button" role="tab" aria-selected="false" data-shelf="2">Nuts<i>12</i></button>
-              <button type="button" role="tab" aria-selected="false" data-shelf="3">Pipes and flanges<i>7</i></button>
-              <button type="button" role="tab" aria-selected="false" data-shelf="4">Profiles and plates<i>16</i></button>
-              <button type="button" role="tab" aria-selected="false" data-shelf="5">Machine parts<i>18</i></button>
-            </div>
-            <ul class="lib-grid" data-shelf-grid="0" role="tabpanel" aria-label="Shapes">
-              <li><button type="button" class="lib-card" data-key="cube" data-name="Cube" aria-label="Cube: drag into the scene, or press Enter to add it"><img src="library/cube.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Cube</span></button></li>
-              <li><button type="button" class="lib-card" data-key="sphere" data-name="Sphere" aria-label="Sphere: drag into the scene, or press Enter to add it"><img src="library/sphere.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Sphere</span></button></li>
-              <li><button type="button" class="lib-card" data-key="cylinder" data-name="Cylinder" aria-label="Cylinder: drag into the scene, or press Enter to add it"><img src="library/cylinder.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Cylinder</span></button></li>
-              <li><button type="button" class="lib-card" data-key="cone" data-name="Cone" aria-label="Cone: drag into the scene, or press Enter to add it"><img src="library/cone.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Cone</span></button></li>
-              <li><button type="button" class="lib-card" data-key="torus" data-name="Torus" aria-label="Torus: drag into the scene, or press Enter to add it"><img src="library/torus.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Torus</span></button></li>
-              <li><button type="button" class="lib-card" data-key="plane" data-name="Plane" aria-label="Plane: drag into the scene, or press Enter to add it"><img src="library/plane.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Plane</span></button></li>
-              <li><button type="button" class="lib-card" data-key="capsule" data-name="Capsule" aria-label="Capsule: drag into the scene, or press Enter to add it"><img src="library/capsule.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Capsule</span></button></li>
-              <li><button type="button" class="lib-card" data-key="wedge" data-name="Wedge" aria-label="Wedge: drag into the scene, or press Enter to add it"><img src="library/wedge.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Wedge</span></button></li>
-              <li><button type="button" class="lib-card" data-key="pyramid" data-name="Pyramid" aria-label="Pyramid: drag into the scene, or press Enter to add it"><img src="library/pyramid.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Pyramid</span></button></li>
-              <li><button type="button" class="lib-card" data-key="prism" data-name="Prism" aria-label="Prism: drag into the scene, or press Enter to add it"><img src="library/prism.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Prism</span></button></li>
-              <li><button type="button" class="lib-card" data-key="hemisphere" data-name="Hemisphere" aria-label="Hemisphere: drag into the scene, or press Enter to add it"><img src="library/hemisphere.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Hemisphere</span></button></li>
-              <li><button type="button" class="lib-card" data-key="roundedbox" data-name="Rounded box" aria-label="Rounded box: drag into the scene, or press Enter to add it"><img src="library/roundedbox.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Rounded box</span></button></li>
-              <li><button type="button" class="lib-card" data-key="halfcyl" data-name="Half cylinder" aria-label="Half cylinder: drag into the scene, or press Enter to add it"><img src="library/halfcyl.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Half cylinder</span></button></li>
-              <li><button type="button" class="lib-card" data-key="tetra" data-name="Tetrahedron" aria-label="Tetrahedron: drag into the scene, or press Enter to add it"><img src="library/tetra.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Tetrahedron</span></button></li>
-              <li><button type="button" class="lib-card" data-key="star" data-name="Star" aria-label="Star: drag into the scene, or press Enter to add it"><img src="library/star.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Star</span></button></li>
-              <li><button type="button" class="lib-card" data-key="plus" data-name="Cross" aria-label="Cross: drag into the scene, or press Enter to add it"><img src="library/plus.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Cross</span></button></li>
-              <li><button type="button" class="lib-card" data-key="arrow" data-name="Arrow" aria-label="Arrow: drag into the scene, or press Enter to add it"><img src="library/arrow.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Arrow</span></button></li>
+        <p class="lead lib-lead">Bolts, nuts, pipe fittings, profiles, gears, a stepper motor. In the app each of these is a real part, with sizes you can change before it goes in.</p>
+        <div class="lib-show">
+          <section class="lib-set">
+            <h3>Shapes<i>17</i></h3>
+            <ul class="lib-tiles">
+              <li><img src="library/cube.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Cube</span></li>
+              <li><img src="library/sphere.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Sphere</span></li>
+              <li><img src="library/cylinder.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Cylinder</span></li>
+              <li><img src="library/cone.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Cone</span></li>
+              <li><img src="library/torus.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Torus</span></li>
+              <li><img src="library/plane.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Plane</span></li>
+              <li><img src="library/capsule.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Capsule</span></li>
+              <li><img src="library/wedge.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Wedge</span></li>
+              <li><img src="library/pyramid.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Pyramid</span></li>
+              <li><img src="library/prism.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Prism</span></li>
+              <li><img src="library/hemisphere.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Hemisphere</span></li>
+              <li><img src="library/roundedbox.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Rounded box</span></li>
+              <li><img src="library/halfcyl.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Half cylinder</span></li>
+              <li><img src="library/tetra.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Tetrahedron</span></li>
+              <li><img src="library/star.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Star</span></li>
+              <li><img src="library/plus.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Cross</span></li>
+              <li><img src="library/arrow.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Arrow</span></li>
             </ul>
-            <ul class="lib-grid" data-shelf-grid="1" hidden role="tabpanel" aria-label="Fasteners">
-              <li><button type="button" class="lib-card" data-key="hexbolt" data-name="Hex bolt" aria-label="Hex bolt: drag into the scene, or press Enter to add it"><img src="library/hexbolt.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Hex bolt</span></button></li>
-              <li><button type="button" class="lib-card" data-key="allen" data-name="Socket head screw" aria-label="Socket head screw: drag into the scene, or press Enter to add it"><img src="library/allen.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Socket head screw</span></button></li>
-              <li><button type="button" class="lib-card" data-key="countersunk" data-name="Countersunk screw" aria-label="Countersunk screw: drag into the scene, or press Enter to add it"><img src="library/countersunk.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Countersunk screw</span></button></li>
-              <li><button type="button" class="lib-card" data-key="buttonhead" data-name="Button head screw" aria-label="Button head screw: drag into the scene, or press Enter to add it"><img src="library/buttonhead.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Button head screw</span></button></li>
-              <li><button type="button" class="lib-card" data-key="threadedrod" data-name="Threaded rod" aria-label="Threaded rod: drag into the scene, or press Enter to add it"><img src="library/threadedrod.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Threaded rod</span></button></li>
-              <li><button type="button" class="lib-card" data-key="eyebolt" data-name="Eye bolt" aria-label="Eye bolt: drag into the scene, or press Enter to add it"><img src="library/eyebolt.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Eye bolt</span></button></li>
-              <li><button type="button" class="lib-card" data-key="washer" data-name="Washer" aria-label="Washer: drag into the scene, or press Enter to add it"><img src="library/washer.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Washer</span></button></li>
-              <li><button type="button" class="lib-card" data-key="pin" data-name="Dowel pin" aria-label="Dowel pin: drag into the scene, or press Enter to add it"><img src="library/pin.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Dowel pin</span></button></li>
-              <li><button type="button" class="lib-card" data-key="rivet" data-name="Rivet" aria-label="Rivet: drag into the scene, or press Enter to add it"><img src="library/rivet.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Rivet</span></button></li>
-              <li><button type="button" class="lib-card" data-key="key" data-name="Parallel key" aria-label="Parallel key: drag into the scene, or press Enter to add it"><img src="library/key.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Parallel key</span></button></li>
-              <li><button type="button" class="lib-card" data-key="standoff" data-name="Hex standoff" aria-label="Hex standoff: drag into the scene, or press Enter to add it"><img src="library/standoff.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Hex standoff</span></button></li>
-              <li><button type="button" class="lib-card" data-key="setscrew" data-name="Set screw" aria-label="Set screw: drag into the scene, or press Enter to add it"><img src="library/setscrew.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Set screw</span></button></li>
-              <li><button type="button" class="lib-card" data-key="carriagebolt" data-name="Carriage bolt" aria-label="Carriage bolt: drag into the scene, or press Enter to add it"><img src="library/carriagebolt.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Carriage bolt</span></button></li>
-              <li><button type="button" class="lib-card" data-key="ubolt" data-name="U bolt" aria-label="U bolt: drag into the scene, or press Enter to add it"><img src="library/ubolt.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>U bolt</span></button></li>
-              <li><button type="button" class="lib-card" data-key="circlip" data-name="Retaining ring" aria-label="Retaining ring: drag into the scene, or press Enter to add it"><img src="library/circlip.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Retaining ring</span></button></li>
-              <li><button type="button" class="lib-card" data-key="springwasher" data-name="Spring washer" aria-label="Spring washer: drag into the scene, or press Enter to add it"><img src="library/springwasher.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Spring washer</span></button></li>
+          </section>
+          <section class="lib-set">
+            <h3>Fasteners<i>16</i></h3>
+            <ul class="lib-tiles">
+              <li><img src="library/hexbolt.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Hex bolt</span></li>
+              <li><img src="library/allen.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Socket head screw</span></li>
+              <li><img src="library/countersunk.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Countersunk screw</span></li>
+              <li><img src="library/buttonhead.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Button head screw</span></li>
+              <li><img src="library/threadedrod.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Threaded rod</span></li>
+              <li><img src="library/eyebolt.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Eye bolt</span></li>
+              <li><img src="library/washer.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Washer</span></li>
+              <li><img src="library/pin.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Dowel pin</span></li>
+              <li><img src="library/rivet.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Rivet</span></li>
+              <li><img src="library/key.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Parallel key</span></li>
+              <li><img src="library/standoff.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Hex standoff</span></li>
+              <li><img src="library/setscrew.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Set screw</span></li>
+              <li><img src="library/carriagebolt.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Carriage bolt</span></li>
+              <li><img src="library/ubolt.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>U bolt</span></li>
+              <li><img src="library/circlip.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Retaining ring</span></li>
+              <li><img src="library/springwasher.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Spring washer</span></li>
             </ul>
-            <ul class="lib-grid" data-shelf-grid="2" hidden role="tabpanel" aria-label="Nuts">
-              <li><button type="button" class="lib-card" data-key="hexnut" data-name="Hex nut" aria-label="Hex nut: drag into the scene, or press Enter to add it"><img src="library/hexnut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Hex nut</span></button></li>
-              <li><button type="button" class="lib-card" data-key="jamnut" data-name="Thin nut" aria-label="Thin nut: drag into the scene, or press Enter to add it"><img src="library/jamnut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Thin nut</span></button></li>
-              <li><button type="button" class="lib-card" data-key="locknut" data-name="Lock nut" aria-label="Lock nut: drag into the scene, or press Enter to add it"><img src="library/locknut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Lock nut</span></button></li>
-              <li><button type="button" class="lib-card" data-key="flangenut" data-name="Flange nut" aria-label="Flange nut: drag into the scene, or press Enter to add it"><img src="library/flangenut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Flange nut</span></button></li>
-              <li><button type="button" class="lib-card" data-key="capnut" data-name="Cap nut" aria-label="Cap nut: drag into the scene, or press Enter to add it"><img src="library/capnut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Cap nut</span></button></li>
-              <li><button type="button" class="lib-card" data-key="castlenut" data-name="Castle nut" aria-label="Castle nut: drag into the scene, or press Enter to add it"><img src="library/castlenut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Castle nut</span></button></li>
-              <li><button type="button" class="lib-card" data-key="squarenut" data-name="Square nut" aria-label="Square nut: drag into the scene, or press Enter to add it"><img src="library/squarenut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Square nut</span></button></li>
-              <li><button type="button" class="lib-card" data-key="couplingnut" data-name="Coupling nut" aria-label="Coupling nut: drag into the scene, or press Enter to add it"><img src="library/couplingnut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Coupling nut</span></button></li>
-              <li><button type="button" class="lib-card" data-key="wingnut" data-name="Wing nut" aria-label="Wing nut: drag into the scene, or press Enter to add it"><img src="library/wingnut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Wing nut</span></button></li>
-              <li><button type="button" class="lib-card" data-key="thumbnut" data-name="Knurled nut" aria-label="Knurled nut: drag into the scene, or press Enter to add it"><img src="library/thumbnut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Knurled nut</span></button></li>
-              <li><button type="button" class="lib-card" data-key="tslotnut" data-name="T-slot nut" aria-label="T-slot nut: drag into the scene, or press Enter to add it"><img src="library/tslotnut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>T-slot nut</span></button></li>
-              <li><button type="button" class="lib-card" data-key="eyenut" data-name="Eye nut" aria-label="Eye nut: drag into the scene, or press Enter to add it"><img src="library/eyenut.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Eye nut</span></button></li>
+          </section>
+          <section class="lib-set">
+            <h3>Nuts<i>12</i></h3>
+            <ul class="lib-tiles">
+              <li><img src="library/hexnut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Hex nut</span></li>
+              <li><img src="library/jamnut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Thin nut</span></li>
+              <li><img src="library/locknut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Lock nut</span></li>
+              <li><img src="library/flangenut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Flange nut</span></li>
+              <li><img src="library/capnut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Cap nut</span></li>
+              <li><img src="library/castlenut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Castle nut</span></li>
+              <li><img src="library/squarenut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Square nut</span></li>
+              <li><img src="library/couplingnut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Coupling nut</span></li>
+              <li><img src="library/wingnut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Wing nut</span></li>
+              <li><img src="library/thumbnut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Knurled nut</span></li>
+              <li><img src="library/tslotnut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>T-slot nut</span></li>
+              <li><img src="library/eyenut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Eye nut</span></li>
             </ul>
-            <ul class="lib-grid" data-shelf-grid="3" hidden role="tabpanel" aria-label="Pipes and flanges">
-              <li><button type="button" class="lib-card" data-key="tube" data-name="Tube" aria-label="Tube: drag into the scene, or press Enter to add it"><img src="library/tube.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Tube</span></button></li>
-              <li><button type="button" class="lib-card" data-key="elbow" data-name="Pipe elbow" aria-label="Pipe elbow: drag into the scene, or press Enter to add it"><img src="library/elbow.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Pipe elbow</span></button></li>
-              <li><button type="button" class="lib-card" data-key="tee" data-name="Pipe tee" aria-label="Pipe tee: drag into the scene, or press Enter to add it"><img src="library/tee.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Pipe tee</span></button></li>
-              <li><button type="button" class="lib-card" data-key="reducer" data-name="Pipe reducer" aria-label="Pipe reducer: drag into the scene, or press Enter to add it"><img src="library/reducer.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Pipe reducer</span></button></li>
-              <li><button type="button" class="lib-card" data-key="endcap" data-name="Pipe cap" aria-label="Pipe cap: drag into the scene, or press Enter to add it"><img src="library/endcap.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Pipe cap</span></button></li>
-              <li><button type="button" class="lib-card" data-key="flange" data-name="Flange" aria-label="Flange: drag into the scene, or press Enter to add it"><img src="library/flange.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Flange</span></button></li>
-              <li><button type="button" class="lib-card" data-key="pipecross" data-name="Pipe cross" aria-label="Pipe cross: drag into the scene, or press Enter to add it"><img src="library/pipecross.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Pipe cross</span></button></li>
+          </section>
+          <section class="lib-set">
+            <h3>Pipes and flanges<i>7</i></h3>
+            <ul class="lib-tiles">
+              <li><img src="library/tube.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Tube</span></li>
+              <li><img src="library/elbow.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Pipe elbow</span></li>
+              <li><img src="library/tee.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Pipe tee</span></li>
+              <li><img src="library/reducer.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Pipe reducer</span></li>
+              <li><img src="library/endcap.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Pipe cap</span></li>
+              <li><img src="library/flange.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Flange</span></li>
+              <li><img src="library/pipecross.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Pipe cross</span></li>
             </ul>
-            <ul class="lib-grid" data-shelf-grid="4" hidden role="tabpanel" aria-label="Profiles and plates">
-              <li><button type="button" class="lib-card" data-key="plate" data-name="Plate" aria-label="Plate: drag into the scene, or press Enter to add it"><img src="library/plate.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Plate</span></button></li>
-              <li><button type="button" class="lib-card" data-key="flatbar" data-name="Flat bar" aria-label="Flat bar: drag into the scene, or press Enter to add it"><img src="library/flatbar.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Flat bar</span></button></li>
-              <li><button type="button" class="lib-card" data-key="angle" data-name="Angle profile" aria-label="Angle profile: drag into the scene, or press Enter to add it"><img src="library/angle.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Angle profile</span></button></li>
-              <li><button type="button" class="lib-card" data-key="channel" data-name="U channel" aria-label="U channel: drag into the scene, or press Enter to add it"><img src="library/channel.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>U channel</span></button></li>
-              <li><button type="button" class="lib-card" data-key="tprofile" data-name="T profile" aria-label="T profile: drag into the scene, or press Enter to add it"><img src="library/tprofile.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>T profile</span></button></li>
-              <li><button type="button" class="lib-card" data-key="zprofile" data-name="Z profile" aria-label="Z profile: drag into the scene, or press Enter to add it"><img src="library/zprofile.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Z profile</span></button></li>
-              <li><button type="button" class="lib-card" data-key="ibeam" data-name="I beam" aria-label="I beam: drag into the scene, or press Enter to add it"><img src="library/ibeam.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>I beam</span></button></li>
-              <li><button type="button" class="lib-card" data-key="boxtube" data-name="Box tube" aria-label="Box tube: drag into the scene, or press Enter to add it"><img src="library/boxtube.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Box tube</span></button></li>
-              <li><button type="button" class="lib-card" data-key="extrusion" data-name="T-slot extrusion" aria-label="T-slot extrusion: drag into the scene, or press Enter to add it"><img src="library/extrusion.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>T-slot extrusion</span></button></li>
-              <li><button type="button" class="lib-card" data-key="roundbar" data-name="Round bar" aria-label="Round bar: drag into the scene, or press Enter to add it"><img src="library/roundbar.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Round bar</span></button></li>
-              <li><button type="button" class="lib-card" data-key="hexbar" data-name="Hex bar" aria-label="Hex bar: drag into the scene, or press Enter to add it"><img src="library/hexbar.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Hex bar</span></button></li>
-              <li><button type="button" class="lib-card" data-key="cchannel" data-name="C channel" aria-label="C channel: drag into the scene, or press Enter to add it"><img src="library/cchannel.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>C channel</span></button></li>
-              <li><button type="button" class="lib-card" data-key="gusset" data-name="Gusset plate" aria-label="Gusset plate: drag into the scene, or press Enter to add it"><img src="library/gusset.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Gusset plate</span></button></li>
-              <li><button type="button" class="lib-card" data-key="perfplate" data-name="Perforated plate" aria-label="Perforated plate: drag into the scene, or press Enter to add it"><img src="library/perfplate.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Perforated plate</span></button></li>
-              <li><button type="button" class="lib-card" data-key="slotplate" data-name="Slotted plate" aria-label="Slotted plate: drag into the scene, or press Enter to add it"><img src="library/slotplate.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Slotted plate</span></button></li>
-              <li><button type="button" class="lib-card" data-key="hinge" data-name="Hinge" aria-label="Hinge: drag into the scene, or press Enter to add it"><img src="library/hinge.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Hinge</span></button></li>
+          </section>
+          <section class="lib-set">
+            <h3>Profiles and plates<i>16</i></h3>
+            <ul class="lib-tiles">
+              <li><img src="library/plate.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Plate</span></li>
+              <li><img src="library/flatbar.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Flat bar</span></li>
+              <li><img src="library/angle.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Angle profile</span></li>
+              <li><img src="library/channel.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>U channel</span></li>
+              <li><img src="library/tprofile.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>T profile</span></li>
+              <li><img src="library/zprofile.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Z profile</span></li>
+              <li><img src="library/ibeam.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>I beam</span></li>
+              <li><img src="library/boxtube.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Box tube</span></li>
+              <li><img src="library/extrusion.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>T-slot extrusion</span></li>
+              <li><img src="library/roundbar.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Round bar</span></li>
+              <li><img src="library/hexbar.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Hex bar</span></li>
+              <li><img src="library/cchannel.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>C channel</span></li>
+              <li><img src="library/gusset.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Gusset plate</span></li>
+              <li><img src="library/perfplate.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Perforated plate</span></li>
+              <li><img src="library/slotplate.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Slotted plate</span></li>
+              <li><img src="library/hinge.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Hinge</span></li>
             </ul>
-            <ul class="lib-grid" data-shelf-grid="5" hidden role="tabpanel" aria-label="Machine parts">
-              <li><button type="button" class="lib-card" data-key="gear" data-name="Spur gear" aria-label="Spur gear: drag into the scene, or press Enter to add it"><img src="library/gear.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Spur gear</span></button></li>
-              <li><button type="button" class="lib-card" data-key="rack" data-name="Gear rack" aria-label="Gear rack: drag into the scene, or press Enter to add it"><img src="library/rack.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Gear rack</span></button></li>
-              <li><button type="button" class="lib-card" data-key="sprocket" data-name="Sprocket" aria-label="Sprocket: drag into the scene, or press Enter to add it"><img src="library/sprocket.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Sprocket</span></button></li>
-              <li><button type="button" class="lib-card" data-key="pulley" data-name="V pulley" aria-label="V pulley: drag into the scene, or press Enter to add it"><img src="library/pulley.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>V pulley</span></button></li>
-              <li><button type="button" class="lib-card" data-key="bearing" data-name="Ball bearing" aria-label="Ball bearing: drag into the scene, or press Enter to add it"><img src="library/bearing.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Ball bearing</span></button></li>
-              <li><button type="button" class="lib-card" data-key="bushing" data-name="Flanged bushing" aria-label="Flanged bushing: drag into the scene, or press Enter to add it"><img src="library/bushing.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Flanged bushing</span></button></li>
-              <li><button type="button" class="lib-card" data-key="spring" data-name="Spring" aria-label="Spring: drag into the scene, or press Enter to add it"><img src="library/spring.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Spring</span></button></li>
-              <li><button type="button" class="lib-card" data-key="handwheel" data-name="Handwheel" aria-label="Handwheel: drag into the scene, or press Enter to add it"><img src="library/handwheel.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Handwheel</span></button></li>
-              <li><button type="button" class="lib-card" data-key="knob" data-name="Star knob" aria-label="Star knob: drag into the scene, or press Enter to add it"><img src="library/knob.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Star knob</span></button></li>
-              <li><button type="button" class="lib-card" data-key="bracket" data-name="Corner bracket" aria-label="Corner bracket: drag into the scene, or press Enter to add it"><img src="library/bracket.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Corner bracket</span></button></li>
-              <li><button type="button" class="lib-card" data-key="stepper" data-name="Stepper motor" aria-label="Stepper motor: drag into the scene, or press Enter to add it"><img src="library/stepper.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Stepper motor</span></button></li>
-              <li><button type="button" class="lib-card" data-key="collar" data-name="Shaft collar" aria-label="Shaft collar: drag into the scene, or press Enter to add it"><img src="library/collar.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Shaft collar</span></button></li>
-              <li><button type="button" class="lib-card" data-key="pillowblock" data-name="Pillow block" aria-label="Pillow block: drag into the scene, or press Enter to add it"><img src="library/pillowblock.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Pillow block</span></button></li>
-              <li><button type="button" class="lib-card" data-key="wheel" data-name="Wheel" aria-label="Wheel: drag into the scene, or press Enter to add it"><img src="library/wheel.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Wheel</span></button></li>
-              <li><button type="button" class="lib-card" data-key="rail" data-name="Linear rail" aria-label="Linear rail: drag into the scene, or press Enter to add it"><img src="library/rail.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Linear rail</span></button></li>
-              <li><button type="button" class="lib-card" data-key="foot" data-name="Levelling foot" aria-label="Levelling foot: drag into the scene, or press Enter to add it"><img src="library/foot.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Levelling foot</span></button></li>
-              <li><button type="button" class="lib-card" data-key="handle" data-name="Pull handle" aria-label="Pull handle: drag into the scene, or press Enter to add it"><img src="library/handle.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Pull handle</span></button></li>
-              <li><button type="button" class="lib-card" data-key="enclosure" data-name="Enclosure" aria-label="Enclosure: drag into the scene, or press Enter to add it"><img src="library/enclosure.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>Enclosure</span></button></li>
+          </section>
+          <section class="lib-set">
+            <h3>Machine parts<i>18</i></h3>
+            <ul class="lib-tiles">
+              <li><img src="library/gear.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Spur gear</span></li>
+              <li><img src="library/rack.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Gear rack</span></li>
+              <li><img src="library/sprocket.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Sprocket</span></li>
+              <li><img src="library/pulley.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>V pulley</span></li>
+              <li><img src="library/bearing.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Ball bearing</span></li>
+              <li><img src="library/bushing.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Flanged bushing</span></li>
+              <li><img src="library/spring.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Spring</span></li>
+              <li><img src="library/handwheel.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Handwheel</span></li>
+              <li><img src="library/knob.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Star knob</span></li>
+              <li><img src="library/bracket.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Corner bracket</span></li>
+              <li><img src="library/stepper.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Stepper motor</span></li>
+              <li><img src="library/collar.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Shaft collar</span></li>
+              <li><img src="library/pillowblock.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Pillow block</span></li>
+              <li><img src="library/wheel.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Wheel</span></li>
+              <li><img src="library/rail.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Linear rail</span></li>
+              <li><img src="library/foot.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Levelling foot</span></li>
+              <li><img src="library/handle.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Pull handle</span></li>
+              <li><img src="library/enclosure.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Enclosure</span></li>
             </ul>
-          </div>
-          <div class="lib-scene">
-            <div class="lib-view" data-view tabindex="0" aria-label="A scene. Drop parts here, drag them around, press Delete to remove the selected one.">
-              <p class="lib-hint">Drag a part here</p>
-            </div>
-            <div class="lib-bar"><span class="lib-count" aria-live="polite">Nothing in the scene yet</span><button type="button" class="lib-clear" hidden>Clear scene</button></div>
-          </div>
+          </section>
         </div>
       </div>
     </section>
@@ -588,6 +590,6 @@
       <span><a href="../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="site.js?v=21"></script>
+  <script defer src="site.js?v=22"></script>
 </body>
 </html>
