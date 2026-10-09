@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=74" />
+  <link rel="stylesheet" href="../site.css?v=75" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -176,6 +176,16 @@
             <div><dt>Show a note when Claude acts</dt><dd>A short message names what Claude is doing.</dd></div>
           </dl>
           <p>A switch that is off refuses the request, and Claude is told why. At the bottom of the section, <span class="ui">Recent requests</span> lists what Claude asked for and what happened: done, you said no, turned off, or failed.</p>
+          <h2 id="what-claude-already-knows">What Claude already knows</h2>
+          <p>Claude does not start from nothing. The app gives it the know-how of an experienced user, so it works in the order a person would and asks the questions a person would ask.</p>
+          <ul class="kb-points">
+            <li>Six playbooks: how to optimise (the rules and the order of work), recipes by goal (web viewer, AR, a game engine, 3D printing, sending to a customer, a review), judgement (what makes a scene heavy, what each step costs in looks, when to ask), the tools by job, what is safe, and what to do when something fails.</li>
+            <li>About fifty of the app’s own help articles, the same ones you can read here. Claude searches them by words or by a symptom, and reads only the one it needs.</li>
+            <li>Ready-made jobs it can start from: optimise for the web, lighten it in one go, take the bolts out, make it safe to send, review the scene.</li>
+            <li>A hint on every tool that says whether it only reads or changes the model, which Claude’s own program uses to decide what to ask.</li>
+          </ul>
+          <h2 id="does-it-save-tokens">Does it save tokens?</h2>
+          <p>It should, but there is no fixed percentage. Claude works in fewer, better-chosen steps instead of finding the order by trial. One Smart optimise call stands in for a dozen separate ones. Replies are compact: about a fifth fewer characters than an indented reply, measured on a list of 40 parts. The main playbook is about 2,000 tokens, read once; the help articles cost nothing until Claude searches for one, and a search returns short snippets, not whole articles.</p>
           <h2 id="what-leaves-the-computer">What leaves the computer</h2>
           <p>The app talks to Claude only through a small server on your own computer. Your model file is not sent anywhere. Claude gets back what its requests return: part names, counts, sizes, and the pictures it asks for, such as a screenshot of the viewport. Those pass through Claude the way anything you type to it does. Exports and turntable videos are saved in the app’s <span class="ui">exports</span> folder.</p>
           <h2 id="if-it-does-not-connect">If it does not connect</h2>

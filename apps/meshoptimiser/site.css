@@ -16,6 +16,7 @@
   --tx-3: #6e6e72;
   --accent: #0d99ff;
   --accent-hover: #3aadff;
+  --soon: #f5a524;                /* Coming soon: amber, so it is never mistaken for a button */
   --new: #5fd3a0;
   --fix: #f58a9c;
   --perf: #f1b561;
@@ -883,7 +884,7 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 /* ========== CLAUDE ==========
    The strip on the home page (.cl-band), and claude.html: the example session (.cx), the tool groups (.cl-groups), what stays
    in the user's hands (.cl-points, .cl-shots), prompts to copy (.cl-asklist). Written by tools/build-app-site.js from site.claude. */
-.tag-soon { display: inline-flex; align-items: center; height: 22px; padding: 0 10px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 15%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 34%, transparent); color: color-mix(in srgb, var(--accent) 72%, #fff); font-size: 11px; letter-spacing: 0.08em; white-space: nowrap; }
+.tag-soon { display: inline-flex; align-items: center; height: 22px; padding: 0 10px; border-radius: 999px; background: color-mix(in srgb, var(--soon) 16%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--soon) 42%, transparent); color: var(--soon); font-size: 11px; letter-spacing: 0.08em; white-space: nowrap; }
 
 .cl-band-in { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); align-items: center; gap: clamp(32px, 5vw, 80px); }
 .cl-band-copy h2 { margin-top: 18px; max-width: 18ch; }
@@ -983,14 +984,14 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 }
 
 /* Coming soon, made obvious: a banner across the page, a larger tag, a ribbon on the home picture and a badge in the menu */
-.tag-soon.is-large { height: 30px; padding: 0 14px; background: var(--accent); box-shadow: none; color: #fff; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
-.soon-banner { border-bottom: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); background: color-mix(in srgb, var(--accent) 11%, var(--bg)); }
+.tag-soon.is-large { height: 30px; padding: 0 14px; background: var(--soon); box-shadow: none; color: #1b1200; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
+.soon-banner { border-bottom: 1px solid color-mix(in srgb, var(--soon) 34%, transparent); background: color-mix(in srgb, var(--soon) 11%, var(--bg)); }
 .soon-banner-in { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 16px; padding-block: 13px; font-size: 15px; text-align: center; }
-.soon-banner strong { padding: 3px 12px; border-radius: 999px; background: var(--accent); color: #fff; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
+.soon-banner strong { padding: 3px 12px; border-radius: 999px; background: var(--soon); color: #1b1200; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
 .soon-banner span { color: var(--tx); }
-.nav-soon { margin-left: 7px; padding: 1px 7px; border-radius: 999px; background: var(--accent); color: #fff; font-size: 10px; font-style: normal; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; vertical-align: 1px; }
+.nav-soon { margin-left: 7px; padding: 1px 7px; border-radius: 999px; background: var(--soon); color: #1b1200; font-size: 10px; font-style: normal; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; vertical-align: 1px; }
 .cl-band-art { position: relative; }
-.soon-ribbon { position: absolute; top: 14px; left: 14px; padding: 6px 14px; border-radius: 999px; background: var(--accent); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); color: #fff; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
+.soon-ribbon { position: absolute; top: 14px; left: 14px; padding: 6px 14px; border-radius: 999px; background: var(--soon); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4); color: #1b1200; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
 
 /* the chat and the part beside it */
 .cx-grid { display: block; }
@@ -1008,3 +1009,24 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 .cx3d-hud em { flex-basis: 100%; color: var(--tx-3); font-size: 13px; font-style: normal; }
 .cx3d-tool { position: absolute; left: 20px; bottom: 18px; padding: 6px 12px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 18%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent); color: color-mix(in srgb, var(--accent) 70%, #fff); font: 400 13px/1.4 var(--mono); }
 .cx3d-tool[hidden] { display: none; }
+
+/* what Claude arrives knowing */
+.kn-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(14px, 2vw, 24px); margin-top: clamp(28px, 4vw, 48px); align-items: start; }
+.kn-card { padding: clamp(20px, 2.6vw, 32px); border-radius: 14px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+.kn-card h3 { font-size: 18px; font-weight: 500; }
+.kn-card p { margin-top: 12px; color: var(--tx-2); font-size: 15px; line-height: 1.55; }
+.kn-sub { margin-top: 26px; }
+.kn-list, .kn-jobs { margin-top: 14px; list-style: none; counter-reset: kn; }
+.kn-list li, .kn-jobs li { display: grid; gap: 3px; padding: 12px 0; border-top: 1px solid var(--line); }
+.kn-list li { grid-template-columns: 30px minmax(0, 1fr); column-gap: 10px; counter-increment: kn; }
+.kn-list li::before { content: counter(kn, decimal-leading-zero); grid-row: span 2; color: var(--tx-3); font: 400 12px/1.6 var(--mono); }
+.kn-list strong, .kn-jobs strong { font-size: 15px; font-weight: 500; }
+.kn-list span, .kn-jobs span { grid-column: 2; color: var(--tx-2); font-size: 14px; line-height: 1.5; }
+.kn-jobs li { grid-template-columns: minmax(0, 1fr); }
+.kn-jobs span { grid-column: 1; }
+.kn-figures { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 clamp(20px, 3vw, 40px); margin-top: clamp(32px, 4vw, 56px); }
+.kn-figures > div { padding-top: 18px; border-top: 1px solid var(--line-strong); }
+.kn-figures dt { color: var(--tx); font-size: clamp(26px, 2.8vw, 38px); font-weight: 300; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.kn-figures dd { margin-top: 10px; max-width: 30ch; color: var(--tx-2); font-size: 14px; line-height: 1.5; }
+@media (max-width: 1020px) { .kn-grid { grid-template-columns: minmax(0, 1fr); } .kn-figures { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; } }
+@media (max-width: 560px) { .kn-figures { grid-template-columns: minmax(0, 1fr); } }

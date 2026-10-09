@@ -24,7 +24,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 74;
+const CSS_V = 75;
 const RP_V = 2;           // report.js
 const JS_V = 26;
 
@@ -469,6 +469,40 @@ ${c.band.prompts.map(p => `            <li>${esc(p)}</li>`).join('\n')}
     </section>`;
   };
 
+  const claudeKnows = () => {
+    const k = site.claude.knows;
+    return `
+    <section class="band" id="knows">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">${esc(k.kicker)}</p>
+          <h2>${esc(k.title)}</h2>
+        </div>
+        <p class="lead">${esc(k.line)}</p>
+        <div class="kn-grid">
+          <article class="kn-card">
+            <h3>Six playbooks</h3>
+            <ol class="kn-list">
+${k.playbooks.map(([name, line]) => `              <li><strong>${esc(name)}</strong><span>${esc(line)}</span></li>`).join('\n')}
+            </ol>
+          </article>
+          <article class="kn-card">
+            <h3>The help articles</h3>
+${k.articles.map(t => `            <p>${esc(t)}</p>`).join('\n')}
+            <h3 class="kn-sub">Ready-made jobs</h3>
+            <ul class="kn-jobs">
+${k.jobs.map(([name, line]) => `              <li><strong>${esc(name)}</strong><span>${esc(line)}</span></li>`).join('\n')}
+            </ul>
+          </article>
+        </div>
+        <dl class="kn-figures">
+${k.figures.map(([figure, label]) => `          <div><dt>${esc(figure)}</dt><dd>${esc(label)}</dd></div>`).join('\n')}
+        </dl>
+        <p class="cl-fine">${esc(k.note)}</p>
+      </div>
+    </section>`;
+  };
+
   const claudeChat = () => {
     const c = site.claude;
     const SPARK = '<svg class="cx-spark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 1.5c.7 0 1.2.5 1.3 1.2l.5 5.1 3.6-3.7c.5-.5 1.3-.5 1.8 0s.5 1.3 0 1.8l-3.7 3.6 5.1.5c.7.1 1.2.6 1.2 1.3s-.5 1.2-1.2 1.3l-5.1.5 3.7 3.6c.5.5.5 1.3 0 1.8s-1.3.5-1.8 0l-3.6-3.7-.5 5.1c-.1.7-.6 1.2-1.3 1.2s-1.2-.5-1.3-1.2l-.5-5.1-3.6 3.7c-.5.5-1.3.5-1.8 0s-.5-1.3 0-1.8l3.7-3.6-5.1-.5C2 13.4 1.5 12.9 1.5 12.2s.5-1.2 1.2-1.3l5.1-.5-3.7-3.6c-.5-.5-.5-1.3 0-1.8s1.3-.5 1.8 0l3.6 3.7.5-5.1c.1-.7.6-1.2 1.3-1.2Z"/></svg>';
@@ -717,6 +751,7 @@ ${tools.map(([name, line, asks]) => `              <li><code>${esc(name)}</code>
       </div>
     </section>
 
+${c.knows ? claudeKnows() : ''}
     <section class="band" id="control">
       <div class="wrap">
         <div class="band-head">

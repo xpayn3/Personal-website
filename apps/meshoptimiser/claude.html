@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=74" />
+  <link rel="stylesheet" href="site.css?v=75" />
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/"}}</script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
@@ -139,7 +139,8 @@
           <article class="cl-group" style="--ico: #2fd180">
             <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="1"/><path d="M18.944 12.33a1 1 0 0 0 0-.66 7.5 7.5 0 0 0-13.888 0 1 1 0 0 0 0 .66 7.5 7.5 0 0 0 13.888 0"/></svg></i><div><h3>Find things</h3><p>Questions with an answer.</p></div></header>
             <ul>
-              <li><code>find_fasteners</code><span>Bolts, screws, nuts and washers, found by their shape and selected.</span></li>
+              <li><code>find_fasteners</code><span>Bolts, screws, nuts and washers found by their shape, whatever they are called; counts per kind and thread size.</span></li>
+              <li><code>find_hidden_parts</code><span>Parts nobody can see from outside, such as screws in a housing; selected so you can check them first.</span></li>
               <li><code>find_stacked_copies</code><span>Parts drawn twice in the same place; the extra copies are selected.</span></li>
               <li><code>measure_parts</code><span>The distance between two parts, and the gap between their boxes.</span></li>
               <li><code>list_groups</code><span>The groups in the tree.</span></li>
@@ -148,6 +149,7 @@
           <article class="cl-group" style="--ico: #a78bfa">
             <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg></i><div><h3>Make it lighter</h3><p>Each one asks you first, and each one is a single undo step.</p></div></header>
             <ul>
+              <li><code>smart_optimise</code><span>The app’s whole clean-up in one run and one undo: light, balanced or strong.</span><em class="cl-asks">asks</em></li>
               <li><code>decimate</code><span>Reduce the triangles of chosen parts, to a target or by a share.</span><em class="cl-asks">asks</em></li>
               <li><code>fit_to_budget</code><span>Reduce the whole scene to a triangle budget.</span><em class="cl-asks">asks</em></li>
               <li><code>fill_holes</code><span>Close bolt holes, slots and pockets up to a size.</span><em class="cl-asks">asks</em></li>
@@ -157,6 +159,8 @@
               <li><code>merge_parts</code><span>Merge parts into one mesh.</span><em class="cl-asks">asks</em></li>
               <li><code>merge_by_colour</code><span>One mesh per colour.</span><em class="cl-asks">asks</em></li>
               <li><code>split_parts</code><span>Break a mesh into its separate pieces.</span><em class="cl-asks">asks</em></li>
+              <li><code>smart_fit</code><span>Replace a part with a box, a cylinder, a few boxes or blocks of the same size.</span><em class="cl-asks">asks</em></li>
+              <li><code>untriangulate</code><span>Fewer triangles on flat faces, with no change of shape.</span><em class="cl-asks">asks</em></li>
             </ul>
           </article>
           <article class="cl-group" style="--ico: #ff8a4c">
@@ -187,6 +191,13 @@
             </ul>
           </article>
           <article class="cl-group" style="--ico: #f5a524">
+            <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></i><div><h3>Know-how</h3><p>The app’s own knowledge, on demand. Answered without the app being open.</p></div></header>
+            <ul>
+              <li><code>search_docs</code><span>Search the playbooks and the help articles by words or by a symptom.</span></li>
+              <li><code>read_doc</code><span>Read one article or playbook in full.</span></li>
+            </ul>
+          </article>
+          <article class="cl-group" style="--ico: #0d99ff">
             <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg></i><div><h3>Scenes and history</h3><p>The tabs and the undo history.</p></div></header>
             <ul>
               <li><code>scene_tabs</code><span>List the scene tabs, switch, open a new one.</span></li>
@@ -198,6 +209,49 @@
       </div>
     </section>
 
+
+    <section class="band" id="knows">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">It arrives knowing the job</p>
+          <h2>The know-how of an experienced user, built in.</h2>
+        </div>
+        <p class="lead">Claude does not start from nothing. The app hands it what a person who has read every help article and done this for years knows: the order to work in, what each step costs, what is safe, and what to do when something fails.</p>
+        <div class="kn-grid">
+          <article class="kn-card">
+            <h3>Six playbooks</h3>
+            <ol class="kn-list">
+              <li><strong>How to optimise</strong><span>The rules and the order: look first, tidy, remove what nobody sees, remove what nobody needs, close detail, replace filler, reduce last.</span></li>
+              <li><strong>Recipes by goal</strong><span>The tool calls for a web viewer, AR, a game engine, 3D printing, sending to a customer, a review, or a number and nothing else.</span></li>
+              <li><strong>Judgement</strong><span>What makes a scene heavy, what each step costs in looks, which smart-fit shape to choose, when to ask.</span></li>
+              <li><strong>The tools by job</strong><span>Every tool grouped by what you want to do, with its options and which one fits which job.</span></li>
+              <li><strong>What is safe</strong><span>What can be undone, what asks you, what is never done without saying so.</span></li>
+              <li><strong>When it fails</strong><span>Connection, refusals and results that are not what was expected, with a cause and a next step for each.</span></li>
+            </ol>
+          </article>
+          <article class="kn-card">
+            <h3>The help articles</h3>
+            <p>About fifty of the app’s own help articles, one per tool and job: Smart optimise, fasteners, hidden parts, fill holes, fit to budget, formats and more. Claude searches them by words or by a symptom, and reads only the one it needs.</p>
+            <p>The same articles you can read on this site, so what Claude does and what the docs say never disagree.</p>
+            <h3 class="kn-sub">Ready-made jobs</h3>
+            <ul class="kn-jobs">
+              <li><strong>Optimise for the web</strong><span>To a triangle target, a step at a time.</span></li>
+              <li><strong>Lighten it in one go</strong><span>Smart optimise at a level, with a report.</span></li>
+              <li><strong>Take the bolts out</strong><span>Hide, simplify or delete.</span></li>
+              <li><strong>Make it safe to send</strong><span>Remove what reveals the design.</span></li>
+              <li><strong>Review the scene</strong><span>What is heavy and what could go, changing nothing.</span></li>
+            </ul>
+          </article>
+        </div>
+        <dl class="kn-figures">
+          <div><dt>About 2,000</dt><dd>tokens for the main playbook, read once at the start of a job</dd></div>
+          <div><dt>0</dt><dd>tokens for the help articles until Claude searches for one; the search returns short snippets, not articles</dd></div>
+          <div><dt>−23%</dt><dd>characters in a typical reply: replies are compact, not indented, measured on a 40-part list</dd></div>
+          <div><dt>1 call</dt><dd>for Smart optimise, instead of a dozen separate steps found by trial</dd></div>
+        </dl>
+        <p class="cl-fine">Token counts are estimates at four characters to the token. How many a job takes depends on the model and on the job, so this is a way to spend fewer, not a promise of a percentage.</p>
+      </div>
+    </section>
     <section class="band" id="control">
       <div class="wrap">
         <div class="band-head">
@@ -232,14 +286,15 @@
           <h2>Plain words are enough.</h2>
         </div>
         <ul class="cl-asklist">
+          <li><p>Optimise this for the web, under 300,000 triangles, and tell me what you took out.</p><button type="button" class="copy" data-copy="Optimise this for the web, under 300,000 triangles, and tell me what you took out.">Copy</button></li>
           <li><p>Find all the bolts and hide them.</p><button type="button" class="copy" data-copy="Find all the bolts and hide them.">Copy</button></li>
           <li><p>Get this under 300,000 triangles and tell me what you took out.</p><button type="button" class="copy" data-copy="Get this under 300,000 triangles and tell me what you took out.">Copy</button></li>
           <li><p>Show it exploded 50% and take a screenshot.</p><button type="button" class="copy" data-copy="Show it exploded 50% and take a screenshot.">Copy</button></li>
           <li><p>Which ten parts carry the most triangles?</p><button type="button" class="copy" data-copy="Which ten parts carry the most triangles?">Copy</button></li>
           <li><p>Rename every part that starts with “body” to “Housing”.</p><button type="button" class="copy" data-copy="Rename every part that starts with “body” to “Housing”.">Copy</button></li>
           <li><p>Remove the hidden faces from the ten heaviest parts.</p><button type="button" class="copy" data-copy="Remove the hidden faces from the ten heaviest parts.">Copy</button></li>
-          <li><p>Find parts that sit on a copy of themselves and remove the extras.</p><button type="button" class="copy" data-copy="Find parts that sit on a copy of themselves and remove the extras.">Copy</button></li>
-          <li><p>Stand the model on the floor and make a turntable video.</p><button type="button" class="copy" data-copy="Stand the model on the floor and make a turntable video.">Copy</button></li>
+          <li><p>Find parts nobody can see from outside and show me before you delete them.</p><button type="button" class="copy" data-copy="Find parts nobody can see from outside and show me before you delete them.">Copy</button></li>
+          <li><p>Make this safe to send to a customer.</p><button type="button" class="copy" data-copy="Make this safe to send to a customer.">Copy</button></li>
         </ul>
       </div>
     </section>
@@ -256,6 +311,8 @@
             <div><dt>Is it on by default?</dt><dd>No. The app does not listen for Claude until you switch on Let Claude connect, and it forgets the connection when you switch it off.</dd></div>
             <div><dt>Does it work in the demo?</dt><dd>No. The hosted demo has no connection to Claude. Run the app on your own computer.</dd></div>
             <div><dt>What if I want it to ask less, or not at all?</dt><dd>Switch off Ask before Claude edits. Deleting still asks unless you also switch off Always ask before deleting. Or turn a whole kind of edit off with its own switch.</dd></div>
+            <div><dt>Does Claude know how to optimise a model?</dt><dd>Yes. It comes with the know-how of an experienced user: six playbooks (how to optimise, recipes by goal, judgement, the tools by job, what is safe, what to do when something fails) and about fifty of the app’s help articles, one per tool and job. It reads the playbook before it starts, and searches the articles for anything it has not done before.</dd></div>
+            <div><dt>Will it save tokens?</dt><dd>It should: it works in fewer, better-chosen steps instead of finding the order by trial, one Smart optimise call stands in for a dozen, and every reply is compact (about a fifth fewer characters than an indented one). The playbook costs about 2,000 tokens, read once; the articles cost nothing until Claude searches for one. How many tokens a job takes still depends on the model and on you, so there is no promise of a percentage.</dd></div>
             <div><dt>Can Claude break my model?</dt><dd>Not past the undo history. Every change is a step you can take back, and your file on disk is only changed when you export.</dd></div>
           </dl>
         </div>
