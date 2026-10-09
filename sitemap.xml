@@ -658,12 +658,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://lukagrcar.com/apps/meshoptimiser/screenshots</loc>
-    <lastmod>2026-10-09</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://lukagrcar.com/apps/meshoptimiser/docs</loc>
     <lastmod>2026-10-09</lastmod>
     <changefreq>monthly</changefreq>
@@ -677,6 +671,12 @@
   </url>
   <url>
     <loc>https://lukagrcar.com/apps/meshoptimiser/download</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/report</loc>
     <lastmod>2026-10-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -725,6 +725,48 @@
   </url>
   <url>
     <loc>https://lukagrcar.com/apps/meshoptimiser/docs/stop-restart-update</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/install-windows</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/install-macos</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/setup-first-session</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/install-gltfpack</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/desktop-shortcut</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/move-or-remove</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/install-problems</loc>
     <lastmod>2026-10-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -802,6 +844,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/quick-wand</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://lukagrcar.com/apps/meshoptimiser/docs/undo-redo</loc>
     <lastmod>2026-10-09</lastmod>
     <changefreq>monthly</changefreq>
@@ -820,7 +868,25 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/help-window</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://lukagrcar.com/apps/meshoptimiser/docs/read-the-numbers</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/heavy-parts</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/smart-optimise</loc>
     <lastmod>2026-10-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -833,6 +899,18 @@
   </url>
   <url>
     <loc>https://lukagrcar.com/apps/meshoptimiser/docs/select-hidden-parts</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/fasteners</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/stacked-copies</loc>
     <lastmod>2026-10-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

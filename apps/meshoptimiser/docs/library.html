@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>The parts library and shapes — MeshOptimiser Docs</title>
-  <meta name="description" content="Add standard parts to a scene: 86 bolts, nuts, pipes, profiles and machine parts, each with sizes you can change afterwards." />
+  <meta name="description" content="Add standard parts to a scene from a drawer under the viewport: 86 bolts, nuts, pipes, profiles and machine parts. Look at a part and set its size before it go…" />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/library" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="The parts library and shapes — MeshOptimiser Docs" />
-  <meta property="og:description" content="Add standard parts to a scene: 86 bolts, nuts, pipes, profiles and machine parts, each with sizes you can change afterwards." />
+  <meta property="og:description" content="Add standard parts to a scene from a drawer under the viewport: 86 bolts, nuts, pipes, profiles and machine parts. Look at a part and set its size before it go…" />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/library" />
   <meta property="og:type" content="website" />
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=18" />
+  <link rel="stylesheet" href="../site.css?v=33" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -35,12 +35,11 @@
       </a>
       <nav class="nav" id="nav" aria-label="MeshOptimiser">
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../docs.html" aria-current="page">Docs</a>
         <a href="../changelog.html">Changelog</a>
         <a class="nav-out" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">GitHub</a>
       </nav>
-      <a class="btn is-primary bar-get" href="../download.html">Download</a>
+      <a class="btn is-primary bar-get" href="../download.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
       <button class="bar-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
     </div>
   </header>
@@ -57,6 +56,14 @@
         <a href="../docs/install-as-app.html">Install it as an app window</a>
         <a href="../docs/first-file.html">Open your first file</a>
         <a href="../docs/stop-restart-update.html">Stop, restart and update</a>
+        <h2>Install and set up</h2>
+        <a href="../docs/install-windows.html">Install on Windows, step by step</a>
+        <a href="../docs/install-macos.html">Install on macOS, step by step</a>
+        <a href="../docs/setup-first-session.html">Set it up after installing</a>
+        <a href="../docs/install-gltfpack.html">Add gltfpack for smaller files</a>
+        <a href="../docs/desktop-shortcut.html">Add a shortcut or an icon</a>
+        <a href="../docs/move-or-remove.html">Move, copy or remove the app</a>
+        <a href="../docs/install-problems.html">Install problems, message by message</a>
         <h2>Getting your model out of your CAD program</h2>
         <a href="../docs/cad-files-step-first.html">Native CAD files: export a STEP file first</a>
         <a href="../docs/step-from-inventor.html">How to export a STEP assembly from Autodesk Inventor</a>
@@ -71,13 +78,19 @@
         <a href="../docs/parts-tree.html">The parts tree</a>
         <a href="../docs/organise-the-tree.html">Organise the tree: groups, sorting and picking</a>
         <a href="../docs/search-and-commands.html">Search and commands</a>
+        <a href="../docs/quick-wand.html">Quick wand</a>
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
+        <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html">How to read the numbers</a>
+        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
+        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -117,12 +130,17 @@
       <article class="kb-article">
         <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#look">Look and arrange</a></p>
         <h1>The parts library and shapes</h1>
-        <p class="lead">Add standard parts to a scene: 86 bolts, nuts, pipes, profiles and machine parts, each with sizes you can change afterwards.</p>
+        <p class="lead">Add standard parts to a scene from a drawer under the viewport: 86 bolts, nuts, pipes, profiles and machine parts. Look at a part and set its size before it goes in.</p>
         <div class="kb-body">
-          <p>MeshOptimiser can also add parts. The library holds 86 ready-made parts. Each one is parametric, which means it is built from numbers such as a diameter and a length, and you can change those numbers after you have placed it.</p>
-          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-library.webp" data-group="article" data-caption="The library drawer: a pillow block and a handwheel placed, and a stepper motor on its way in, shown where it will stand."><img src="../../../Images/apps/meshoptimiser-library.webp" alt="MeshOptimiser: The library drawer: a pillow block and a handwheel placed, and a stepper motor on its way in, shown where it will stand." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>The library drawer: a pillow block and a handwheel placed, and a stepper motor on its way in, shown where it will stand.</figcaption></figure>
+          <p>MeshOptimiser can also add parts. The library holds 86 ready-made parts. Each one is parametric, which means it is built from numbers such as a diameter and a length, and you can change those numbers before you place it and after.</p>
+          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-library.webp" data-group="article" data-caption="The library drawer: a pillow block and a handwheel placed, and a stepper motor on its way in, shown where it will stand."><img src="../../../Images/apps/meshoptimiser-library.webp" alt="MeshOptimiser: The library drawer: a pillow block and a handwheel placed, and a stepper motor on its way in, shown where it will stand." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>The library drawer: a pillow block and a handwheel placed, and a stepper motor on its way in, shown where it will stand.</figcaption></figure>
           <h2 id="open-the-library">Open the library</h2>
-          <p>The library is a drawer under the viewport. Click <span class="ui">Library</span> on the bottom toolbar, or press <kbd>Shift</kbd><kbd>L</kbd>. Click a part to look at it and set its size, then add it. The drawer closes with the same button, and it shares the space with the materials drawer: opening one puts the other away.</p>
+          <p>Press <kbd>Shift</kbd><kbd>L</kbd>, or click the button with the small shapes on the bottom toolbar, just left of the palette button. The library is a drawer: it slides up from the bottom of the viewport and leaves the parts tree where it is. Press <kbd>Shift</kbd><kbd>L</kbd> again, or click the cross in its header, to close it.</p>
+          <ul class="kb-points">
+            <li>Drag the top edge of the drawer to make it taller. Double-click the edge to reset it.</li>
+            <li>One drawer is open at a time. The library, the materials dock and the console give way to each other.</li>
+          </ul>
+          <p>The drawer has two halves. On the left are the parts, in shelves, each with a small picture. On the right is the part you have picked: a view of it, its facts, its parameters, and the button that adds it.</p>
           <h2 id="what-is-in-it">What is in it</h2>
           <dl class="table">
             <div><dt>Shapes</dt><dd>Cube, sphere, cylinder, cone, torus, capsule, wedge, rounded box, star and more.</dd></div>
@@ -132,13 +150,29 @@
             <div><dt>Profiles and plates</dt><dd>I-beam, box tube, angle, C-channel, T and Z profiles, T-slot extrusion, flat bar, round and hex bar, perforated and slotted plate, gusset, hinge.</dd></div>
             <div><dt>Machine parts</dt><dd>Gear, rack, sprocket, pulley, bearing, bushing, pillow block, shaft collar, linear rail, spring, handwheel, star knob, pull handle, levelling foot, wheel, enclosure, stepper motor.</dd></div>
           </dl>
-          <p>The parts you used last wait on a shelf at the top. <span class="ui">Search the library…</span> filters the shelves as you type.</p>
+          <h2 id="find-a-part">Find a part</h2>
+          <ul class="kb-points">
+            <li><span class="ui">Search…</span> in the header filters all the shelves as you type, by name or by shelf.</li>
+            <li>The dropdown next to it shows one shelf at a time. <span class="ui">All shelves</span> shows everything.</li>
+            <li>The parts you used last wait on a shelf called <span class="ui">Recently used</span> at the top. Its <span class="ui">Clear</span> button forgets them.</li>
+            <li>Pick a part and press the star in the right half to keep it on the <span class="ui">Favourites</span> shelf. Press the star again to take it off.</li>
+            <li>Two buttons in the header switch between large and small tiles.</li>
+          </ul>
+          <h2 id="look-at-a-part-first">Look at a part first</h2>
+          <ol class="kb-steps">
+            <li>Click a tile. A single click only picks the part. It does not add it.</li>
+            <li>The right half shows the part. Drag it to turn it about any axis, so you can roll it over and see it from underneath. Use the mouse wheel to zoom. Double-click to go back to the first view.</li>
+            <li>Under the name are its number of triangles and its size.</li>
+            <li>Below that are the same rows as the <span class="ui">Shape parameters</span> of a placed part (see below). Change a number there and the view follows.</li>
+          </ol>
+          <p>What you set in the right half is what the part has when it goes in. The numbers you change stay until you close the app’s page.</p>
           <h2 id="add-a-part">Add a part</h2>
           <ol class="kb-steps">
-            <li>For a fastener, first choose its thread size and length at the top of the library. M6 and 24 mm to begin with. Every screw, nut and washer you add comes out in that size.</li>
-            <li>Click a part to add it. It lands on the selected part, or on the floor at the origin when nothing is selected.</li>
-            <li>Or drag a part into the viewport. A see-through copy follows the pointer and shows where the part will stand: square to the face under the pointer, or upright on the floor.</li>
-            <li>Let go. The part is there, with a row of its own in the parts tree.</li>
+            <li>For a fastener, first choose its thread size and length in the drawer’s header, under <span class="ui">Fasteners</span>. M6 and 24 mm to begin with. Every screw, nut and washer you add comes out in that size, even one you changed in the right half.</li>
+            <li>Add the part in one of three ways: double-click its tile, or press <span class="ui">Add to scene</span> in the right half, or drag the tile into the viewport.</li>
+            <li>A double-click or <span class="ui">Add to scene</span> puts the part on the selected part, or on the floor at the origin when nothing is selected.</li>
+            <li>When you drag, a see-through copy follows the pointer and shows where the part will stand: square to the face under the pointer, or upright on the floor. It has the parameters you set. Let go to drop it.</li>
+            <li>The part is there, with a row of its own in the parts tree.</li>
           </ol>
           <h2 id="change-it-afterwards">Change it afterwards</h2>
           <ol class="kb-steps">
@@ -156,7 +190,7 @@
             <li>Set <span class="ui">Nut from the head</span>: how far from the head the nut sits.</li>
           </ol>
           <p>The nut is part of the bolt’s own shape. It follows the bolt’s size and length, stays one row in the tree, and cannot sit past the end of the thread.</p>
-          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-bolt-nut.webp" data-group="article" data-caption="A hex bolt that carries its own nut: size, length and the nut’s distance from the head are all parameters."><img src="../../../Images/apps/meshoptimiser-bolt-nut.webp" alt="MeshOptimiser: A hex bolt that carries its own nut: size, length and the nut’s distance from the head are all parameters." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>A hex bolt that carries its own nut: size, length and the nut’s distance from the head are all parameters.</figcaption></figure>
+          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-bolt-nut.webp" data-group="article" data-caption="A hex bolt that carries its own nut: size, length and the nut’s distance from the head are all parameters."><img src="../../../Images/apps/meshoptimiser-bolt-nut.webp" alt="MeshOptimiser: A hex bolt that carries its own nut: size, length and the nut’s distance from the head are all parameters." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>A hex bolt that carries its own nut: size, length and the nut’s distance from the head are all parameters.</figcaption></figure>
           <h2 id="other-ways-to-add-a-shape">Other ways to add a shape</h2>
           <ul class="kb-points">
             <li>The search: press <kbd>Ctrl</kbd><kbd>K</kbd>, type <code>add flange</code> and press <kbd>Enter</kbd>.</li>
@@ -201,20 +235,20 @@
         <h2>Product</h2>
         <a href="../">Overview</a>
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../download.html">Download</a>
       </nav>
       <nav aria-label="Resources">
         <h2>Resources</h2>
         <a href="../docs.html">Docs</a>
-        <a href="../docs/shortcuts.html">Keyboard shortcuts</a>
+        <a href="../docs/desktop-shortcut.html">Keyboard shortcuts</a>
         <a href="../changelog.html">Changelog</a>
         <a href="../docs/troubleshooting.html">Troubleshooting</a>
       </nav>
       <nav aria-label="Project">
         <h2>Project</h2>
         <a href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">Source on GitHub</a>
-        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Report a problem</a>
+        <a href="../report.html">Report a problem</a>
+        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Issues on GitHub</a>
         <a href="https://github.com/xpayn3/MeshOptimiser/blob/main/LICENSE" rel="noopener">MIT licence</a>
       </nav>
     </div>
@@ -223,6 +257,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=17"></script>
+  <script defer src="../site.js?v=22"></script>
 </body>
 </html>

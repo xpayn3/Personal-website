@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>The window — MeshOptimiser Docs</title>
-  <meta name="description" content="A tour of the screen: the top bar and tabs, the parts tree, the 3D view and its toolbars, the cards on the right and the status bar." />
+  <meta name="description" content="A tour of the screen: the top bar and tabs, the parts tree, the 3D view and its toolbars, the cards on the right, the drawers, the status bar and how to resize…" />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/the-window" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="The window — MeshOptimiser Docs" />
-  <meta property="og:description" content="A tour of the screen: the top bar and tabs, the parts tree, the 3D view and its toolbars, the cards on the right and the status bar." />
+  <meta property="og:description" content="A tour of the screen: the top bar and tabs, the parts tree, the 3D view and its toolbars, the cards on the right, the drawers, the status bar and how to resize…" />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/the-window" />
   <meta property="og:type" content="website" />
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=18" />
+  <link rel="stylesheet" href="../site.css?v=33" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -35,12 +35,11 @@
       </a>
       <nav class="nav" id="nav" aria-label="MeshOptimiser">
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../docs.html" aria-current="page">Docs</a>
         <a href="../changelog.html">Changelog</a>
         <a class="nav-out" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">GitHub</a>
       </nav>
-      <a class="btn is-primary bar-get" href="../download.html">Download</a>
+      <a class="btn is-primary bar-get" href="../download.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
       <button class="bar-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
     </div>
   </header>
@@ -57,6 +56,14 @@
         <a href="../docs/install-as-app.html">Install it as an app window</a>
         <a href="../docs/first-file.html">Open your first file</a>
         <a href="../docs/stop-restart-update.html">Stop, restart and update</a>
+        <h2>Install and set up</h2>
+        <a href="../docs/install-windows.html">Install on Windows, step by step</a>
+        <a href="../docs/install-macos.html">Install on macOS, step by step</a>
+        <a href="../docs/setup-first-session.html">Set it up after installing</a>
+        <a href="../docs/install-gltfpack.html">Add gltfpack for smaller files</a>
+        <a href="../docs/desktop-shortcut.html">Add a shortcut or an icon</a>
+        <a href="../docs/move-or-remove.html">Move, copy or remove the app</a>
+        <a href="../docs/install-problems.html">Install problems, message by message</a>
         <h2>Getting your model out of your CAD program</h2>
         <a href="../docs/cad-files-step-first.html">Native CAD files: export a STEP file first</a>
         <a href="../docs/step-from-inventor.html">How to export a STEP assembly from Autodesk Inventor</a>
@@ -71,13 +78,19 @@
         <a href="../docs/parts-tree.html">The parts tree</a>
         <a href="../docs/organise-the-tree.html">Organise the tree: groups, sorting and picking</a>
         <a href="../docs/search-and-commands.html">Search and commands</a>
+        <a href="../docs/quick-wand.html">Quick wand</a>
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
+        <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html">How to read the numbers</a>
+        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
+        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -117,50 +130,64 @@
       <article class="kb-article">
         <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#around">Find your way around</a></p>
         <h1>The window</h1>
-        <p class="lead">A tour of the screen: the top bar and tabs, the parts tree, the 3D view and its toolbars, the cards on the right and the status bar.</p>
+        <p class="lead">A tour of the screen: the top bar and tabs, the parts tree, the 3D view and its toolbars, the cards on the right, the drawers, the status bar and how to resize it all.</p>
         <div class="kb-body">
           <p>The window has four areas: a top bar, a left sidebar, the 3D view in the middle (called the viewport) and a right sidebar. A thin status bar runs under the viewport.</p>
-          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-viewer.webp" data-group="article" data-caption="The whole window with an assembly open."><img src="../../../Images/apps/meshoptimiser-viewer.webp" alt="MeshOptimiser: The whole window with an assembly open." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>The whole window with an assembly open.</figcaption></figure>
+          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-viewer.webp" data-group="article" data-caption="The whole window with an assembly open."><img src="../../../Images/apps/meshoptimiser-viewer.webp" alt="MeshOptimiser: The whole window with an assembly open." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>The whole window with an assembly open.</figcaption></figure>
+          <p>When the app starts, a short splash screen shows the version and what the app is doing, then the window fades in. You can switch the splash off under <span class="ui">Settings</span>, <span class="ui">General</span>.</p>
           <h2 id="top-bar">Top bar</h2>
           <dl class="table">
-            <div><dt>The app’s mark</dt><dd>At the far left. Click it for the version number, what is new, a link to report a problem and the list of keyboard shortcuts.</dd></div>
-            <div><dt>Sidebar button</dt><dd>Shows or hides the left sidebar.</dd></div>
-            <div><dt>Menu</dt><dd>The file commands: <span class="ui">New scene</span>, <span class="ui">Open file…</span>, <span class="ui">Import into scene…</span>, <span class="ui">Save scene…</span>, <span class="ui">Export…</span>, <span class="ui">Revert to source…</span>, <span class="ui">Scene settings…</span>, <span class="ui">Settings…</span>, <span class="ui">Welcome screen</span> and <span class="ui">Quit app</span>.</dd></div>
-            <div><dt>Parts / Library switch</dt><dd>Two small buttons that choose what the left sidebar shows: the parts of the scene, or the library of parts you can add.</dd></div>
+            <div><dt>The app’s mark</dt><dd>At the far left. Click it for the version number, what is new, links to the source code and to report a problem, <span class="ui">Help &amp; docs</span> and the list of keyboard shortcuts.</dd></div>
+            <div><dt>Menu</dt><dd>The file commands: <span class="ui">New scene</span>, <span class="ui">Open file…</span>, <span class="ui">Import into scene…</span>, <span class="ui">Save scene…</span>, <span class="ui">Export…</span>, <span class="ui">Revert to source…</span>, <span class="ui">Scene settings…</span>, <span class="ui">Settings…</span>, <span class="ui">Help &amp; docs</span>, <span class="ui">Welcome screen</span> and <span class="ui">Quit app</span>.</dd></div>
+            <div><dt>Sidebar button</dt><dd>Right after Menu. Shows or hides the left sidebar. When the sidebar is hidden, the button stays next to Menu.</dd></div>
             <div><dt>Scene tabs</dt><dd>One tab for each open scene, and a <code>+</code> to start a new one. See <a href="../docs/scene-tabs.html">Scene tabs</a>.</dd></div>
             <div><dt>Export</dt><dd>At the right. Writes the model to a file for another program. See <a href="../docs/export.html">Export</a>.</dd></div>
             <div><dt>Camera button</dt><dd>Next to Export. Saves a picture of the view. See <a href="../docs/screenshots.html">Screenshots</a>.</dd></div>
           </dl>
           <h2 id="left-sidebar">Left sidebar</h2>
-          <p>It shows the parts tree: every part of the model, arranged in groups, with a search field and four buttons above it (<span class="ui">Locate</span>, <span class="ui">Collapse</span>, <span class="ui">Rename</span>, <span class="ui">Flatten</span>). Switch it to the library to add shapes and standard parts. A <span class="ui">Transform</span> panel with position, rotation and size can be shown at its foot.</p>
+          <p>It shows the parts tree: every part of the model, arranged in groups, with a search field and three buttons above it (<span class="ui">Collapse</span>, <span class="ui">Rename</span>, <span class="ui">Flatten</span>). A <span class="ui">Transform</span> card with position, rotation and size can be shown at its foot. It floats over the bottom of the sidebar and takes its own room under the tree. The library of parts you can add is not in this sidebar any more. It is a drawer under the viewport (see below).</p>
           <h2 id="viewport">Viewport</h2>
           <dl class="table">
-            <div><dt>Tool strip, left edge</dt><dd>Move, rotate and scale tools, a button for the transform panel, then the five view modes (solid, wireframe, X-ray, heatmap, clay) and a button that highlights small parts.</dd></div>
-            <div><dt>View name, top centre</dt><dd>Says which camera view is active, <span class="ui">Cam</span> to begin with. Click it to switch to Top, Front or Side. When parts are isolated, a second pill next to it says so.</dd></div>
-            <div><dt>View cube, top right</dt><dd>A small cube that turns with the model. Click a face to look straight at that side.</dd></div>
-            <div><dt>Toolbar, bottom centre</dt><dd>Search, add a shape, <span class="ui">Split</span>, <span class="ui">Fill holes</span>, <span class="ui">Smart fit</span>, <span class="ui">Select hidden parts</span>, <span class="ui">Measure</span>, <span class="ui">Materials</span>, and <code>…</code> for the list of all commands.</dd></div>
+            <div><dt>Tool strip, left edge</dt><dd>Move, rotate and scale tools, <span class="ui">Dynamic place</span> (<kbd>D</kbd>), a button for the transform card, then four view modes (solid, wireframe, X-ray, heatmap) and a button that highlights small parts. The Clay and CAD looks are in the <span class="ui">Shading</span> card on the right.</dd></div>
+            <div><dt>View name, top centre</dt><dd>Says which camera view is active, <span class="ui">Cam</span> to begin with. Click it to switch to Top, Front or Side. Small pills to its right show a mode that is on: <span class="ui">Isolated</span>, <span class="ui">Exploded</span>, <span class="ui">Measure</span> and <span class="ui">Snap</span>. Click a pill to leave that mode.</dd></div>
+            <div><dt>View cube, top right</dt><dd>A small cube that turns with the model. Click a face or an axis dot and the view turns there.</dd></div>
+            <div><dt>Toolbar, bottom centre</dt><dd>Search, add a shape, <span class="ui">Split</span>, <span class="ui">Fill holes</span>, <span class="ui">Smart fit</span>, <span class="ui">Select hidden parts</span>, <span class="ui">Fasteners</span>, <span class="ui">Measure</span>, <span class="ui">Library</span>, <span class="ui">Materials</span>, and <code>…</code> for the list of all commands.</dd></div>
             <div><dt>Shortcut tips, bottom right</dt><dd>A faint list of what the mouse and keys do right now. It changes when you select something.</dd></div>
-            <div><dt>Command panels, bottom left</dt><dd>A tool with settings, such as Fill holes, opens as a panel here. <kbd>Enter</kbd> runs it and <kbd>Esc</kbd> puts it away.</dd></div>
+            <div><dt>Command cards, bottom left</dt><dd>A tool with settings, such as Fill holes, Align to floor or Dynamic place, opens as a card over the viewport. <kbd>Enter</kbd> runs it and <kbd>Esc</kbd> puts it away.</dd></div>
           </dl>
           <h2 id="right-sidebar">Right sidebar</h2>
-          <p>At the top is <span class="ui">Properties</span>. With nothing selected it describes the whole scene. With a selection it describes that. Under it are cards you open and close by clicking their title:</p>
+          <p>At the top is <span class="ui">Properties</span>. With nothing selected it describes the whole scene. With a selection it describes that: the name, the material, the triangle count with a bar that shows its share of the scene, and the number of vertices, the size and the mesh data. Under it are cards you open and close by clicking their title. A card slides open and shut. Every card starts folded except <span class="ui">Properties</span> and <span class="ui">Shading</span>, and the ones you open or close are remembered.</p>
           <dl class="table">
+            <div><dt>Shading</dt><dd>Every look for the Clay and CAD views as a small picture: Clay, Porcelain, Steel and Red wax, and the CAD looks Ceramic, Light and Mono. Click one to choose it and turn the view on. Click the lit one again to go back to Solid. The <span class="ui">Outlines</span> switch draws a fine dark line on the sharp edges of every part. See <a href="../docs/colours-materials.html">Colours and materials</a> and <a href="../docs/view-modes.html">View modes</a>.</dd></div>
             <div><dt>Selection &amp; actions</dt><dd>Select all, invert, select similar, by colour, by name, and Merge, Group and Delete.</dd></div>
-            <div><dt>Inspect</dt><dd><span class="ui">Heavy parts</span>, <span class="ui">Filters &amp; flags</span>, <span class="ui">Measurements</span> and <span class="ui">Exploded view</span>.</dd></div>
-            <div><dt>Clean up</dt><dd><span class="ui">Delete small parts</span>, <span class="ui">Auto cleanup</span>, <span class="ui">Align to floor</span> and <span class="ui">Tidy geometry</span>.</dd></div>
-            <div><dt>Reduce</dt><dd><span class="ui">Reduce triangles</span>, which holds Fit to budget, Decimate, Smart fit all parts and the optimisation report.</dd></div>
+            <div><dt>Select similar</dt><dd>Sets how close a part has to look to the selected ones to count as similar.</dd></div>
+            <div><dt>Inspect</dt><dd><span class="ui">Heavy parts</span> (with a small count of how many there are), <span class="ui">Filters &amp; flags</span>, <span class="ui">Measurements</span> (only while there is a measurement) and <span class="ui">Exploded view</span>.</dd></div>
+            <div><dt>Clean up</dt><dd><span class="ui">Delete small parts</span>, <span class="ui">Auto cleanup</span> and <span class="ui">Tidy geometry</span>.</dd></div>
+            <div><dt>Reduce</dt><dd><span class="ui">Smart optimise</span> and <span class="ui">Reduce triangles</span>, which holds Fit to budget, Decimate, Smart fit all parts and the optimisation report.</dd></div>
           </dl>
+          <p>Tools with their own settings, such as <span class="ui">Align to floor</span> and <span class="ui">Find stacked copies</span>, are not cards in the sidebar. They open over the viewport, from the toolbar, the list of all commands or the search.</p>
           <h2 id="status-bar">Status bar</h2>
-          <p>Under the viewport: the number of parts, triangles and vertices, the size of the mesh data, how many parts are selected (click it to frame them), how many are flagged (click it to isolate them), the frame rate, and a <span class="ui">Console</span> button.</p>
-          <h2 id="console-and-materials">Console and Materials</h2>
-          <p>Two panels slide up from the bottom and take turns. The console, opened with the backtick key or the <span class="ui">Console</span> button in the status bar, is a log of everything the app has done, with filters for information, warnings and errors and a button to copy it. The materials dock (<kbd>Shift</kbd><kbd>M</kbd>) lists every material in the scene. See <a href="../docs/colours-materials.html">Colours and materials</a>.</p>
+          <p>Under the viewport: the number of vertices, the size of the mesh data, how many parts are selected (click it to frame them), how many are flagged (click it to isolate them), the frame rate, and a <span class="ui">Console</span> button. The numbers of parts and triangles are in <span class="ui">Properties</span>.</p>
+          <h2 id="drawers">Drawers</h2>
+          <p>Three panels slide up from the bottom of the viewport and take turns: only one is open at a time. Drag the top edge of a drawer to change its height.</p>
+          <dl class="table">
+            <div><dt>Library</dt><dd>The parts you can add. Opened with the <span class="ui">Library</span> button on the bottom toolbar or <kbd>Shift</kbd><kbd>L</kbd>. See <a href="../docs/library.html">The library</a>.</dd></div>
+            <div><dt>Materials</dt><dd>Every material in the scene. Opened with <kbd>Shift</kbd><kbd>M</kbd>. See <a href="../docs/colours-materials.html">Colours and materials</a>.</dd></div>
+            <div><dt>Console</dt><dd>A log of everything the app has done, with filters for information, warnings and errors and a button to copy it. Opened with the backtick key or the <span class="ui">Console</span> button in the status bar.</dd></div>
+          </dl>
           <h2 id="make-room">Make room</h2>
+          <p>Each sidebar has a drag handle on its inner edge. A thin line shows when you rest the pointer on it for a moment.</p>
           <ul class="kb-points">
-            <li>Drag the inner edge of either sidebar to make it wider or narrower.</li>
+            <li>Drag a handle to make a sidebar wider or narrower. Double-click it to put the width back.</li>
+            <li>The left sidebar cannot be narrower than 220 pixels and the right one not narrower than 240. Narrower than that, buttons and labels would wrap or be cut off.</li>
+            <li>The window itself cannot be smaller than 960 by 560 pixels. In a smaller window the app scrolls instead of squeezing the panels.</li>
             <li>Use the sidebar button in the top bar to hide the left sidebar.</li>
             <li>On a narrow window, buttons of the bottom toolbar fold away into the <code>…</code> list.</li>
           </ul>
+          <h2 id="help">Help</h2>
+          <p>Press <kbd>F1</kbd> to open the help inside the app. It holds the same articles as this website and works without an internet connection. See <a href="../docs/help-window.html">The help window</a>.</p>
           <div class="kb-see"><h2>Related</h2><ul>
+            <li><a href="../docs/help-window.html">The help window</a></li>
             <li><a href="../docs/move-the-view.html">Move the view</a></li>
             <li><a href="../docs/parts-tree.html">The parts tree</a></li>
             <li><a href="../docs/search-and-commands.html">Search and commands</a></li>
@@ -196,20 +223,20 @@
         <h2>Product</h2>
         <a href="../">Overview</a>
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../download.html">Download</a>
       </nav>
       <nav aria-label="Resources">
         <h2>Resources</h2>
         <a href="../docs.html">Docs</a>
-        <a href="../docs/shortcuts.html">Keyboard shortcuts</a>
+        <a href="../docs/desktop-shortcut.html">Keyboard shortcuts</a>
         <a href="../changelog.html">Changelog</a>
         <a href="../docs/troubleshooting.html">Troubleshooting</a>
       </nav>
       <nav aria-label="Project">
         <h2>Project</h2>
         <a href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">Source on GitHub</a>
-        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Report a problem</a>
+        <a href="../report.html">Report a problem</a>
+        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Issues on GitHub</a>
         <a href="https://github.com/xpayn3/MeshOptimiser/blob/main/LICENSE" rel="noopener">MIT licence</a>
       </nav>
     </div>
@@ -218,6 +245,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=17"></script>
+  <script defer src="../site.js?v=22"></script>
 </body>
 </html>

@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>Settings — MeshOptimiser Docs</title>
-  <meta name="description" content="One window with six sections and a search. What each section holds, in a sentence or two." />
+  <meta name="description" content="One window with eight sections and a search. What each section holds, in a sentence or two, from the start-up options to the look of the interface." />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/settings" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="Settings — MeshOptimiser Docs" />
-  <meta property="og:description" content="One window with six sections and a search. What each section holds, in a sentence or two." />
+  <meta property="og:description" content="One window with eight sections and a search. What each section holds, in a sentence or two, from the start-up options to the look of the interface." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/settings" />
   <meta property="og:type" content="website" />
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=18" />
+  <link rel="stylesheet" href="../site.css?v=33" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -35,12 +35,11 @@
       </a>
       <nav class="nav" id="nav" aria-label="MeshOptimiser">
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../docs.html" aria-current="page">Docs</a>
         <a href="../changelog.html">Changelog</a>
         <a class="nav-out" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">GitHub</a>
       </nav>
-      <a class="btn is-primary bar-get" href="../download.html">Download</a>
+      <a class="btn is-primary bar-get" href="../download.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
       <button class="bar-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
     </div>
   </header>
@@ -57,6 +56,14 @@
         <a href="../docs/install-as-app.html">Install it as an app window</a>
         <a href="../docs/first-file.html">Open your first file</a>
         <a href="../docs/stop-restart-update.html">Stop, restart and update</a>
+        <h2>Install and set up</h2>
+        <a href="../docs/install-windows.html">Install on Windows, step by step</a>
+        <a href="../docs/install-macos.html">Install on macOS, step by step</a>
+        <a href="../docs/setup-first-session.html">Set it up after installing</a>
+        <a href="../docs/install-gltfpack.html">Add gltfpack for smaller files</a>
+        <a href="../docs/desktop-shortcut.html">Add a shortcut or an icon</a>
+        <a href="../docs/move-or-remove.html">Move, copy or remove the app</a>
+        <a href="../docs/install-problems.html">Install problems, message by message</a>
         <h2>Getting your model out of your CAD program</h2>
         <a href="../docs/cad-files-step-first.html">Native CAD files: export a STEP file first</a>
         <a href="../docs/step-from-inventor.html">How to export a STEP assembly from Autodesk Inventor</a>
@@ -71,13 +78,19 @@
         <a href="../docs/parts-tree.html">The parts tree</a>
         <a href="../docs/organise-the-tree.html">Organise the tree: groups, sorting and picking</a>
         <a href="../docs/search-and-commands.html">Search and commands</a>
+        <a href="../docs/quick-wand.html">Quick wand</a>
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html" aria-current="page">Settings</a>
+        <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html">How to read the numbers</a>
+        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
+        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -117,35 +130,61 @@
       <article class="kb-article">
         <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#around">Find your way around</a></p>
         <h1>Settings</h1>
-        <p class="lead">One window with six sections and a search. What each section holds, in a sentence or two.</p>
+        <p class="lead">One window with eight sections and a search. What each section holds, in a sentence or two, from the start-up options to the look of the interface.</p>
         <div class="kb-body">
           <p>Open it with <kbd>Ctrl</kbd><kbd>,</kbd> or <span class="ui">Menu</span>, then <span class="ui">Settings…</span>. Changes apply as you make them. There is nothing to confirm: press <span class="ui">Done</span> or <kbd>Esc</kbd> to close the window.</p>
-          <p>The field at the top searches every section at once. Press <kbd>Ctrl</kbd><kbd>F</kbd> to jump to it.</p>
-          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-settings-general.webp" data-group="article" data-caption="Settings, General."><img src="../../../Images/apps/meshoptimiser-settings-general.webp" alt="MeshOptimiser: Settings, General." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Settings, General.</figcaption></figure>
+          <p>The list at the left has the sections. The field at the top searches every section at once. Press <kbd>Ctrl</kbd><kbd>F</kbd> to jump to it. While a search is typed, <kbd>Esc</kbd> clears it first. At the bottom of the list are links to <span class="ui">Help &amp; docs</span> and <span class="ui">Keyboard shortcuts</span>, and the version number.</p>
+          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-settings-general.webp" data-group="article" data-caption="Settings, General."><img src="../../../Images/apps/meshoptimiser-settings-general.webp" alt="MeshOptimiser: Settings, General." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Settings, General.</figcaption></figure>
           <h2 id="general">General</h2>
+          <p>How the app starts and behaves.</p>
           <dl class="table">
+            <div><dt>Splash screen</dt><dd>The short splash with the version while the app opens. Off: the app just fades in.</dd></div>
             <div><dt>Start screen</dt><dd>Show the start screen when the app opens.</dd></div>
             <div><dt>Offer the last file</dt><dd>A Resume button on the start screen for the file you had open last.</dd></div>
             <div><dt>Fit the view after loading</dt><dd>Move the camera so a newly opened model fills the view.</dd></div>
             <div><dt>Same sidebars in every tab</dt><dd>Keep the sidebar widths when you switch tabs.</dd></div>
             <div><dt>Confirm destructive actions</dt><dd>Ask before deletes and other steps that are hard to take back.</dd></div>
+            <div><dt>Warn before leaving with unsaved changes</dt><dd>Closing or reloading the window asks first when a scene has changes that are not saved. On by default.</dd></div>
+            <div><dt>Undo history</dt><dd>How many steps <kbd>Ctrl</kbd><kbd>Z</kbd> can go back: <span class="ui">Short</span> (50), <span class="ui">Normal</span> (200) or <span class="ui">Long</span> (500). A longer history uses more memory. See <a href="../docs/undo-redo.html">Undo and redo</a>.</dd></div>
             <div><dt>Delete groups when they become empty</dt><dd>Remove a group automatically when an action empties it. Off by default.</dd></div>
+          </dl>
+          <h2 id="appearance">Appearance</h2>
+          <p>The look of the interface. It does not change the model or the 3D view. <span class="ui">Reset</span> at the bottom puts everything in this section back to the defaults.</p>
+          <dl class="table">
+            <div><dt>Accent</dt><dd>The colour of buttons, selections and highlights. Choose one of nine colours, or the last swatch to pick any colour.</dd></div>
+            <div><dt>Surfaces</dt><dd>The greys the interface is built from: <span class="ui">Graphite</span>, <span class="ui">Midnight</span>, <span class="ui">Warm</span> or <span class="ui">Black</span>.</dd></div>
+            <div><dt>Font</dt><dd>The typeface of the interface: <span class="ui">Inter</span>, <span class="ui">System</span>, <span class="ui">Mono</span> or <span class="ui">Serif</span>.</dd></div>
+            <div><dt>Text size</dt><dd>Everything written in the interface, from <span class="ui">Small</span> to <span class="ui">Larger</span>. Buttons and fields grow with it.</dd></div>
+            <div><dt>Corners</dt><dd>How round the corners of buttons and cards are: <span class="ui">Sharp</span>, <span class="ui">Default</span> or <span class="ui">Round</span>.</dd></div>
+            <div><dt>Density</dt><dd>The height of buttons, fields and dropdowns: <span class="ui">Compact</span>, <span class="ui">Default</span> or <span class="ui">Roomy</span>.</dd></div>
+            <div><dt>Interface animations</dt><dd>Fades, slides and the movement of the splash screen. Off: everything just appears.</dd></div>
           </dl>
           <h2 id="viewport">Viewport</h2>
           <p>What the 3D view draws around the model.</p>
           <dl class="table">
             <div><dt>Highlight small parts</dt><dd>Tints the parts that are under the size threshold of Delete small parts.</dd></div>
+            <div><dt>CAD view look</dt><dd>The look the CAD view (key <kbd>6</kbd>) shades with: <span class="ui">Ceramic</span>, <span class="ui">Light</span> or <span class="ui">Mono</span>. The same choice is in the <span class="ui">Shading</span> card on the right.</dd></div>
+            <div><dt>Outlines</dt><dd>A fine dark line on the sharp edges of every part, in every view. On by default. The same switch is in the <span class="ui">Shading</span> card.</dd></div>
             <div><dt>Ground grid</dt><dd>The floor grid. <kbd>G</kbd> switches it too.</dd></div>
             <div><dt>Sun direction gizmo</dt><dd>A handle in the viewport for turning the light.</dd></div>
             <div><dt>FPS counter and Renderer stats</dt><dd>Small read-outs of how fast the view is drawing.</dd></div>
-            <div><dt>Group origins on select</dt><dd>Shows the dot at a group’s origin only while the group is selected.</dd></div>
+            <div><dt>Show origin points</dt><dd>Shows a dot at the origin of each group in the viewport. Off by default.</dd></div>
             <div><dt>Fog</dt><dd>Fades the grid and distant parts into the background, with start, end and intensity.</dd></div>
             <div><dt>Background</dt><dd>Dark, Studio gradient, Neutral grey, White, or HDRI environment. An HDRI is a picture of surroundings that lights the model. There are four built-in ones (Studio, Outdoor, Sunset, Overcast), or load your own <code>.hdr</code> or <code>.exr</code> file.</dd></div>
           </dl>
           <h2 id="camera">Camera</h2>
-          <p>Projection, field of view, clip planes, and two navigation switches. They are explained in <a href="../docs/move-the-view.html">Move the view</a>.</p>
+          <p>Projection, field of view, clip planes, and how the view moves.</p>
+          <dl class="table">
+            <div><dt>Projection</dt><dd>Perspective, as a camera sees, or Orthographic, with no perspective.</dd></div>
+            <div><dt>Field of view</dt><dd>How wide the lens is, in perspective.</dd></div>
+            <div><dt>Clip planes</dt><dd>How near and how far the camera sees. <span class="ui">Auto</span> fits the scene. <span class="ui">Tight</span> is for tiny parts, <span class="ui">Wide</span> for large assemblies and <span class="ui">Huge</span> for the size of a factory.</dd></div>
+            <div><dt>Orbit around the selection</dt><dd>With something selected, the view turns around it. Off, or with nothing selected: around the centre of the view.</dd></div>
+            <div><dt>Zoom toward the cursor</dt><dd>The wheel zooms toward the pointer instead of the centre of the view.</dd></div>
+            <div><dt>Orbit speed and Zoom speed</dt><dd>How far the view turns for a drag and moves for the wheel: <span class="ui">Slow</span>, <span class="ui">Normal</span> or <span class="ui">Fast</span>.</dd></div>
+          </dl>
+          <p>The mouse moves are explained in <a href="../docs/move-the-view.html">Move the view</a>.</p>
           <h2 id="performance">Performance</h2>
-          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-settings-performance.webp" data-group="article" data-caption="Settings, Performance: the renderer, quality, and what a moving view gives up."><img src="../../../Images/apps/meshoptimiser-settings-performance.webp" alt="MeshOptimiser: Settings, Performance: the renderer, quality, and what a moving view gives up." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Settings, Performance: the renderer, quality, and what a moving view gives up.</figcaption></figure>
+          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-settings-performance.webp" data-group="article" data-caption="Settings, Performance: the renderer, quality, and what a moving view gives up."><img src="../../../Images/apps/meshoptimiser-settings-performance.webp" alt="MeshOptimiser: Settings, Performance: the renderer, quality, and what a moving view gives up." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Settings, Performance: the renderer, quality, and what a moving view gives up.</figcaption></figure>
           <dl class="table">
             <div><dt>Renderer</dt><dd>WebGPU, or WebGL2 where the browser or the graphics driver has no WebGPU. Changing it reloads the page.</dd></div>
             <div><dt>Quality</dt><dd>Auto adapts to the size of the scene. High always draws at full sharpness. Low draws coarser, for scenes with millions of triangles.</dd></div>
@@ -155,31 +194,43 @@
             <div><dt>Lower the resolution if it stutters</dt><dd>While a heavy scene moves, draw it a little coarser, and sharp again when it stops.</dd></div>
           </dl>
           <h2 id="scene">Scene</h2>
-          <p>These belong to the open scene and are saved with it. <kbd>Ctrl</kbd><kbd>;</kbd> opens this section directly.</p>
+          <p>These belong to the open scene and are saved with it. <kbd>Ctrl</kbd><kbd>;</kbd> opens this section directly, and so does <span class="ui">Scene settings…</span> in the menu.</p>
           <dl class="table">
             <div><dt>Display units</dt><dd>The unit used for sizes and distances on screen: millimetres, centimetres, metres, inches, feet, or none.</dd></div>
-            <div><dt>Up axis (viewport)</dt><dd>Which direction is up: Z, as CAD programs have it, or Y, as glTF and some 3D programs have it.</dd></div>
-            <div><dt>Scene scale (×)</dt><dd>A multiplier for the whole scene. 0.001 turns millimetres into metres.</dd></div>
-            <div><dt>Lighting</dt><dd>Exposure, ambient light, the sun’s strength and direction, and shadows.</dd></div>
-            <div><dt>Grid</dt><dd>The size of a grid cell, and whether the move tool snaps to the grid.</dd></div>
+            <div><dt>Up axis (viewport)</dt><dd>Which direction is up: Z, as CAD programs have it, or Y, as glTF and some 3D programs have it. It changes how the scene is shown. The exported file follows the choice in the Export window.</dd></div>
+            <div><dt>Scene scale (×)</dt><dd>A multiplier for the whole scene on screen. 0.001 turns millimetres into metres.</dd></div>
+            <div><dt>Cell size</dt><dd>The size of a grid cell. <span class="ui">Auto</span> fits the model.</dd></div>
+            <div><dt>Snap gizmo to grid</dt><dd>The move tool jumps from one grid cell to the next.</dd></div>
           </dl>
+          <p>The light has no settings here. The sun is turned with the <span class="ui">Sun direction gizmo</span> in the viewport.</p>
           <h2 id="storage">Storage</h2>
           <p>What the app remembers on this computer, each with a button to clear it:</p>
           <dl class="table">
             <div><dt>Recent files</dt><dd>The list on the start screen.</dd></div>
             <div><dt>File access</dt><dd>Permissions that let the app reopen a recent file without asking where it is.</dd></div>
-            <div><dt>Panel sizes</dt><dd>The widths of the sidebars and the heights of the docks.</dd></div>
-            <div><dt>All settings</dt><dd>Puts every preference under General and Camera back to its default.</dd></div>
+            <div><dt>Import options</dt><dd>Shows the options window again for the formats where you ticked “Don’t ask again”.</dd></div>
+            <div><dt>Panel sizes</dt><dd>The widths of the sidebars and the heights of the drawers.</dd></div>
+            <div><dt>All settings</dt><dd>Puts every preference back to its default, the look of the interface included.</dd></div>
+          </dl>
+          <h2 id="about">About</h2>
+          <p>The version, where to find help, and what to send when something goes wrong.</p>
+          <dl class="table">
+            <div><dt>Details</dt><dd>The version of the app, the renderer, how many parts and triangles the scene has, the size of your screen and your browser.</dd></div>
+            <div><dt>Help &amp; docs, Keyboard shortcuts</dt><dd>Open the help window and the list of shortcuts. See <a href="../docs/help-window.html">The help window</a>.</dd></div>
+            <div><dt>Copy details</dt><dd>Copies the details above, with your graphics card and the look you chose, as text. Paste it into a new issue on GitHub so the problem is easier to find.</dd></div>
+            <div><dt>Report a problem</dt><dd>Opens the report page in your browser, with your version and system already filled in.</dd></div>
+            <div><dt>Website, Source code</dt><dd>The downloads and docs, and the code on GitHub. The app is free and open source, under the MIT licence.</dd></div>
           </dl>
           <div class="kb-see"><h2>Related</h2><ul>
             <li><a href="../docs/move-the-view.html">Move the view</a></li>
             <li><a href="../docs/view-modes.html">View modes</a></li>
             <li><a href="../docs/privacy-offline.html">Privacy and offline use</a></li>
+            <li><a href="../docs/help-window.html">The help window</a></li>
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">
           <a class="is-before" href="../docs/scene-tabs.html"><span>Before</span><strong>Scene tabs</strong></a>
-          <a class="is-after" href="../docs/read-the-numbers.html"><span>Next</span><strong>How to read the numbers</strong></a>
+          <a class="is-after" href="../docs/help-window.html"><span>Next</span><strong>The help window</strong></a>
         </nav>
       </article>
     </section>
@@ -206,20 +257,20 @@
         <h2>Product</h2>
         <a href="../">Overview</a>
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../download.html">Download</a>
       </nav>
       <nav aria-label="Resources">
         <h2>Resources</h2>
         <a href="../docs.html">Docs</a>
-        <a href="../docs/shortcuts.html">Keyboard shortcuts</a>
+        <a href="../docs/desktop-shortcut.html">Keyboard shortcuts</a>
         <a href="../changelog.html">Changelog</a>
         <a href="../docs/troubleshooting.html">Troubleshooting</a>
       </nav>
       <nav aria-label="Project">
         <h2>Project</h2>
         <a href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">Source on GitHub</a>
-        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Report a problem</a>
+        <a href="../report.html">Report a problem</a>
+        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Issues on GitHub</a>
         <a href="https://github.com/xpayn3/MeshOptimiser/blob/main/LICENSE" rel="noopener">MIT licence</a>
       </nav>
     </div>
@@ -228,6 +279,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=17"></script>
+  <script defer src="../site.js?v=22"></script>
 </body>
 </html>

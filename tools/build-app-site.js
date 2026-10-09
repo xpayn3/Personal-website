@@ -24,18 +24,19 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 18;
-const JS_V = 17;
+const CSS_V = 33;
+const RP_V = 2;           // report.js
+const JS_V = 22;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
 const PAGES = [
   { key: 'home', file: 'index.html', label: 'Overview', nav: false },
   { key: 'features', file: 'features.html', label: 'Features' },
-  { key: 'screenshots', file: 'screenshots.html', label: 'Screenshots' },
   { key: 'docs', file: 'docs.html', label: 'Docs' },
   { key: 'changelog', file: 'changelog.html', label: 'Changelog' },
   { key: 'download', file: 'download.html', label: 'Download', nav: false },
+  { key: 'report', file: 'report.html', label: 'Report a problem', nav: false },
 ];
 
 const esc = text => String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -56,8 +57,16 @@ function siteFor(app, docs) {
   const repo = app.repo.replace(/\/+$/, '');
   const zip = app.download || repo + '/archive/HEAD.zip';
   const latest = app.changelog.versions.find(v => v.latest) || app.changelog.versions[0];
+  // the last three tagged releases, each as GitHub's zip of that tag
+  const releases = app.changelog.versions.filter(v => !v.next).slice(0, 3);
 
   // the address of the docs article whose slug matches, or the docs home
+  // the tool icons (Lucide, ISC): a small JSON next to the pages, drawn inline so they take the colour of their group
+  const iconFile = path.join(ROOT, site.path, 'icons.json');
+  const ICONS = fs.existsSync(iconFile) ? JSON.parse(fs.readFileSync(iconFile, 'utf8')) : { icons: {}, items: {} };
+  const GROUP_COLOURS = ['#f5a524', '#0d99ff', '#2fd180', '#a78bfa', '#ff8a4c', '#2dd4bf', '#f472b6'];
+  const svgIcon = (name) => { const nodes = ICONS.icons[name]; if (!nodes) return ''; return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + nodes.map(([tag, attrs]) => '<' + tag + Object.entries(attrs).map(([k, v]) => ' ' + k + '="' + v + '"').join('') + '/>').join('') + '</svg>'; };
+
   const docLink = (re) => { const hit = docs && docs.articles.find(a => re.test(a.slug)); return hit ? `docs/${hit.slug}.html` : 'docs.html'; };
 
   // ---- pieces shared by the pages ----
@@ -69,7 +78,7 @@ ${JSON.stringify({
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
     name: app.title,
-    description: site.description || site.lead,
+    description: site.lead,
     applicationCategory: 'DesignApplication',
     operatingSystem: platform.replace(/\s*·\s*/g, ', '),
     softwareVersion: version,
@@ -124,7 +133,7 @@ ${JSON.stringify({
 ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.key === page.key || p.key === page.under ? ' aria-current="page"' : ''}>${p.label}</a>`).join('\n')}
         <a class="nav-out" href="${repo}" rel="noopener">GitHub</a>
       </nav>
-      <a class="btn is-primary bar-get" href="download.html"${page.key === 'download' ? ' aria-current="page"' : ''}>Download</a>
+      <a class="btn is-primary bar-get" href="download.html"${page.key === 'download' ? ' aria-current="page"' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
       <button class="bar-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
     </div>
   </header>
@@ -144,7 +153,7 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
       </div>
     </section>`;
 
-  const footer = (page) => `${page.key === 'download' ? '' : getBand}
+  const footer = (page) => `${page.key === 'download' || page.key === 'report' ? '' : getBand}
   </main>
   <footer class="foot">
     <div class="wrap foot-in">
@@ -156,7 +165,6 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
         <h2>Product</h2>
         <a href="./">Overview</a>
         <a href="features.html">Features</a>
-        <a href="screenshots.html">Screenshots</a>
         <a href="download.html">Download</a>
       </nav>
       <nav aria-label="Resources">
@@ -169,7 +177,8 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
       <nav aria-label="Project">
         <h2>Project</h2>
         <a href="${repo}" rel="noopener">Source on GitHub</a>
-        <a href="${repo}/issues" rel="noopener">Report a problem</a>
+        <a href="report.html">Report a problem</a>
+        <a href="${repo}/issues" rel="noopener">Issues on GitHub</a>
         <a href="${repo}/blob/main/LICENSE" rel="noopener">${esc(licence)} licence</a>
       </nav>
     </div>
@@ -192,7 +201,7 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
 
   // a picture that opens in the lightbox; `group` ties the pictures of one set together
   const shot = ([src, caption], group, eager) =>
-    `<figure><a class="zoom" href="${asset(src)}" data-group="${group}" data-caption="${esc(caption)}"><img src="${asset(src)}" alt="${esc(app.title + ': ' + caption)}" width="1600" height="1000"${eager ? '' : ' loading="lazy"'} decoding="async" /></a><figcaption>${esc(caption)}</figcaption></figure>`;
+    `<figure><a class="zoom" href="${asset(src)}" data-group="${group}" data-caption="${esc(caption)}"><img src="${asset(src)}" alt="${esc(app.title + ': ' + caption)}" width="2400" height="1350"${eager ? '' : ' loading="lazy"'} decoding="async" /></a><figcaption>${esc(caption)}</figcaption></figure>`;
 
   const clipCards = () => (app.clips || []).map(([name, line, src, doc], i) => `
         <figure class="clip">
@@ -202,7 +211,7 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
 
   const spotRows = (list, group) => list.map(([name, line, image], i) => `
         <article class="spot${i % 2 ? ' is-flipped' : ''}">
-          <a class="zoom" href="${asset(image)}" data-group="${group}" data-caption="${esc(name)}"><img src="${asset(image)}" alt="${esc(app.title + ': ' + name)}" width="1600" height="1000" loading="lazy" decoding="async" /></a>
+          <a class="zoom" href="${asset(image)}" data-group="${group}" data-caption="${esc(name)}"><img src="${asset(image)}" alt="${esc(app.title + ': ' + name)}" width="2400" height="1350" loading="lazy" decoding="async" /></a>
           <div>
             <i>${pad2(i + 1)}</i>
             <h3>${esc(name)}</h3>
@@ -296,6 +305,38 @@ ${d.tips.map(([key, line]) => `              <li><kbd>${esc(key)}</kbd><span>${e
     </section>`;
   };
 
+  // The Quick wand of the app, working on the page: a ring that opens round the
+  // pointer on three parts. The words and parts are in `site.wand` (apps.js);
+  // site.js draws the ring and does what each slice says.
+  const wandDemo = () => {
+    const d = site.wand;
+    if (!d) return '';
+    const shapes = ['plate', 'pulley', 'bolt'];
+    return `
+    <section class="band wand-band" id="try-wand">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">${esc(d.kicker)}</p>
+          <h2>${esc(d.title)}</h2>
+        </div>
+        <p class="lead wand-lead">${esc(d.line)}</p>
+        <div class="wand-demo" data-wand>
+          <div class="wand-stage" data-wand-stage role="group" aria-label="The Quick wand ring, open in the middle. Point at a slice and click a command."></div>
+          <p class="wand-out" aria-live="polite" data-wand-out></p>
+          <div class="wand-modes" role="group" aria-label="What the ring works on">
+            <button type="button" data-wand-mode="none" aria-pressed="true">Nothing selected</button>
+            <button type="button" data-wand-mode="part" aria-pressed="false">A part selected</button>
+            <button type="button" class="wand-reset" data-wand-reset>Start over</button>
+          </div>
+          <script type="application/json" data-wand-data>${JSON.stringify({ parts: d.parts, icons: ICONS.wand || {} })}</script>
+        </div>
+        <ul class="wand-tips">
+${d.tips.map(([key, line]) => `          <li><kbd>${esc(key)}</kbd><span>${esc(line)}</span></li>`).join('\n')}
+        </ul>
+      </div>
+    </section>`;
+  };
+
   // The library, working on the page: shelves of the app's own part pictures,
   // dragged (or double-clicked) into a scene. site.js does the dragging.
   const libraryBand = () => {
@@ -309,21 +350,13 @@ ${d.tips.map(([key, line]) => `              <li><kbd>${esc(key)}</kbd><span>${e
           <h2>${esc(l.title)}</h2>
         </div>
         <p class="lead lib-lead">${esc(l.line)}</p>
-        <div class="lib" data-lib>
-          <div class="lib-shelf">
-            <div class="lib-tabs" role="tablist" aria-label="Shelves">
-${l.shelves.map(([name, items], i) => `              <button type="button" role="tab" aria-selected="${i === 0}" data-shelf="${i}">${esc(name)}<i>${items.length}</i></button>`).join('\n')}
-            </div>
-${l.shelves.map(([name, items], i) => `            <ul class="lib-grid" data-shelf-grid="${i}"${i ? ' hidden' : ''} role="tabpanel" aria-label="${esc(name)}">
-${items.map(([key, label]) => `              <li><button type="button" class="lib-card" data-key="${esc(key)}" data-name="${esc(label)}" aria-label="${esc(label)}: drag into the scene, or press Enter to add it"><img src="library/${esc(key)}.webp" alt="" width="96" height="96" loading="lazy" decoding="async" draggable="false" /><span>${esc(label)}</span></button></li>`).join('\n')}
-            </ul>`).join('\n')}
-          </div>
-          <div class="lib-scene">
-            <div class="lib-view" data-view tabindex="0" aria-label="A scene. Drop parts here, drag them around, press Delete to remove the selected one.">
-              <p class="lib-hint">${esc(l.hint)}</p>
-            </div>
-            <div class="lib-bar"><span class="lib-count" aria-live="polite">Nothing in the scene yet</span><button type="button" class="lib-clear" hidden>Clear scene</button></div>
-          </div>
+        <div class="lib-show">
+${l.shelves.map(([name, items]) => `          <section class="lib-set">
+            <h3>${esc(name)}<i>${items.length}</i></h3>
+            <ul class="lib-tiles">
+${items.map(([key, label]) => `              <li><img src="library/${esc(key)}.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>${esc(label)}</span></li>`).join('\n')}
+            </ul>
+          </section>`).join('\n')}
         </div>
       </div>
     </section>`;
@@ -331,6 +364,51 @@ ${items.map(([key, label]) => `              <li><button type="button" class="li
 
   // The design band: close-ups of the controls, the app's layout drawn as a
   // plan, and the numbers it is built from. `site.design` holds the words.
+  // What the optimiser saves, drawn as bars from numbers measured in the app (site.savings in apps.js)
+  const savingsBand = () => {
+    const s = site.savings;
+    if (!s) return '';
+    const fmtN = (n) => (n >= 100 ? Math.round(n).toLocaleString('en-US') : String(Math.round(n * 10) / 10));
+    const pct = (a, b) => Math.round((1 - b / a) * 100);
+    const [t0, t1] = [s.metrics[0][1], s.metrics[0][2]];
+    const rows = s.metrics.map(([name, a, b, unit]) => `
+          <div class="sv-row">
+            <div class="sv-label"><span>${esc(name)}</span><em>−${pct(a, b)}%</em></div>
+            <div class="sv-bar is-before"><i style="--w:100%"></i><b>${fmtN(a)}${unit ? ' ' + esc(unit) : ''}</b></div>
+            <div class="sv-bar is-after"><i style="--w:${(b / a * 100).toFixed(1)}%"></i><b>${fmtN(b)}${unit ? ' ' + esc(unit) : ''}</b></div>
+          </div>`).join('');
+    const top = Math.max(t0, ...s.levels.map(l => l[1]));
+    const cols = [['Original', t0, 'is-original']].concat(s.levels.map(([n, v]) => [n, v, ''])).map(([n, v, cls], i) => `
+            <div class="sv-col ${cls}" style="--h:${(v / top * 100).toFixed(1)}%;--i:${i}">
+              <b>${fmtN(v)}</b><i></i><span>${esc(n)}</span>${cls ? '' : '<em>−' + pct(t0, v) + '%</em>'}
+            </div>`).join('');
+    return `
+    <section class="band savings" id="savings">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">${esc(s.kicker)}</p>
+          <h2>${esc(s.title)}</h2>
+        </div>
+        <p class="lead sv-lead">${esc(s.line)}</p>
+        <div class="sv" data-reveal>
+          <div class="sv-big">
+            <b>−${pct(t0, t1)}<small>%</small></b>
+            <span>triangles</span>
+            <em>${fmtN(t0)} → ${fmtN(t1)}</em>
+          </div>
+          <div class="sv-rows">${rows}
+          </div>
+          <div class="sv-levels" role="img" aria-label="Triangles left after Smart optimise at each level">
+            <p class="sv-sub">Triangles left, by level</p>
+            <div class="sv-cols" style="--n:${s.levels.length + 1}">${cols}
+            </div>
+          </div>
+        </div>
+        <p class="sv-note">${esc(s.note)}</p>
+      </div>
+    </section>`;
+  };
+
   const designBand = () => {
     const d = site.design;
     if (!d) return '';
@@ -345,8 +423,6 @@ ${items.map(([key, label]) => `              <li><button type="button" class="li
         <p class="lead design-lead">${esc(d.lead)}</p>
         <div class="appui" data-appui>
           <div class="appui-stage">
-            <div class="appui-floor" aria-hidden="true"></div>
-            <img class="appui-model" src="${asset(site.pop.model)}?v=${site.pop.v || 1}" alt="" width="${site.pop.modelSize[0]}" height="${site.pop.modelSize[1]}" loading="lazy" decoding="async" />
 ${d.stage.map(([part, x, y, z, r, delay]) => `            <div class="ap ap-${part}" data-part="${part}" style="--x:${x}px;--y:${y}px;--z:${z};--r:${r}deg;--d:${delay}ms"></div>`).join('\n')}
           </div>
         </div>
@@ -382,72 +458,13 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
     </section>`;
   };
 
-  // The four things the app stands for, in a row under the opening (site.claims: [claim, a line about it]).
-  const claimsBand = () => {
-    if (!site.claims) return '';
-    return `
-    <section class="band">
-      <div class="wrap">
-        <dl class="figures is-claims">
-${site.claims.map(([claim, line]) => `          <div><dt>${esc(claim)}</dt><dd>${esc(line)}</dd></div>`).join('\n')}
-        </dl>
-      </div>
-    </section>`;
-  };
-
-  // A job told in pictures (site.story): { kicker, title, line, steps: [[name, line, picture], …], foot, link: [label, docs slug] }.
-  const storyBand = () => {
-    const st = site.story;
-    if (!st) return '';
-    return `
-    <section class="band" id="story">
-      <div class="wrap">
-        <div class="band-head">
-          <p class="kicker">${esc(st.kicker)}</p>
-          <h2>${esc(st.title)}</h2>
-        </div>
-        <p class="lead story-lead">${esc(st.line)}</p>
-        <ol class="steps is-shots">
-${st.steps.map(([name, line, image], i) => `          <li><a class="zoom" href="${asset(image)}" data-group="story" data-caption="${esc(name)}"><img src="${asset(image)}" alt="${esc(app.title + ': ' + name)}" width="1600" height="1000" loading="lazy" decoding="async" /></a><i>${pad2(i + 1)}</i><h3>${esc(name)}</h3><p>${esc(line)}</p></li>`).join('\n')}
-        </ol>${st.foot || st.link ? `
-        <p class="story-foot">${st.foot ? `<span>${esc(st.foot)}</span>` : ''}${st.link ? `<a class="more" href="${docLink(new RegExp('^' + st.link[1] + '$'))}">${esc(st.link[0])}</a>` : ''}</p>` : ''}
-      </div>
-    </section>`;
-  };
-
-  // Who it is for, and who it is not for (site.audience): { kicker, title, yes: [heading, [lines]], no: [heading, [lines]], link: [label, docs slug] }.
-  const audienceBand = () => {
-    const a = site.audience;
-    if (!a) return '';
-    const column = ([heading, items], cls) => `
-          <div class="${cls}">
-            <h3>${esc(heading)}</h3>
-            <ul>
-${items.map(x => `              <li>${esc(x)}</li>`).join('\n')}
-            </ul>
-          </div>`;
-    return `
-    <section class="band" id="who">
-      <div class="wrap">
-        <div class="band-head">
-          <p class="kicker">${esc(a.kicker)}</p>
-          <h2>${esc(a.title)}</h2>${a.link ? `
-          <a class="more" href="${docLink(new RegExp('^' + a.link[1] + '$'))}">${esc(a.link[0])}</a>` : ''}
-        </div>
-        <div class="fit">${column(a.yes, 'is-yes')}${column(a.no, 'is-no')}
-        </div>
-      </div>
-    </section>`;
-  };
-
   // ---- the pages ----
   const pages = {};
 
-  pages.home = (page) => head(page, site.titleTag || `${app.title} — ${app.subtitle}`, site.description || site.lead) + header(page) + `
+  pages.home = (page) => head(page, `${app.title} — ${app.subtitle}`, site.lead) + header(page) + `
     <section class="wrap hero">
       <p class="kicker">${[version && 'v' + version, app.stage, licence, platform.replace(/\s*·\s*/g, ' and ')].filter(Boolean).map(esc).join('<b>·</b>')}</p>
-      <h1${site.headline ? ' class="is-statement"' : ''}>${esc(site.headline || app.subtitle)}</h1>${site.headline ? `
-      <p class="sub">${esc(app.subtitle)}</p>` : ''}
+      <h1>${esc(app.subtitle)}</h1>
       <p class="lead">${esc(site.lead)}</p>
       <div class="actions">
         <a class="btn is-primary is-large" href="download.html">Download</a>
@@ -456,7 +473,7 @@ ${items.map(x => `              <li>${esc(x)}</li>`).join('\n')}
       </div>
     </section>
 ${popHero()}
-${claimsBand()}
+
     <section class="band">
       <div class="wrap">
         <dl class="figures">
@@ -493,8 +510,6 @@ ${app.steps.map(([name, line], i) => `          <li><i>${pad2(i + 1)}</i><h3>${e
       </div>
     </section>
 
-${storyBand()}
-${audienceBand()}
     <section class="band">
       <div class="wrap">
         <div class="band-head">
@@ -517,21 +532,25 @@ ${audienceBand()}
         </div>
       </div>
     </section>
+${savingsBand()}
 ${designBand()}
 ${libraryBand()}
 ${searchDemo()}
+${wandDemo()}
     <section class="band">
       <div class="wrap">
         <div class="band-head">
           <p class="kicker">Screenshots</p>
           <h2>The whole app, one screen at a time.</h2>
-          <a class="more" href="screenshots.html">All ${app.shots.length} screenshots</a>
         </div>
       </div>
       <div class="strip" data-strip>
-        ${app.shots.slice(1, 11).map(s => shot(s, 'strip')).join('\n        ')}
+        ${app.shots.map(s => shot(s, 'strip')).join('\n        ')}
       </div>
       <div class="dots" aria-hidden="true"></div>
+      <div class="wrap">
+        <p class="credit">The assembly in these pictures is Gearbox Assy from Khronos’s <a href="https://github.com/KhronosGroup/glTF-Sample-Models/tree/main/2.0/GearboxAssy" rel="noopener">glTF-Sample-Models</a>, a JT CAD sample converted by Okino Computer Graphics. The bolts, nuts, washers and gears come from the app’s own library.</p>
+      </div>
     </section>
 
     <section class="band">
@@ -562,38 +581,31 @@ ${(latest.items || []).slice(0, 4).map(([tag, line]) => `            <li><b clas
         </div>
       </div>
     </section>
-${app.featureGroups.map(group => `
-    <section class="band" id="${slug(group.title)}">
-      <div class="wrap split">
+${app.featureGroups.map((group, gi) => `
+    <section class="band" id="${slug(group.title)}" style="--ico: ${GROUP_COLOURS[gi % GROUP_COLOURS.length]}">
+      <div class="wrap tools-wrap">
         <div class="split-head">
           <p class="kicker">${esc(group.note || 'Features')}</p>
           <h2>${esc(group.title)}</h2>
         </div>
-        <ul class="features">
-${group.items.map(([name, line]) => `          <li><strong>${esc(name)}</strong><span>${esc(line)}</span></li>`).join('\n')}
+        <ul class="tools">
+${group.items.map(([name, line]) => `          <li><i class="ico">${svgIcon(ICONS.items[name])}</i><div><strong>${esc(name)}</strong><span>${esc(line)}</span></div></li>`).join('\n')}
         </ul>
       </div>
     </section>`).join('')}
 
+${savingsBand()}
     <section class="band">
       <div class="wrap">
         <div class="band-head">
           <p class="kicker">A closer look</p>
           <h2>The details, in pictures.</h2>
-          <a class="more" href="screenshots.html">All screenshots</a>
         </div>
         <div class="spots">${spotRows(app.spotlights, 'spots')}
         </div>
       </div>
     </section>` + footer(page);
 
-  pages.screenshots = (page) => head(page, `Screenshots — ${app.title}`, `${app.shots.length} screenshots of ${app.title}: the viewer, the command panels, the parts library, view modes, export and settings.`) + header(page) +
-    pageHead('Screenshots', 'The whole app, one screen at a time.', 'Click a picture to see it full size; the arrow keys move between them.') + `
-    <section class="wrap">
-      <div class="gallery">
-        ${app.shots.map((s, i) => shot(s, 'gallery', i < 2)).join('\n        ')}
-      </div>
-    </section>` + footer(page);
 
   // ---- docs: a knowledge base (docs-content.js) ----
   // Text in an article may hold: `code`, [[Ctrl + K]] for keys, {{Fill holes}}
@@ -620,7 +632,7 @@ ${group.items.map(([name, line]) => `          <li><strong>${esc(name)}</strong>
     if (type === 'keys') return `<dl class="kb-keys">\n${a.map(([k, d]) => `            <div><dt>${k.split(/\s+\+\s+/).map(x => `<kbd>${esc(x)}</kbd>`).join('')}</dt><dd>${rich(d)}</dd></div>`).join('\n')}\n          </dl>`;
     if (type === 'code') return `<div class="kb-code"><code>${esc(a)}</code><button type="button" class="copy" data-copy="${esc(a)}">Copy</button></div>`;
     if (type === 'note') return `<aside class="kb-note"><p>${rich(a)}</p></aside>`;
-    if (type === 'img') return `<figure class="kb-figure"><a class="zoom" href="${asset(a)}" data-group="article" data-caption="${esc(b || '')}"><img src="${asset(a)}" alt="${esc(app.title + ': ' + (b || ''))}" width="1600" height="1000" loading="lazy" decoding="async" /></a>${b ? `<figcaption>${rich(b)}</figcaption>` : ''}</figure>`;
+    if (type === 'img') return `<figure class="kb-figure"><a class="zoom" href="${asset(a)}" data-group="article" data-caption="${esc(b || '')}"><img src="${asset(a)}" alt="${esc(app.title + ': ' + (b || ''))}" width="2400" height="1350" loading="lazy" decoding="async" /></a>${b ? `<figcaption>${rich(b)}</figcaption>` : ''}</figure>`;
     if (type === 'see') return `<div class="kb-see"><h2>Related</h2><ul>\n${a.filter(x => bySlug.has(x)).map(x => `            <li><a href="docs/${x}.html">${esc(bySlug.get(x).title)}</a></li>`).join('\n')}\n          </ul></div>`;
     throw new Error('docs-content.js: unknown block type ' + type);
   };
@@ -679,7 +691,7 @@ ${docs.articles.filter(a => a.group === group.id).map(a => `          <li data-w
   };
 
   pages.changelog = (page) => head(page, `Changelog — ${app.title}`, `What changed in each version of ${app.title}, newest first. Latest: v${latest.version}.`) + header(page) +
-    pageHead('Changelog', 'What changed, newest first.', 'Every release, with the fixes that went into it. The app’s own change log on GitHub has 137 fixes in it, and the ones that mattered most are here.') + `
+    pageHead('Changelog', 'What changed, newest first.', 'Every release, with the fixes that went into it. The app’s own change log on GitHub has 150 fixes in it, and the ones that mattered most are here.') + `
     <section class="wrap">
       <ol class="log">${app.changelog.versions.map(entry => logEntry(entry, true)).join('')}
       </ol>
@@ -712,6 +724,22 @@ ${docs.articles.filter(a => a.group === group.id).map(a => `          <li data-w
       </div>
     </section>
 
+    <section class="band" id="versions">
+      <div class="wrap split">
+        <div class="split-head">
+          <p class="kicker">Versions</p>
+          <h2>The last three releases.</h2>
+          <p class="split-note">Need an older one? Each is the exact code of that release, as a zip.</p>
+        </div>
+        <ol class="releases">
+${releases.map(r => `          <li>
+            <div class="rel-name"><strong>v${esc(r.version)}</strong>${r.latest ? '<em>Latest</em>' : ''}${r.date ? `<span>${esc(r.date.split(' · ')[0])}</span>` : ''}</div>
+            <div class="rel-actions"><a class="more" href="changelog.html#v${esc(r.version)}">What changed</a><a class="btn" href="${repo}/archive/refs/tags/v${esc(r.version)}.zip" download rel="noopener" aria-label="Download v${esc(r.version)} as a zip">Download .zip</a></div>
+          </li>`).join('\n')}
+        </ol>
+      </div>
+    </section>
+
     <section class="band">
       <div class="wrap split">
         <div class="split-head">
@@ -736,6 +764,145 @@ ${app.info.map(([label, value]) => `          <div><dt>${esc(label)}</dt><dd>${e
         </dl>
       </div>
     </section>` + footer(page);
+
+  // The report page: a form that is put together in the browser (report.js). There is no server behind the site,
+  // so it ends in a zip to attach, a text through the portfolio's form service, a GitHub issue, or an email.
+  const reportKinds = [
+    ['install', 'It will not install or start'],
+    ['open', 'A file will not open or convert'],
+    ['looks', 'The model looks wrong'],
+    ['slow', 'It is slow, or freezes'],
+    ['export', 'An export is wrong'],
+    ['tool', 'A tool gives a wrong result'],
+    ['crash', 'It crashed or shows an error'],
+    ['other', 'Something else'],
+  ];
+  const rpField = (id, label, control, hint) => `
+            <div class="rp-field">
+              <label for="${id}">${label}</label>${control}${hint ? `
+              <p class="rp-hint">${hint}</p>` : ''}
+            </div>`;
+  const rpInput = (id, attrs = '') => `<input id="${id}" type="text" autocomplete="off" spellcheck="false" ${attrs} />`;
+  const rpArea = (id, rows, attrs = '') => `<textarea id="${id}" rows="${rows}" spellcheck="false" ${attrs}></textarea>`;
+  const rpLog = (tab, label, hint, placeholder) => `
+              <div class="rp-panel" role="tabpanel" id="rp-panel-${tab}" aria-labelledby="rp-tab-${tab}" data-tab="${tab}"${tab === 'conv' ? '' : ' hidden'}>
+                <p class="rp-hint">${hint}</p>
+                <textarea id="f-log-${tab}" class="mono" rows="9" spellcheck="false" placeholder="${placeholder}" aria-label="${label}"></textarea>
+              </div>`;
+
+  pages.report = (page) => head(page, `Report a problem — ${app.title}`, `Report a problem with ${app.title}. Describe it, paste the details and the log, add pictures and the file, and send it or download it as one zip.`) + header(page) + `
+    <section class="wrap page-head">
+      <p class="kicker">Report a problem</p>
+      <h1>Tell us what went wrong.</h1>
+      <p class="lead">Fill in what you can. The list on the right shows what is still missing, and what is missing depends on the kind of problem. Everything is put together here, in your browser: nothing leaves your computer until you press a send button, and your model never does unless you add it yourself.</p>
+    </section>
+
+    <section class="wrap rp" id="report">
+      <noscript><aside class="kb-note"><p>This form needs JavaScript. Without it, you can <a href="${repo}/issues/new">open a GitHub issue</a> or write to <a href="mailto:luka.grcar@me.com">luka.grcar@me.com</a>, and say what you did, what you expected and what happened.</p></aside></noscript>
+      <p class="rp-restored" id="rp-restored" hidden>Your unfinished report from earlier is back. Pictures and files are not kept between visits: add them again.</p>
+      <div class="rp-grid">
+        <form class="rp-form" id="rp-form" novalidate autocomplete="off">
+
+          <section class="rp-card" aria-labelledby="rp-h1">
+            <h2 id="rp-h1"><i>01</i>What kind of problem is it?</h2>
+            <div class="rp-chips" role="radiogroup" aria-labelledby="rp-h1">
+${reportKinds.map(([key, label]) => `              <label class="rp-chip"><input type="radio" name="cat" value="${key}" /><span>${esc(label)}</span></label>`).join('\n')}
+            </div>
+            <p class="rp-tip" id="rp-cat-tip" data-set="0">Pick the one that is closest. It decides what the list asks for.</p>
+          </section>
+
+          <section class="rp-card" aria-labelledby="rp-h2">
+            <h2 id="rp-h2"><i>02</i>What happened?</h2>${rpField('f-title', 'A short title <b>needed</b>', rpInput('f-title', 'maxlength="120" placeholder="For example: Fill holes leaves one hole open on a bracket"'))}${rpField('f-where', 'Where in the app?', rpInput('f-where', 'maxlength="160" placeholder="The tool, the menu, the export format, or the window"'), 'Optional, but it saves a question.')}${rpField('f-steps', 'What did you do? <b>needed</b>', rpArea('f-steps', 5, 'placeholder="1. I opened a STEP file of 400 parts&#10;2. I pressed P to open Fill holes&#10;3. I pressed Enter"'), 'Step by step, as if you were telling someone who has never used the app.')}
+            <div class="rp-two">${rpField('f-expected', 'What did you expect?', rpArea('f-expected', 3))}${rpField('f-actual', 'What happened instead?', rpArea('f-actual', 3, 'placeholder="The exact words of any message are the most useful part."'))}
+            </div>
+            <div class="rp-two">${rpField('f-often', 'How often does it happen?', '<select id="f-often"><option value="">I am not sure</option><option>Every time</option><option>Sometimes</option><option>Only once</option></select>')}${rpField('f-before', 'Did it work before?', '<select id="f-before"><option value="">I do not know</option><option>Yes, in an earlier version</option><option>No, it never worked</option></select>')}
+            </div>
+          </section>
+
+          <section class="rp-card" aria-labelledby="rp-h3">
+            <h2 id="rp-h3"><i>03</i>Your setup</h2>
+            <p class="rp-lead">The quickest way: in ${esc(app.title)} press <kbd>Ctrl</kbd> <kbd>,</kbd> to open Settings, choose <span class="ui">About</span>, press <span class="ui">Copy details</span>, and paste below. The boxes under it fill in by themselves.</p>${rpField('f-details', 'Details copied from the app', rpArea('f-details', 5, 'class="mono" placeholder="MeshOptimiser details&#10;Version: …"'))}
+            <div class="rp-detect"><button type="button" class="btn" id="rp-detect">Or fill in from this browser</button><span id="rp-detect-note" class="rp-hint">Use it on the computer where the problem happens. It only fills boxes that are empty.</span></div>
+            <div class="rp-fields">${rpField('f-version', 'App version', rpInput('f-version', 'maxlength="24" placeholder="0.14.0"'), 'Settings, About')}${rpField('f-os', 'System', rpInput('f-os', 'maxlength="60" placeholder="Windows 11, macOS 14.5"'))}${rpField('f-browser', 'Browser', rpInput('f-browser', 'maxlength="60" placeholder="Chrome 130"'))}${rpField('f-renderer', 'Renderer', '<select id="f-renderer"><option value="">I do not know</option><option>WebGPU</option><option>WebGL2</option></select>', 'Settings, Performance')}${rpField('f-gpu', 'Graphics card', rpInput('f-gpu', 'maxlength="100" placeholder="NVIDIA GeForce RTX 3060"'))}${rpField('f-python', 'Python version', rpInput('f-python', 'maxlength="24" placeholder="3.12.7"'), 'Printed by the launcher')}${rpField('f-scene', 'Size of the scene', rpInput('f-scene', 'maxlength="80" placeholder="1,583 parts, 5.4 million triangles"'))}
+            </div>
+          </section>
+
+          <section class="rp-card" aria-labelledby="rp-h4">
+            <h2 id="rp-h4"><i>04</i>Logs and messages</h2>
+            <p class="rp-lead">Paste text into the box, or drop a <code>.txt</code> or <code>.log</code> file below it. Keep long logs whole: the plain-text send cuts them short, the .zip keeps every word.</p>
+            <div class="rp-tabs" role="tablist" aria-label="Which log">
+              <button type="button" class="rp-tab" role="tab" id="rp-tab-conv" data-tab="conv" aria-controls="rp-panel-conv" aria-selected="true">Conversion log</button>
+              <button type="button" class="rp-tab" role="tab" id="rp-tab-launch" data-tab="launch" aria-controls="rp-panel-launch" aria-selected="false" tabindex="-1">Launcher window</button>
+              <button type="button" class="rp-tab" role="tab" id="rp-tab-console" data-tab="console" aria-controls="rp-panel-console" aria-selected="false" tabindex="-1">Browser console</button>
+            </div>${rpLog('conv', 'Conversion log', 'When a STEP conversion fails, its progress card has a <span class="ui">Copy log</span> button.', 'Paste the conversion log here')}${rpLog('launch', 'Launcher window', 'The black window on Windows, the Terminal on a Mac. On Windows: right-click its title bar, choose <span class="ui">Edit</span>, then <span class="ui">Select All</span>, press <kbd>Enter</kbd>, and paste. On a Mac: select the text and press <kbd>Cmd</kbd> <kbd>C</kbd>.', 'Paste the text of the launcher window here')}${rpLog('console', 'Browser console', 'In the app, press <span class="ui">Console</span> at the bottom right and use its copy button.', 'Paste the console text here')}
+            <label class="rp-drop is-slim" id="rp-drop-logs"><input type="file" accept=".txt,.log,text/*" multiple /><span>Drop a <code>.txt</code> or <code>.log</code> file here. It goes into the box of the tab that is open.</span></label>
+          </section>
+
+          <section class="rp-card" aria-labelledby="rp-h5">
+            <h2 id="rp-h5"><i>05</i>Pictures and recordings <span class="rp-count" id="rp-shots-count"></span></h2>
+            <label class="rp-drop" id="rp-drop-shots"><input type="file" accept="image/*,video/*" multiple /><strong>Drop pictures or a screen recording here</strong><span>or click to choose. You can also paste a screenshot with <kbd>Ctrl</kbd> <kbd>V</kbd>. Up to 50 MB each.</span></label>
+            <ul class="rp-files is-shots" id="rp-shots"></ul>
+          </section>
+
+          <section class="rp-card" aria-labelledby="rp-h6">
+            <h2 id="rp-h6"><i>06</i>The model</h2>
+            <p class="rp-lead">A problem with a file is easiest to fix with the file. It is yours: it is only added if you add it here, and the <span class="ui">Send</span> button never carries it. Only the .zip does.</p>
+            <div class="rp-chips" role="radiogroup" aria-labelledby="rp-h6">
+              <label class="rp-chip"><input type="radio" name="model" value="attach" /><span>I can attach it</span></label>
+              <label class="rp-chip"><input type="radio" name="model" value="link" /><span>I can share a link to it</span></label>
+              <label class="rp-chip"><input type="radio" name="model" value="nofile" /><span>I cannot share it</span></label>
+            </div>
+            <div id="rp-model-attach" hidden>
+              <label class="rp-drop" id="rp-drop-models"><input type="file" multiple /><strong>Drop the file here</strong><span>or click to choose. Up to 50 MB goes into the zip. A bigger file is listed with its name, size and fingerprint, so send it through a link.</span></label>
+              <ul class="rp-files" id="rp-models"></ul>
+            </div>
+            <div id="rp-model-link" hidden>${rpField('f-modellink', 'Link to the file', '<input id="f-modellink" type="url" autocomplete="off" spellcheck="false" maxlength="300" placeholder="https://" />', 'A shared folder or a transfer link. Make sure it is open for at least two weeks.')}
+            </div>
+            <div id="rp-model-info" hidden>${rpField('f-modelinfo', 'About the file', rpArea('f-modelinfo', 3, 'maxlength="600" placeholder="Format and size, the program it came from, how many parts it has, anything unusual about it"'), 'When you cannot share the file, this is what makes up for it.')}
+            </div>
+          </section>
+
+          <section class="rp-card" aria-labelledby="rp-h7">
+            <h2 id="rp-h7"><i>07</i>How to reach you <span class="rp-count">optional</span></h2>
+            <p class="rp-lead">Only used to answer this report. Without it there is no way to ask a question, so a report that needs one may wait.</p>
+            <div class="rp-two">${rpField('f-name', 'Name', rpInput('f-name', 'maxlength="60" autocomplete="name"'))}${rpField('f-email', 'Email', '<input id="f-email" type="email" autocomplete="email" spellcheck="false" maxlength="120" />')}
+            </div>
+            <input type="text" id="f-botcheck" name="botcheck" class="rp-trap" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          </section>
+        </form>
+
+        <aside class="rp-rail" aria-label="What is still needed, and how to send it">
+          <section class="rp-card">
+            <h2>What we still need</h2>
+            <p class="rp-meter"><span id="rp-meter">0 of 0 covered</span></p>
+            <div class="rp-track" aria-hidden="true"><i id="rp-bar"></i></div>
+            <ul class="rp-check" id="rp-check"></ul>
+          </section>
+          <section class="rp-card" aria-labelledby="rp-hs">
+            <h2 id="rp-hs">Send it</h2>
+            <p class="rp-ref">Your reference: <b id="rp-ref"></b></p>
+            <label class="rp-consent"><input type="checkbox" id="f-consent" /><span>I have read what is below. It can contain what I typed, pasted and added, and nothing else.</span></label>
+            <p class="rp-why" id="rp-why" role="status"></p>
+            <div class="rp-send">
+              <button type="button" class="btn is-primary is-large" data-act="send" disabled>Send the report</button>
+              <p class="rp-note">The text only, privately, to the person who fixes it. No pictures and no files.</p>
+              <button type="button" class="btn" data-act="download" disabled>Download everything as a .zip</button>
+              <p class="rp-note">The text, logs, pictures and files in one file. Attach it to an email or an issue.</p>
+              <div class="rp-row">
+                <button type="button" class="btn" data-act="github" disabled>Open a GitHub issue</button>
+                <button type="button" class="btn" data-act="email" disabled>Write an email</button>
+                <button type="button" class="btn" data-act="copy" disabled>Copy as text</button>
+              </div>
+              <p class="rp-note">A GitHub issue is public. An email needs the .zip attached by you.</p>
+            </div>
+            <p class="rp-status" id="rp-status" role="status" aria-live="polite"></p>
+            <aside class="rp-after" id="rp-after" hidden><p>Pictures and files travel only in the .zip. If you have not sent it yet, send it to <a href="mailto:luka.grcar@me.com">luka.grcar@me.com</a> or drag it into your GitHub issue, and mention the reference above.</p></aside>
+            <details class="rp-preview" id="rp-preview"><summary>See exactly what the text will say</summary><pre id="rp-preview-text"></pre></details>
+            <button type="button" class="rp-reset" id="rp-start-over">Start over</button>
+          </section>
+        </aside>
+      </div>
+    </section>` + footer(page).replace('</body>', `  <script defer src="report.js?v=${RP_V}"></script>\n</body>`);
 
   // the old one-page address forwards to the site
   const forward = `<!DOCTYPE html>

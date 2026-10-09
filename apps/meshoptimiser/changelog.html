@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=18" />
+  <link rel="stylesheet" href="site.css?v=33" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -35,12 +35,11 @@
       </a>
       <nav class="nav" id="nav" aria-label="MeshOptimiser">
         <a href="features.html">Features</a>
-        <a href="screenshots.html">Screenshots</a>
         <a href="docs.html">Docs</a>
         <a href="changelog.html" aria-current="page">Changelog</a>
         <a class="nav-out" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">GitHub</a>
       </nav>
-      <a class="btn is-primary bar-get" href="download.html">Download</a>
+      <a class="btn is-primary bar-get" href="download.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
       <button class="bar-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
     </div>
   </header>
@@ -48,7 +47,7 @@
     <section class="wrap page-head">
       <p class="kicker">Changelog</p>
       <h1>What changed, newest first.</h1>
-      <p class="lead">Every release, with the fixes that went into it. The app’s own change log on GitHub has 137 fixes in it, and the ones that mattered most are here.</p>
+      <p class="lead">Every release, with the fixes that went into it. The app’s own change log on GitHub has 150 fixes in it, and the ones that mattered most are here.</p>
     </section>
     <section class="wrap">
       <ol class="log">
@@ -84,30 +83,39 @@
             <strong>v0.15.0</strong><span>9 Oct 2026 · 02:07</span>
           </div>
           <div class="log-body">
-            <p>The commands come to the pointer. Hold W and a ring of commands opens round it, four clean-up tools join the list, Untriangulate takes out the triangles that only cut a flat face up, and Dynamic place gets a scale handle.</p>
+            <p>The commands come to the pointer. Hold W and a ring of commands opens under it. The rest is about making a model lighter without breaking it: a repair, a way to remove the faces nobody sees, merging and selecting by rule, Untriangulate, a wireframe that shows polygons, and a simplifier that now looks after normals, UVs and colours.</p>
             <ul>
-              <li><b class="is-new">New</b><span>Quick wand. Hold W over the viewport and a ring opens round the pointer. Move toward a slice and let go. With a selection it has Hide, Reduce, Delete and More; with nothing selected it has Fit view, Select all, View, Show all, File and Clean.</span></li>
-              <li><b class="is-new">New</b><span>Repair mesh joins doubled vertices, removes empty and doubled triangles and turns faces so neighbours agree on which side is out. Remove hidden faces deletes the faces that never show: the inside of a housing, where two parts press together.</span></li>
-              <li><b class="is-new">New</b><span>Merge by material or by group, and Select by rule: rules on a part’s name, material, group, triangles, size, and whether it is shown, flagged or instanced.</span></li>
-              <li><b class="is-new">New</b><span>Untriangulate turns flat neighbouring triangles into one polygon and cuts it again with the fewest triangles. A flat plate of 200 triangles becomes 38, with no change of shape.</span></li>
-              <li><b class="is-new">New</b><span>Wireframe is the solid surfaces with a thin black line on every edge, as in Cinema 4D. Settings can show triangles, polygons or only the sharp edges.</span></li>
-              <li><b class="is-new">New</b><span>Dynamic place has a scale handle: a small cube on the part’s top face that grows or shrinks it evenly, with a ghost of the old size behind.</span></li>
-              <li><b class="is-polish">Polish</b><span>Decimate and Fit to budget look after normals, UVs and vertex colours, and the report says how far the surfaces moved.</span></li>
+              <li><b class="is-new">New</b><span>Quick wand (hold W). A ring of commands opens round the pointer; move toward a slice and let go of W. Only the direction counts, so a short flick is enough. With a selection it has Hide, Reduce, Delete and More; with nothing selected it has Fit view, Select all, View, Show all, File and Clean. A slice that holds a group fans out when the pointer is on it (Decimate −25 % to −90 %, Smart fit, Split and Fill holes; the views; Save; the clean-ups). A command that cannot run stays on the ring, dimmed, and says why. A quick tap of W leaves the ring open to click; Esc, any other key, the wheel or a click outside closes it, and it never runs anything by accident. You can try it on the home page.</span></li>
+              <li><b class="is-new">New</b><span>Repair mesh joins doubled vertices, removes empty and doubled triangles and turns faces so that neighbours agree which side is out. Remove hidden faces looks at each part from many sides and deletes the faces that never show: the inside of a housing, the faces where two parts press together. Both undo in one step.</span></li>
+              <li><b class="is-new">New</b><span>Merge by material or by group joins parts into one mesh per material or per group. Select by rule picks parts by name, material, group, triangles and size, or by whether they are shown, flagged, instanced or selected, and says how many fit as you type.</span></li>
+              <li><b class="is-new">New</b><span>Untriangulate turns neighbouring flat triangles into one polygon and cuts it again with the fewest triangles, without changing the shape: a flat plate of 200 triangles becomes 38. Wireframe is now the solid surfaces with a thin black line on every edge, drawn as Triangles, Polygons or Outline.</span></li>
+              <li><b class="is-new">New</b><span>Decimate and Fit to budget now weigh normals, UVs and vertex colours, so a crease or a UV seam is not flattened as readily as a smooth patch. The report shows an estimate of how far the surfaces moved.</span></li>
+              <li><b class="is-new">New</b><span>Dynamic place has a scale handle: a small cube on top of the part. Drag it up to grow the part, down to shrink it, with a see-through ghost of the old size behind.</span></li>
+              <li><b class="is-polish">Polish</b><span>The animations at the top of the Help cards are redrawn so that they match, with one lighting and the accent blue for what is selected. The sidebar drag handles sit on the status-bar row.</span></li>
             </ul>
           </div>
         </li>
         <li id="v0.14.0">
           <div class="log-head">
-            <strong>v0.14.0</strong><span>8 Oct 2026 · 23:39</span><span>59 fixes</span>
+            <strong>v0.14.0</strong><span>8 Oct 2026 · 23:50</span><span>72 fixes</span>
           </div>
           <div class="log-body">
-            <p>The biggest round of fixes the app has had. We read the whole code base and tested it hard on assemblies with thousands of parts, and fixed what we found: 59 fixes, most of them in the things you only notice when they go wrong, like undo, exports and big files. Three new tools and a calmer viewport came along.</p>
+            <p>The biggest release so far. A CAD view and a Shading card, Dynamic place, an Align to floor that shows what it will do, Help inside the app, a Settings window that can change the look of the interface, a rebuilt Export window, and three tools that clean a scene up for you. I also read the whole code base, tested it hard on assemblies with thousands of parts and fixed 72 things, most of them in the places you only notice when they go wrong: undo, exports and big files. Opening a big model is faster, too.</p>
             <ul>
+              <li><b class="is-new">New</b><span>A CAD view (key 6) and a Shading card. The CAD view has no lights or reflections: every surface is shaded by which way it faces the camera, with a dark line on every sharp edge. The card under Properties holds every look as a small 3D nut: Default, Clay, Porcelain, Steel and Red wax, and the CAD looks Ceramic, Light and Mono. One Outlines switch draws the edge lines in every view.</span></li>
+              <li><b class="is-new">New</b><span>Dynamic place (key D). Press the selected part and drag it over other surfaces: it rests on the surface under the cursor and turns to face it, like dragging a part out of a library onto a model. Choose which side of the part points away from the surface, a gap, and a turn; the wheel turns it while you hold it. One undo step.</span></li>
+              <li><b class="is-new">New</b><span>Align to floor shows what it will do. A small 3D drawing of the floor, the origin and the model rings the point that goes to zero and turns two arrows (its top and its front) as you turn the model. Nothing moves until you press the button. It opens over the viewport like Split and Fill holes.</span></li>
+              <li><b class="is-new">New</b><span>Help inside the app (F1): the whole knowledge base of this site, with search, working offline. Settings has an Appearance page (accent colours, four tones, fonts, text size, corners and density) and an About page that copies the details a bug report needs.</span></li>
+              <li><b class="is-new">New</b><span>A splash screen while the app starts: the rear derailleur drawn as glowing 3D lines, then the app fades in part by part. It can be switched off in Settings.</span></li>
+              <li><b class="is-polish">Polish</b><span>The Export window is rebuilt. A file name with the same pills as Save scene, a summary of what will be written, Flatten groups, ASCII STL, only the options that apply to the format, and your choices remembered. Batch rename is redesigned too, with a Quick tab, buttons for the pattern pieces and a preview that marks what changed.</span></li>
+              <li><b class="is-polish">Polish</b><span>Cards over the viewport can be moved by their title bar. Stacked copies is one of them now. Heavy parts are the parts over 10,000 triangles, with a count beside the title. The sidebars have drag handles that stay put and a minimum width, and the Collapse button has a menu for the whole tree, the selection or from the selection down.</span></li>
+              <li><b class="is-polish">Polish</b><span>Faster on a big model. The outline of the selection and the edge lines are drawn by the graphics card, so nothing is copied when parts move, and the picture for the Recents list and the spare copy of the app for the next tab wait until you have stopped clicking.</span></li>
+              <li><b class="is-fix">Fix</b><span>Edge lines show on every part whatever the tilt, are not hidden by the ground grid, and no longer trail behind their parts in an exploded view. Materials work while Clay or CAD is on, and the Properties card shows the material the part really has.</span></li>
               <li><b class="is-new">New</b><span>Smart optimise. One card, one button, at the top of Reduce. It runs every clean-up the app has, one after another: empty and broken parts, parts hidden inside, bolts and nuts, small parts, holes in flat faces, and a reduction to the triangle count you set. Light, Balanced or Strong, or Auto. The whole run is one undo step.</span></li>
               <li><b class="is-new">New</b><span>Fasteners finds bolts, screws, nuts and washers by their shape, whatever they’re called, and selects them. Stacked copies finds parts drawn twice in the same place. Select similar has a strictness slider, from “about the same size” to “the very same shape”.</span></li>
               <li><b class="is-new">New</b><span>The library is a drawer under the viewport (Shift + L). Click a part to look at it, turn it, set its size, and then it goes in with those sizes. A starred shelf, small or large tiles.</span></li>
               <li><b class="is-new">New</b><span>Drop a file on a scene that already has parts and the app asks: add it here, or open it in a new tab. Right-click a tab for duplicate, close others and recent files. Hold Shift while dragging a handle to snap, and turn the wheel to change the step.</span></li>
-              <li><b class="is-fix">Fix</b><span>Cinema 4D opens the FBX. A binary FBX carries an id, a creation time and a closing code that have to agree, and the FBX SDK refuses the file when they don’t. Ours wrote a random id with a fixed code, so Blender and the app could read it and Cinema 4D couldn’t. They agree now.</span></li>
+              <li><b class="is-fix">Fix</b><span>Cinema 4D opens the FBX. A binary FBX carries an id, a creation time and a closing code that have to agree, and the FBX SDK refuses the file when they don’t. Mine wrote a random id with a fixed code, so Blender and the app could read it and Cinema 4D couldn’t. They agree now.</span></li>
               <li><b class="is-fix">Fix</b><span>An FBX now says what its units are and which way is up. A 2.6 m machine used to arrive in Cinema 4D 26 m long, and a Z-up scene was labelled Y-up.</span></li>
               <li><b class="is-fix">Fix</b><span>The binary FBX shares its materials: one per colour instead of one per mesh. A 778-part model arrived with 778 materials and took 13 seconds to open. Now it has 40 and opens in 1.4 s. OBJ keeps parts that share a name separate: 778 parts used to arrive as 325.</span></li>
               <li><b class="is-fix">Fix</b><span>Up axis and Scene scale no longer leak into the file for some parts and not others. A part you moved after changing either one used to be written turned or resized while its neighbours weren’t.</span></li>
@@ -226,7 +234,7 @@
             <strong>v0.9.0</strong><span>7 Oct 2026 · 12:41</span><span>24 fixes</span>
           </div>
           <div class="log-body">
-            <p>More trustworthy. A self-test that runs inside the app, undo for every action, exports that match the scene, and a restyled interface. This was the version where we stopped trusting that things worked and started checking.</p>
+            <p>More trustworthy. A self-test that runs inside the app, undo for every action, exports that match the scene, and a restyled interface. This was the version where I stopped trusting that things worked and started checking.</p>
             <ul>
               <li><b class="is-new">New</b><span>A self-test that runs inside the app and checks the things that broke before.</span></li>
               <li><b class="is-fix">Fix</b><span>Decimate destroyed parts. The removal count was taken from the un-indexed corner count, three per triangle, instead of the welded vertex count, so at −50% most parts were reduced to zero triangles. Now −25, −50 and −75% remove exactly that share.</span></li>
@@ -361,20 +369,20 @@
         <h2>Product</h2>
         <a href="./">Overview</a>
         <a href="features.html">Features</a>
-        <a href="screenshots.html">Screenshots</a>
         <a href="download.html">Download</a>
       </nav>
       <nav aria-label="Resources">
         <h2>Resources</h2>
         <a href="docs.html">Docs</a>
-        <a href="docs/shortcuts.html">Keyboard shortcuts</a>
+        <a href="docs/desktop-shortcut.html">Keyboard shortcuts</a>
         <a href="changelog.html">Changelog</a>
         <a href="docs/troubleshooting.html">Troubleshooting</a>
       </nav>
       <nav aria-label="Project">
         <h2>Project</h2>
         <a href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">Source on GitHub</a>
-        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Report a problem</a>
+        <a href="report.html">Report a problem</a>
+        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Issues on GitHub</a>
         <a href="https://github.com/xpayn3/MeshOptimiser/blob/main/LICENSE" rel="noopener">MIT licence</a>
       </nav>
     </div>
@@ -383,6 +391,6 @@
       <span><a href="../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="site.js?v=17"></script>
+  <script defer src="site.js?v=22"></script>
 </body>
 </html>

@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>Save a scene — MeshOptimiser Docs</title>
-  <meta name="description" content="Save your work as a scene file so you can carry on later. What a scene file is, and how it differs from an export." />
+  <meta name="description" content="Save your work as a scene file so you can carry on later. What a scene file is, how to name it with the file-name buttons, and how it differs from an export." />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/save-scene" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="Save a scene — MeshOptimiser Docs" />
-  <meta property="og:description" content="Save your work as a scene file so you can carry on later. What a scene file is, and how it differs from an export." />
+  <meta property="og:description" content="Save your work as a scene file so you can carry on later. What a scene file is, how to name it with the file-name buttons, and how it differs from an export." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/save-scene" />
   <meta property="og:type" content="website" />
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=18" />
+  <link rel="stylesheet" href="../site.css?v=33" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -35,12 +35,11 @@
       </a>
       <nav class="nav" id="nav" aria-label="MeshOptimiser">
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../docs.html" aria-current="page">Docs</a>
         <a href="../changelog.html">Changelog</a>
         <a class="nav-out" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">GitHub</a>
       </nav>
-      <a class="btn is-primary bar-get" href="../download.html">Download</a>
+      <a class="btn is-primary bar-get" href="../download.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
       <button class="bar-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
     </div>
   </header>
@@ -57,6 +56,14 @@
         <a href="../docs/install-as-app.html">Install it as an app window</a>
         <a href="../docs/first-file.html">Open your first file</a>
         <a href="../docs/stop-restart-update.html">Stop, restart and update</a>
+        <h2>Install and set up</h2>
+        <a href="../docs/install-windows.html">Install on Windows, step by step</a>
+        <a href="../docs/install-macos.html">Install on macOS, step by step</a>
+        <a href="../docs/setup-first-session.html">Set it up after installing</a>
+        <a href="../docs/install-gltfpack.html">Add gltfpack for smaller files</a>
+        <a href="../docs/desktop-shortcut.html">Add a shortcut or an icon</a>
+        <a href="../docs/move-or-remove.html">Move, copy or remove the app</a>
+        <a href="../docs/install-problems.html">Install problems, message by message</a>
         <h2>Getting your model out of your CAD program</h2>
         <a href="../docs/cad-files-step-first.html">Native CAD files: export a STEP file first</a>
         <a href="../docs/step-from-inventor.html">How to export a STEP assembly from Autodesk Inventor</a>
@@ -71,13 +78,19 @@
         <a href="../docs/parts-tree.html">The parts tree</a>
         <a href="../docs/organise-the-tree.html">Organise the tree: groups, sorting and picking</a>
         <a href="../docs/search-and-commands.html">Search and commands</a>
+        <a href="../docs/quick-wand.html">Quick wand</a>
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
+        <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html">How to read the numbers</a>
+        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
+        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -117,22 +130,46 @@
       <article class="kb-article">
         <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#save">Save and export</a></p>
         <h1>Save a scene</h1>
-        <p class="lead">Save your work as a scene file so you can carry on later. What a scene file is, and how it differs from an export.</p>
+        <p class="lead">Save your work as a scene file so you can carry on later. What a scene file is, how to name it with the file-name buttons, and how it differs from an export.</p>
         <div class="kb-body">
           <p>Saving a scene keeps your work so you can open it again and carry on. Exporting writes a file for another program. Do both: save a scene for yourself, export for whoever gets the result.</p>
           <h2 id="what-a-scene-file-is">What a scene file is</h2>
           <p>A scene file is a <code>.glb</code> file. It holds the model as it is now, after everything you deleted, reduced and recoloured. It also remembers things only MeshOptimiser uses: the camera, the view settings, which parts were hidden or flagged, and your measurements. Other programs can open the file as an ordinary GLB and ignore the rest.</p>
           <h2 id="save">Save</h2>
           <ol class="kb-steps">
-            <li>Press <kbd>Ctrl</kbd><kbd>S</kbd>. You can also click the icon on the scene’s tab, or choose <span class="ui">Menu</span>, then <span class="ui">Save scene…</span>.</li>
-            <li>The <span class="ui">Save scene</span> window opens. Check the <span class="ui">Filename</span>, or type your own. The ending <code>.glb</code> is added for you.</li>
-            <li>Press <span class="ui">Save…</span>.</li>
+            <li>Press <kbd>Ctrl</kbd><kbd>S</kbd>. You can also click the dot on the scene’s tab, or choose <span class="ui">Menu</span>, then <span class="ui">Save scene…</span>.</li>
+            <li>The <span class="ui">Save scene</span> window opens. At the top it says what is about to be written: how many parts, how many triangles and about how big the file will be.</li>
+            <li>Check the <span class="ui">Filename</span>, or type your own. The ending <code>.glb</code> is added for you. The buttons under the name can build it for you (see below).</li>
+            <li>Look at the options under the name, and press <span class="ui">Save…</span>.</li>
             <li>Where the browser allows it, a file window opens. Choose a folder and confirm. Otherwise the file goes to your downloads folder.</li>
-            <li>The dot on the tab’s icon turns green.</li>
+            <li>The dot on the tab turns green.</li>
           </ol>
-          <p>Saving again under the same name writes to the same file without asking where.</p>
+          <p>Saving again under the same name writes to the same file without asking where. The window then says “Saves over” and the name of the file, and the button reads <span class="ui">Save</span>.</p>
+          <h2 id="build-the-file-name">Build the file name</h2>
+          <p>Under the name are small buttons. Each one adds a piece to the name. Press it again and the piece comes off. The numbers are those of what is about to be written, and they follow the options below, so the name stays true.</p>
+          <dl class="table">
+            <div><dt>+ date</dt><dd>Today’s date, like <code>2026-10-08</code>.</dd></div>
+            <div><dt>+ time</dt><dd>The time now, like <code>1432h</code>.</dd></div>
+            <div><dt>+ version</dt><dd>A version number like <code>v2</code>. Press it again to raise the number. Hold <kbd>Shift</kbd> while you press to take it off.</dd></div>
+            <div><dt>+ triangles</dt><dd>How many triangles the file holds, like <code>17k-tris</code>.</dd></div>
+            <div><dt>+ parts</dt><dd>How many parts, like <code>67-parts</code>.</dd></div>
+            <div><dt>+ size</dt><dd>About how big the file is, like <code>370KB</code>.</dd></div>
+            <div><dt>+ saving</dt><dd>How much lighter than the file you opened, like <code>-42pct</code>. It shows only when the new file is lighter.</dd></div>
+            <div><dt>+ optimised</dt><dd>Adds the word <code>optimised</code>, to mark the file as the optimised one.</dd></div>
+            <div><dt>+ selection</dt><dd>Adds the word <code>selection</code>, to mark the file as a part of the scene.</dd></div>
+            <div><dt>Source name</dt><dd>Starts again from the name of the file you opened.</dd></div>
+          </dl>
+          <p>A button that is in use shows a minus sign instead of the plus. You can also type in the name by hand.</p>
+          <h2 id="the-options">The options</h2>
+          <dl class="table">
+            <div><dt>Whole scene</dt><dd>On: every part. Off: only the selected parts. It is dimmed when nothing is selected, and says how many parts are selected.</dd></div>
+            <div><dt>Include hidden parts</dt><dd>Hidden parts are written too, and come back hidden when you open the scene again. It says how many are hidden.</dd></div>
+            <div><dt>Remember the view and settings</dt><dd>Stores the camera, the display settings, flags and measurements in the file. Other programs ignore them.</dd></div>
+            <div><dt>Save as a copy</dt><dd>Writes the file without making it this scene’s file. The scene keeps its unsaved mark, and the next save goes where it went before.</dd></div>
+          </dl>
+          <p>A file that holds only some of the scene (only the selection, or no hidden parts) is never the scene’s own file. The app turns on <span class="ui">Save as a copy</span> for you.</p>
           <h2 id="know-whether-you-have-saved">Know whether you have saved</h2>
-          <p>The dot on the tab’s icon is yellow while there are changes that are not saved, and green when the scene is saved. Other tabs show a yellow dot too when they have unsaved changes. Closing a tab or quitting with unsaved changes asks first.</p>
+          <p>The dot on the tab is yellow while there are changes that are not saved, and green when the scene is saved. Other tabs show a yellow dot too when they have unsaved changes. Closing a tab or quitting with unsaved changes asks first.</p>
           <h2 id="open-a-scene-again">Open a scene again</h2>
           <p>Open the <code>.glb</code> like any other file: drop it on the window, press <kbd>Ctrl</kbd><kbd>O</kbd>, or pick it from the recent files on the start screen. The camera and the view settings come back with it, and hidden parts are still hidden.</p>
           <h2 id="scene-or-export">Scene or export?</h2>
@@ -176,20 +213,20 @@
         <h2>Product</h2>
         <a href="../">Overview</a>
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../download.html">Download</a>
       </nav>
       <nav aria-label="Resources">
         <h2>Resources</h2>
         <a href="../docs.html">Docs</a>
-        <a href="../docs/shortcuts.html">Keyboard shortcuts</a>
+        <a href="../docs/desktop-shortcut.html">Keyboard shortcuts</a>
         <a href="../changelog.html">Changelog</a>
         <a href="../docs/troubleshooting.html">Troubleshooting</a>
       </nav>
       <nav aria-label="Project">
         <h2>Project</h2>
         <a href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">Source on GitHub</a>
-        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Report a problem</a>
+        <a href="../report.html">Report a problem</a>
+        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Issues on GitHub</a>
         <a href="https://github.com/xpayn3/MeshOptimiser/blob/main/LICENSE" rel="noopener">MIT licence</a>
       </nav>
     </div>
@@ -198,6 +235,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=17"></script>
+  <script defer src="../site.js?v=22"></script>
 </body>
 </html>

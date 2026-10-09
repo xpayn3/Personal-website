@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=18" />
+  <link rel="stylesheet" href="../site.css?v=33" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -35,12 +35,11 @@
       </a>
       <nav class="nav" id="nav" aria-label="MeshOptimiser">
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../docs.html" aria-current="page">Docs</a>
         <a href="../changelog.html">Changelog</a>
         <a class="nav-out" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">GitHub</a>
       </nav>
-      <a class="btn is-primary bar-get" href="../download.html">Download</a>
+      <a class="btn is-primary bar-get" href="../download.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
       <button class="bar-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
     </div>
   </header>
@@ -57,6 +56,14 @@
         <a href="../docs/install-as-app.html">Install it as an app window</a>
         <a href="../docs/first-file.html">Open your first file</a>
         <a href="../docs/stop-restart-update.html">Stop, restart and update</a>
+        <h2>Install and set up</h2>
+        <a href="../docs/install-windows.html">Install on Windows, step by step</a>
+        <a href="../docs/install-macos.html">Install on macOS, step by step</a>
+        <a href="../docs/setup-first-session.html">Set it up after installing</a>
+        <a href="../docs/install-gltfpack.html">Add gltfpack for smaller files</a>
+        <a href="../docs/desktop-shortcut.html">Add a shortcut or an icon</a>
+        <a href="../docs/move-or-remove.html">Move, copy or remove the app</a>
+        <a href="../docs/install-problems.html">Install problems, message by message</a>
         <h2>Getting your model out of your CAD program</h2>
         <a href="../docs/cad-files-step-first.html">Native CAD files: export a STEP file first</a>
         <a href="../docs/step-from-inventor.html">How to export a STEP assembly from Autodesk Inventor</a>
@@ -71,13 +78,19 @@
         <a href="../docs/parts-tree.html">The parts tree</a>
         <a href="../docs/organise-the-tree.html">Organise the tree: groups, sorting and picking</a>
         <a href="../docs/search-and-commands.html">Search and commands</a>
+        <a href="../docs/quick-wand.html">Quick wand</a>
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
+        <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html">How to read the numbers</a>
+        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
+        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -140,8 +153,11 @@
           <h2 id="undo">Undo</h2>
           <p>The whole step is one undo: <kbd>Ctrl</kbd><kbd>Z</kbd> restores every mesh.</p>
           <aside class="kb-note"><p>If the result looks too rough, undo, delete more of what is not needed (see <a href="../docs/select-hidden-parts.html">Select hidden parts</a> and <a href="../docs/delete-small-parts.html">Delete small parts</a>), and run it again. The same budget then leaves more triangles for the parts that remain.</p></aside>
+          <p><a href="../docs/smart-optimise.html">Smart optimise</a> can do this as its last step, together with the other clean-ups. The whole run is then one undo step. Its card is just above the Reduce triangles card in the sidebar.</p>
           <div class="kb-see"><h2>Related</h2><ul>
             <li><a href="../docs/decimate.html">Decimate</a></li>
+            <li><a href="../docs/smart-optimise.html">Smart optimise</a></li>
+            <li><a href="../docs/heavy-parts.html">Heavy parts</a></li>
             <li><a href="../docs/read-the-numbers.html">How to read the numbers</a></li>
             <li><a href="../docs/workflow.html">A sensible order to work in</a></li>
           </ul></div>
@@ -175,20 +191,20 @@
         <h2>Product</h2>
         <a href="../">Overview</a>
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../download.html">Download</a>
       </nav>
       <nav aria-label="Resources">
         <h2>Resources</h2>
         <a href="../docs.html">Docs</a>
-        <a href="../docs/shortcuts.html">Keyboard shortcuts</a>
+        <a href="../docs/desktop-shortcut.html">Keyboard shortcuts</a>
         <a href="../changelog.html">Changelog</a>
         <a href="../docs/troubleshooting.html">Troubleshooting</a>
       </nav>
       <nav aria-label="Project">
         <h2>Project</h2>
         <a href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">Source on GitHub</a>
-        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Report a problem</a>
+        <a href="../report.html">Report a problem</a>
+        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Issues on GitHub</a>
         <a href="https://github.com/xpayn3/MeshOptimiser/blob/main/LICENSE" rel="noopener">MIT licence</a>
       </nav>
     </div>
@@ -197,6 +213,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=17"></script>
+  <script defer src="../site.js?v=22"></script>
 </body>
 </html>

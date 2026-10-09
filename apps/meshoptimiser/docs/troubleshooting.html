@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=18" />
+  <link rel="stylesheet" href="../site.css?v=33" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -35,12 +35,11 @@
       </a>
       <nav class="nav" id="nav" aria-label="MeshOptimiser">
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../docs.html" aria-current="page">Docs</a>
         <a href="../changelog.html">Changelog</a>
         <a class="nav-out" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">GitHub</a>
       </nav>
-      <a class="btn is-primary bar-get" href="../download.html">Download</a>
+      <a class="btn is-primary bar-get" href="../download.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
       <button class="bar-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
     </div>
   </header>
@@ -57,6 +56,14 @@
         <a href="../docs/install-as-app.html">Install it as an app window</a>
         <a href="../docs/first-file.html">Open your first file</a>
         <a href="../docs/stop-restart-update.html">Stop, restart and update</a>
+        <h2>Install and set up</h2>
+        <a href="../docs/install-windows.html">Install on Windows, step by step</a>
+        <a href="../docs/install-macos.html">Install on macOS, step by step</a>
+        <a href="../docs/setup-first-session.html">Set it up after installing</a>
+        <a href="../docs/install-gltfpack.html">Add gltfpack for smaller files</a>
+        <a href="../docs/desktop-shortcut.html">Add a shortcut or an icon</a>
+        <a href="../docs/move-or-remove.html">Move, copy or remove the app</a>
+        <a href="../docs/install-problems.html">Install problems, message by message</a>
         <h2>Getting your model out of your CAD program</h2>
         <a href="../docs/cad-files-step-first.html">Native CAD files: export a STEP file first</a>
         <a href="../docs/step-from-inventor.html">How to export a STEP assembly from Autodesk Inventor</a>
@@ -71,13 +78,19 @@
         <a href="../docs/parts-tree.html">The parts tree</a>
         <a href="../docs/organise-the-tree.html">Organise the tree: groups, sorting and picking</a>
         <a href="../docs/search-and-commands.html">Search and commands</a>
+        <a href="../docs/quick-wand.html">Quick wand</a>
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
+        <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html">How to read the numbers</a>
+        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
+        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -119,7 +132,7 @@
         <h1>Troubleshooting</h1>
         <p class="lead">Fixes for the usual problems: Python not found, a blocked launcher on macOS, missing modules, a blank view and slow conversions.</p>
         <div class="kb-body">
-          <p>Find the heading that matches what you see. If nothing here helps, report the problem at <code>https://github.com/xpayn3/MeshOptimiser/issues</code>. Say which version you have (click the app’s mark in the top bar) and paste the log: <span class="ui">Copy log</span> on the progress card, or the copy button in the console.</p>
+          <p>Find the heading that matches what you see. If nothing here helps, use <a href="https://lukagrcar.com/apps/meshoptimiser/report.html" rel="noopener">Report a problem</a>. It asks for what I need and packs it into one file. Say which version you have, and add the log: <span class="ui">Copy log</span> on the progress card, or the copy button in the console. In <span class="ui">Settings</span>, <span class="ui">About</span>, the button <span class="ui">Copy details</span> copies the version, your browser and your graphics card in one go.</p>
           <h2 id="python-is-not-on-path-on-windows">“python is not on PATH” on Windows</h2>
           <p>Windows cannot find Python. Run the Python installer again and tick “Add Python to PATH”. Or close and reopen the terminal or the launcher, so the new PATH is picked up. See <a href="../docs/requirements.html">What you need</a>.</p>
           <h2 id="operation-not-permitted-on-macos">“Operation not permitted” on macOS</h2>
@@ -138,8 +151,12 @@
           <p>The local server is not running. This happens when you open the installed app or a bookmark without starting the launcher first, or after you closed the launcher window. Start the launcher again.</p>
           <h2 id="the-address-is-not-localhost-4242">The address is not localhost:4242</h2>
           <p>Something else on your computer was already using port 4242, so the server chose another one. That is fine. The launcher window prints the address it is using.</p>
+          <h2 id="the-app-starts-twice">The app starts twice</h2>
+          <p>If the app is already running, starting the launcher again does not start a second copy. It opens a window on the one that is running.</p>
           <h2 id="the-app-opened-in-a-normal-browser-tab">The app opened in a normal browser tab</h2>
           <p>The launcher found no Chrome, Edge or Brave, so it used your default browser. The app works the same in a tab.</p>
+          <h2 id="the-window-looks-squeezed-or-has-scroll-bars">The window looks squeezed, or has scroll bars</h2>
+          <p>The window cannot be smaller than 960 by 560 pixels. In a smaller window the app scrolls instead of squeezing its panels. Make the window bigger, or drag the edge of a sidebar to make the sidebar narrower. The left one cannot go under 220 pixels and the right one not under 240. See <a href="../docs/the-window.html">The window</a>.</p>
           <h2 id="the-3d-view-is-empty-or-looks-wrong">The 3D view is empty or looks wrong</h2>
           <ul class="kb-points">
             <li>Press <kbd>F</kbd> to frame the model, and <kbd>Alt</kbd><kbd>H</kbd> to show hidden parts.</li>
@@ -157,7 +174,7 @@
           </ul>
           <p><span class="ui">Cancel</span> on the progress card stops a conversion that is running.</p>
           <h2 id="conversion-failed">“Conversion failed”</h2>
-          <p>Press <span class="ui">Copy log</span> on the progress card and read the last lines. To see everything the converter prints, drag the STEP file onto <code>test-converter.bat</code> or <code>test-converter.command</code>. Include the log when you report the problem.</p>
+          <p>A STEP file with nothing solid in it gets a plain message that says so. For any other failure, press <span class="ui">Copy log</span> on the progress card and read the last lines. To see everything the converter prints, drag the STEP file onto <code>test-converter.bat</code> or <code>test-converter.command</code>. Include the log when you report the problem.</p>
           <h2 id="the-model-has-no-colours-or-no-parts-tree">The model has no colours or no parts tree</h2>
           <p>A STEP file may have been converted with geometry only. Open it again and choose the option that reads colours, names and hierarchy under <span class="ui">Colours &amp; materials</span>. A GLB, FBX, OBJ or STL file can only show what the file itself contains.</p>
           <h2 id="the-view-stutters-on-a-heavy-model">The view stutters on a heavy model</h2>
@@ -170,7 +187,9 @@
           <h2 id="a-recent-file-asks-me-to-pick-it-again">A recent file asks me to pick it again</h2>
           <p>The browser needs a fresh permission before the app may read that file. Open it once more with <span class="ui">Open file…</span>, or drop it on the window.</p>
           <h2 id="the-exported-model-is-the-wrong-size-or-lies-on-its-side">The exported model is the wrong size or lies on its side</h2>
-          <p>Export again with a different <span class="ui">Unit scale</span> or the other <span class="ui">Up axis</span>. See <a href="../docs/export.html">Export</a>.</p>
+          <p>Export again with a different <span class="ui">Unit scale</span> or the other <span class="ui">Up axis</span>. A model that came from Cinema 4D or a glTF already stands Y up, so choose <span class="ui">Keep as in the scene</span> for it. See <a href="../docs/export.html">Export</a>.</p>
+          <h2 id="cinema-4d-or-maya-cannot-open-an-fbx-i-exported-long-ago">Cinema 4D or Maya cannot open an FBX I exported long ago</h2>
+          <p>FBX files written by versions before 0.14.0 are refused by the FBX software in Cinema 4D and Maya. Export the file again with this version, or open it in Blender and save it again.</p>
           <h2 id="an-export-fails-on-a-very-large-model">An export fails on a very large model</h2>
           <p>Text formats such as OBJ can run out of memory. Use GLB or STL, which are binary.</p>
           <h2 id="i-closed-the-window-and-the-app-is-still-running">I closed the window and the app is still running</h2>
@@ -211,20 +230,20 @@
         <h2>Product</h2>
         <a href="../">Overview</a>
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../download.html">Download</a>
       </nav>
       <nav aria-label="Resources">
         <h2>Resources</h2>
         <a href="../docs.html">Docs</a>
-        <a href="../docs/shortcuts.html">Keyboard shortcuts</a>
+        <a href="../docs/desktop-shortcut.html">Keyboard shortcuts</a>
         <a href="../changelog.html">Changelog</a>
         <a href="../docs/troubleshooting.html">Troubleshooting</a>
       </nav>
       <nav aria-label="Project">
         <h2>Project</h2>
         <a href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">Source on GitHub</a>
-        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Report a problem</a>
+        <a href="../report.html">Report a problem</a>
+        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Issues on GitHub</a>
         <a href="https://github.com/xpayn3/MeshOptimiser/blob/main/LICENSE" rel="noopener">MIT licence</a>
       </nav>
     </div>
@@ -233,6 +252,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=17"></script>
+  <script defer src="../site.js?v=22"></script>
 </body>
 </html>

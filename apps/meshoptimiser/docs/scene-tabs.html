@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>Scene tabs — MeshOptimiser Docs</title>
-  <meta name="description" content="Each tab is a scene of its own. Open several files side by side, drag tabs into order, and save from the tab’s icon." />
+  <meta name="description" content="Each tab is a scene of its own. Open several files side by side, drop a file to add it or open it in a tab, drag tabs into order, and save from the tab’s dot." />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/scene-tabs" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="Scene tabs — MeshOptimiser Docs" />
-  <meta property="og:description" content="Each tab is a scene of its own. Open several files side by side, drag tabs into order, and save from the tab’s icon." />
+  <meta property="og:description" content="Each tab is a scene of its own. Open several files side by side, drop a file to add it or open it in a tab, drag tabs into order, and save from the tab’s dot." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/scene-tabs" />
   <meta property="og:type" content="website" />
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=18" />
+  <link rel="stylesheet" href="../site.css?v=33" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -35,12 +35,11 @@
       </a>
       <nav class="nav" id="nav" aria-label="MeshOptimiser">
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../docs.html" aria-current="page">Docs</a>
         <a href="../changelog.html">Changelog</a>
         <a class="nav-out" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">GitHub</a>
       </nav>
-      <a class="btn is-primary bar-get" href="../download.html">Download</a>
+      <a class="btn is-primary bar-get" href="../download.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
       <button class="bar-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
     </div>
   </header>
@@ -57,6 +56,14 @@
         <a href="../docs/install-as-app.html">Install it as an app window</a>
         <a href="../docs/first-file.html">Open your first file</a>
         <a href="../docs/stop-restart-update.html">Stop, restart and update</a>
+        <h2>Install and set up</h2>
+        <a href="../docs/install-windows.html">Install on Windows, step by step</a>
+        <a href="../docs/install-macos.html">Install on macOS, step by step</a>
+        <a href="../docs/setup-first-session.html">Set it up after installing</a>
+        <a href="../docs/install-gltfpack.html">Add gltfpack for smaller files</a>
+        <a href="../docs/desktop-shortcut.html">Add a shortcut or an icon</a>
+        <a href="../docs/move-or-remove.html">Move, copy or remove the app</a>
+        <a href="../docs/install-problems.html">Install problems, message by message</a>
         <h2>Getting your model out of your CAD program</h2>
         <a href="../docs/cad-files-step-first.html">Native CAD files: export a STEP file first</a>
         <a href="../docs/step-from-inventor.html">How to export a STEP assembly from Autodesk Inventor</a>
@@ -71,13 +78,19 @@
         <a href="../docs/parts-tree.html">The parts tree</a>
         <a href="../docs/organise-the-tree.html">Organise the tree: groups, sorting and picking</a>
         <a href="../docs/search-and-commands.html">Search and commands</a>
+        <a href="../docs/quick-wand.html">Quick wand</a>
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html" aria-current="page">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
+        <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html">How to read the numbers</a>
+        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
+        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -117,10 +130,10 @@
       <article class="kb-article">
         <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#around">Find your way around</a></p>
         <h1>Scene tabs</h1>
-        <p class="lead">Each tab is a scene of its own. Open several files side by side, drag tabs into order, and save from the tab’s icon.</p>
+        <p class="lead">Each tab is a scene of its own. Open several files side by side, drop a file to add it or open it in a tab, drag tabs into order, and save from the tab’s dot.</p>
         <div class="kb-body">
           <p>A scene is everything you are working on in one tab: its parts, materials, camera and undo history. The tabs sit in the top bar, like tabs in a browser. Each one is a separate scene.</p>
-          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-tabs.webp" data-group="article" data-caption="Scene tabs: drag them into order. The dot on the icon is yellow while there are unsaved changes."><img src="../../../Images/apps/meshoptimiser-tabs.webp" alt="MeshOptimiser: Scene tabs: drag them into order. The dot on the icon is yellow while there are unsaved changes." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Scene tabs: drag them into order. The dot on the icon is yellow while there are unsaved changes.</figcaption></figure>
+          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-tabs.webp" data-group="article" data-caption="Scene tabs: drag them into order. The dot on the icon is yellow while there are unsaved changes."><img src="../../../Images/apps/meshoptimiser-tabs.webp" alt="MeshOptimiser: Scene tabs: drag them into order. The dot on the icon is yellow while there are unsaved changes." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Scene tabs: drag them into order. The dot on the icon is yellow while there are unsaved changes.</figcaption></figure>
           <h2 id="open-and-close">Open and close</h2>
           <ul class="kb-points">
             <li>Click the <code>+</code> after the last tab, or press <kbd>Ctrl</kbd><kbd>N</kbd>, for a new empty scene.</li>
@@ -129,12 +142,30 @@
             <li>Click the cross at the right end of a tab to close it. A click with the middle mouse button closes it too.</li>
             <li>If the scene has changes that are not saved, the app asks before it closes the tab.</li>
           </ul>
+          <h2 id="drop-a-file-on-the-window">Drop a file on the window</h2>
+          <p>You can drop a file anywhere on the window. What happens depends on the scene you have open.</p>
+          <dl class="table">
+            <div><dt>The scene is empty</dt><dd>The file opens there.</dd></div>
+            <div><dt>The scene has parts in it</dt><dd>A small question comes up: <span class="ui">Add to this scene</span> or <span class="ui">Open in new tab</span>. Add puts the parts of the file in the scene you are looking at, next to what is there. Open in new tab makes a scene of its own. Press <kbd>Esc</kbd> or click outside the question to do nothing.</dd></div>
+          </dl>
+          <p>The <span class="ui">Import into scene…</span> command in the menu (<kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>O</kbd>) always adds to the open scene. After an add, the new parts are selected, so you can see where they landed.</p>
           <h2 id="read-a-tab">Read a tab</h2>
           <dl class="table">
-            <div><dt>Name</dt><dd>The name of the scene. Double-click it to rename the scene.</dd></div>
-            <div><dt>Dot on the icon</dt><dd>Yellow means there are changes that are not saved. Green means the scene is saved.</dd></div>
-            <div><dt>Icon</dt><dd>Click it to save the scene. It does the same as <kbd>Ctrl</kbd><kbd>S</kbd>.</dd></div>
+            <div><dt>Dot</dt><dd>The first thing in every tab. Yellow means there are changes that are not saved. Green means the scene is saved. Faint means the scene is empty. Click the dot of the open tab to save the scene. It does the same as <kbd>Ctrl</kbd><kbd>S</kbd>.</dd></div>
+            <div><dt>Name</dt><dd>The name of the scene. Double-click it to rename the scene. A long name is cut in the middle, so the end of it and the type of the file stay readable.</dd></div>
+            <div><dt>Cross</dt><dd>Closes the tab.</dd></div>
           </dl>
+          <p>Every tab has the same width, and nothing in a tab moves when you pick it.</p>
+          <h2 id="right-click-a-tab">Right-click a tab</h2>
+          <p>A menu opens with the things you can do with tabs:</p>
+          <dl class="table">
+            <div><dt>Duplicate scene</dt><dd>Opens a copy of that tab’s scene in a new tab. It is dimmed when the scene is empty.</dd></div>
+            <div><dt>Close all</dt><dd>Closes every tab. <kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>F4</kbd>.</dd></div>
+            <div><dt>Close others</dt><dd>Closes every tab except this one.</dd></div>
+            <div><dt>Open…</dt><dd>Opens a file, as <kbd>Ctrl</kbd><kbd>O</kbd> does.</dd></div>
+            <div><dt>Open recent</dt><dd>A list of the files you opened lately.</dd></div>
+          </dl>
+          <p>Close all and Close others ask just once for all the scenes that have unsaved changes. Duplicate scene, Close all and Close others are in the search (<kbd>Ctrl</kbd><kbd>K</kbd>) too.</p>
           <h2 id="put-tabs-in-order">Put tabs in order</h2>
           <ol class="kb-steps">
             <li>Press a tab and pull it sideways.</li>
@@ -179,20 +210,20 @@
         <h2>Product</h2>
         <a href="../">Overview</a>
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../download.html">Download</a>
       </nav>
       <nav aria-label="Resources">
         <h2>Resources</h2>
         <a href="../docs.html">Docs</a>
-        <a href="../docs/shortcuts.html">Keyboard shortcuts</a>
+        <a href="../docs/desktop-shortcut.html">Keyboard shortcuts</a>
         <a href="../changelog.html">Changelog</a>
         <a href="../docs/troubleshooting.html">Troubleshooting</a>
       </nav>
       <nav aria-label="Project">
         <h2>Project</h2>
         <a href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">Source on GitHub</a>
-        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Report a problem</a>
+        <a href="../report.html">Report a problem</a>
+        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Issues on GitHub</a>
         <a href="https://github.com/xpayn3/MeshOptimiser/blob/main/LICENSE" rel="noopener">MIT licence</a>
       </nav>
     </div>
@@ -201,6 +232,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=17"></script>
+  <script defer src="../site.js?v=22"></script>
 </body>
 </html>

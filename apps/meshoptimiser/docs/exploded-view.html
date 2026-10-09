@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>Exploded view — MeshOptimiser Docs</title>
-  <meta name="description" content="Push the parts of an assembly apart with a slider, to see how it is put together." />
+  <meta name="description" content="Push the parts of an assembly apart with one slider, choose the directions, and put them back with one click." />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/exploded-view" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="Exploded view — MeshOptimiser Docs" />
-  <meta property="og:description" content="Push the parts of an assembly apart with a slider, to see how it is put together." />
+  <meta property="og:description" content="Push the parts of an assembly apart with one slider, choose the directions, and put them back with one click." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/exploded-view" />
   <meta property="og:type" content="website" />
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=18" />
+  <link rel="stylesheet" href="../site.css?v=33" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -35,12 +35,11 @@
       </a>
       <nav class="nav" id="nav" aria-label="MeshOptimiser">
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../docs.html" aria-current="page">Docs</a>
         <a href="../changelog.html">Changelog</a>
         <a class="nav-out" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">GitHub</a>
       </nav>
-      <a class="btn is-primary bar-get" href="../download.html">Download</a>
+      <a class="btn is-primary bar-get" href="../download.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
       <button class="bar-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
     </div>
   </header>
@@ -57,6 +56,14 @@
         <a href="../docs/install-as-app.html">Install it as an app window</a>
         <a href="../docs/first-file.html">Open your first file</a>
         <a href="../docs/stop-restart-update.html">Stop, restart and update</a>
+        <h2>Install and set up</h2>
+        <a href="../docs/install-windows.html">Install on Windows, step by step</a>
+        <a href="../docs/install-macos.html">Install on macOS, step by step</a>
+        <a href="../docs/setup-first-session.html">Set it up after installing</a>
+        <a href="../docs/install-gltfpack.html">Add gltfpack for smaller files</a>
+        <a href="../docs/desktop-shortcut.html">Add a shortcut or an icon</a>
+        <a href="../docs/move-or-remove.html">Move, copy or remove the app</a>
+        <a href="../docs/install-problems.html">Install problems, message by message</a>
         <h2>Getting your model out of your CAD program</h2>
         <a href="../docs/cad-files-step-first.html">Native CAD files: export a STEP file first</a>
         <a href="../docs/step-from-inventor.html">How to export a STEP assembly from Autodesk Inventor</a>
@@ -71,13 +78,19 @@
         <a href="../docs/parts-tree.html">The parts tree</a>
         <a href="../docs/organise-the-tree.html">Organise the tree: groups, sorting and picking</a>
         <a href="../docs/search-and-commands.html">Search and commands</a>
+        <a href="../docs/quick-wand.html">Quick wand</a>
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
+        <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html">How to read the numbers</a>
+        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
+        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -117,18 +130,27 @@
       <article class="kb-article">
         <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#look">Look and arrange</a></p>
         <h1>Exploded view</h1>
-        <p class="lead">Push the parts of an assembly apart with a slider, to see how it is put together.</p>
+        <p class="lead">Push the parts of an assembly apart with one slider, choose the directions, and put them back with one click.</p>
         <div class="kb-body">
           <p>An exploded view moves every part away from the centre of the model, so parts that sit inside or behind others come into the open. It is a way of looking, like in an assembly manual.</p>
-          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-exploded.webp" data-group="article" data-caption="Exploded view, with a slider for each axis."><img src="../../../Images/apps/meshoptimiser-exploded.webp" alt="MeshOptimiser: Exploded view, with a slider for each axis." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Exploded view, with a slider for each axis.</figcaption></figure>
+          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-exploded.webp" data-group="article" data-caption="Exploded view, with a slider for each axis."><img src="../../../Images/apps/meshoptimiser-exploded.webp" alt="MeshOptimiser: Exploded view, with a slider for each axis." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Exploded view, with a slider for each axis.</figcaption></figure>
+          <h2 id="steps">Steps</h2>
           <ol class="kb-steps">
-            <li>Open the card <span class="ui">Exploded view</span> in the right sidebar, under Inspect.</li>
-            <li>Drag <span class="ui">All axes</span> to push the parts apart in every direction.</li>
-            <li>Or drag <span class="ui">X axis</span>, <span class="ui">Y axis</span> or <span class="ui">Z axis</span> to spread them along one direction only.</li>
-            <li>Press <span class="ui">Reset all</span> to bring every part back.</li>
+            <li>Open the card <span class="ui">Exploded view</span> in the right sidebar, under Inspect. If it is folded, click its header.</li>
+            <li>Drag the <span class="ui">Amount</span> slider. The parts move apart. The value is a percentage, and the slider goes up to 300%. You can click the number and type one.</li>
+            <li>Under <span class="ui">Along</span>, the buttons X, Y and Z say which directions the parts move in. All three are on to begin with. Switch one off and the parts stop moving along that axis. Switch it on again and they follow.</li>
+            <li>Under <span class="ui">Quick</span>, press 25%, 50%, 100% or 200% to jump to that amount.</li>
+            <li>Press <span class="ui">Reset</span> to bring every part back.</li>
           </ol>
-          <p>The values are percentages. You can click a number and type one.</p>
-          <aside class="kb-note"><p>A suggestion: put the sliders back to 0 before you edit, save or export. The exploded view is for looking, and a model is easier to work on when its parts are where they belong.</p></aside>
+          <h2 id="fine-tune-each-axis">Fine tune each axis</h2>
+          <p>Click <span class="ui">Fine tune each axis</span> to open three more sliders, <span class="ui">X axis</span>, <span class="ui">Y axis</span> and <span class="ui">Z axis</span>. Use them when you want a different amount in each direction, for example to pull a stack apart upwards a long way and sideways only a little. The <span class="ui">Amount</span> slider then follows the largest of the three.</p>
+          <h2 id="while-the-view-is-exploded">While the view is exploded</h2>
+          <ul class="kb-points">
+            <li>A pill that says <span class="ui">Exploded</span>, with the amount, appears at the top of the viewport beside the camera pill. Click it to put the parts back and set the sliders to zero.</li>
+            <li>Moving a slider lets go of the selection. You can still click parts and see their outlines, but they have no gizmo to move them until the parts are back together.</li>
+            <li>Smart fit and Fill holes work on the model at rest, then put the explosion back as it was.</li>
+          </ul>
+          <aside class="kb-note"><p>A suggestion: put the parts back before you edit, save or export. The exploded view is for looking, and a model is easier to work on when its parts are where they belong.</p></aside>
           <div class="kb-see"><h2>Related</h2><ul>
             <li><a href="../docs/hide-isolate.html">Hide, isolate, show all</a></li>
             <li><a href="../docs/view-modes.html">View modes</a></li>
@@ -164,20 +186,20 @@
         <h2>Product</h2>
         <a href="../">Overview</a>
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../download.html">Download</a>
       </nav>
       <nav aria-label="Resources">
         <h2>Resources</h2>
         <a href="../docs.html">Docs</a>
-        <a href="../docs/shortcuts.html">Keyboard shortcuts</a>
+        <a href="../docs/desktop-shortcut.html">Keyboard shortcuts</a>
         <a href="../changelog.html">Changelog</a>
         <a href="../docs/troubleshooting.html">Troubleshooting</a>
       </nav>
       <nav aria-label="Project">
         <h2>Project</h2>
         <a href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">Source on GitHub</a>
-        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Report a problem</a>
+        <a href="../report.html">Report a problem</a>
+        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Issues on GitHub</a>
         <a href="https://github.com/xpayn3/MeshOptimiser/blob/main/LICENSE" rel="noopener">MIT licence</a>
       </nav>
     </div>
@@ -186,6 +208,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=17"></script>
+  <script defer src="../site.js?v=22"></script>
 </body>
 </html>

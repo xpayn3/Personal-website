@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=18" />
+  <link rel="stylesheet" href="../site.css?v=33" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -35,12 +35,11 @@
       </a>
       <nav class="nav" id="nav" aria-label="MeshOptimiser">
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../docs.html" aria-current="page">Docs</a>
         <a href="../changelog.html">Changelog</a>
         <a class="nav-out" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">GitHub</a>
       </nav>
-      <a class="btn is-primary bar-get" href="../download.html">Download</a>
+      <a class="btn is-primary bar-get" href="../download.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
       <button class="bar-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
     </div>
   </header>
@@ -57,6 +56,14 @@
         <a href="../docs/install-as-app.html">Install it as an app window</a>
         <a href="../docs/first-file.html">Open your first file</a>
         <a href="../docs/stop-restart-update.html">Stop, restart and update</a>
+        <h2>Install and set up</h2>
+        <a href="../docs/install-windows.html">Install on Windows, step by step</a>
+        <a href="../docs/install-macos.html">Install on macOS, step by step</a>
+        <a href="../docs/setup-first-session.html">Set it up after installing</a>
+        <a href="../docs/install-gltfpack.html">Add gltfpack for smaller files</a>
+        <a href="../docs/desktop-shortcut.html">Add a shortcut or an icon</a>
+        <a href="../docs/move-or-remove.html">Move, copy or remove the app</a>
+        <a href="../docs/install-problems.html">Install problems, message by message</a>
         <h2>Getting your model out of your CAD program</h2>
         <a href="../docs/cad-files-step-first.html">Native CAD files: export a STEP file first</a>
         <a href="../docs/step-from-inventor.html">How to export a STEP assembly from Autodesk Inventor</a>
@@ -71,13 +78,19 @@
         <a href="../docs/parts-tree.html">The parts tree</a>
         <a href="../docs/organise-the-tree.html">Organise the tree: groups, sorting and picking</a>
         <a href="../docs/search-and-commands.html">Search and commands</a>
+        <a href="../docs/quick-wand.html">Quick wand</a>
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
+        <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html" aria-current="page">How to read the numbers</a>
+        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
+        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -132,10 +145,10 @@
             <div><dt>Size</dt><dd>How large the whole model is along its three axes, in the display unit.</dd></div>
             <div><dt>Mesh data</dt><dd>How much memory the triangles take. A shape that repeats is counted once.</dd></div>
           </dl>
-          <p>The status bar under the viewport repeats the main totals.</p>
+          <p>The status bar under the viewport shows the number of vertices, the size of the mesh data, how many parts are selected and flagged, the frame rate and the console.</p>
           <h2 id="one-part">One part</h2>
           <p>Select a part and <span class="ui">Properties</span> describes it instead: its name, its material, its triangle count, its share of the scene, and where it ranks by weight, for example “#28 of 67 by weight”. Below that are its vertices, size and volume.</p>
-          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-inspect.webp" data-group="article" data-caption="One part selected: its triangles, its share of the scene and its rank by weight."><img src="../../../Images/apps/meshoptimiser-inspect.webp" alt="MeshOptimiser: One part selected: its triangles, its share of the scene and its rank by weight." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>One part selected: its triangles, its share of the scene and its rank by weight.</figcaption></figure>
+          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-inspect.webp" data-group="article" data-caption="One part selected: its triangles, its share of the scene and its rank by weight."><img src="../../../Images/apps/meshoptimiser-inspect.webp" alt="MeshOptimiser: One part selected: its triangles, its share of the scene and its rank by weight." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>One part selected: its triangles, its share of the scene and its rank by weight.</figcaption></figure>
           <p>Every part remembers the triangle count it arrived with. After you have reduced a part, the card leads with what was saved, in the form “21,688 triangles −34% · was 32,728 · saved 11,040”.</p>
           <h2 id="what-an-action-saved">What an action saved</h2>
           <p>Right after an action that removes triangles, the saving shows beside the scene’s triangle count for a few seconds, for example “−427,543 (−38%)”.</p>
@@ -143,13 +156,13 @@
           <ol class="kb-steps">
             <li>Open the card <span class="ui">Heavy parts</span> in the right sidebar.</li>
             <li>It lists the parts with the most triangles, heaviest first, each with a bar that shows how it compares with the heaviest.</li>
-            <li>Click a row. The part is selected and the view moves to it.</li>
+            <li>Click a row to tick it: the part is selected in the viewport. Right-click a row to move the view to the part. The card <span class="ui">Heavy parts</span> lists the parts with more than 10,000 triangles.</li>
             <li>Decide what to do with it: delete it, simplify it, or leave it.</li>
           </ol>
           <p>A few parts often hold a large share of the triangles. Start with those.</p>
           <h2 id="heatmap">Heatmap</h2>
           <p>Press <kbd>4</kbd> for the heatmap view. Each part is coloured by how densely it is covered in triangles for its size. Dense parts stand out in warm colours. A small part in a hot colour carries far more detail than it needs. Press <kbd>1</kbd> to go back to the normal view.</p>
-          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-heatmap.webp" data-group="article" data-caption="Heatmap: parts coloured by how dense their triangles are."><img src="../../../Images/apps/meshoptimiser-heatmap.webp" alt="MeshOptimiser: Heatmap: parts coloured by how dense their triangles are." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>Heatmap: parts coloured by how dense their triangles are.</figcaption></figure>
+          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-heatmap.webp" data-group="article" data-caption="Heatmap: parts coloured by how dense their triangles are."><img src="../../../Images/apps/meshoptimiser-heatmap.webp" alt="MeshOptimiser: Heatmap: parts coloured by how dense their triangles are." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Heatmap: parts coloured by how dense their triangles are.</figcaption></figure>
           <h2 id="the-optimisation-report">The optimisation report</h2>
           <p>The report puts the scene as it was opened beside the scene as it is now. It is the number to show whoever asked for a lighter file.</p>
           <ol class="kb-steps">
@@ -158,7 +171,7 @@
             <li>The row <span class="ui">File</span> fills in after you have exported.</li>
             <li>Press <span class="ui">Copy</span> to copy the table as text.</li>
           </ol>
-          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-report.webp" data-group="article" data-caption="The optimisation report: the scene as it was opened beside the scene now."><img src="../../../Images/apps/meshoptimiser-report.webp" alt="MeshOptimiser: The optimisation report: the scene as it was opened beside the scene now." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>The optimisation report: the scene as it was opened beside the scene now.</figcaption></figure>
+          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-report.webp" data-group="article" data-caption="The optimisation report: the scene as it was opened beside the scene now."><img src="../../../Images/apps/meshoptimiser-report.webp" alt="MeshOptimiser: The optimisation report: the scene as it was opened beside the scene now." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>The optimisation report: the scene as it was opened beside the scene now.</figcaption></figure>
           <div class="kb-see"><h2>Related</h2><ul>
             <li><a href="../docs/workflow.html">A sensible order to work in</a></li>
             <li><a href="../docs/delete-small-parts.html">Delete small parts</a></li>
@@ -167,8 +180,8 @@
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">
-          <a class="is-before" href="../docs/settings.html"><span>Before</span><strong>Settings</strong></a>
-          <a class="is-after" href="../docs/delete-small-parts.html"><span>Next</span><strong>Delete small parts</strong></a>
+          <a class="is-before" href="../docs/help-window.html"><span>Before</span><strong>The help window</strong></a>
+          <a class="is-after" href="../docs/heavy-parts.html"><span>Next</span><strong>Heavy parts</strong></a>
         </nav>
       </article>
     </section>
@@ -195,20 +208,20 @@
         <h2>Product</h2>
         <a href="../">Overview</a>
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../download.html">Download</a>
       </nav>
       <nav aria-label="Resources">
         <h2>Resources</h2>
         <a href="../docs.html">Docs</a>
-        <a href="../docs/shortcuts.html">Keyboard shortcuts</a>
+        <a href="../docs/desktop-shortcut.html">Keyboard shortcuts</a>
         <a href="../changelog.html">Changelog</a>
         <a href="../docs/troubleshooting.html">Troubleshooting</a>
       </nav>
       <nav aria-label="Project">
         <h2>Project</h2>
         <a href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">Source on GitHub</a>
-        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Report a problem</a>
+        <a href="../report.html">Report a problem</a>
+        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Issues on GitHub</a>
         <a href="https://github.com/xpayn3/MeshOptimiser/blob/main/LICENSE" rel="noopener">MIT licence</a>
       </nav>
     </div>
@@ -217,6 +230,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=17"></script>
+  <script defer src="../site.js?v=22"></script>
 </body>
 </html>

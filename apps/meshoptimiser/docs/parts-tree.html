@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=18" />
+  <link rel="stylesheet" href="../site.css?v=33" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -35,12 +35,11 @@
       </a>
       <nav class="nav" id="nav" aria-label="MeshOptimiser">
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../docs.html" aria-current="page">Docs</a>
         <a href="../changelog.html">Changelog</a>
         <a class="nav-out" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">GitHub</a>
       </nav>
-      <a class="btn is-primary bar-get" href="../download.html">Download</a>
+      <a class="btn is-primary bar-get" href="../download.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
       <button class="bar-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
     </div>
   </header>
@@ -57,6 +56,14 @@
         <a href="../docs/install-as-app.html">Install it as an app window</a>
         <a href="../docs/first-file.html">Open your first file</a>
         <a href="../docs/stop-restart-update.html">Stop, restart and update</a>
+        <h2>Install and set up</h2>
+        <a href="../docs/install-windows.html">Install on Windows, step by step</a>
+        <a href="../docs/install-macos.html">Install on macOS, step by step</a>
+        <a href="../docs/setup-first-session.html">Set it up after installing</a>
+        <a href="../docs/install-gltfpack.html">Add gltfpack for smaller files</a>
+        <a href="../docs/desktop-shortcut.html">Add a shortcut or an icon</a>
+        <a href="../docs/move-or-remove.html">Move, copy or remove the app</a>
+        <a href="../docs/install-problems.html">Install problems, message by message</a>
         <h2>Getting your model out of your CAD program</h2>
         <a href="../docs/cad-files-step-first.html">Native CAD files: export a STEP file first</a>
         <a href="../docs/step-from-inventor.html">How to export a STEP assembly from Autodesk Inventor</a>
@@ -71,13 +78,19 @@
         <a href="../docs/parts-tree.html" aria-current="page">The parts tree</a>
         <a href="../docs/organise-the-tree.html">Organise the tree: groups, sorting and picking</a>
         <a href="../docs/search-and-commands.html">Search and commands</a>
+        <a href="../docs/quick-wand.html">Quick wand</a>
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
+        <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html">How to read the numbers</a>
+        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
+        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -127,13 +140,27 @@
             <li>The eye at the right hides or shows the row.</li>
             <li>Click the small box in front of a group to open or close it.</li>
           </ul>
-          <h2 id="the-four-buttons">The four buttons</h2>
+          <h2 id="the-three-buttons">The three buttons</h2>
           <dl class="table">
-            <div><dt>Locate</dt><dd>Scrolls the tree to the selected part and opens the groups it is in. <kbd>Shift</kbd><kbd>S</kbd>.</dd></div>
-            <div><dt>Collapse</dt><dd>Closes every group. Press it again to open them all.</dd></div>
+            <div><dt>Collapse</dt><dd>Closes every group. When every group is closed, the button says <span class="ui">Expand</span> and opens them all. The small arrow beside it, or a right-click on the button, opens a menu with more choices. See below.</dd></div>
             <div><dt>Rename</dt><dd>Renames many parts at once. <kbd>F2</kbd>.</dd></div>
             <div><dt>Flatten</dt><dd>Removes levels of grouping.</dd></div>
           </dl>
+          <h2 id="collapse-and-expand-part-of-the-tree">Collapse and expand part of the tree</h2>
+          <p>A big assembly has many groups. Sometimes you want to close only some of them. Click the arrow beside <span class="ui">Collapse</span> to choose. Select a part or a group in the tree first, for the choices that need a selection.</p>
+          <dl class="table">
+            <div><dt>Collapse the whole tree</dt><dd>Closes every group. The same as pressing <span class="ui">Collapse</span>.</dd></div>
+            <div><dt>Collapse the selection</dt><dd>Closes the groups you selected and every group inside them. For a selected part, it closes the group the part is in.</dd></div>
+            <div><dt>Collapse from here on</dt><dd>Closes the first selected row and every group after it in the tree. The groups above stay as they are, so the row you are on stays in view.</dd></div>
+            <div><dt>Expand the whole tree</dt><dd>Opens every group.</dd></div>
+            <div><dt>Expand the selection</dt><dd>Opens the groups you selected and every group inside them. For a selected part, it opens every group on the way down to it.</dd></div>
+            <div><dt>Expand from here on</dt><dd>Opens the first selected row and every group after it.</dd></div>
+          </dl>
+          <p>The choices that need a selection are dimmed while nothing is selected.</p>
+          <h2 id="find-the-selected-part">Find the selected part</h2>
+          <p>Picked a part in the 3D view and want to see where it sits in the tree? Press <kbd>Shift</kbd><kbd>S</kbd>. The tree scrolls to the part, opens the groups it is in and flashes its row. A click on a part in the 3D view also scrolls the tree to it.</p>
+          <h2 id="a-file-you-add-to-the-scene">A file you add to the scene</h2>
+          <p>When you add a file to a scene that is already open (<span class="ui">Import into scene…</span>, or a dropped file with <span class="ui">Add to this scene</span>), the new parts are selected, shown in the tree and framed in the 3D view. That tells you where they landed.</p>
           <h2 id="search">Search</h2>
           <p>Type in <span class="ui">Search parts…</span> above the tree. Only the rows whose names match stay, including matches inside closed groups. Press the small cross in the field to clear the search.</p>
           <h2 id="rename-one-row">Rename one row</h2>
@@ -149,7 +176,7 @@
             <li>Press <kbd>F2</kbd> or the <span class="ui">Rename</span> button. The <span class="ui">Batch rename</span> window opens.</li>
             <li>Choose a tab. <span class="ui">Find &amp; Replace</span> swaps one piece of text for another. <span class="ui">Pattern</span> builds each name from pieces such as <code>{name}</code>, <code>{parent}</code> and <code>{counter:003}</code>. <span class="ui">Presets</span> has ready-made rules, such as lower-casing every name or removing a number at the end.</li>
             <li>Look at the <span class="ui">Preview</span>. It shows every name before and after.</li>
-            <li>Press <span class="ui">Apply</span>.</li>
+            <li>Press <span class="ui">Apply</span>, or <kbd>Ctrl</kbd><kbd>Enter</kbd>.</li>
           </ol>
           <h2 id="group-and-ungroup">Group and ungroup</h2>
           <dl class="kb-keys">
@@ -213,20 +240,20 @@
         <h2>Product</h2>
         <a href="../">Overview</a>
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../download.html">Download</a>
       </nav>
       <nav aria-label="Resources">
         <h2>Resources</h2>
         <a href="../docs.html">Docs</a>
-        <a href="../docs/shortcuts.html">Keyboard shortcuts</a>
+        <a href="../docs/desktop-shortcut.html">Keyboard shortcuts</a>
         <a href="../changelog.html">Changelog</a>
         <a href="../docs/troubleshooting.html">Troubleshooting</a>
       </nav>
       <nav aria-label="Project">
         <h2>Project</h2>
         <a href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">Source on GitHub</a>
-        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Report a problem</a>
+        <a href="../report.html">Report a problem</a>
+        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Issues on GitHub</a>
         <a href="https://github.com/xpayn3/MeshOptimiser/blob/main/LICENSE" rel="noopener">MIT licence</a>
       </nav>
     </div>
@@ -235,6 +262,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=17"></script>
+  <script defer src="../site.js?v=22"></script>
 </body>
 </html>

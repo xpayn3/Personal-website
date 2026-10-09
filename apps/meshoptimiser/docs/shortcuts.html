@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=18" />
+  <link rel="stylesheet" href="../site.css?v=33" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -35,12 +35,11 @@
       </a>
       <nav class="nav" id="nav" aria-label="MeshOptimiser">
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../docs.html" aria-current="page">Docs</a>
         <a href="../changelog.html">Changelog</a>
         <a class="nav-out" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">GitHub</a>
       </nav>
-      <a class="btn is-primary bar-get" href="../download.html">Download</a>
+      <a class="btn is-primary bar-get" href="../download.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
       <button class="bar-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
     </div>
   </header>
@@ -57,6 +56,14 @@
         <a href="../docs/install-as-app.html">Install it as an app window</a>
         <a href="../docs/first-file.html">Open your first file</a>
         <a href="../docs/stop-restart-update.html">Stop, restart and update</a>
+        <h2>Install and set up</h2>
+        <a href="../docs/install-windows.html">Install on Windows, step by step</a>
+        <a href="../docs/install-macos.html">Install on macOS, step by step</a>
+        <a href="../docs/setup-first-session.html">Set it up after installing</a>
+        <a href="../docs/install-gltfpack.html">Add gltfpack for smaller files</a>
+        <a href="../docs/desktop-shortcut.html">Add a shortcut or an icon</a>
+        <a href="../docs/move-or-remove.html">Move, copy or remove the app</a>
+        <a href="../docs/install-problems.html">Install problems, message by message</a>
         <h2>Getting your model out of your CAD program</h2>
         <a href="../docs/cad-files-step-first.html">Native CAD files: export a STEP file first</a>
         <a href="../docs/step-from-inventor.html">How to export a STEP assembly from Autodesk Inventor</a>
@@ -71,13 +78,19 @@
         <a href="../docs/parts-tree.html">The parts tree</a>
         <a href="../docs/organise-the-tree.html">Organise the tree: groups, sorting and picking</a>
         <a href="../docs/search-and-commands.html">Search and commands</a>
+        <a href="../docs/quick-wand.html">Quick wand</a>
         <a href="../docs/undo-redo.html">Undo and redo</a>
         <a href="../docs/scene-tabs.html">Scene tabs</a>
         <a href="../docs/settings.html">Settings</a>
+        <a href="../docs/help-window.html">The help window</a>
         <h2>Make it lighter</h2>
         <a href="../docs/read-the-numbers.html">How to read the numbers</a>
+        <a href="../docs/heavy-parts.html">Heavy parts</a>
+        <a href="../docs/smart-optimise.html">Smart optimise</a>
         <a href="../docs/delete-small-parts.html">Delete small parts</a>
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
+        <a href="../docs/fasteners.html">Fasteners</a>
+        <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Fill holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
@@ -120,8 +133,8 @@
         <p class="lead">Every keyboard shortcut and mouse action in MeshOptimiser v0.20.0, grouped by what it does.</p>
         <div class="kb-body">
           <p>On macOS, use <kbd>⌘</kbd> wherever this page says <kbd>Ctrl</kbd>.</p>
-          <p>Inside the app, press <kbd>?</kbd> for the same list with a search field. Shortcuts with a single key do nothing while you are typing in a field.</p>
-          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-shortcuts.webp" data-group="article" data-caption="The keyboard shortcuts overlay, with search."><img src="../../../Images/apps/meshoptimiser-shortcuts.webp" alt="MeshOptimiser: The keyboard shortcuts overlay, with search." width="1600" height="1000" loading="lazy" decoding="async" /></a><figcaption>The keyboard shortcuts overlay, with search.</figcaption></figure>
+          <p>Inside the app, press <kbd>?</kbd> for the same list with a search field. Shortcuts with a single key do nothing while you are typing in a field, or while a window is open in front.</p>
+          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-shortcuts.webp" data-group="article" data-caption="The keyboard shortcuts overlay, with search."><img src="../../../Images/apps/meshoptimiser-shortcuts.webp" alt="MeshOptimiser: The keyboard shortcuts overlay, with search." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>The keyboard shortcuts overlay, with search.</figcaption></figure>
           <h2 id="file">File</h2>
           <dl class="kb-keys">
             <div><dt><kbd>Ctrl</kbd><kbd>N</kbd></dt><dd>New scene, in a new tab</dd></div>
@@ -129,6 +142,8 @@
             <div><dt><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>O</kbd></dt><dd>Import a file into the open scene</dd></div>
             <div><dt><kbd>Ctrl</kbd><kbd>S</kbd></dt><dd>Save the scene</dd></div>
             <div><dt><kbd>Ctrl</kbd><kbd>E</kbd></dt><dd>Export</dd></div>
+            <div><dt><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>F4</kbd></dt><dd>Close all scenes. It asks once about the ones with unsaved changes.</dd></div>
+            <div><dt><kbd>Ctrl</kbd><kbd>;</kbd></dt><dd>Scene settings</dd></div>
           </dl>
           <h2 id="edit">Edit</h2>
           <dl class="kb-keys">
@@ -139,22 +154,22 @@
             <div><dt><kbd>Ctrl</kbd><kbd>V</kbd></dt><dd>Paste</dd></div>
             <div><dt><kbd>Ctrl</kbd><kbd>D</kbd></dt><dd>Duplicate the selection</dd></div>
             <div><dt><kbd>Del</kbd></dt><dd>Delete the selection. Backspace does the same.</dd></div>
+            <div><dt><kbd>Ctrl</kbd><kbd>G</kbd></dt><dd>Group</dd></div>
+            <div><dt><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>G</kbd></dt><dd>Ungroup</dd></div>
+            <div><dt><kbd>Ctrl</kbd><kbd>M</kbd></dt><dd>Merge the selected parts into one</dd></div>
+            <div><dt><kbd>F2</kbd></dt><dd>Batch rename</dd></div>
           </dl>
           <h2 id="tools">Tools</h2>
           <dl class="kb-keys">
             <div><dt><kbd>X</kbd></dt><dd>Split</dd></div>
             <div><dt><kbd>P</kbd></dt><dd>Fill holes</dd></div>
             <div><dt><kbd>Ctrl</kbd><kbd>B</kbd></dt><dd>Smart fit</dd></div>
-            <div><dt><kbd>Ctrl</kbd><kbd>M</kbd></dt><dd>Merge the selected parts into one</dd></div>
-            <div><dt><kbd>Ctrl</kbd><kbd>G</kbd></dt><dd>Group</dd></div>
-            <div><dt><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>G</kbd></dt><dd>Ungroup</dd></div>
-            <div><dt><kbd>F2</kbd></dt><dd>Batch rename</dd></div>
             <div><dt><kbd>M</kbd></dt><dd>Measure</dd></div>
             <div><dt><kbd>L</kbd></dt><dd>Draw lines and shapes</dd></div>
-            <div><dt><kbd>Enter</kbd></dt><dd>Run the open command panel</dd></div>
-            <div><dt><kbd>Esc</kbd></dt><dd>Put the open command panel away</dd></div>
+            <div><dt><kbd>Enter</kbd></dt><dd>Run the open command card</dd></div>
+            <div><dt><kbd>Esc</kbd></dt><dd>Put the open command card away. A second press clears the selection.</dd></div>
           </dl>
-          <p>Decimate, Fit to budget and Select hidden parts have no key of their own. Find them on the toolbar, in the <code>…</code> list or with the search.</p>
+          <p>Smart optimise, Decimate, Fit to budget, Select hidden parts, Fasteners, Stacked copies and Align to floor have no key of their own. Find them on the toolbar, in the <code>…</code> list or with the search.</p>
           <h2 id="selection">Selection</h2>
           <dl class="kb-keys">
             <div><dt><kbd>Ctrl</kbd><kbd>A</kbd></dt><dd>Select all</dd></div>
@@ -179,6 +194,7 @@
             <div><dt><kbd>3</kbd></dt><dd>X-ray</dd></div>
             <div><dt><kbd>4</kbd></dt><dd>Heatmap</dd></div>
             <div><dt><kbd>5</kbd></dt><dd>Clay, and back to solid</dd></div>
+            <div><dt><kbd>6</kbd></dt><dd>CAD view, and back to solid</dd></div>
             <div><dt><kbd>Ctrl</kbd><kbd>1</kbd></dt><dd>Camera view (perspective)</dd></div>
             <div><dt><kbd>Ctrl</kbd><kbd>2</kbd></dt><dd>Top view</dd></div>
             <div><dt><kbd>Ctrl</kbd><kbd>3</kbd></dt><dd>Front view</dd></div>
@@ -190,19 +206,30 @@
             <div><dt><kbd>E</kbd></dt><dd>Move</dd></div>
             <div><dt><kbd>R</kbd></dt><dd>Rotate</dd></div>
             <div><dt><kbd>T</kbd></dt><dd>Scale</dd></div>
+            <div><dt><kbd>D</kbd></dt><dd>Dynamic place: drag the selected part over other surfaces. Press it again to leave.</dd></div>
             <div><dt><kbd>Q</kbd></dt><dd>Hide the gizmo</dd></div>
             <div><dt><kbd>Shift</kbd></dt><dd>Hold while dragging the gizmo to snap</dd></div>
+            <div><dt><kbd>Shift</kbd><kbd>Scroll</kbd></dt><dd>While snapping and dragging: a coarser or a finer step</dd></div>
           </dl>
           <h2 id="panels-and-windows">Panels and windows</h2>
           <dl class="kb-keys">
             <div><dt><kbd>Ctrl</kbd><kbd>K</kbd></dt><dd>Search commands, parts and the library</dd></div>
-            <div><dt><kbd>Shift</kbd><kbd>M</kbd></dt><dd>Materials dock</dd></div>
+            <div><dt><kbd>W</kbd></dt><dd>Quick wand: hold it over the viewport, flick toward a command, let go. A quick tap leaves the ring open.</dd></div>
+            <div><dt><kbd>Shift</kbd><kbd>L</kbd></dt><dd>Library drawer</dd></div>
+            <div><dt><kbd>Shift</kbd><kbd>M</kbd></dt><dd>Materials drawer</dd></div>
             <div><dt><kbd>`</kbd></dt><dd>Console</dd></div>
             <div><dt><kbd>Ctrl</kbd><kbd>,</kbd></dt><dd>Settings</dd></div>
-            <div><dt><kbd>Ctrl</kbd><kbd>;</kbd></dt><dd>Scene settings</dd></div>
+            <div><dt><kbd>F1</kbd></dt><dd>Help window</dd></div>
             <div><dt><kbd>?</kbd></dt><dd>Keyboard shortcuts</dd></div>
             <div><dt><kbd>Ctrl</kbd><kbd>F</kbd></dt><dd>In Settings: jump to the search field</dd></div>
+            <div><dt><kbd>Ctrl</kbd><kbd>Enter</kbd></dt><dd>In Batch rename: apply</dd></div>
             <div><dt><kbd>Esc</kbd></dt><dd>Close the open window or menu</dd></div>
+          </dl>
+          <h2 id="in-the-help-window">In the help window</h2>
+          <dl class="kb-keys">
+            <div><dt><kbd>/</kbd></dt><dd>Jump to the search field</dd></div>
+            <div><dt><kbd>Enter</kbd></dt><dd>In the search field: open the first result</dd></div>
+            <div><dt><kbd>Esc</kbd></dt><dd>Clear the search. Press it again to close the window.</dd></div>
           </dl>
           <h2 id="mouse-in-the-viewport">Mouse, in the viewport</h2>
           <dl class="kb-keys">
@@ -214,23 +241,34 @@
             <div><dt><kbd>Drag</kbd></dt><dd>Orbit</dd></div>
             <div><dt><kbd>Middle drag</kbd></dt><dd>Pan</dd></div>
             <div><dt><kbd>Right drag</kbd></dt><dd>Pan</dd></div>
-            <div><dt><kbd>Scroll</kbd></dt><dd>Zoom</dd></div>
+            <div><dt><kbd>Scroll</kbd></dt><dd>Zoom, toward the cursor</dd></div>
             <div><dt><kbd>Alt</kbd><kbd>Right drag</kbd></dt><dd>Zoom smoothly</dd></div>
             <div><dt><kbd>Right-click</kbd></dt><dd>Menu for the part or the view</dd></div>
           </dl>
           <h2 id="mouse-elsewhere">Mouse, elsewhere</h2>
           <dl class="kb-keys">
             <div><dt><kbd>Double-click</kbd></dt><dd>On a name in the tree or on a tab: rename</dd></div>
-            <div><dt><kbd>Shift</kbd><kbd>Click</kbd></dt><dd>In the tree: select a range of rows</dd></div>
+            <div><dt><kbd>Click</kbd></dt><dd>In the tree: select a row</dd></div>
+            <div><dt><kbd>Shift</kbd><kbd>Click</kbd></dt><dd>In the tree: select a range of rows. In Heavy parts: tick a run of rows.</dd></div>
+            <div><dt><kbd>Ctrl</kbd><kbd>Click</kbd></dt><dd>In the tree: add a row to the selection or take it off</dd></div>
+            <div><dt><kbd>Drag</kbd></dt><dd>In the tree: move rows into a group or into another place</dd></div>
+            <div><dt><kbd>Right-click</kbd></dt><dd>On a tab: duplicate, close all, close others, open</dd></div>
             <div><dt><kbd>Middle click</kbd></dt><dd>On a tab: close it</dd></div>
             <div><dt><kbd>Esc</kbd></dt><dd>While dragging a tab: put it back</dd></div>
             <div><dt><kbd>Shift</kbd></dt><dd>While dragging a number: ten times faster</dd></div>
             <div><dt><kbd>Alt</kbd></dt><dd>While dragging a number: ten times finer</dd></div>
+            <div><dt><kbd>Click</kbd></dt><dd>On a number: type a value</dd></div>
+          </dl>
+          <h2 id="on-the-start-screen">On the start screen</h2>
+          <dl class="kb-keys">
+            <div><dt><kbd>← → ↑ ↓</kbd></dt><dd>Walk the cards of the recent files. Up and down move by a row.</dd></div>
+            <div><dt><kbd>Enter</kbd></dt><dd>In the search field of the recent files: open the first match</dd></div>
           </dl>
           <div class="kb-see"><h2>Related</h2><ul>
             <li><a href="../docs/search-and-commands.html">Search and commands</a></li>
             <li><a href="../docs/move-the-view.html">Move the view</a></li>
             <li><a href="../docs/select-parts.html">Select parts</a></li>
+            <li><a href="../docs/help-window.html">The help window</a></li>
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">
@@ -262,20 +300,20 @@
         <h2>Product</h2>
         <a href="../">Overview</a>
         <a href="../features.html">Features</a>
-        <a href="../screenshots.html">Screenshots</a>
         <a href="../download.html">Download</a>
       </nav>
       <nav aria-label="Resources">
         <h2>Resources</h2>
         <a href="../docs.html">Docs</a>
-        <a href="../docs/shortcuts.html">Keyboard shortcuts</a>
+        <a href="../docs/desktop-shortcut.html">Keyboard shortcuts</a>
         <a href="../changelog.html">Changelog</a>
         <a href="../docs/troubleshooting.html">Troubleshooting</a>
       </nav>
       <nav aria-label="Project">
         <h2>Project</h2>
         <a href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">Source on GitHub</a>
-        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Report a problem</a>
+        <a href="../report.html">Report a problem</a>
+        <a href="https://github.com/xpayn3/MeshOptimiser/issues" rel="noopener">Issues on GitHub</a>
         <a href="https://github.com/xpayn3/MeshOptimiser/blob/main/LICENSE" rel="noopener">MIT licence</a>
       </nav>
     </div>
@@ -284,6 +322,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=17"></script>
+  <script defer src="../site.js?v=22"></script>
 </body>
 </html>
