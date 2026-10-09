@@ -24,9 +24,9 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 24;
+const CSS_V = 26;
 const RP_V = 2;           // report.js
-const JS_V = 18;
+const JS_V = 19;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -62,6 +62,12 @@ function siteFor(app, docs) {
   const releases = app.changelog.versions.filter(v => !v.next).slice(0, 3);
 
   // the address of the docs article whose slug matches, or the docs home
+  // the tool icons (Lucide, ISC): a small JSON next to the pages, drawn inline so they take the colour of their group
+  const iconFile = path.join(ROOT, site.path, 'icons.json');
+  const ICONS = fs.existsSync(iconFile) ? JSON.parse(fs.readFileSync(iconFile, 'utf8')) : { icons: {}, items: {} };
+  const GROUP_COLOURS = ['#f5a524', '#0d99ff', '#2fd180', '#a78bfa', '#ff8a4c', '#2dd4bf', '#f472b6'];
+  const svgIcon = (name) => { const nodes = ICONS.icons[name]; if (!nodes) return ''; return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + nodes.map(([tag, attrs]) => '<' + tag + Object.entries(attrs).map(([k, v]) => ' ' + k + '="' + v + '"').join('') + '/>').join('') + '</svg>'; };
+
   const docLink = (re) => { const hit = docs && docs.articles.find(a => re.test(a.slug)); return hit ? `docs/${hit.slug}.html` : 'docs.html'; };
 
   // ---- pieces shared by the pages ----
@@ -128,7 +134,7 @@ ${JSON.stringify({
 ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.key === page.key || p.key === page.under ? ' aria-current="page"' : ''}>${p.label}</a>`).join('\n')}
         <a class="nav-out" href="${repo}" rel="noopener">GitHub</a>
       </nav>
-      <a class="btn is-primary bar-get" href="download.html"${page.key === 'download' ? ' aria-current="page"' : ''}>Download</a>
+      <a class="btn is-primary bar-get" href="download.html"${page.key === 'download' ? ' aria-current="page"' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
       <button class="bar-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
     </div>
   </header>
@@ -541,15 +547,15 @@ ${(latest.items || []).slice(0, 4).map(([tag, line]) => `            <li><b clas
         </div>
       </div>
     </section>
-${app.featureGroups.map(group => `
-    <section class="band" id="${slug(group.title)}">
+${app.featureGroups.map((group, gi) => `
+    <section class="band" id="${slug(group.title)}" style="--ico: ${GROUP_COLOURS[gi % GROUP_COLOURS.length]}">
       <div class="wrap split">
         <div class="split-head">
           <p class="kicker">${esc(group.note || 'Features')}</p>
           <h2>${esc(group.title)}</h2>
         </div>
-        <ul class="features">
-${group.items.map(([name, line]) => `          <li><strong>${esc(name)}</strong><span>${esc(line)}</span></li>`).join('\n')}
+        <ul class="tools">
+${group.items.map(([name, line]) => `          <li><i class="ico">${svgIcon(ICONS.items[name])}</i><div><strong>${esc(name)}</strong><span>${esc(line)}</span></div></li>`).join('\n')}
         </ul>
       </div>
     </section>`).join('')}

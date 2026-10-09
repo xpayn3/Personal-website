@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=24" />
+  <link rel="stylesheet" href="site.css?v=26" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -40,7 +40,7 @@
         <a href="changelog.html">Changelog</a>
         <a class="nav-out" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">GitHub</a>
       </nav>
-      <a class="btn is-primary bar-get" href="download.html">Download</a>
+      <a class="btn is-primary bar-get" href="download.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
       <button class="bar-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
     </div>
   </header>
@@ -77,134 +77,134 @@
       </div>
     </section>
 
-    <section class="band" id="convert">
+    <section class="band" id="convert" style="--ico: #f5a524">
       <div class="wrap split">
         <div class="split-head">
           <p class="kicker">STEP to GLB</p>
           <h2>Convert</h2>
         </div>
-        <ul class="features">
-          <li><strong>Reads the whole assembly</strong><span>Colours, names and the full part tree come straight out of OpenCascade.</span></li>
-          <li><strong>Finds repeats</strong><span>The same shape at any angle or position becomes one mesh drawn many times.</span></li>
-          <li><strong>Rebuilds the surfaces</strong><span>Set the detail in millimetres or as a share of the model’s size, and let it drop what’s too small to matter.</span></li>
-          <li><strong>Compresses</strong><span>Meshopt, through gltfpack, makes GLBs about ten times smaller.</span></li>
-          <li><strong>One click to start</strong><span>start.bat or start.command sets up Python and opens the browser.</span></li>
-          <li><strong>Long jobs in the background</strong><span>A big conversion runs as a job and its progress shows in the window.</span></li>
+        <ul class="tools">
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg></i><div><strong>Reads the whole assembly</strong><span>Colours, names and the full part tree come straight out of OpenCascade.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></i><div><strong>Finds repeats</strong><span>The same shape at any angle or position becomes one mesh drawn many times.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z"/><rect x="3" y="14" width="7" height="7" rx="1"/><circle cx="17.5" cy="17.5" r="3.5"/></svg></i><div><strong>Rebuilds the surfaces</strong><span>Set the detail in millimetres or as a share of the model’s size, and let it drop what’s too small to matter.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/></svg></i><div><strong>Compresses</strong><span>Meshopt, through gltfpack, makes GLBs about ten times smaller.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg></i><div><strong>One click to start</strong><span>start.bat or start.command sets up Python and opens the browser.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></svg></i><div><strong>Long jobs in the background</strong><span>A big conversion runs as a job and its progress shows in the window.</span></div></li>
         </ul>
       </div>
     </section>
-    <section class="band" id="look-around">
+    <section class="band" id="look-around" style="--ico: #0d99ff">
       <div class="wrap split">
         <div class="split-head">
           <p class="kicker">Features</p>
           <h2>Look around</h2>
         </div>
-        <ul class="features">
-          <li><strong>WebGPU, with WebGL2 as a fallback</strong><span>The renderer can be switched in Settings.</span></li>
-          <li><strong>Real lighting</strong><span>A studio to reflect, soft shadows in the corners, fog on the floor.</span></li>
-          <li><strong>Dark parts you can still read</strong><span>A studio to reflect on plain backgrounds and a headlight that follows the view, so black parts keep an edge and a sheen.</span></li>
-          <li><strong>Click what you see</strong><span>Hover, click and box-select work on the parts you see, copies included.</span></li>
-          <li><strong>Hide, isolate, solo</strong><span>One key each, to cut the noise and focus.</span></li>
-          <li><strong>Quick wand (W)</strong><span>Hold W over the model and a ring of commands opens under the pointer. Flick toward one and let go. It works on the selection, or on the whole scene when nothing is selected.</span></li>
-          <li><strong>Recolour</strong><span>By group, by material or per part, with a reset.</span></li>
-          <li><strong>Six ways to see it</strong><span>Solid, wireframe, x-ray, heatmap, clay and CAD. Clay shows every part in one plain material. CAD shades by which way a face looks, with a dark line on every sharp edge.</span></li>
-          <li><strong>A Shading card with every look</strong><span>Default, Clay, Porcelain, Steel and Red wax, and the CAD looks Ceramic, Light and Mono, each as a small 3D nut. One switch draws the outlines in every view.</span></li>
+        <ul class="tools">
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20v2"/><path d="M12 2v2"/><path d="M17 20v2"/><path d="M17 2v2"/><path d="M2 12h2"/><path d="M2 17h2"/><path d="M2 7h2"/><path d="M20 12h2"/><path d="M20 17h2"/><path d="M20 7h2"/><path d="M7 20v2"/><path d="M7 2v2"/><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="8" y="8" width="8" height="8" rx="1"/></svg></i><div><strong>WebGPU, with WebGL2 as a fallback</strong><span>The renderer can be switched in Settings.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></i><div><strong>Real lighting</strong><span>A studio to reflect, soft shadows in the corners, fog on the floor.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg></i><div><strong>Dark parts you can still read</strong><span>A studio to reflect on plain backgrounds and a headlight that follows the view, so black parts keep an edge and a sheen.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4.1 12 6"/><path d="m5.1 8-2.9-.8"/><path d="m6 12-1.9 2"/><path d="M7.2 2.2 8 5.1"/><path d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074z"/></svg></i><div><strong>Click what you see</strong><span>Hover, click and box-select work on the parts you see, copies included.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg></i><div><strong>Hide, isolate, solo</strong><span>One key each, to cut the noise and focus.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg></i><div><strong>Quick wand (W)</strong><span>Hold W over the model and a ring of commands opens under the pointer. Flick toward one and let go. It works on the selection, or on the whole scene when nothing is selected.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/></svg></i><div><strong>Recolour</strong><span>By group, by material or per part, with a reset.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg></i><div><strong>Six ways to see it</strong><span>Solid, wireframe, x-ray, heatmap, clay and CAD. Clay shows every part in one plain material. CAD shades by which way a face looks, with a dark line on every sharp edge.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 17a4 4 0 0 1-8 0V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2Z"/><path d="M16.7 13H19a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H7"/><path d="M 7 17h.01"/><path d="m11 8 2.3-2.3a2.4 2.4 0 0 1 3.404.004L18.6 7.6a2.4 2.4 0 0 1 .026 3.434L9.9 19.8"/></svg></i><div><strong>A Shading card with every look</strong><span>Default, Clay, Porcelain, Steel and Red wax, and the CAD looks Ceramic, Light and Mono, each as a small 3D nut. One switch draws the outlines in every view.</span></div></li>
         </ul>
       </div>
     </section>
-    <section class="band" id="clean-up">
+    <section class="band" id="clean-up" style="--ico: #2fd180">
       <div class="wrap split">
         <div class="split-head">
           <p class="kicker">Features</p>
           <h2>Clean up</h2>
         </div>
-        <ul class="features">
-          <li><strong>Smart optimise</strong><span>Runs every clean-up in one go and undoes in one step.</span></li>
-          <li><strong>Fasteners</strong><span>Finds bolts, screws, nuts and washers by their shape and selects them.</span></li>
-          <li><strong>Select hidden parts</strong><span>Picks the parts that can’t be seen from outside, ready to delete.</span></li>
-          <li><strong>Stacked copies</strong><span>Finds parts drawn twice in the same place and keeps one.</span></li>
-          <li><strong>Fill holes</strong><span>Closes bolt holes, slots and pockets in flat faces and leaves the rest. You can set the size, the depth and which kinds of hole.</span></li>
-          <li><strong>Decimate</strong><span>Reduces the selection by a percentage or to a triangle count, and keeps normals, UVs and vertex colours.</span></li>
-          <li><strong>Split</strong><span>Brings back the separate solids of a mesh that was fused on export.</span></li>
-          <li><strong>Smart fit</strong><span>Swaps a part for a simple stand-in: a box, a turned box, a cylinder, a few boxes, or blocks that keep the outline.</span></li>
-          <li><strong>Fit to budget</strong><span>Give it a triangle count for the whole scene and it reduces the heaviest meshes first, with a preview.</span></li>
-          <li><strong>Align to floor</strong><span>Stands a model that arrived on its side on the grid. A small 3D drawing shows what it will do, and nothing moves until you press the button.</span></li>
-          <li><strong>Delete small parts</strong><span>Removes parts too small to see, plus empty, duplicate and broken ones.</span></li>
-          <li><strong>Repair mesh</strong><span>Joins doubled vertices, removes empty and doubled triangles, and turns faces so that neighbours agree which side is out.</span></li>
-          <li><strong>Remove hidden faces</strong><span>Looks at each part from many sides and deletes the faces that never show: the inside of a housing, the faces where two parts press together.</span></li>
-          <li><strong>Merge by material or group</strong><span>One mesh per material, or one per group. A merged mesh keeps its material.</span></li>
-          <li><strong>Select by rule</strong><span>Pick parts by name, material, group, triangles, size, or whether they are shown, flagged or instanced, and see how many fit as you type.</span></li>
-          <li><strong>Untriangulate</strong><span>Turns neighbouring flat triangles into one polygon and cuts it again with the fewest triangles. The shape does not change: a flat plate of 200 triangles becomes 38.</span></li>
-          <li><strong>What it saved</strong><span>Every action shows the triangles it removed, and every part remembers what it arrived with.</span></li>
+        <ul class="tools">
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/><path d="M20 2v4"/><path d="M22 4h-4"/><circle cx="4" cy="20" r="2"/></svg></i><div><strong>Smart optimise</strong><span>Runs every clean-up in one go and undoes in one step.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><circle cx="12" cy="12" r="4"/></svg></i><div><strong>Fasteners</strong><span>Finds bolts, screws, nuts and washers by their shape and selects them.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="1"/><path d="M18.944 12.33a1 1 0 0 0 0-.66 7.5 7.5 0 0 0-13.888 0 1 1 0 0 0 0 .66 7.5 7.5 0 0 0 13.888 0"/></svg></i><div><strong>Select hidden parts</strong><span>Picks the parts that can’t be seen from outside, ready to delete.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg></i><div><strong>Stacked copies</strong><span>Finds parts drawn twice in the same place and keeps one.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="12" r="10"/></svg></i><div><strong>Fill holes</strong><span>Closes bolt holes, slots and pockets in flat faces and leaves the rest. You can set the size, the depth and which kinds of hole.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.73 4a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/></svg></i><div><strong>Decimate</strong><span>Reduces the selection by a percentage or to a triangle count, and keeps normals, UVs and vertex colours.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg></i><div><strong>Split</strong><span>Brings back the separate solids of a mesh that was fused on export.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></i><div><strong>Smart fit</strong><span>Swaps a part for a simple stand-in: a box, a turned box, a cylinder, a few boxes, or blocks that keep the outline.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg></i><div><strong>Fit to budget</strong><span>Give it a triangle count for the whole scene and it reduces the heaviest meshes first, with a preview.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/></svg></i><div><strong>Align to floor</strong><span>Stands a model that arrived on its side on the grid. A small 3D drawing shows what it will do, and nothing moves until you press the button.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></i><div><strong>Delete small parts</strong><span>Removes parts too small to see, plus empty, duplicate and broken ones.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"/></svg></i><div><strong>Repair mesh</strong><span>Joins doubled vertices, removes empty and doubled triangles, and turns faces so that neighbours agree which side is out.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 21H8a2 2 0 0 1-1.42-.587l-3.994-3.999a2 2 0 0 1 0-2.828l10-10a2 2 0 0 1 2.829 0l5.999 6a2 2 0 0 1 0 2.828L12.834 21"/><path d="m5.082 11.09 8.828 8.828"/></svg></i><div><strong>Remove hidden faces</strong><span>Looks at each part from many sides and deletes the faces that never show: the inside of a housing, the faces where two parts press together.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 6 4-4 4 4"/><path d="M12 2v10.3a4 4 0 0 1-1.172 2.872L4 22"/><path d="m20 22-5-5"/></svg></i><div><strong>Merge by material or group</strong><span>One mesh per material, or one per group. A merged mesh keeps its material.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 5h20"/><path d="M6 12h12"/><path d="M9 19h6"/></svg></i><div><strong>Select by rule</strong><span>Pick parts by name, material, group, triangles, size, or whether they are shown, flagged or instanced, and see how many fit as you type.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></i><div><strong>Untriangulate</strong><span>Turns neighbouring flat triangles into one polygon and cuts it again with the fewest triangles. The shape does not change: a flat plate of 200 triangles becomes 38.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 17h3v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-3a3.16 3.16 0 0 0 2-2h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1a5 5 0 0 0-2-4V3a4 4 0 0 0-3.2 1.6l-.3.4H11a6 6 0 0 0-6 6v1a5 5 0 0 0 2 4v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1z"/><path d="M16 10h.01"/><path d="M2 8v1a2 2 0 0 0 2 2h1"/></svg></i><div><strong>What it saved</strong><span>Every action shows the triangles it removed, and every part remembers what it arrived with.</span></div></li>
         </ul>
       </div>
     </section>
-    <section class="band" id="the-part-tree">
+    <section class="band" id="the-part-tree" style="--ico: #a78bfa">
       <div class="wrap split">
         <div class="split-head">
           <p class="kicker">Features</p>
           <h2>The part tree</h2>
         </div>
-        <ul class="features">
-          <li><strong>Built for big assemblies</strong><span>Ten thousand rows scroll smoothly, because only the rows you can see are drawn.</span></li>
-          <li><strong>Search and filters</strong><span>Find parts by name, and tint the small ones.</span></li>
-          <li><strong>Flatten, dissolve, ungroup</strong><span>Collapse chains of single groups, dissolve a group, or ungroup a branch.</span></li>
-          <li><strong>Batch rename (F2)</strong><span>A Quick tab for the usual jobs, templates with buttons for every piece, find and replace with regular expressions and whole words, a preview that marks what changed, and presets.</span></li>
-          <li><strong>Collapse the way you want</strong><span>The whole tree, the selection or from the selection down, from the arrow beside the Collapse button.</span></li>
-          <li><strong>Undo and redo</strong><span>Tree edits, recolouring, renames and clean-ups share one history.</span></li>
-          <li><strong>Right-click menu</strong><span>Hide, isolate, recolour, rename or frame a part from one menu.</span></li>
+        <ul class="tools">
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5h13"/><path d="M13 12h8"/><path d="M13 19h8"/><path d="M3 10a2 2 0 0 0 2 2h3"/><path d="M3 5v12a2 2 0 0 0 2 2h3"/></svg></i><div><strong>Built for big assemblies</strong><span>Ten thousand rows scroll smoothly, because only the rows you can see are drawn.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg></i><div><strong>Search and filters</strong><span>Find parts by name, and tint the small ones.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22v-6"/><path d="M12 8V2"/><path d="M4 12H2"/><path d="M10 12H8"/><path d="M16 12h-2"/><path d="M22 12h-2"/><path d="m15 19-3-3-3 3"/><path d="m15 5-3 3-3-3"/></svg></i><div><strong>Flatten, dissolve, ungroup</strong><span>Collapse chains of single groups, dissolve a group, or ungroup a branch.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 21h8"/><path d="m15 5 4 4"/><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></i><div><strong>Batch rename (F2)</strong><span>A Quick tab for the usual jobs, templates with buttons for every piece, find and replace with regular expressions and whole words, a preview that marks what changed, and presets.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 20 5-5 5 5"/><path d="m7 4 5 5 5-5"/></svg></i><div><strong>Collapse the way you want</strong><span>The whole tree, the selection or from the selection down, from the arrow beside the Collapse button.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"/></svg></i><div><strong>Undo and redo</strong><span>Tree edits, recolouring, renames and clean-ups share one history.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.037 4.688a.495.495 0 0 1 .651-.651l16 6.5a.5.5 0 0 1-.063.947l-6.124 1.58a2 2 0 0 0-1.438 1.435l-1.579 6.126a.5.5 0 0 1-.947.063z"/></svg></i><div><strong>Right-click menu</strong><span>Hide, isolate, recolour, rename or frame a part from one menu.</span></div></li>
         </ul>
       </div>
     </section>
-    <section class="band" id="build">
+    <section class="band" id="build" style="--ico: #ff8a4c">
       <div class="wrap split">
         <div class="split-head">
           <p class="kicker">Features</p>
           <h2>Build</h2>
         </div>
-        <ul class="features">
-          <li><strong>A library of 86 parts</strong><span>Bolts, nuts, pipe fittings, profiles, gears and a stepper motor. Look at one, change its size, then drag it in.</span></li>
-          <li><strong>A bolt with its own nut</strong><span>The nut is part of the bolt, so it moves and undoes with it.</span></li>
-          <li><strong>Exploded view</strong><span>Pull the parts apart with one slider, choose the axes with three pills, and fine-tune each axis.</span></li>
-          <li><strong>Dynamic place (D)</strong><span>Drag the selected part over other surfaces: it rests on them and turns to face them, like dragging a part out of a library onto a model. A small cube on top of the part scales it: drag it up or down.</span></li>
-          <li><strong>Measure</strong><span>Click two points. The measurements stay in a list and can be picked again.</span></li>
+        <ul class="tools">
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg></i><div><strong>A library of 86 parts</strong><span>Bolts, nuts, pipe fittings, profiles, gears and a stepper motor. Look at one, change its size, then drag it in.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16.847 5.847 20 9a7.23 7.23 0 011.551 7.516C21.241 17.352 21 17.932 21 19v1a1 1 0 01-1 1h-1c-1.069 0-1.648.242-2.485.552A7.2 7.2 0 019.002 20l-3.155-3.153"/><path d="M18.21 5.43c-1.71.69-5.07 1.07-6.71 1.07.46 1.38.91 2.74.61 4.88a.88.88 0 01-.73.74c-1.78.28-3.54-.17-4.88-.62 0 1.64-.38 5-1.07 6.71-.21.52-.82.55-1.17.12A10 10 0 0118.33 4.26c.43.35.4.97-.12 1.17"/><path d="M4.93 4.93 3 3a.7.7 0 010-1"/></svg></i><div><strong>A bolt with its own nut</strong><span>The nut is part of the bolt, so it moves and undoes with it.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 15 6 6"/><path d="m15 9 6-6"/><path d="M21 16v5h-5"/><path d="M21 8V3h-5"/><path d="M3 16v5h5"/><path d="m3 21 6-6"/><path d="M3 8V3h5"/><path d="M9 9 3 3"/></svg></i><div><strong>Exploded view</strong><span>Pull the parts apart with one slider, choose the axes with three pills, and fine-tune each axis.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 15 4 4"/><path d="M2.352 10.648a1.205 1.205 0 0 0 0 1.704l2.296 2.296a1.205 1.205 0 0 0 1.704 0l6.029-6.029a1 1 0 1 1 3 3l-6.029 6.029a1.205 1.205 0 0 0 0 1.704l2.296 2.296a1.205 1.205 0 0 0 1.704 0l6.365-6.367A1 1 0 0 0 8.716 4.282z"/><path d="m5 8 4 4"/></svg></i><div><strong>Dynamic place (D)</strong><span>Drag the selected part over other surfaces: it rests on them and turns to face them, like dragging a part out of a library onto a model. A small cube on top of the part scales it: drag it up or down.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/></svg></i><div><strong>Measure</strong><span>Click two points. The measurements stay in a list and can be picked again.</span></div></li>
         </ul>
       </div>
     </section>
-    <section class="band" id="export">
+    <section class="band" id="export" style="--ico: #2dd4bf">
       <div class="wrap split">
         <div class="split-head">
           <p class="kicker">Features</p>
           <h2>Export</h2>
         </div>
-        <ul class="features">
-          <li><strong>GLB and glTF</strong><span>With Draco or Meshopt compression, and textures embedded if you want them.</span></li>
-          <li><strong>FBX, USDZ, OBJ, STL, PLY</strong><span>Common 3D and AR formats, with scale presets for mm, cm, m and inches.</span></li>
-          <li><strong>Parts list</strong><span>A CSV bill of materials: every part and its size.</span></li>
-          <li><strong>Name the file</strong><span>The Export window has a file name with pills for the date, the triangle count, the version and more, and a summary of what will be written.</span></li>
-          <li><strong>Save scene</strong><span>Keeps the view, the selection and the recolouring in a small file next to the model.</span></li>
+        <ul class="tools">
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2v5a1 1 0 001 1h5"/><path d="M14.692 22H18a2 2 0 002-2V8a2.4 2.4 0 00-.706-1.706l-3.588-3.588A2.4 2.4 0 0014 2H6a2 2 0 00-2 2v3.804"/><path d="M2.264 13.752 7 16.5l4.737-2.748"/><path d="M2.995 13.014A2 2 0 002 14.744v3.516a2 2 0 00.996 1.73l3 1.74a2 2 0 002.008 0l3-1.74A2 2 0 0012 18.26v-3.517a2 2 0 00-.995-1.73l-3-1.742a2 2 0 00-1.892-.064z"/><path d="M7 16.5V22"/></svg></i><div><strong>GLB and glTF</strong><span>With Draco or Meshopt compression, and textures embedded if you want them.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2h-4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8"/><path d="M16.706 2.706A2.4 2.4 0 0 0 15 2v5a1 1 0 0 0 1 1h5a2.4 2.4 0 0 0-.706-1.706z"/><path d="M5 7a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h8a2 2 0 0 0 1.732-1"/></svg></i><div><strong>FBX, USDZ, OBJ, STL, PLY</strong><span>Common 3D and AR formats, with scale presets for mm, cm, m and inches.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/></svg></i><div><strong>Parts list</strong><span>A CSV bill of materials: every part and its size.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg></i><div><strong>Name the file</strong><span>The Export window has a file name with pills for the date, the triangle count, the version and more, and a summary of what will be written.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg></i><div><strong>Save scene</strong><span>Keeps the view, the selection and the recolouring in a small file next to the model.</span></div></li>
         </ul>
       </div>
     </section>
-    <section class="band" id="the-app">
+    <section class="band" id="the-app" style="--ico: #f472b6">
       <div class="wrap split">
         <div class="split-head">
           <p class="kicker">Features</p>
           <h2>The app</h2>
         </div>
-        <ul class="features">
-          <li><strong>Start screen</strong><span>Drop a file anywhere, open a recent one, or begin from a shape.</span></li>
-          <li><strong>Scene tabs</strong><span>Each tab is its own scene. Opening a file never replaces one that has something in it.</span></li>
-          <li><strong>Cards over the model</strong><span>A tool with settings opens as a card you can move. Enter runs it and Esc puts it away.</span></li>
-          <li><strong>Help inside the app (F1)</strong><span>The whole knowledge base, with search, working offline.</span></li>
-          <li><strong>A look of your own</strong><span>Settings can change the accent colour, the tones, the font, the text size, the corners and the density.</span></li>
-          <li><strong>Numbers you drag</strong><span>Drag any number sideways to change it, or click to type.</span></li>
-          <li><strong>One Settings window</strong><span>General, appearance, viewport, camera, performance, scene, storage and about, with one search for all of it.</span></li>
-          <li><strong>Search (Ctrl or ⌘ + K)</strong><span>Every command, every part in the scene and every part in the library.</span></li>
-          <li><strong>Shortcuts</strong><span>A searchable list of every key.</span></li>
-          <li><strong>Comes back where you left it</strong><span>Your files and saved scenes are still there after a reload.</span></li>
-          <li><strong>Non-destructive</strong><span>The original geometry isn’t touched until you export.</span></li>
-          <li><strong>No build step</strong><span>Plain JavaScript and CSS. Edit a file, refresh, done.</span></li>
+        <ul class="tools">
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></i><div><strong>Start screen</strong><span>Drop a file anywhere, open a recent one, or begin from a shape.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/></svg></i><div><strong>Scene tabs</strong><span>Each tab is its own scene. Opening a file never replaces one that has something in it.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M10 4v4"/><path d="M2 8h20"/><path d="M6 4v4"/></svg></i><div><strong>Cards over the model</strong><span>A tool with settings opens as a card you can move. Enter runs it and Esc puts it away.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></i><div><strong>Help inside the app (F1)</strong><span>The whole knowledge base, with search, working offline.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.622 17.897-10.68-2.913"/><path d="M18.376 2.622a1 1 0 1 1 3.002 3.002L17.36 9.643a.5.5 0 0 0 0 .707l.944.944a2.41 2.41 0 0 1 0 3.408l-.944.944a.5.5 0 0 1-.707 0L8.354 7.348a.5.5 0 0 1 0-.707l.944-.944a2.41 2.41 0 0 1 3.408 0l.944.944a.5.5 0 0 0 .707 0z"/><path d="M9 8c-1.804 2.71-3.97 3.46-6.583 3.948a.507.507 0 0 0-.302.819l7.32 8.883a1 1 0 0 0 1.185.204C12.735 20.405 16 16.792 16 15"/></svg></i><div><strong>A look of your own</strong><span>Settings can change the accent colour, the tones, the font, the text size, the corners and the density.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 5H3"/><path d="M12 19H3"/><path d="M14 3v4"/><path d="M16 17v4"/><path d="M21 12h-9"/><path d="M21 19h-5"/><path d="M21 5h-7"/><path d="M8 10v4"/><path d="M8 12H3"/></svg></i><div><strong>Numbers you drag</strong><span>Drag any number sideways to change it, or click to type.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg></i><div><strong>One Settings window</strong><span>General, appearance, viewport, camera, performance, scene, storage and about, with one search for all of it.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></svg></i><div><strong>Search (Ctrl or ⌘ + K)</strong><span>Every command, every part in the scene and every part in the library.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 8h.01"/><path d="M12 12h.01"/><path d="M14 8h.01"/><path d="M16 12h.01"/><path d="M18 8h.01"/><path d="M6 8h.01"/><path d="M7 16h10"/><path d="M8 12h.01"/><rect width="20" height="16" x="2" y="4" rx="2"/></svg></i><div><strong>Shortcuts</strong><span>A searchable list of every key.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg></i><div><strong>Comes back where you left it</strong><span>Your files and saved scenes are still there after a reload.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></i><div><strong>Non-destructive</strong><span>The original geometry isn’t touched until you export.</span></div></li>
+          <li><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 12.5 8 15l2 2.5"/><path d="m14 12.5 2 2.5-2 2.5"/></svg></i><div><strong>No build step</strong><span>Plain JavaScript and CSS. Edit a file, refresh, done.</span></div></li>
         </ul>
       </div>
     </section>
@@ -322,6 +322,6 @@
       <span><a href="../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="site.js?v=18"></script>
+  <script defer src="site.js?v=19"></script>
 </body>
 </html>

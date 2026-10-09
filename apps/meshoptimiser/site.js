@@ -14,10 +14,23 @@
   // ---- the menu on a phone ----
   const menu = $('#menu'), nav = $('#nav');
   if (menu && nav) {
-    const set = (open) => { nav.classList.toggle('is-open', open); menu.setAttribute('aria-expanded', String(open)); };
+    const set = (open) => { nav.classList.toggle('is-open', open); menu.setAttribute('aria-expanded', String(open)); document.documentElement.classList.toggle('nav-open', open); };
     menu.addEventListener('click', () => set(!nav.classList.contains('is-open')));
     nav.addEventListener('click', (e) => { if (e.target.closest('a')) set(false); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') set(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && nav.classList.contains('is-open')) { set(false); menu.focus(); } });
+    document.addEventListener('click', (e) => { if (nav.classList.contains('is-open') && !e.target.closest('#bar')) set(false); });
+    const wide = window.matchMedia('(min-width: 761px)');
+    const onWide = (e) => { if (e.matches) set(false); };
+    if (wide.addEventListener) wide.addEventListener('change', onWide); else wide.addListener(onWide);
+  }
+
+  // ---- the bar: a hairline appears once the page has moved ----
+  const bar = $('#bar');
+  if (bar) {
+    let tick = false;
+    const mark = () => { tick = false; bar.classList.toggle('is-scrolled', window.scrollY > 6); };
+    window.addEventListener('scroll', () => { if (!tick) { tick = true; requestAnimationFrame(mark); } }, { passive: true });
+    mark();
   }
 
   // ---- the strip of screenshots: paged ----
@@ -718,25 +731,27 @@
 
   // ---- clips ----
   // A clip is fetched and played only while it is on screen and stops when
-  // it leaves. On touch devices, and with reduced motion, it stays a poster
-  // until it is tapped.
+  // it leaves, on a phone as well (muted and inline, which is what lets it
+  // start without a tap). A tap pauses it or starts it again. With reduced
+  // motion it stays a poster until it is tapped.
   const clips = $$('video[data-src]');
   if (clips.length) {
-    const start = (v) => { if (!v.src) v.src = v.dataset.src; const p = v.play(); if (p && p.catch) p.catch(() => {}); };
-    if (mouse && !calm && 'IntersectionObserver' in window) {
+    const start = (v) => { if (!v.src) v.src = v.dataset.src; v.muted = true; v.setAttribute('playsinline', ''); const p = v.play(); if (p && p.catch) p.catch(() => {}); };
+    const toggle = (v) => { if (v.paused) { v.dataset.held = ''; start(v); } else { v.dataset.held = '1'; v.pause(); } };
+    clips.forEach((v) => {
+      v.tabIndex = 0;
+      v.setAttribute('role', 'button');
+      v.addEventListener('click', () => toggle(v));
+      v.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(v); } });
+    });
+    if (!calm && 'IntersectionObserver' in window) {
       const watch = new IntersectionObserver(entries => entries.forEach((entry) => {
-        if (entry.isIntersecting) start(entry.target); else entry.target.pause();
+        const v = entry.target;
+        if (entry.isIntersecting) { if (!v.dataset.held) start(v); } else v.pause();
       }), { threshold: 0.35 });
       clips.forEach(v => watch.observe(v));
     } else {
-      clips.forEach((v) => {
-        v.parentElement.classList.add('is-tap');
-        v.tabIndex = 0;
-        v.setAttribute('role', 'button');
-        const toggle = () => { if (v.paused) start(v); else v.pause(); };
-        v.addEventListener('click', toggle);
-        v.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
-      });
+      clips.forEach(v => v.parentElement.classList.add('is-tap'));
     }
   }
 
