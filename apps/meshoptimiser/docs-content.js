@@ -2758,7 +2758,7 @@ module.exports = {
       title: 'Troubleshooting',
       summary: 'Fixes for the usual problems: Python not found, a blocked launcher on macOS, missing modules, a blank view and slow conversions.',
       blocks: [
-        ['p', 'Find the heading that matches what you see. If nothing here helps, use [Report a problem](https://lukagrcar.com/apps/meshoptimiser/report.html). It asks for what we need and packs it into one file. Say which version you have, and add the log: {{Copy log}} on the progress card, or the copy button in the console. In {{Settings}}, {{About}}, the button {{Copy details}} copies the version, your browser and your graphics card in one go.'],
+        ['p', 'Find the heading that matches what you see. If nothing here helps, use [Report a problem](https://lukagrcar.com/apps/meshoptimiser/report.html). It asks for what I need and packs it into one file. Say which version you have, and add the log: {{Copy log}} on the progress card, or the copy button in the console. In {{Settings}}, {{About}}, the button {{Copy details}} copies the version, your browser and your graphics card in one go.'],
         ['h', '“python is not on PATH” on Windows'],
         ['p', 'Windows cannot find Python. Run the Python installer again and tick “Add Python to PATH”. Or close and reopen the terminal or the launcher, so the new PATH is picked up. See [What you need](#requirements).'],
         ['h', '“Operation not permitted” on macOS'],
