@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=76" />
+  <link rel="stylesheet" href="site.css?v=77" />
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/"}}</script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
@@ -118,10 +118,17 @@
               <li><code>scene_summary</code><span>The file, parts, triangles, size, view mode and explode state.</span></li>
               <li><code>list_parts</code><span>Every part with its triangles, size and colour; sorted, filtered, paged.</span></li>
               <li><code>get_selection</code><span>What is selected right now.</span></li>
-              <li><code>screenshot</code><span>A picture of the viewport.</span></li>
             </ul>
           </article>
           <article class="cl-group" style="--ico: #0d99ff">
+            <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.622 17.897-10.68-2.913"/><path d="M18.376 2.622a1 1 0 1 1 3.002 3.002L17.36 9.643a.5.5 0 0 0 0 .707l.944.944a2.41 2.41 0 0 1 0 3.408l-.944.944a.5.5 0 0 1-.707 0L8.354 7.348a.5.5 0 0 1 0-.707l.944-.944a2.41 2.41 0 0 1 3.408 0l.944.944a.5.5 0 0 0 .707 0z"/><path d="M9 8c-1.804 2.71-3.97 3.46-6.583 3.948a.507.507 0 0 0-.302.819l7.32 8.883a1 1 0 0 0 1.185.204C12.735 20.405 16 16.792 16 15"/></svg></i><div><h3>Pictures and film</h3><p>Quick looks, and clean pictures for a client or a report. Files are saved on your computer.</p></div></header>
+            <ul>
+              <li><code>screenshot</code><span>A quick look at the viewport, so Claude can see what you see.</span></li>
+              <li><code>render_image</code><span>A big, smooth picture up to 8192 px: one or several angles, clay or solid, white, dark or transparent background. One file each, saved as PNG.</span></li>
+              <li><code>turntable_video</code><span>One slow turn round the model, saved as a video.</span></li>
+            </ul>
+          </article>
+          <article class="cl-group" style="--ico: #2fd180">
             <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.037 4.688a.495.495 0 0 1 .651-.651l16 6.5a.5.5 0 0 1-.063.947l-6.124 1.58a2 2 0 0 0-1.438 1.435l-1.579 6.126a.5.5 0 0 1-.947.063z"/></svg></i><div><h3>Show you around</h3><p>Select, hide, turn and explode. Nothing is changed, so none of it asks.</p></div></header>
             <ul>
               <li><code>select_parts</code><span>Select by id or part of a name; add or remove.</span></li>
@@ -136,7 +143,7 @@
               <li><code>set_grid</code><span>Show or hide the grid.</span></li>
             </ul>
           </article>
-          <article class="cl-group" style="--ico: #2fd180">
+          <article class="cl-group" style="--ico: #a78bfa">
             <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="1"/><path d="M18.944 12.33a1 1 0 0 0 0-.66 7.5 7.5 0 0 0-13.888 0 1 1 0 0 0 0 .66 7.5 7.5 0 0 0 13.888 0"/></svg></i><div><h3>Find things</h3><p>Questions with an answer.</p></div></header>
             <ul>
               <li><code>find_fasteners</code><span>Bolts, screws, nuts and washers found by their shape, whatever they are called; counts per kind and thread size.</span></li>
@@ -146,7 +153,7 @@
               <li><code>list_groups</code><span>The groups in the tree.</span></li>
             </ul>
           </article>
-          <article class="cl-group" style="--ico: #a78bfa">
+          <article class="cl-group" style="--ico: #ff8a4c">
             <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg></i><div><h3>Make it lighter</h3><p>Each one asks you first, and each one is a single undo step.</p></div></header>
             <ul>
               <li><code>smart_optimise</code><span>The app’s whole clean-up in one run and one undo: light, balanced or strong.</span><em class="cl-asks">asks</em></li>
@@ -163,7 +170,7 @@
               <li><code>untriangulate</code><span>Fewer triangles on flat faces, with no change of shape.</span><em class="cl-asks">asks</em></li>
             </ul>
           </article>
-          <article class="cl-group" style="--ico: #ff8a4c">
+          <article class="cl-group" style="--ico: #2dd4bf">
             <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 21h8"/><path d="m15 5 4 4"/><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></i><div><h3>Tidy and arrange</h3><p>Names, groups and positions.</p></div></header>
             <ul>
               <li><code>rename_parts</code><span>Rename by id, or find and replace, prefix and suffix.</span><em class="cl-asks">asks</em></li>
@@ -175,29 +182,28 @@
               <li><code>align_to_floor</code><span>Stand the model on the floor.</span><em class="cl-asks">asks</em></li>
             </ul>
           </article>
-          <article class="cl-group" style="--ico: #2dd4bf">
+          <article class="cl-group" style="--ico: #f472b6">
             <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></i><div><h3>Delete</h3><p>Always asks, even when you switch asking off for the rest.</p></div></header>
             <ul>
               <li><code>delete_parts</code><span>Delete chosen parts.</span><em class="cl-asks">asks</em></li>
               <li><code>remove_small_parts</code><span>Delete every part under a size.</span><em class="cl-asks">asks</em></li>
             </ul>
           </article>
-          <article class="cl-group" style="--ico: #f472b6">
+          <article class="cl-group" style="--ico: #f5a524">
             <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2v5a1 1 0 001 1h5"/><path d="M14.692 22H18a2 2 0 002-2V8a2.4 2.4 0 00-.706-1.706l-3.588-3.588A2.4 2.4 0 0014 2H6a2 2 0 00-2 2v3.804"/><path d="M2.264 13.752 7 16.5l4.737-2.748"/><path d="M2.995 13.014A2 2 0 002 14.744v3.516a2 2 0 00.996 1.73l3 1.74a2 2 0 002.008 0l3-1.74A2 2 0 0012 18.26v-3.517a2 2 0 00-.995-1.73l-3-1.742a2 2 0 00-1.892-.064z"/><path d="M7 16.5V22"/></svg></i><div><h3>Files</h3><p>On your own computer; nothing is uploaded.</p></div></header>
             <ul>
               <li><code>open_file</code><span>Open a model from a path on this computer.</span></li>
               <li><code>export_model</code><span>Save a GLB, glTF, FBX, USDZ, OBJ or STL, or use a preset for the web, AR, Unreal, Unity or printing.</span></li>
-              <li><code>turntable_video</code><span>Save a turntable video of the model.</span></li>
             </ul>
           </article>
-          <article class="cl-group" style="--ico: #f5a524">
+          <article class="cl-group" style="--ico: #0d99ff">
             <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></i><div><h3>Know-how</h3><p>The app’s own knowledge, on demand. Answered without the app being open.</p></div></header>
             <ul>
               <li><code>search_docs</code><span>Search the playbooks and the help articles by words or by a symptom.</span></li>
               <li><code>read_doc</code><span>Read one article or playbook in full.</span></li>
             </ul>
           </article>
-          <article class="cl-group" style="--ico: #0d99ff">
+          <article class="cl-group" style="--ico: #2fd180">
             <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg></i><div><h3>Scenes and history</h3><p>The tabs and the undo history.</p></div></header>
             <ul>
               <li><code>scene_tabs</code><span>List the scene tabs, switch, open a new one.</span></li>
@@ -209,6 +215,28 @@
       </div>
     </section>
 
+
+    <section class="band" id="renders">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">Pictures for your client</p>
+          <h2>Ask for a render, get a clean picture.</h2>
+        </div>
+        <p class="lead">When the model is light enough, Claude can make the pictures that go with it: a set of angles on a plain background, a cut-out with nothing behind it, the model exploded. They are saved as PNG files on your computer, and Claude looks at a preview of each to check the angle before it tells you they are ready.</p>
+        <div class="cl-shots cl-renders">
+          <figure><a class="zoom" href="../../Images/apps/meshoptimiser-claude-render-exploded.webp" data-group="renders" data-caption="The Gearbox Assy exploded to 55%, solid, on a dark background. Made with render_image."><img src="../../Images/apps/meshoptimiser-claude-render-exploded.webp" alt="MeshOptimiser: The Gearbox Assy exploded to 55%, solid, on a dark background. Made with render_image." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>The Gearbox Assy exploded to 55%, solid, on a dark background. Made with render_image.</figcaption></figure>
+          <figure><a class="zoom" href="../../Images/apps/meshoptimiser-claude-render-set.webp" data-group="renders" data-caption="Four angles in one request: perspective, front, side and top, in clay on white."><img src="../../Images/apps/meshoptimiser-claude-render-set.webp" alt="MeshOptimiser: Four angles in one request: perspective, front, side and top, in clay on white." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Four angles in one request: perspective, front, side and top, in clay on white.</figcaption></figure>
+        </div>
+        <dl class="cl-points cl-points-3">
+          <div><dt>Big and smooth</dt><dd>Up to 8192 pixels a side. Each picture is drawn at twice its size and scaled down, so the edges are clean.</dd></div>
+          <div><dt>A set of angles</dt><dd>Perspective, front, side and top in one request: one file for each, one sheet for Claude to look at.</dd></div>
+          <div><dt>Your background</dt><dd>White, light, dark, grey or black, exact colours, or transparent for a cut-out.</dd></div>
+          <div><dt>The look you want</dt><dd>Solid, clay (the shape without colour), CAD, wireframe, x-ray, or the heat view that shows where the triangles are.</dd></div>
+          <div><dt>Before and after</dt><dd>Render the model as it is, optimise it, render again with the same camera, mode and size.</dd></div>
+          <div><dt>Framed for you</dt><dd>The model fills the picture whatever its shape, and the grid is left out.</dd></div>
+        </dl>
+      </div>
+    </section>
 
     <section class="band" id="knows">
       <div class="wrap">
@@ -310,6 +338,7 @@
           <li><p>Remove the hidden faces from the ten heaviest parts.</p><button type="button" class="copy" data-copy="Remove the hidden faces from the ten heaviest parts.">Copy</button></li>
           <li><p>Find parts nobody can see from outside and show me before you delete them.</p><button type="button" class="copy" data-copy="Find parts nobody can see from outside and show me before you delete them.">Copy</button></li>
           <li><p>Make this safe to send to a customer.</p><button type="button" class="copy" data-copy="Make this safe to send to a customer.">Copy</button></li>
+          <li><p>Render four clean pictures of this on white for a client.</p><button type="button" class="copy" data-copy="Render four clean pictures of this on white for a client.">Copy</button></li>
         </ul>
       </div>
     </section>
@@ -328,6 +357,7 @@
             <div><dt>What if I want it to ask less, or not at all?</dt><dd>Switch off Ask before Claude edits. Deleting still asks unless you also switch off Always ask before deleting. Or turn a whole kind of edit off with its own switch.</dd></div>
             <div><dt>Does Claude know how to optimise a model?</dt><dd>Yes. It comes with the know-how of an experienced user: six playbooks (how to optimise, recipes by goal, judgement, the tools by job, what is safe, what to do when something fails) and about fifty of the app’s help articles, one per tool and job. It reads the playbook before it starts, and searches the articles for anything it has not done before.</dd></div>
             <div><dt>Will it save tokens?</dt><dd>It should: it works in fewer, better-chosen steps instead of finding the order by trial, one Smart optimise call stands in for a dozen, and every reply is compact (about a fifth fewer characters than an indented one). The playbook costs about 2,000 tokens, read once; the articles cost nothing until Claude searches for one. How many tokens a job takes still depends on the model and on you, so there is no promise of a percentage.</dd></div>
+            <div><dt>Can Claude make pictures of the result for a client?</dt><dd>Yes. It can render big, smooth pictures (up to 8192 pixels) from one or several angles, in clay or solid, on a white, dark or transparent background, and save them as PNG on your computer. It looks at a small preview of each to check the angle. It can also render the model before and after optimising with the same camera, for a before and after.</dd></div>
             <div><dt>Can Claude break my model?</dt><dd>Not past the undo history. Every change is a step you can take back, and your file on disk is only changed when you export.</dd></div>
           </dl>
         </div>

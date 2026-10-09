@@ -1039,3 +1039,9 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 .cl-badge .lead { margin-top: 14px; font-size: 16px; }
 .cl-points.is-one { grid-template-columns: minmax(0, 1fr); margin-top: 24px; }
 @media (max-width: 860px) { .cl-badge { grid-template-columns: minmax(0, 1fr); } .cl-badge figure { max-width: 420px; } }
+
+/* pictures for a client */
+.cl-renders { margin-top: clamp(28px, 4vw, 48px); }
+.cl-points-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 1020px) { .cl-points-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .cl-points-3 { grid-template-columns: minmax(0, 1fr); } }

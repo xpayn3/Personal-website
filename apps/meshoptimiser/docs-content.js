@@ -3385,6 +3385,9 @@ module.exports = {
         ['p', 'While Claude is connected, a {{Claude connected}} badge sits at the right of the top bar. Click it for a dropdown: whether the app is listening, working or waiting for you, the number of requests, how many were done, declined or failed, the last three requests with how long each took, and three switches: {{Let Claude connect}}, {{Ask before Claude edits}} and {{Always ask before deleting}}. {{Copy command}} copies the connect command, {{Console}} opens the console, and {{More…}} opens Settings, Claude. {{Esc}} or a click elsewhere closes it.'],
         ['h', 'What Claude asked for'],
         ['p', 'At the bottom of the Claude section, {{This session}} counts the requests and names the ones asked for most, with how long each takes, and {{Recent requests}} lists what Claude asked for and what happened: done, you said no, turned off, or failed. {{Copy report}} puts the numbers and the recent requests on the clipboard, for a bug report. Every request and every change of the connection is also written to the console (the button in the status bar), tagged claude, and to the window that runs the app.'],
+        ['h', 'Pictures for a client'],
+        ['p', 'Claude can make clean pictures of the model with the tool {{render_image}}: big (up to 8192 pixels a side), drawn at twice the size and scaled down so the edges are smooth, in one angle or several (perspective, front, side, top), in solid, clay, CAD, wireframe, x-ray or the heat view, on a white, light, grey, dark or black background or on none at all (a transparent PNG). The model is framed to fill the picture and the grid is left out. Each picture is saved as a PNG in the {{exports}} folder next to the app, and Claude looks at a small preview of it. For a before and after, ask for the same pictures before and after you optimise: the camera, the look and the size are the same.'],
+        ['p', 'The quick tool {{screenshot}} is only a look at the viewport. {{turntable_video}} saves one slow turn round the model.'],
         ['h', 'What Claude already knows'],
         ['p', 'Claude does not start from nothing. The app gives it the know-how of an experienced user, so it works in the order a person would and asks the questions a person would ask.'],
         ['list', [
@@ -3404,6 +3407,7 @@ module.exports = {
           'The pill says another window took over: the app was opened in a second window and switched it on there. Switch it on again in the window you want.',
           'A request says it was turned off in Settings: switch on the matching one of the four switches.',
           'A long job such as Fit to budget on a large model can take minutes. Keep the app open and in front.',
+          'Stuck or odd after an update: in Settings, Claude, {{Reconnect}} starts the connection from scratch (the small refresh button in the badge’s dropdown does the same). {{Restart the server…}} stops and starts the app’s server; open scenes stay and the connection comes back by itself.',
         ]],
         ['note', 'The hosted demo has no connection to Claude. Run the app on your own computer.'],
         ['see', ['undo-redo', 'settings', 'scene-tabs', 'fasteners']],

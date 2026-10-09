@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=76" />
+  <link rel="stylesheet" href="../site.css?v=77" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -180,6 +180,9 @@
           <p>While Claude is connected, a <span class="ui">Claude connected</span> badge sits at the right of the top bar. Click it for a dropdown: whether the app is listening, working or waiting for you, the number of requests, how many were done, declined or failed, the last three requests with how long each took, and three switches: <span class="ui">Let Claude connect</span>, <span class="ui">Ask before Claude edits</span> and <span class="ui">Always ask before deleting</span>. <span class="ui">Copy command</span> copies the connect command, <span class="ui">Console</span> opens the console, and <span class="ui">More…</span> opens Settings, Claude. <span class="ui">Esc</span> or a click elsewhere closes it.</p>
           <h2 id="what-claude-asked-for">What Claude asked for</h2>
           <p>At the bottom of the Claude section, <span class="ui">This session</span> counts the requests and names the ones asked for most, with how long each takes, and <span class="ui">Recent requests</span> lists what Claude asked for and what happened: done, you said no, turned off, or failed. <span class="ui">Copy report</span> puts the numbers and the recent requests on the clipboard, for a bug report. Every request and every change of the connection is also written to the console (the button in the status bar), tagged claude, and to the window that runs the app.</p>
+          <h2 id="pictures-for-a-client">Pictures for a client</h2>
+          <p>Claude can make clean pictures of the model with the tool <span class="ui">render_image</span>: big (up to 8192 pixels a side), drawn at twice the size and scaled down so the edges are smooth, in one angle or several (perspective, front, side, top), in solid, clay, CAD, wireframe, x-ray or the heat view, on a white, light, grey, dark or black background or on none at all (a transparent PNG). The model is framed to fill the picture and the grid is left out. Each picture is saved as a PNG in the <span class="ui">exports</span> folder next to the app, and Claude looks at a small preview of it. For a before and after, ask for the same pictures before and after you optimise: the camera, the look and the size are the same.</p>
+          <p>The quick tool <span class="ui">screenshot</span> is only a look at the viewport. <span class="ui">turntable_video</span> saves one slow turn round the model.</p>
           <h2 id="what-claude-already-knows">What Claude already knows</h2>
           <p>Claude does not start from nothing. The app gives it the know-how of an experienced user, so it works in the order a person would and asks the questions a person would ask.</p>
           <ul class="kb-points">
@@ -199,6 +202,7 @@
             <li>The pill says another window took over: the app was opened in a second window and switched it on there. Switch it on again in the window you want.</li>
             <li>A request says it was turned off in Settings: switch on the matching one of the four switches.</li>
             <li>A long job such as Fit to budget on a large model can take minutes. Keep the app open and in front.</li>
+            <li>Stuck or odd after an update: in Settings, Claude, <span class="ui">Reconnect</span> starts the connection from scratch (the small refresh button in the badge’s dropdown does the same). <span class="ui">Restart the server…</span> stops and starts the app’s server; open scenes stay and the connection comes back by itself.</li>
           </ul>
           <aside class="kb-note"><p>The hosted demo has no connection to Claude. Run the app on your own computer.</p></aside>
           <div class="kb-see"><h2>Related</h2><ul>

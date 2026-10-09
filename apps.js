@@ -89,6 +89,24 @@ window.labApps = [
           ], ['Reduce the whole scene to 300000 triangles', 'The parts that can best spare triangles give them up. Undo (Ctrl+Z) takes it back.'], '646,064 → 299,984 triangles, 53.6% fewer'],
           ['claude', 'Done: 299,984 triangles. Both steps are in the app’s undo history, so Ctrl + Z takes them back.'],
         ],
+        // pictures for a client (see claudeRenders in tools/build-app-site.js): made with render_image on the Gearbox Assy
+        renders: {
+          kicker: 'Pictures for your client',
+          title: 'Ask for a render, get a clean picture.',
+          line: 'When the model is light enough, Claude can make the pictures that go with it: a set of angles on a plain background, a cut-out with nothing behind it, the model exploded. They are saved as PNG files on your computer, and Claude looks at a preview of each to check the angle before it tells you they are ready.',
+          points: [
+            ['Big and smooth', 'Up to 8192 pixels a side. Each picture is drawn at twice its size and scaled down, so the edges are clean.'],
+            ['A set of angles', 'Perspective, front, side and top in one request: one file for each, one sheet for Claude to look at.'],
+            ['Your background', 'White, light, dark, grey or black, exact colours, or transparent for a cut-out.'],
+            ['The look you want', 'Solid, clay (the shape without colour), CAD, wireframe, x-ray, or the heat view that shows where the triangles are.'],
+            ['Before and after', 'Render the model as it is, optimise it, render again with the same camera, mode and size.'],
+            ['Framed for you', 'The model fills the picture whatever its shape, and the grid is left out.'],
+          ],
+          shots: [
+            ['Images/apps/meshoptimiser-claude-render-exploded.webp', 'The Gearbox Assy exploded to 55%, solid, on a dark background. Made with render_image.'],
+            ['Images/apps/meshoptimiser-claude-render-set.webp', 'Four angles in one request: perspective, front, side and top, in clay on white.'],
+          ],
+        },
         // what Claude arrives knowing (see claudeKnows in tools/build-app-site.js)
         knows: {
           kicker: 'It arrives knowing the job',
@@ -128,7 +146,11 @@ window.labApps = [
             ['scene_summary', 'The file, parts, triangles, size, view mode and explode state.'],
             ['list_parts', 'Every part with its triangles, size and colour; sorted, filtered, paged.'],
             ['get_selection', 'What is selected right now.'],
-            ['screenshot', 'A picture of the viewport.'],
+          ]],
+          ['Pictures and film', 'paintbrush', 'Quick looks, and clean pictures for a client or a report. Files are saved on your computer.', [
+            ['screenshot', 'A quick look at the viewport, so Claude can see what you see.'],
+            ['render_image', 'A big, smooth picture up to 8192 px: one or several angles, clay or solid, white, dark or transparent background. One file each, saved as PNG.'],
+            ['turntable_video', 'One slow turn round the model, saved as a video.'],
           ]],
           ['Show you around', 'mouse-pointer-2', 'Select, hide, turn and explode. Nothing is changed, so none of it asks.', [
             ['select_parts', 'Select by id or part of a name; add or remove.'],
@@ -179,7 +201,6 @@ window.labApps = [
           ['Files', 'file-box', 'On your own computer; nothing is uploaded.', [
             ['open_file', 'Open a model from a path on this computer.'],
             ['export_model', 'Save a GLB, glTF, FBX, USDZ, OBJ or STL, or use a preset for the web, AR, Unreal, Unity or printing.'],
-            ['turntable_video', 'Save a turntable video of the model.'],
           ]],
           ['Know-how', 'lightbulb', 'The app’s own knowledge, on demand. Answered without the app being open.', [
             ['search_docs', 'Search the playbooks and the help articles by words or by a symptom.'],
@@ -238,6 +259,7 @@ window.labApps = [
           'Remove the hidden faces from the ten heaviest parts.',
           'Find parts nobody can see from outside and show me before you delete them.',
           'Make this safe to send to a customer.',
+          'Render four clean pictures of this on white for a client.',
         ],
         faq: [
           ['What do I need?', 'MeshOptimiser running on your computer, with the app open in a browser tab, and Claude with MCP support: Claude Code, or any client that can add an HTTP MCP server.'],
@@ -246,6 +268,7 @@ window.labApps = [
           ['What if I want it to ask less, or not at all?', 'Switch off Ask before Claude edits. Deleting still asks unless you also switch off Always ask before deleting. Or turn a whole kind of edit off with its own switch.'],
           ['Does Claude know how to optimise a model?', 'Yes. It comes with the know-how of an experienced user: six playbooks (how to optimise, recipes by goal, judgement, the tools by job, what is safe, what to do when something fails) and about fifty of the app’s help articles, one per tool and job. It reads the playbook before it starts, and searches the articles for anything it has not done before.'],
           ['Will it save tokens?', 'It should: it works in fewer, better-chosen steps instead of finding the order by trial, one Smart optimise call stands in for a dozen, and every reply is compact (about a fifth fewer characters than an indented one). The playbook costs about 2,000 tokens, read once; the articles cost nothing until Claude searches for one. How many tokens a job takes still depends on the model and on you, so there is no promise of a percentage.'],
+          ['Can Claude make pictures of the result for a client?', 'Yes. It can render big, smooth pictures (up to 8192 pixels) from one or several angles, in clay or solid, on a white, dark or transparent background, and save them as PNG on your computer. It looks at a small preview of each to check the angle. It can also render the model before and after optimising with the same camera, for a before and after.'],
           ['Can Claude break my model?', 'Not past the undo history. Every change is a step you can take back, and your file on disk is only changed when you export.'],
         ],
       },
