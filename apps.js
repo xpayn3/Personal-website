@@ -60,6 +60,145 @@ window.labApps = [
     ],
     site: {
       path: 'apps/meshoptimiser/',
+      // Claude (see claudeBand and pages.claude in tools/build-app-site.js): the app talks to Claude through MCP.
+      // Not in a tagged release yet: the page says so (`badge`). The numbers in `chat` are what the app returned on the Gearbox Assy.
+      claude: {
+        badge: 'Coming soon',
+        kicker: 'Claude',
+        headline: 'Ask Claude to work on your model.',
+        titleTag: 'Work with Claude — MeshOptimiser',
+        description: 'Connect MeshOptimiser to Claude and describe the job in plain words. Claude looks at the scene, finds what is heavy and does the clean-up, asking you first and one undoable step at a time.',
+        lead: 'Connect MeshOptimiser to Claude and describe the job in plain words. Claude looks at the scene, finds what is heavy and does the clean-up in the app, in front of you. Anything that changes the model asks first, and every change can be undone.',
+        // the strip on the home page
+        band: {
+          kicker: 'New · Claude',
+          title: 'Say what you want. Claude does it in the app.',
+          line: 'Connect MeshOptimiser to Claude and describe the job. Claude looks at the scene, finds the bolts and the heavy parts, explodes the view, and reduces triangles, always asking you before it changes the model.',
+          prompts: ['Find all the bolts and hide them.', 'Get this under 300,000 triangles.', 'Show it exploded and take a screenshot.'],
+        },
+        // an example session (the numbers are what the app returned on the Gearbox Assy): [who, text, tools?, ask?, result?]
+        chat: [
+          ['you', 'This gearbox is too heavy for the web. Take the bolts out of the way, then get the whole thing under 300,000 triangles.'],
+          ['claude', 'I’ll start by looking at what is in the scene.', [
+            ['scene_summary', '95 parts, 646,064 triangles'],
+            ['find_fasteners', '48 bolts, nuts and washers selected'],
+            ['hide_parts', '48 parts hidden'],
+          ]],
+          ['claude', 'The fasteners are out of the way. To get under 300,000 triangles I need to take triangles from the parts that can spare them.', [
+            ['fit_to_budget', 'target 300,000'],
+          ], ['Reduce the whole scene to 300000 triangles', 'The parts that can best spare triangles give them up. Undo (Ctrl+Z) takes it back.'], '646,064 → 299,984 triangles, 53.6% fewer'],
+          ['claude', 'Done: 299,984 triangles. Both steps are in the app’s undo history, so Ctrl + Z takes them back.'],
+        ],
+        chatNote: 'An example session on the Gearbox Assy. The numbers are what the app returned.',
+        command: 'claude mcp add --transport http meshoptimiser http://localhost:4242/mcp',
+        steps: [
+          ['Switch it on', 'In MeshOptimiser open Settings, choose Claude, and turn on Let Claude connect. A small “Claude connected” pill shows in the top bar while it is on.'],
+          ['Add it to Claude', 'Once, in a terminal on the same computer. This points Claude at the app. Nothing is installed.'],
+          ['Ask', 'Describe the job in plain words. Claude calls the app’s tools one at a time and tells you what it did.'],
+        ],
+        // what Claude can do: [title, icon, note, [[tool, line, asks?], …]]
+        groups: [
+          ['Look', 'eye', 'See the scene as you see it.', [
+            ['scene_summary', 'The file, parts, triangles, size, view mode and explode state.'],
+            ['list_parts', 'Every part with its triangles, size and colour; sorted, filtered, paged.'],
+            ['get_selection', 'What is selected right now.'],
+            ['screenshot', 'A picture of the viewport.'],
+          ]],
+          ['Show you around', 'mouse-pointer-2', 'Select, hide, turn and explode. Nothing is changed, so none of it asks.', [
+            ['select_parts', 'Select by id or part of a name; add or remove.'],
+            ['select_all', 'Select every visible part, or invert the selection.'],
+            ['hide_parts', 'Hide parts.'],
+            ['isolate_parts', 'Show only these parts.'],
+            ['show_all', 'Bring everything back.'],
+            ['frame_selection', 'Fly to the selection.'],
+            ['set_camera_view', 'Perspective, top, front, side, or fit the model.'],
+            ['set_view_mode', 'Solid, wireframe, x-ray, heat, clay or CAD.'],
+            ['set_explode', 'Pull the parts apart along any axes, 0 to 300%.'],
+            ['set_grid', 'Show or hide the grid.'],
+          ]],
+          ['Find things', 'scan-eye', 'Questions with an answer.', [
+            ['find_fasteners', 'Bolts, screws, nuts and washers, found by their shape and selected.'],
+            ['find_stacked_copies', 'Parts drawn twice in the same place; the extra copies are selected.'],
+            ['measure_parts', 'The distance between two parts, and the gap between their boxes.'],
+            ['list_groups', 'The groups in the tree.'],
+          ]],
+          ['Make it lighter', 'gauge', 'Each one asks you first, and each one is a single undo step.', [
+            ['decimate', 'Reduce the triangles of chosen parts, to a target or by a share.', true],
+            ['fit_to_budget', 'Reduce the whole scene to a triangle budget.', true],
+            ['fill_holes', 'Close bolt holes, slots and pockets up to a size.', true],
+            ['remove_hidden_faces', 'Delete faces that can never be seen from outside.', true],
+            ['repair_mesh', 'Join doubled vertices, remove empty triangles, turn faces the same way.', true],
+            ['clean_up', 'Remove empty parts, share duplicate geometry, repair bad triangles.', true],
+            ['merge_parts', 'Merge parts into one mesh.', true],
+            ['merge_by_colour', 'One mesh per colour.', true],
+            ['split_parts', 'Break a mesh into its separate pieces.', true],
+          ]],
+          ['Tidy and arrange', 'pencil-line', 'Names, groups and positions.', [
+            ['rename_parts', 'Rename by id, or find and replace, prefix and suffix.', true],
+            ['group_parts', 'Put parts in a group.', true],
+            ['ungroup', 'Dissolve a group.', true],
+            ['duplicate_parts', 'Copy parts.', true],
+            ['transform_parts', 'Move, turn and scale parts.', true],
+            ['recenter_model', 'Put the middle of the model at the origin.', true],
+            ['align_to_floor', 'Stand the model on the floor.', true],
+          ]],
+          ['Delete', 'trash-2', 'Always asks, even when you switch asking off for the rest.', [
+            ['delete_parts', 'Delete chosen parts.', true],
+            ['remove_small_parts', 'Delete every part under a size.', true],
+          ]],
+          ['Files', 'file-box', 'On your own computer; nothing is uploaded.', [
+            ['open_file', 'Open a model from a path on this computer.'],
+            ['export_model', 'Save a GLB, glTF, FBX, USDZ, OBJ or STL, or use a preset for the web, AR, Unreal, Unity or printing.'],
+            ['turntable_video', 'Save a turntable video of the model.'],
+          ]],
+          ['Scenes and history', 'history', 'The tabs and the undo history.', [
+            ['scene_tabs', 'List the scene tabs, switch, open a new one.'],
+            ['undo', 'Take back the last steps.'],
+            ['redo', 'Do them again.'],
+          ]],
+        ],
+        control: {
+          kicker: 'You stay in charge',
+          title: 'Nothing changes without your say.',
+          line: 'Claude works in your window, on your computer, and the app decides what it may do, not Claude.',
+          points: [
+            ['It asks first', 'Anything that changes the model shows an Allow or Don’t allow prompt over the model. Looking, selecting, hiding and moving the camera do not.'],
+            ['Four switches', 'Settings › Claude has one switch each for changing the model, moving and renaming, deleting, and files. A switch that is off refuses the request, and Claude is told why.'],
+            ['Deleting always asks', 'Even if you turn asking off for everything else.'],
+            ['One undo each', 'Every change is a step in the app’s own history. Ctrl + Z takes it back, and so can Claude.'],
+            ['Off until you switch it on', 'One switch connects it, one switch ends it, and the top bar says when it is on. Settings lists what Claude asked for, and what you answered.'],
+          ],
+          shots: [
+            ['Images/apps/meshoptimiser-claude-allow.webp', 'The prompt that comes before every change to the model.'],
+            ['Images/apps/meshoptimiser-claude-settings.webp', 'Settings › Claude: the connection, what Claude may do, and what it asked for.'],
+          ],
+        },
+        privacy: {
+          title: 'What leaves the computer',
+          lines: [
+            'The app talks to Claude only through a small server that listens on your own computer. Your model file is not sent anywhere.',
+            'Claude gets back what its requests return: part names, counts, sizes and the pictures it asks for, such as a screenshot of the viewport. Those pass through Claude the way anything you type to it does.',
+            'Saved files, exports and turntable videos go to the app’s exports folder on your computer.',
+          ],
+        },
+        prompts: [
+          'Find all the bolts and hide them.',
+          'Get this under 300,000 triangles and tell me what you took out.',
+          'Show it exploded 50% and take a screenshot.',
+          'Which ten parts carry the most triangles?',
+          'Rename every part that starts with “body” to “Housing”.',
+          'Remove the hidden faces from the ten heaviest parts.',
+          'Find parts that sit on a copy of themselves and remove the extras.',
+          'Stand the model on the floor and make a turntable video.',
+        ],
+        faq: [
+          ['What do I need?', 'MeshOptimiser running on your computer, with the app open in a browser tab, and Claude with MCP support: Claude Code, or any client that can add an HTTP MCP server.'],
+          ['Is it on by default?', 'No. The app does not listen for Claude until you switch on Let Claude connect, and it forgets the connection when you switch it off.'],
+          ['Does it work in the demo?', 'No. The hosted demo has no connection to Claude. Run the app on your own computer.'],
+          ['What if I want it to ask less, or not at all?', 'Switch off Ask before Claude edits. Deleting still asks unless you also switch off Always ask before deleting. Or turn a whole kind of edit off with its own switch.'],
+          ['Can Claude break my model?', 'Not past the undo history. Every change is a step you can take back, and your file on disk is only changed when you export.'],
+        ],
+      },
       // the Quick wand on the page (see wandDemo in tools/build-app-site.js): the app's own ring on three parts
       wand: {
         kicker: 'Try it',

@@ -658,6 +658,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/claude</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://lukagrcar.com/apps/meshoptimiser/docs</loc>
     <lastmod>2026-10-09</lastmod>
     <changefreq>monthly</changefreq>
@@ -1091,6 +1097,12 @@
   </url>
   <url>
     <loc>https://lukagrcar.com/apps/meshoptimiser/docs/self-test</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/work-with-claude</loc>
     <lastmod>2026-10-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

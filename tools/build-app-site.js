@@ -24,7 +24,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 70;
+const CSS_V = 72;
 const RP_V = 2;           // report.js
 const JS_V = 22;
 
@@ -33,6 +33,7 @@ const JS_V = 22;
 const PAGES = [
   { key: 'home', file: 'index.html', label: 'Overview', nav: false },
   { key: 'features', file: 'features.html', label: 'Features' },
+  { key: 'claude', file: 'claude.html', label: 'Claude' },
   { key: 'docs', file: 'docs.html', label: 'Docs' },
   { key: 'changelog', file: 'changelog.html', label: 'Changelog' },
   { key: 'download', file: 'download.html', label: 'Download', nav: false },
@@ -168,7 +169,7 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
         <h2>Product</h2>
         <a href="./">Overview</a>
         <a href="features.html">Features</a>
-        <a href="download.html">Download</a>
+${site.claude ? '        <a href="claude.html">Work with Claude</a>\n' : ''}        <a href="download.html">Download</a>
       </nav>
       <nav aria-label="Resources">
         <h2>Resources</h2>
@@ -441,6 +442,49 @@ ${pick.map(([key, label]) => `            <li><img src="library/${esc(key)}.webp
     </section>`;
   };
 
+  // Claude: the strip on the home page and the page of its own (claude.html). All words are `site.claude` in apps.js.
+  const SOON = (c) => `<span class="tag-soon">${esc(c.badge)}</span>`;
+  const claudeBand = () => {
+    const c = site.claude;
+    if (!c) return '';
+    const [src, caption] = c.control.shots[0];
+    return `
+    <section class="band cl-band" id="claude">
+      <div class="wrap cl-band-in">
+        <div class="cl-band-copy">
+          <p class="kicker">${esc(c.band.kicker)}<b>·</b>${SOON(c)}</p>
+          <h2>${esc(c.band.title)}</h2>
+          <p class="lead">${esc(c.band.line)}</p>
+          <ul class="cl-say">
+${c.band.prompts.map(p => `            <li>${esc(p)}</li>`).join('\n')}
+          </ul>
+          <div class="actions"><a class="btn is-large" href="claude.html">See how it works</a></div>
+        </div>
+        <figure class="cl-band-art">
+          <a class="zoom" href="${asset(src)}" data-group="claude" data-caption="${esc(caption)}"><img src="${asset(src)}" alt="${esc(app.title + ': ' + caption)}" width="2400" height="1350" loading="lazy" decoding="async" /></a>
+          <figcaption>${esc(caption)}</figcaption>
+        </figure>
+      </div>
+    </section>`;
+  };
+
+  const claudeChat = () => {
+    const c = site.claude;
+    return `
+        <figure class="cx">
+          <div class="cx-head"><i></i><span>Example session · Gearbox Assy</span></div>
+          <ol class="cx-thread">
+${c.chat.map(([who, text, tools, ask, result]) => who === 'you'
+    ? `            <li class="cx-you"><span class="cx-who">You</span><p>${esc(text)}</p></li>`
+    : `            <li class="cx-ai"><span class="cx-who">Claude</span><p>${esc(text)}</p>${tools ? `
+              <ul class="cx-tools">${tools.map(([name, out]) => `<li><code>${esc(name)}</code><span>${esc(out)}</span></li>`).join('')}</ul>` : ''}${ask ? `
+              <div class="cx-ask"><small>Claude wants to</small><b>${esc(ask[0])}</b><span>${esc(ask[1])}</span><div><em>Don’t allow</em><em class="is-yes">Allow</em></div></div>` : ''}${result ? `
+              <p class="cx-result">${esc(result)}</p>` : ''}</li>`).join('\n')}
+          </ol>
+          <figcaption>${esc(c.chatNote)}</figcaption>
+        </figure>`;
+  };
+
   const designBand = () => {
     const d = site.design;
     if (!d) return '';
@@ -571,6 +615,7 @@ ${/* designBand() is switched off: the band is not shown on the home page */ ''}
 ${libraryBand()}
 ${searchDemo()}
 ${wandDemo()}
+${claudeBand()}
     <section class="band">
       <div class="wrap">
         <div class="band-head">
@@ -602,6 +647,102 @@ ${(latest.items || []).slice(0, 4).map(([tag, line]) => `            <li><b clas
         </div>
       </div>
     </section>` + footer(page);
+
+  pages.claude = (page) => {
+    const c = site.claude;
+    const docsLink = docs && docs.articles.some(a => a.slug === 'work-with-claude') ? 'docs/work-with-claude.html' : 'docs.html';
+    return head(page, c.titleTag, c.description) + header(page) + `
+    <section class="wrap page-head">
+      <p class="kicker">${esc(c.kicker)}<b>·</b>${SOON(c)}</p>
+      <h1>${esc(c.headline)}</h1>
+      <p class="lead">${esc(c.lead)}</p>
+      <div class="actions">
+        <a class="btn is-primary is-large" href="#how">How it works</a>
+        <a class="btn is-large" href="${docsLink}">Read the docs</a>
+      </div>
+    </section>
+
+    <section class="band is-first">
+      <div class="wrap">${claudeChat()}
+      </div>
+    </section>
+
+    <section class="band" id="how">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">How it works</p>
+          <h2>Three steps, then just ask.</h2>
+        </div>
+        <ol class="steps">
+${c.steps.map(([name, line], i) => `          <li><i>${pad2(i + 1)}</i><h3>${esc(name)}</h3><p>${esc(line)}</p></li>`).join('\n')}
+        </ol>${commands([['Add it to Claude', c.command]])}
+        <p class="cl-fine">The command is for Claude Code. Another program that can add an HTTP MCP server takes the same address: <code>http://localhost:4242/mcp</code>. If the launcher printed a different port, use that number.</p>
+      </div>
+    </section>
+
+    <section class="band" id="can">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">What Claude can do</p>
+          <h2>The app’s own tools, in Claude’s hands.</h2>
+        </div>
+        <div class="cl-groups">
+${c.groups.map(([title, icon, note, tools], gi) => `          <article class="cl-group" style="--ico: ${GROUP_COLOURS[gi % GROUP_COLOURS.length]}">
+            <header><i class="ico">${svgIcon(icon)}</i><div><h3>${esc(title)}</h3><p>${esc(note)}</p></div></header>
+            <ul>
+${tools.map(([name, line, asks]) => `              <li><code>${esc(name)}</code><span>${esc(line)}</span>${asks ? '<em class="cl-asks">asks</em>' : ''}</li>`).join('\n')}
+            </ul>
+          </article>`).join('\n')}
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="control">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">${esc(c.control.kicker)}</p>
+          <h2>${esc(c.control.title)}</h2>
+        </div>
+        <p class="lead">${esc(c.control.line)}</p>
+        <dl class="cl-points">
+${c.control.points.map(([name, line]) => `          <div><dt>${esc(name)}</dt><dd>${esc(line)}</dd></div>`).join('\n')}
+        </dl>
+        <div class="cl-shots">
+          ${c.control.shots.map(s => shot(s, 'claude')).join('\n          ')}
+        </div>
+        <div class="cl-privacy">
+          <h3>${esc(c.privacy.title)}</h3>
+${c.privacy.lines.map(l => `          <p>${esc(l)}</p>`).join('\n')}
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="ask">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">Try asking</p>
+          <h2>Plain words are enough.</h2>
+        </div>
+        <ul class="cl-asklist">
+${c.prompts.map(p => `          <li><p>${esc(p)}</p><button type="button" class="copy" data-copy="${esc(p)}">Copy</button></li>`).join('\n')}
+        </ul>
+      </div>
+    </section>
+
+    <section class="band" id="faq">
+      <div class="wrap split">
+        <div class="split-head">
+          <p class="kicker">Questions</p>
+          <h2>Before you try it.</h2>
+        </div>
+        <div class="split-body">
+          <dl class="table cl-faq">
+${c.faq.map(([q, a]) => `            <div><dt>${esc(q)}</dt><dd>${esc(a)}</dd></div>`).join('\n')}
+          </dl>
+        </div>
+      </div>
+    </section>` + footer(page);
+  };
 
   pages.features = (page) => head(page, `Features — ${app.title}`, `Everything ${app.title} does: the STEP to GLB pipeline, the WebGPU viewer, mesh tools, hierarchy editing and export.`) + header(page) +
     pageHead('Features', 'A free, private viewer and optimiser for complex CAD and 3D files.', '') + `

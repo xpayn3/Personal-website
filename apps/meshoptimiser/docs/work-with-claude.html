@@ -7,15 +7,15 @@
   <meta name="theme-color" content="#101010" />
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
-  <title>Privacy and offline use — MeshOptimiser Docs</title>
-  <meta name="description" content="MeshOptimiser runs on your own computer. What stays local, when the internet is used, and what the browser remembers." />
+  <title>Work with Claude — MeshOptimiser Docs</title>
+  <meta name="description" content="Let Claude look at the open scene, find what is heavy and do the clean-up in the app, asking you first. Coming soon." />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
-  <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/privacy-offline" />
+  <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/work-with-claude" />
   <meta property="og:site_name" content="MeshOptimiser" />
-  <meta property="og:title" content="Privacy and offline use — MeshOptimiser Docs" />
-  <meta property="og:description" content="MeshOptimiser runs on your own computer. What stays local, when the internet is used, and what the browser remembers." />
+  <meta property="og:title" content="Work with Claude — MeshOptimiser Docs" />
+  <meta property="og:description" content="Let Claude look at the open scene, find what is heavy and do the clean-up in the app, asking you first. Coming soon." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
-  <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/privacy-offline" />
+  <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/work-with-claude" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -110,7 +110,7 @@
         <a href="../docs/sweep.html">Sweep a profile along a line</a>
         <a href="../docs/screenshots.html">Screenshots</a>
         <h2>Work with Claude</h2>
-        <a href="../docs/work-with-claude.html">Work with Claude</a>
+        <a href="../docs/work-with-claude.html" aria-current="page">Work with Claude</a>
         <h2>Save and export</h2>
         <a href="../docs/save-scene.html">Save a scene</a>
         <a href="../docs/export.html">Export</a>
@@ -124,50 +124,79 @@
         <a href="../docs/command-line.html">The command-line converter</a>
         <a href="../docs/file-formats.html">File formats</a>
         <a href="../docs/files-in-folder.html">Files in the folder</a>
-        <a href="../docs/privacy-offline.html" aria-current="page">Privacy and offline use</a>
+        <a href="../docs/privacy-offline.html">Privacy and offline use</a>
         <h2>Help</h2>
         <a href="../docs/troubleshooting.html">Troubleshooting</a>
         <a href="../docs/faq.html">Frequently asked questions</a>
         <a href="../docs/self-test.html">Self-test</a>
       </nav>
       <article class="kb-article">
-        <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#reference">Reference</a></p>
-        <h1>Privacy and offline use</h1>
-        <p class="lead">MeshOptimiser runs on your own computer. What stays local, when the internet is used, and what the browser remembers.</p>
+        <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#claude">Work with Claude</a></p>
+        <h1>Work with Claude</h1>
+        <p class="lead">Let Claude look at the open scene, find what is heavy and do the clean-up in the app, asking you first. Coming soon.</p>
         <div class="kb-body">
-          <h2 id="your-files-stay-on-your-computer">Your files stay on your computer</h2>
-          <p>MeshOptimiser is not an online service. The viewer runs in your browser, and the converter runs in Python on your machine. The local server answers only on your own computer, at an address that starts with <code>localhost</code>.</p>
-          <p>When you drop a STEP file, the page hands it to that local server, which converts it in the app’s <code>inbox</code> folder. The file does not go anywhere else. There is no account and no sign-in.</p>
-          <h2 id="when-the-internet-is-used">When the internet is used</h2>
+          <aside class="kb-note"><p>Coming soon. This is in the version I am preparing; it is not in the release you can download today.</p></aside>
+          <p>Claude can work with the scene that is open in MeshOptimiser. You describe the job in plain words. Claude looks at the scene, selects, hides and explodes parts, and, with your permission, reduces triangles, repairs meshes, renames, moves and exports. It does this through the app, in your window, so you watch it happen.</p>
+          <h2 id="connect-it">Connect it</h2>
+          <ol class="kb-steps">
+            <li>Start MeshOptimiser and open a model.</li>
+            <li>Open Settings with <kbd>Ctrl</kbd><kbd>,</kbd> and choose <span class="ui">Claude</span>.</li>
+            <li>Turn on <span class="ui">Let Claude connect</span>. A <span class="ui">Claude connected</span> pill shows in the top bar while it is on.</li>
+            <li>Once, in a terminal on the same computer, add the app to Claude:</li>
+          </ol>
+          <div class="kb-code"><code>claude mcp add --transport http meshoptimiser http://localhost:4242/mcp</code><button type="button" class="copy" data-copy="claude mcp add --transport http meshoptimiser http://localhost:4242/mcp">Copy</button></div>
+          <p>If the launcher printed a different port, use that number. Another program that supports MCP over HTTP takes the same address. The <span class="ui">Claude</span> section of Settings has a button that copies the command, and its top line says whether the app is off, listening, working or waiting for you. The same word sits beside <span class="ui">Claude</span> in the list on the left.</p>
+          <h2 id="what-to-ask">What to ask</h2>
+          <ul class="kb-points">
+            <li>“Find all the bolts and hide them.”</li>
+            <li>“Get this under 300,000 triangles and tell me what you took out.”</li>
+            <li>“Show it exploded 50% and take a screenshot.”</li>
+            <li>“Which ten parts carry the most triangles?”</li>
+            <li>“Rename every part that starts with body to Housing.”</li>
+            <li>“Stand the model on the floor and make a turntable video.”</li>
+          </ul>
+          <h2 id="what-stays-in-your-hands">What stays in your hands</h2>
+          <ul class="kb-points">
+            <li>Anything that changes the model shows an <span class="ui">Allow</span> or <span class="ui">Don’t allow</span> prompt first. Looking, selecting, hiding, isolating, exploding and moving the camera do not.</li>
+            <li>Deleting always asks, even when you switch asking off for the rest.</li>
+            <li>Every change is a step in the undo history. <kbd>Ctrl</kbd><kbd>Z</kbd> takes it back. See <a href="../docs/undo-redo.html">Undo and redo</a>.</li>
+            <li>Nothing happens until you switch <span class="ui">Let Claude connect</span> on, and nothing can reach the app after you switch it off.</li>
+          </ul>
+          <h2 id="the-switches">The switches</h2>
           <dl class="table">
-            <div><dt>The first start</dt><dd>The launcher downloads the Python add-ons the converter needs (cadquery-ocp, trimesh, numpy). If Python itself is missing and you agree, it downloads Python too.</dd></div>
-            <div><dt>Every later start</dt><dd>Nothing. The libraries the viewer needs are bundled in the <code>vendor</code> folder, so the app opens, edits and exports with no connection at all.</dd></div>
-            <div><dt>A few rarely used converters</dt><dd>Fetched from the internet the first time they are needed: the transcoder for compressed textures, and the converters behind Draco export and some older FBX files.</dd></div>
+            <div><dt>Let Claude connect</dt><dd>The app listens for Claude while this is on. Off, it asks for nothing and nobody can reach it.</dd></div>
+            <div><dt>Connect when the app opens</dt><dd>If it was on last time, it switches itself on again when you open the app.</dd></div>
+            <div><dt>Change the model</dt><dd>Reduce triangles, fill holes, remove hidden faces, repair, clean up, merge, split and duplicate.</dd></div>
+            <div><dt>Move, rename and group</dt><dd>Move, turn and scale parts, recentre the model, stand it on the floor, rename parts, make and dissolve groups.</dd></div>
+            <div><dt>Delete parts</dt><dd>Delete chosen parts, or every part under a size.</dd></div>
+            <div><dt>Open files and save exports</dt><dd>Open a file from this computer, save exports and turntable videos into the app’s exports folder.</dd></div>
+            <div><dt>Ask before Claude edits</dt><dd>The <span class="ui">Allow</span> or <span class="ui">Don’t allow</span> prompt before every change to the model.</dd></div>
+            <div><dt>Always ask before deleting</dt><dd>Deleting still asks when the switch above is off.</dd></div>
+            <div><dt>Show the Claude pill in the top bar</dt><dd>A small pill that says when Claude is listening, working or waiting for you.</dd></div>
+            <div><dt>Show a note when Claude acts</dt><dd>A short message names what Claude is doing.</dd></div>
           </dl>
-          <h2 id="what-the-browser-remembers">What the browser remembers</h2>
-          <p>The app keeps a few things in your browser’s storage, on this computer:</p>
+          <p>A switch that is off refuses the request, and Claude is told why. At the bottom of the section, <span class="ui">Recent requests</span> lists what Claude asked for and what happened: done, you said no, turned off, or failed.</p>
+          <h2 id="what-leaves-the-computer">What leaves the computer</h2>
+          <p>The app talks to Claude only through a small server on your own computer. Your model file is not sent anywhere. Claude gets back what its requests return: part names, counts, sizes, and the pictures it asks for, such as a screenshot of the viewport. Those pass through Claude the way anything you type to it does. Exports and turntable videos are saved in the app’s <span class="ui">exports</span> folder.</p>
+          <h2 id="if-it-does-not-connect">If it does not connect</h2>
           <ul class="kb-points">
-            <li>your settings;</li>
-            <li>the list of recent files, with a small picture of each;</li>
-            <li>permission to reopen a recent file without asking where it is;</li>
-            <li>the sizes of the sidebars and docks.</li>
+            <li>Claude says the app is not listening: the app is not open in a browser, or <span class="ui">Let Claude connect</span> is off. Open the app and switch it on.</li>
+            <li>The top bar pill is missing: switch <span class="ui">Let Claude connect</span> on in Settings, or turn on <span class="ui">Show the Claude pill in the top bar</span>.</li>
+            <li>The pill says another window took over: the app was opened in a second window and switched it on there. Switch it on again in the window you want.</li>
+            <li>A request says it was turned off in Settings: switch on the matching one of the four switches.</li>
+            <li>A long job such as Fit to budget on a large model can take minutes. Keep the app open and in front.</li>
           </ul>
-          <p>You can clear each of these under <span class="ui">Settings</span>, <span class="ui">Storage</span>. Because they live in the browser’s profile, they survive an update of the app, and they are separate for each browser you use.</p>
-          <h2 id="what-is-written-to-disk">What is written to disk</h2>
-          <ul class="kb-points">
-            <li>Converted GLB files, in the <code>inbox</code> folder.</li>
-            <li>Scenes you save and files you export, where you choose.</li>
-            <li>The Python environment, in <code>.venv</code>.</li>
-          </ul>
+          <aside class="kb-note"><p>The hosted demo has no connection to Claude. Run the app on your own computer.</p></aside>
           <div class="kb-see"><h2>Related</h2><ul>
-            <li><a href="../docs/requirements.html">What you need</a></li>
-            <li><a href="../docs/files-in-folder.html">Files in the folder</a></li>
+            <li><a href="../docs/undo-redo.html">Undo and redo</a></li>
             <li><a href="../docs/settings.html">Settings</a></li>
+            <li><a href="../docs/scene-tabs.html">Scene tabs</a></li>
+            <li><a href="../docs/fasteners.html">Fasteners</a></li>
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">
-          <a class="is-before" href="../docs/files-in-folder.html"><span>Before</span><strong>Files in the folder</strong></a>
-          <a class="is-after" href="../docs/troubleshooting.html"><span>Next</span><strong>Troubleshooting</strong></a>
+          <a class="is-before" href="../docs/self-test.html"><span>Before</span><strong>Self-test</strong></a>
+          <span></span>
         </nav>
       </article>
       <aside class="kb-rail" aria-label="Quick links">
