@@ -196,7 +196,7 @@ figcaption { margin-top: 12px; color: var(--tx-3); font-size: 13px; line-height:
 .steps.is-stacked p { grid-column: 2; margin-top: 4px; }
 
 /* clips: short loops of a tool at work */
-.clips { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(14px, 1.6vw, 22px); }
+.clips { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: clamp(14px, 1.6vw, 22px); }
 .clip video { width: 100%; aspect-ratio: 592 / 370; object-fit: cover; border-radius: var(--r); background: var(--surface); }
 .clip.is-tap video { cursor: pointer; }
 .clip figcaption { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 10px; margin-top: 14px; }
@@ -874,3 +874,8 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 }
 
 @media (min-width: 761px) and (max-width: 1060px) { .tools { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* the demo needs a window of at least 960 px, so phones do not get the button */
+.btn-demo { gap: 8px; }
+.btn-demo svg { width: 14px; height: 14px; }
+@media (max-width: 760px) { .btn-demo { display: none; } }
