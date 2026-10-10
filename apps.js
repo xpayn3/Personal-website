@@ -74,7 +74,7 @@ window.labApps = [
           kicker: 'New · Claude',
           title: 'Say what you want. Claude does it in the app.',
           line: 'Connect MeshOptimiser to Claude and describe the job. Claude looks at the scene, finds the bolts and the heavy parts, explodes the view, and reduces triangles, always asking you before it changes the model.',
-          prompts: ['Find all the bolts and hide them.', 'Get this under 300,000 triangles.', 'Show it exploded and take a screenshot.'],
+          prompts: ['Find all the bolts and hide them.', 'Get this under 5 MB for the web.', 'Show me before and after.'],
         },
         // an example session (the numbers are what the app returned on the Gearbox Assy): [who, text, tools?, ask?, result?]
         chat: [
@@ -107,6 +107,24 @@ window.labApps = [
             ['Images/apps/meshoptimiser-claude-render-set.webp', 'Four angles in one request: perspective, front, side and top, in clay on white.'],
           ],
         },
+        // longer jobs (see claudeJobs in tools/build-app-site.js): a dry run, one call to a size, before and after, a folder, progress and Stop
+        jobs: {
+          kicker: 'New · Longer jobs',
+          title: 'Try it first. Watch it work. Stop it any time.',
+          line: 'Some jobs are big: take this to the web limits, or do every file in a folder. Claude can try a step without keeping it, do the whole job in one call and show the result as before and after, and you see how far it has got and can stop it.',
+          points: [
+            ['Try it first', 'Add dry run to a step and the app does it, reads the numbers and takes it back: “these parts would go and this many triangles would be saved”. Nothing is asked and nothing stays changed.'],
+            ['One call to a size', 'Get this under 5 MB, or ready for the web, Shopify, AR or a phone. Claude tidies, runs Smart optimise, then reduces in rounds against the app’s own size estimate, and says whether it got there.'],
+            ['Before and after, in one picture', 'The model as it was opened next to the model now, same camera, with the triangles, parts and size under each. The scene is put back exactly as it was.'],
+            ['A whole folder', 'Every model file in a folder is opened in a tab of its own, optimised, exported and closed, one after another. The scene you have open is not touched.'],
+            ['You see it working', 'The badge says which file and which step, and the dropdown has a progress bar. Claude gets the same progress.'],
+            ['Stop, any time', 'Press Stop in the dropdown, or cancel in Claude: the job ends after the step it is on, and what was done is listed and can be undone.'],
+          ],
+          shots: [
+            ['Images/apps/meshoptimiser-claude-compare.webp', 'compare_images on the Gearbox Assy after optimise_to_target with the web limits: 646,064 triangles on the left, 97,022 on the right.'],
+            ['Images/apps/meshoptimiser-claude-job.webp', 'A folder of four models being optimised. The badge says which file and step, and the dropdown shows the progress and the Stop button.'],
+          ],
+        },
         // what Claude arrives knowing (see claudeKnows in tools/build-app-site.js)
         knows: {
           kicker: 'It arrives knowing the job',
@@ -123,7 +141,7 @@ window.labApps = [
           articles: ['About fifty of the app’s own help articles, one per tool and job: Smart optimise, fasteners, hidden parts, fill holes, fit to budget, formats and more. Claude searches them by words or by a symptom, and reads only the one it needs.', 'The same articles you can read on this site, so what Claude does and what the docs say never disagree.'],
           jobs: [['Optimise for the web', 'To a triangle target, a step at a time.'], ['Lighten it in one go', 'Smart optimise at a level, with a report.'], ['Take the bolts out', 'Hide, simplify or delete.'], ['Make it safe to send', 'Remove what reveals the design.'], ['Review the scene', 'What is heavy and what could go, changing nothing.']],
           figures: [
-            ['About 2,000', 'tokens for the main playbook, read once at the start of a job'],
+            ['About 2,800', 'tokens for the main playbook, read once at the start of a job'],
             ['0', 'tokens for the help articles until Claude searches for one; the search returns short snippets, not articles'],
             ['−23%', 'characters in a typical reply: replies are compact, not indented, measured on a 40-part list'],
             ['1 call', 'for Smart optimise, instead of a dozen separate steps found by trial'],
@@ -155,6 +173,7 @@ window.labApps = [
           ['Pictures and film', 'paintbrush', 'Quick looks, and clean pictures for a client or a report. Files are saved on your computer.', [
             ['screenshot', 'A quick look at the viewport, so Claude can see what you see.'],
             ['render_image', 'A big, smooth picture up to 8192 px: one or several angles, clay or solid, white, dark or transparent background. One file each, saved as PNG.'],
+            ['compare_images', 'The model as it was opened next to the model now, in one picture with the numbers under each. The scene is put back as it was.'],
             ['turntable_video', 'One slow turn round the model, saved as a video.'],
           ]],
           ['Show you around', 'mouse-pointer-2', 'Select, hide, turn and explode. Nothing is changed, so none of it asks.', [
@@ -179,7 +198,8 @@ window.labApps = [
             ['select_by_material', 'Every part that uses a material.'],
             ['list_groups', 'The groups in the tree.'],
           ]],
-          ['Make it lighter', 'gauge', 'Each one asks you first, and each one is a single undo step.', [
+          ['Make it lighter', 'gauge', 'Each one asks you first, and each one is a single undo step. Add dry run to try one without keeping it.', [
+            ['optimise_to_target', 'Get the whole scene under a size or a place (web, Shopify, AR, a phone) in one call: tidy up, Smart optimise, reduce in rounds. Can be stopped.', true],
             ['smart_optimise', 'The app’s whole clean-up in one run and one undo: light, balanced or strong.', true],
             ['run_recipe', 'Your own saved settings: the same clean-up you ran last time, on this model.', true],
             ['decimate', 'Reduce the triangles of chosen parts, to a target or by a share.', true],
@@ -193,6 +213,10 @@ window.labApps = [
             ['split_parts', 'Break a mesh into its separate pieces.', true],
             ['smart_fit', 'Replace a part with a box, a cylinder, a few boxes or blocks of the same size.', true],
             ['untriangulate', 'Fewer triangles on flat faces, with no change of shape.', true],
+          ]],
+          ['Whole folders', 'folder-open', 'Many files, one after another, each in a scene tab of its own. Your scene is not touched.', [
+            ['list_folder', 'The model files in a folder: name, path and size.'],
+            ['batch_optimise', 'Open, optimise and export every file in a folder, then close its tab. Shows progress and can be stopped.', true],
           ]],
           ['Tidy and arrange', 'pencil-line', 'Names, groups and positions.', [
             ['list_library', 'The app’s library of standard parts: bolts, nuts, pipes, profiles, gears and more.'],
@@ -272,6 +296,9 @@ window.labApps = [
           'Remove the hidden faces from the ten heaviest parts.',
           'Find parts nobody can see from outside and show me before you delete them.',
           'Make this safe to send to a customer.',
+          'What would removing the hidden parts save? Try it, but do not keep it.',
+          'Take this to the web limits and show me before and after.',
+          'Optimise every model in this folder for the web.',
           'Render four clean pictures of this on white for a client.',
         ],
         faq: [
@@ -281,7 +308,10 @@ window.labApps = [
           ['What if I want it to ask less, or not at all?', 'Switch off Ask before Claude edits. Deleting still asks unless you also switch off Always ask before deleting. Or turn a whole kind of edit off with its own switch.'],
           ['Does Claude know how to optimise a model?', 'Yes. It comes with the know-how of an experienced user: six playbooks (how to optimise, recipes by goal, judgement, the tools by job, what is safe, what to do when something fails) and about fifty of the app’s help articles, one per tool and job. It reads the playbook before it starts, and searches the articles for anything it has not done before.'],
           ['How does Claude know how far to go?', 'It checks the scene against the app’s own guidelines, the ones in the Export dialog: about 5 MB and 100,000 triangles for a web page, 15 MB for a Shopify product page, 10 MB and 100,000 triangles for Apple AR Quick Look, 25 MB and 200,000 triangles for a phone app. It estimates what the file would weigh before it exports, uses your saved recipes if you have them, and tells you the before and after from the app’s own report. If you give it a number, yours wins.'],
-          ['Will it save tokens?', 'It should: it works in fewer, better-chosen steps instead of finding the order by trial, one Smart optimise call stands in for a dozen, and every reply is compact (about a fifth fewer characters than an indented one). The playbook costs about 2,500 tokens, read once; the articles cost nothing until Claude searches for one. How many tokens a job takes still depends on the model and on you, so there is no promise of a percentage.'],
+          ['Will it save tokens?', 'It should: it works in fewer, better-chosen steps instead of finding the order by trial, one Smart optimise call stands in for a dozen, and every reply is compact (about a fifth fewer characters than an indented one). The playbook costs about 2,800 tokens, read once; the articles cost nothing until Claude searches for one. How many tokens a job takes still depends on the model and on you, so there is no promise of a percentage.'],
+          ['Can I see what a step would do before I allow it?', 'Yes. Claude can add dry run to a step that removes or reduces something. The app does it, reads the numbers and takes it back with undo, so you see what it would save without anything staying changed. A dry run asks nothing, because nothing is kept.'],
+          ['Can Claude do a whole folder of models?', 'Yes. batch_optimise opens each file in a scene tab of its own, optimises it, exports it to the exports folder as name_optimised and closes the tab, one after another. The scene you have open is not touched, and every file gets a line in the result, with its numbers or its error. Try one file by hand first.'],
+          ['Can I stop a long job?', 'Yes. While a job runs the badge says which step it is on, and the dropdown has a progress bar and a Stop button. Cancelling in Claude stops it too. The job ends after the step it is on and lists what was done, and the undo history takes that back.'],
           ['Can Claude make pictures of the result for a client?', 'Yes. It can render big, smooth pictures (up to 8192 pixels) from one or several angles, in clay or solid, on a white, dark or transparent background, and save them as PNG on your computer. It looks at a small preview of each to check the angle. It can also render the model before and after optimising with the same camera, for a before and after.'],
           ['Can Claude break my model?', 'Not past the undo history. Every change is a step you can take back, and your file on disk is only changed when you export.'],
         ],

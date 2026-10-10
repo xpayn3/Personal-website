@@ -130,6 +130,7 @@
             <ul>
               <li><code>screenshot</code><span>A quick look at the viewport, so Claude can see what you see.</span></li>
               <li><code>render_image</code><span>A big, smooth picture up to 8192 px: one or several angles, clay or solid, white, dark or transparent background. One file each, saved as PNG.</span></li>
+              <li><code>compare_images</code><span>The model as it was opened next to the model now, in one picture with the numbers under each. The scene is put back as it was.</span></li>
               <li><code>turntable_video</code><span>One slow turn round the model, saved as a video.</span></li>
             </ul>
           </article>
@@ -162,8 +163,9 @@
             </ul>
           </article>
           <article class="cl-group" style="--ico: #ff8a4c">
-            <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg></i><div><h3>Make it lighter</h3><p>Each one asks you first, and each one is a single undo step.</p></div></header>
+            <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg></i><div><h3>Make it lighter</h3><p>Each one asks you first, and each one is a single undo step. Add dry run to try one without keeping it.</p></div></header>
             <ul>
+              <li><code>optimise_to_target</code><span>Get the whole scene under a size or a place (web, Shopify, AR, a phone) in one call: tidy up, Smart optimise, reduce in rounds. Can be stopped.</span><em class="cl-asks">asks</em></li>
               <li><code>smart_optimise</code><span>The app’s whole clean-up in one run and one undo: light, balanced or strong.</span><em class="cl-asks">asks</em></li>
               <li><code>run_recipe</code><span>Your own saved settings: the same clean-up you ran last time, on this model.</span><em class="cl-asks">asks</em></li>
               <li><code>decimate</code><span>Reduce the triangles of chosen parts, to a target or by a share.</span><em class="cl-asks">asks</em></li>
@@ -180,6 +182,13 @@
             </ul>
           </article>
           <article class="cl-group" style="--ico: #2dd4bf">
+            <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg></i><div><h3>Whole folders</h3><p>Many files, one after another, each in a scene tab of its own. Your scene is not touched.</p></div></header>
+            <ul>
+              <li><code>list_folder</code><span>The model files in a folder: name, path and size.</span></li>
+              <li><code>batch_optimise</code><span>Open, optimise and export every file in a folder, then close its tab. Shows progress and can be stopped.</span><em class="cl-asks">asks</em></li>
+            </ul>
+          </article>
+          <article class="cl-group" style="--ico: #f472b6">
             <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 21h8"/><path d="m15 5 4 4"/><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg></i><div><h3>Tidy and arrange</h3><p>Names, groups and positions.</p></div></header>
             <ul>
               <li><code>list_library</code><span>The app’s library of standard parts: bolts, nuts, pipes, profiles, gears and more.</span></li>
@@ -193,14 +202,14 @@
               <li><code>align_to_floor</code><span>Stand the model on the floor.</span><em class="cl-asks">asks</em></li>
             </ul>
           </article>
-          <article class="cl-group" style="--ico: #f472b6">
+          <article class="cl-group" style="--ico: #f5a524">
             <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></i><div><h3>Delete</h3><p>Always asks, even when you switch asking off for the rest.</p></div></header>
             <ul>
               <li><code>delete_parts</code><span>Delete chosen parts.</span><em class="cl-asks">asks</em></li>
               <li><code>remove_small_parts</code><span>Delete every part under a size.</span><em class="cl-asks">asks</em></li>
             </ul>
           </article>
-          <article class="cl-group" style="--ico: #f5a524">
+          <article class="cl-group" style="--ico: #0d99ff">
             <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2v5a1 1 0 001 1h5"/><path d="M14.692 22H18a2 2 0 002-2V8a2.4 2.4 0 00-.706-1.706l-3.588-3.588A2.4 2.4 0 0014 2H6a2 2 0 00-2 2v3.804"/><path d="M2.264 13.752 7 16.5l4.737-2.748"/><path d="M2.995 13.014A2 2 0 002 14.744v3.516a2 2 0 00.996 1.73l3 1.74a2 2 0 002.008 0l3-1.74A2 2 0 0012 18.26v-3.517a2 2 0 00-.995-1.73l-3-1.742a2 2 0 00-1.892-.064z"/><path d="M7 16.5V22"/></svg></i><div><h3>Files</h3><p>On your own computer; nothing is uploaded.</p></div></header>
             <ul>
               <li><code>open_file</code><span>Open a model from a path on this computer.</span></li>
@@ -208,14 +217,14 @@
               <li><code>export_model</code><span>Save a GLB, glTF, FBX, USDZ, OBJ or STL, or use a preset for the web, AR, Unreal, Unity or printing.</span></li>
             </ul>
           </article>
-          <article class="cl-group" style="--ico: #0d99ff">
+          <article class="cl-group" style="--ico: #2fd180">
             <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></i><div><h3>Know-how</h3><p>The app’s own knowledge, on demand. Answered without the app being open.</p></div></header>
             <ul>
               <li><code>search_docs</code><span>Search the playbooks and the help articles by words or by a symptom.</span></li>
               <li><code>read_doc</code><span>Read one article or playbook in full.</span></li>
             </ul>
           </article>
-          <article class="cl-group" style="--ico: #2fd180">
+          <article class="cl-group" style="--ico: #a78bfa">
             <header><i class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg></i><div><h3>Scenes and history</h3><p>The tabs and the undo history.</p></div></header>
             <ul>
               <li><code>scene_tabs</code><span>List the scene tabs, switch, open a new one.</span></li>
@@ -227,6 +236,28 @@
       </div>
     </section>
 
+
+    <section class="band" id="jobs">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">New · Longer jobs</p>
+          <h2>Try it first. Watch it work. Stop it any time.</h2>
+        </div>
+        <p class="lead">Some jobs are big: take this to the web limits, or do every file in a folder. Claude can try a step without keeping it, do the whole job in one call and show the result as before and after, and you see how far it has got and can stop it.</p>
+        <div class="cl-shots cl-renders">
+          <figure><a class="zoom" href="../../Images/apps/meshoptimiser-claude-compare.webp" data-group="jobs" data-caption="compare_images on the Gearbox Assy after optimise_to_target with the web limits: 646,064 triangles on the left, 97,022 on the right."><img src="../../Images/apps/meshoptimiser-claude-compare.webp" alt="MeshOptimiser: compare_images on the Gearbox Assy after optimise_to_target with the web limits: 646,064 triangles on the left, 97,022 on the right." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>compare_images on the Gearbox Assy after optimise_to_target with the web limits: 646,064 triangles on the left, 97,022 on the right.</figcaption></figure>
+          <figure><a class="zoom" href="../../Images/apps/meshoptimiser-claude-job.webp" data-group="jobs" data-caption="A folder of four models being optimised. The badge says which file and step, and the dropdown shows the progress and the Stop button."><img src="../../Images/apps/meshoptimiser-claude-job.webp" alt="MeshOptimiser: A folder of four models being optimised. The badge says which file and step, and the dropdown shows the progress and the Stop button." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>A folder of four models being optimised. The badge says which file and step, and the dropdown shows the progress and the Stop button.</figcaption></figure>
+        </div>
+        <dl class="cl-points cl-points-3">
+          <div><dt>Try it first</dt><dd>Add dry run to a step and the app does it, reads the numbers and takes it back: “these parts would go and this many triangles would be saved”. Nothing is asked and nothing stays changed.</dd></div>
+          <div><dt>One call to a size</dt><dd>Get this under 5 MB, or ready for the web, Shopify, AR or a phone. Claude tidies, runs Smart optimise, then reduces in rounds against the app’s own size estimate, and says whether it got there.</dd></div>
+          <div><dt>Before and after, in one picture</dt><dd>The model as it was opened next to the model now, same camera, with the triangles, parts and size under each. The scene is put back exactly as it was.</dd></div>
+          <div><dt>A whole folder</dt><dd>Every model file in a folder is opened in a tab of its own, optimised, exported and closed, one after another. The scene you have open is not touched.</dd></div>
+          <div><dt>You see it working</dt><dd>The badge says which file and which step, and the dropdown has a progress bar. Claude gets the same progress.</dd></div>
+          <div><dt>Stop, any time</dt><dd>Press Stop in the dropdown, or cancel in Claude: the job ends after the step it is on, and what was done is listed and can be undone.</dd></div>
+        </dl>
+      </div>
+    </section>
 
     <section class="band" id="renders">
       <div class="wrap">
@@ -284,7 +315,7 @@
           </article>
         </div>
         <dl class="kn-figures">
-          <div><dt>About 2,000</dt><dd>tokens for the main playbook, read once at the start of a job</dd></div>
+          <div><dt>About 2,800</dt><dd>tokens for the main playbook, read once at the start of a job</dd></div>
           <div><dt>0</dt><dd>tokens for the help articles until Claude searches for one; the search returns short snippets, not articles</dd></div>
           <div><dt>−23%</dt><dd>characters in a typical reply: replies are compact, not indented, measured on a 40-part list</dd></div>
           <div><dt>1 call</dt><dd>for Smart optimise, instead of a dozen separate steps found by trial</dd></div>
@@ -351,6 +382,9 @@
           <li><p>Remove the hidden faces from the ten heaviest parts.</p><button type="button" class="copy" data-copy="Remove the hidden faces from the ten heaviest parts.">Copy</button></li>
           <li><p>Find parts nobody can see from outside and show me before you delete them.</p><button type="button" class="copy" data-copy="Find parts nobody can see from outside and show me before you delete them.">Copy</button></li>
           <li><p>Make this safe to send to a customer.</p><button type="button" class="copy" data-copy="Make this safe to send to a customer.">Copy</button></li>
+          <li><p>What would removing the hidden parts save? Try it, but do not keep it.</p><button type="button" class="copy" data-copy="What would removing the hidden parts save? Try it, but do not keep it.">Copy</button></li>
+          <li><p>Take this to the web limits and show me before and after.</p><button type="button" class="copy" data-copy="Take this to the web limits and show me before and after.">Copy</button></li>
+          <li><p>Optimise every model in this folder for the web.</p><button type="button" class="copy" data-copy="Optimise every model in this folder for the web.">Copy</button></li>
           <li><p>Render four clean pictures of this on white for a client.</p><button type="button" class="copy" data-copy="Render four clean pictures of this on white for a client.">Copy</button></li>
         </ul>
       </div>
@@ -370,7 +404,10 @@
             <div><dt>What if I want it to ask less, or not at all?</dt><dd>Switch off Ask before Claude edits. Deleting still asks unless you also switch off Always ask before deleting. Or turn a whole kind of edit off with its own switch.</dd></div>
             <div><dt>Does Claude know how to optimise a model?</dt><dd>Yes. It comes with the know-how of an experienced user: six playbooks (how to optimise, recipes by goal, judgement, the tools by job, what is safe, what to do when something fails) and about fifty of the app’s help articles, one per tool and job. It reads the playbook before it starts, and searches the articles for anything it has not done before.</dd></div>
             <div><dt>How does Claude know how far to go?</dt><dd>It checks the scene against the app’s own guidelines, the ones in the Export dialog: about 5 MB and 100,000 triangles for a web page, 15 MB for a Shopify product page, 10 MB and 100,000 triangles for Apple AR Quick Look, 25 MB and 200,000 triangles for a phone app. It estimates what the file would weigh before it exports, uses your saved recipes if you have them, and tells you the before and after from the app’s own report. If you give it a number, yours wins.</dd></div>
-            <div><dt>Will it save tokens?</dt><dd>It should: it works in fewer, better-chosen steps instead of finding the order by trial, one Smart optimise call stands in for a dozen, and every reply is compact (about a fifth fewer characters than an indented one). The playbook costs about 2,500 tokens, read once; the articles cost nothing until Claude searches for one. How many tokens a job takes still depends on the model and on you, so there is no promise of a percentage.</dd></div>
+            <div><dt>Will it save tokens?</dt><dd>It should: it works in fewer, better-chosen steps instead of finding the order by trial, one Smart optimise call stands in for a dozen, and every reply is compact (about a fifth fewer characters than an indented one). The playbook costs about 2,800 tokens, read once; the articles cost nothing until Claude searches for one. How many tokens a job takes still depends on the model and on you, so there is no promise of a percentage.</dd></div>
+            <div><dt>Can I see what a step would do before I allow it?</dt><dd>Yes. Claude can add dry run to a step that removes or reduces something. The app does it, reads the numbers and takes it back with undo, so you see what it would save without anything staying changed. A dry run asks nothing, because nothing is kept.</dd></div>
+            <div><dt>Can Claude do a whole folder of models?</dt><dd>Yes. batch_optimise opens each file in a scene tab of its own, optimises it, exports it to the exports folder as name_optimised and closes the tab, one after another. The scene you have open is not touched, and every file gets a line in the result, with its numbers or its error. Try one file by hand first.</dd></div>
+            <div><dt>Can I stop a long job?</dt><dd>Yes. While a job runs the badge says which step it is on, and the dropdown has a progress bar and a Stop button. Cancelling in Claude stops it too. The job ends after the step it is on and lists what was done, and the undo history takes that back.</dd></div>
             <div><dt>Can Claude make pictures of the result for a client?</dt><dd>Yes. It can render big, smooth pictures (up to 8192 pixels) from one or several angles, in clay or solid, on a white, dark or transparent background, and save them as PNG on your computer. It looks at a small preview of each to check the angle. It can also render the model before and after optimising with the same camera, for a before and after.</dd></div>
             <div><dt>Can Claude break my model?</dt><dd>Not past the undo history. Every change is a step you can take back, and your file on disk is only changed when you export.</dd></div>
           </dl>

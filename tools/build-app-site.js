@@ -505,6 +505,26 @@ ${r.points.map(([name, line]) => `          <div><dt>${esc(name)}</dt><dd>${esc(
     </section>`;
   };
 
+  const claudeJobs = () => {
+    const r = site.claude.jobs;
+    return `
+    <section class="band" id="jobs">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">${esc(r.kicker)}</p>
+          <h2>${esc(r.title)}</h2>
+        </div>
+        <p class="lead">${esc(r.line)}</p>
+        <div class="cl-shots cl-renders">
+          ${r.shots.map(s => shot(s, 'jobs')).join('\n          ')}
+        </div>
+        <dl class="cl-points cl-points-3">
+${r.points.map(([name, line]) => `          <div><dt>${esc(name)}</dt><dd>${esc(line)}</dd></div>`).join('\n')}
+        </dl>
+      </div>
+    </section>`;
+  };
+
   const claudeKnows = () => {
     const k = site.claude.knows;
     return `
@@ -787,6 +807,7 @@ ${tools.map(([name, line, asks]) => `              <li><code>${esc(name)}</code>
       </div>
     </section>
 
+${c.jobs ? claudeJobs() : ''}
 ${c.renders ? claudeRenders() : ''}
 ${c.knows ? claudeKnows() : ''}
     <section class="band" id="control">
