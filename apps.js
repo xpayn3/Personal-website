@@ -65,15 +65,15 @@ window.labApps = [
       claude: {
         badge: 'Coming soon',
         kicker: 'Claude',
-        headline: 'Ask Claude to work on your model.',
+        headline: 'Let Claude drive the optimiser.',
         titleTag: 'Work with Claude — MeshOptimiser',
-        description: 'Connect MeshOptimiser to Claude and describe the job in plain words. Claude looks at the scene, finds what is heavy and does the clean-up, asking you first and one undoable step at a time.',
-        lead: 'Connect MeshOptimiser to Claude and describe the job in plain words. Claude looks at the scene, finds what is heavy and does the clean-up in the app, in front of you. Anything that changes the model asks first, and every change can be undone.',
+        description: 'Connect MeshOptimiser to Claude and it can use the app’s own tools on the scene you have open: find bolts and hidden parts, run Smart optimise, reduce to a size, take pictures. It asks before it changes the model.',
+        lead: 'Connect MeshOptimiser to Claude and it can use the app’s own tools on the scene you have open, the same ones you click: it finds bolts and hidden parts, runs Smart optimise, reduces a model to a size and takes pictures. It works in your window, asks before it changes the model, and every change is one undo step. It saves clicking, not judgement: you still decide what loss is acceptable.',
         // the strip on the home page
         band: {
-          kicker: 'New · Claude',
-          title: 'Say what you want. Claude does it in the app.',
-          line: 'Connect MeshOptimiser to Claude and describe the job. Claude looks at the scene, finds the bolts and the heavy parts, explodes the view, and reduces triangles, always asking you before it changes the model.',
+          kicker: 'Claude',
+          title: 'Claude can run the optimiser for you.',
+          line: 'Connect the app to Claude and it can use the same tools you click: find bolts and hidden parts, run Smart optimise, reduce to a size, take pictures. It asks before it changes the model, and every change is one undo step.',
           prompts: ['Find all the bolts and hide them.', 'Get this under 5 MB for the web.', 'Show me before and after.'],
         },
         // an example session (the numbers are what the app returned on the Gearbox Assy): [who, text, tools?, ask?, result?]
@@ -92,8 +92,8 @@ window.labApps = [
         // pictures for a client (see claudeRenders in tools/build-app-site.js): made with render_image on the Gearbox Assy
         renders: {
           kicker: 'Pictures for your client',
-          title: 'Ask for a render, get a clean picture.',
-          line: 'When the model is light enough, Claude can make the pictures that go with it: a set of angles on a plain background, a cut-out with nothing behind it, the model exploded. They are saved as PNG files on your computer, and Claude looks at a preview of each to check the angle before it tells you they are ready.',
+          title: 'Renders for a client or a report.',
+          line: 'Once the model is light enough, Claude can make the pictures that go with it: a set of angles on a plain background, a cut-out, the model exploded. They are saved as PNG files on your computer.',
           points: [
             ['Big and smooth', 'Up to 8192 pixels a side. Each picture is drawn at twice its size and scaled down, so the edges are clean.'],
             ['A set of angles', 'Perspective, front, side and top in one request: one file for each, one sheet for Claude to look at.'],
@@ -109,9 +109,9 @@ window.labApps = [
         },
         // longer jobs (see claudeJobs in tools/build-app-site.js): a dry run, one call to a size, before and after, a folder, progress and Stop
         jobs: {
-          kicker: 'New · Longer jobs',
-          title: 'Try it first. Watch it work. Stop it any time.',
-          line: 'Some jobs are big: take this to the web limits, or do every file in a folder. Claude can try a step without keeping it, do the whole job in one call and show the result as before and after, and you see how far it has got and can stop it.',
+          kicker: 'Longer jobs',
+          title: 'Try a step, watch it run, stop it.',
+          line: 'Some jobs take a while: taking a model to the web limits, or doing every file in a folder. Claude can try a step without keeping it, run the whole job in one call and show the result as before and after. You can see how far it has got, and stop it.',
           points: [
             ['Try it first', 'Add dry run to a step and the app does it, reads the numbers and takes it back: “these parts would go and this many triangles would be saved”. Nothing is asked and nothing stays changed.'],
             ['One call to a size', 'Get this under 5 MB, or ready for the web, Shopify, AR or a phone. Claude tidies, runs Smart optimise, then reduces in rounds against the app’s own size estimate, and says whether it got there.'],
@@ -127,9 +127,9 @@ window.labApps = [
         },
         // what Claude arrives knowing (see claudeKnows in tools/build-app-site.js)
         knows: {
-          kicker: 'It arrives knowing the job',
-          title: 'The know-how of an experienced user, built in.',
-          line: 'Claude does not start from nothing. The app hands it what a person who has read every help article and done this for years knows: the order to work in, what each step costs, what is safe, and what to do when something fails.',
+          kicker: 'What Claude is told',
+          title: 'A short guide, so it works in a sensible order.',
+          line: 'Claude does not have to guess how the app is used. The app hands it a short guide and its own help articles: the order to work in, what each step costs, what is safe, and what to do when something fails.',
           playbooks: [
             ['How to optimise', 'The rules and the order: look first, tidy, remove what nobody sees, remove what nobody needs, close detail, replace filler, reduce last.'],
             ['Recipes by goal', 'The tool calls for a web viewer, AR, a game engine, 3D printing, sending to a customer, a review, or a number and nothing else.'],
@@ -302,11 +302,13 @@ window.labApps = [
           'Render four clean pictures of this on white for a client.',
         ],
         faq: [
+          ['What is it good for, and what is it not?', 'It is good for repeated clean-up on assemblies: finding fasteners and hidden parts, taking a model to a size, doing a folder of files, and making the pictures that go with them. If you already know which buttons to press, pressing them yourself is just as fast. It saves clicking, not judgement: you still decide what loss is acceptable, and you should look at the result.'],
+          ['Could I do this with Blender and its MCP?', 'Largely, yes. Blender can reduce triangles, remove parts and render, and Claude can drive it through a Blender MCP. The differences are narrow: MeshOptimiser opens STEP and IGES CAD files directly, has its own finders for bolts and for parts nobody can see, takes a model to a size or a whole folder in one call, and runs in a browser tab with nothing else to install. If you already work in Blender and your models are meshes, that is a fair choice.'],
           ['What do I need?', 'MeshOptimiser running on your computer, with the app open in a browser tab, and Claude with MCP support: Claude Code, or any client that can add an HTTP MCP server.'],
           ['Is it on by default?', 'No. The app does not listen for Claude until you switch on Let Claude connect, and it forgets the connection when you switch it off.'],
           ['Does it work in the demo?', 'No. The hosted demo has no connection to Claude. Run the app on your own computer.'],
           ['What if I want it to ask less, or not at all?', 'Switch off Ask before Claude edits. Deleting still asks unless you also switch off Always ask before deleting. Or turn a whole kind of edit off with its own switch.'],
-          ['Does Claude know how to optimise a model?', 'Yes. It comes with the know-how of an experienced user: six playbooks (how to optimise, recipes by goal, judgement, the tools by job, what is safe, what to do when something fails) and about fifty of the app’s help articles, one per tool and job. It reads the playbook before it starts, and searches the articles for anything it has not done before.'],
+          ['Does Claude know how to use the app?', 'It is told how. It comes with six short playbooks (how to optimise, recipes by goal, judgement, the tools by job, what is safe, what to do when something fails) and about fifty of the app’s help articles, one per tool and job. It reads the playbook before it starts, and searches the articles for anything it has not done before.'],
           ['How does Claude know how far to go?', 'It checks the scene against the app’s own guidelines, the ones in the Export dialog: about 5 MB and 100,000 triangles for a web page, 15 MB for a Shopify product page, 10 MB and 100,000 triangles for Apple AR Quick Look, 25 MB and 200,000 triangles for a phone app. It estimates what the file would weigh before it exports, uses your saved recipes if you have them, and tells you the before and after from the app’s own report. If you give it a number, yours wins.'],
           ['Will it save tokens?', 'It should: it works in fewer, better-chosen steps instead of finding the order by trial, one Smart optimise call stands in for a dozen, and every reply is compact (about a fifth fewer characters than an indented one). The playbook costs about 2,800 tokens, read once; the articles cost nothing until Claude searches for one. How many tokens a job takes still depends on the model and on you, so there is no promise of a percentage.'],
           ['Can I see what a step would do before I allow it?', 'Yes. Claude can add dry run to a step that removes or reduces something. The app does it, reads the numbers and takes it back with undo, so you see what it would save without anything staying changed. A dry run asks nothing, because nothing is kept.'],

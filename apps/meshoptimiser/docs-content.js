@@ -3342,6 +3342,7 @@ module.exports = {
       blocks: [
         ['note', 'Coming soon. This is in the version I am preparing; it is not in the release you can download today.'],
         ['p', 'Claude can work with the scene that is open in MeshOptimiser. You describe the job in plain words. Claude looks at the scene, selects, hides and explodes parts, and, with your permission, reduces triangles, repairs meshes, renames, moves and exports. It does this through the app, in your window, so you watch it happen.'],
+        ['p', 'It uses the same tools you would click, so it saves clicking, not judgement: you still decide what loss is acceptable, and you should look at the result. If you already know which buttons to press, pressing them yourself is just as fast. It is most useful for repeated clean-up, a size to reach, or a folder of files. A general 3D program such as Blender can be driven by Claude in a similar way; MeshOptimiser opens STEP and IGES CAD files directly and has its own finders for bolts and for parts nobody can see.'],
         ['h', 'Connect it'],
         ['steps', [
           'Start MeshOptimiser and open a model.',

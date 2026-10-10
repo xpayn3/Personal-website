@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>Work with Claude — MeshOptimiser</title>
-  <meta name="description" content="Connect MeshOptimiser to Claude and describe the job in plain words. Claude looks at the scene, finds what is heavy and does the clean-up, asking you first and…" />
+  <meta name="description" content="Connect MeshOptimiser to Claude and it can use the app’s own tools on the scene you have open: find bolts and hidden parts, run Smart optimise, reduce to a siz…" />
   <link rel="icon" type="image/svg+xml" href="../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/claude" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="Work with Claude — MeshOptimiser" />
-  <meta property="og:description" content="Connect MeshOptimiser to Claude and describe the job in plain words. Claude looks at the scene, finds what is heavy and does the clean-up, asking you first and…" />
+  <meta property="og:description" content="Connect MeshOptimiser to Claude and it can use the app’s own tools on the scene you have open: find bolts and hidden parts, run Smart optimise, reduce to a siz…" />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/claude" />
   <meta property="og:type" content="website" />
@@ -49,8 +49,8 @@
     <div class="soon-banner" role="note"><div class="wrap soon-banner-in"><strong>Coming soon</strong><span>Claude is not in the release you can download today. This page shows what is on the way.</span></div></div>
     <section class="wrap page-head">
       <p class="kicker">Claude<b>·</b><span class="tag-soon is-large">Coming soon</span></p>
-      <h1>Ask Claude to work on your model.</h1>
-      <p class="lead">Connect MeshOptimiser to Claude and describe the job in plain words. Claude looks at the scene, finds what is heavy and does the clean-up in the app, in front of you. Anything that changes the model asks first, and every change can be undone.</p>
+      <h1>Let Claude drive the optimiser.</h1>
+      <p class="lead">Connect MeshOptimiser to Claude and it can use the app’s own tools on the scene you have open, the same ones you click: it finds bolts and hidden parts, runs Smart optimise, reduces a model to a size and takes pictures. It works in your window, asks before it changes the model, and every change is one undo step. It saves clicking, not judgement: you still decide what loss is acceptable.</p>
       <div class="actions">
         <a class="btn is-primary is-large" href="#how">How it works</a>
         <a class="btn is-large" href="docs/work-with-claude.html">Read the docs</a>
@@ -240,10 +240,10 @@
     <section class="band" id="jobs">
       <div class="wrap">
         <div class="band-head">
-          <p class="kicker">New · Longer jobs</p>
-          <h2>Try it first. Watch it work. Stop it any time.</h2>
+          <p class="kicker">Longer jobs</p>
+          <h2>Try a step, watch it run, stop it.</h2>
         </div>
-        <p class="lead">Some jobs are big: take this to the web limits, or do every file in a folder. Claude can try a step without keeping it, do the whole job in one call and show the result as before and after, and you see how far it has got and can stop it.</p>
+        <p class="lead">Some jobs take a while: taking a model to the web limits, or doing every file in a folder. Claude can try a step without keeping it, run the whole job in one call and show the result as before and after. You can see how far it has got, and stop it.</p>
         <div class="cl-shots cl-renders">
           <figure><a class="zoom" href="../../Images/apps/meshoptimiser-claude-compare.webp" data-group="jobs" data-caption="compare_images on the Gearbox Assy after optimise_to_target with the web limits: 646,064 triangles on the left, 97,022 on the right."><img src="../../Images/apps/meshoptimiser-claude-compare.webp" alt="MeshOptimiser: compare_images on the Gearbox Assy after optimise_to_target with the web limits: 646,064 triangles on the left, 97,022 on the right." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>compare_images on the Gearbox Assy after optimise_to_target with the web limits: 646,064 triangles on the left, 97,022 on the right.</figcaption></figure>
           <figure><a class="zoom" href="../../Images/apps/meshoptimiser-claude-job.webp" data-group="jobs" data-caption="A folder of four models being optimised. The badge says which file and step, and the dropdown shows the progress and the Stop button."><img src="../../Images/apps/meshoptimiser-claude-job.webp" alt="MeshOptimiser: A folder of four models being optimised. The badge says which file and step, and the dropdown shows the progress and the Stop button." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>A folder of four models being optimised. The badge says which file and step, and the dropdown shows the progress and the Stop button.</figcaption></figure>
@@ -263,9 +263,9 @@
       <div class="wrap">
         <div class="band-head">
           <p class="kicker">Pictures for your client</p>
-          <h2>Ask for a render, get a clean picture.</h2>
+          <h2>Renders for a client or a report.</h2>
         </div>
-        <p class="lead">When the model is light enough, Claude can make the pictures that go with it: a set of angles on a plain background, a cut-out with nothing behind it, the model exploded. They are saved as PNG files on your computer, and Claude looks at a preview of each to check the angle before it tells you they are ready.</p>
+        <p class="lead">Once the model is light enough, Claude can make the pictures that go with it: a set of angles on a plain background, a cut-out, the model exploded. They are saved as PNG files on your computer.</p>
         <div class="cl-shots cl-renders">
           <figure><a class="zoom" href="../../Images/apps/meshoptimiser-claude-render-exploded.webp" data-group="renders" data-caption="The Gearbox Assy exploded to 55%, solid, on a dark background. Made with render_image."><img src="../../Images/apps/meshoptimiser-claude-render-exploded.webp" alt="MeshOptimiser: The Gearbox Assy exploded to 55%, solid, on a dark background. Made with render_image." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>The Gearbox Assy exploded to 55%, solid, on a dark background. Made with render_image.</figcaption></figure>
           <figure><a class="zoom" href="../../Images/apps/meshoptimiser-claude-render-set.webp" data-group="renders" data-caption="Four angles in one request: perspective, front, side and top, in clay on white."><img src="../../Images/apps/meshoptimiser-claude-render-set.webp" alt="MeshOptimiser: Four angles in one request: perspective, front, side and top, in clay on white." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Four angles in one request: perspective, front, side and top, in clay on white.</figcaption></figure>
@@ -284,10 +284,10 @@
     <section class="band" id="knows">
       <div class="wrap">
         <div class="band-head">
-          <p class="kicker">It arrives knowing the job</p>
-          <h2>The know-how of an experienced user, built in.</h2>
+          <p class="kicker">What Claude is told</p>
+          <h2>A short guide, so it works in a sensible order.</h2>
         </div>
-        <p class="lead">Claude does not start from nothing. The app hands it what a person who has read every help article and done this for years knows: the order to work in, what each step costs, what is safe, and what to do when something fails.</p>
+        <p class="lead">Claude does not have to guess how the app is used. The app hands it a short guide and its own help articles: the order to work in, what each step costs, what is safe, and what to do when something fails.</p>
         <div class="kn-grid">
           <article class="kn-card">
             <h3>Six playbooks</h3>
@@ -398,11 +398,13 @@
         </div>
         <div class="split-body">
           <dl class="table cl-faq">
+            <div><dt>What is it good for, and what is it not?</dt><dd>It is good for repeated clean-up on assemblies: finding fasteners and hidden parts, taking a model to a size, doing a folder of files, and making the pictures that go with them. If you already know which buttons to press, pressing them yourself is just as fast. It saves clicking, not judgement: you still decide what loss is acceptable, and you should look at the result.</dd></div>
+            <div><dt>Could I do this with Blender and its MCP?</dt><dd>Largely, yes. Blender can reduce triangles, remove parts and render, and Claude can drive it through a Blender MCP. The differences are narrow: MeshOptimiser opens STEP and IGES CAD files directly, has its own finders for bolts and for parts nobody can see, takes a model to a size or a whole folder in one call, and runs in a browser tab with nothing else to install. If you already work in Blender and your models are meshes, that is a fair choice.</dd></div>
             <div><dt>What do I need?</dt><dd>MeshOptimiser running on your computer, with the app open in a browser tab, and Claude with MCP support: Claude Code, or any client that can add an HTTP MCP server.</dd></div>
             <div><dt>Is it on by default?</dt><dd>No. The app does not listen for Claude until you switch on Let Claude connect, and it forgets the connection when you switch it off.</dd></div>
             <div><dt>Does it work in the demo?</dt><dd>No. The hosted demo has no connection to Claude. Run the app on your own computer.</dd></div>
             <div><dt>What if I want it to ask less, or not at all?</dt><dd>Switch off Ask before Claude edits. Deleting still asks unless you also switch off Always ask before deleting. Or turn a whole kind of edit off with its own switch.</dd></div>
-            <div><dt>Does Claude know how to optimise a model?</dt><dd>Yes. It comes with the know-how of an experienced user: six playbooks (how to optimise, recipes by goal, judgement, the tools by job, what is safe, what to do when something fails) and about fifty of the app’s help articles, one per tool and job. It reads the playbook before it starts, and searches the articles for anything it has not done before.</dd></div>
+            <div><dt>Does Claude know how to use the app?</dt><dd>It is told how. It comes with six short playbooks (how to optimise, recipes by goal, judgement, the tools by job, what is safe, what to do when something fails) and about fifty of the app’s help articles, one per tool and job. It reads the playbook before it starts, and searches the articles for anything it has not done before.</dd></div>
             <div><dt>How does Claude know how far to go?</dt><dd>It checks the scene against the app’s own guidelines, the ones in the Export dialog: about 5 MB and 100,000 triangles for a web page, 15 MB for a Shopify product page, 10 MB and 100,000 triangles for Apple AR Quick Look, 25 MB and 200,000 triangles for a phone app. It estimates what the file would weigh before it exports, uses your saved recipes if you have them, and tells you the before and after from the app’s own report. If you give it a number, yours wins.</dd></div>
             <div><dt>Will it save tokens?</dt><dd>It should: it works in fewer, better-chosen steps instead of finding the order by trial, one Smart optimise call stands in for a dozen, and every reply is compact (about a fifth fewer characters than an indented one). The playbook costs about 2,800 tokens, read once; the articles cost nothing until Claude searches for one. How many tokens a job takes still depends on the model and on you, so there is no promise of a percentage.</dd></div>
             <div><dt>Can I see what a step would do before I allow it?</dt><dd>Yes. Claude can add dry run to a step that removes or reduces something. The app does it, reads the numbers and takes it back with undo, so you see what it would save without anything staying changed. A dry run asks nothing, because nothing is kept.</dd></div>
