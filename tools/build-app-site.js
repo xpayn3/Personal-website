@@ -24,7 +24,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 81;
+const CSS_V = 82;
 const RP_V = 2;           // report.js
 const JS_V = 28;
 
@@ -68,6 +68,8 @@ function siteFor(app, docs) {
   const iconFile = path.join(ROOT, site.path, 'icons.json');
   const ICONS = fs.existsSync(iconFile) ? JSON.parse(fs.readFileSync(iconFile, 'utf8')) : { icons: {}, items: {} };
   const GROUP_COLOURS = ['#f5a524', '#0d99ff', '#2fd180', '#a78bfa', '#ff8a4c', '#2dd4bf', '#f472b6'];
+  // A release may carry a name beside its number (`name` on a changelog version), as macOS releases do.
+  const relName = (v) => (v && v.name ? `<b class="rel-code">${esc(v.name)}</b>` : '');
   const svgIcon = (name) => { const nodes = ICONS.icons[name]; if (!nodes) return ''; return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + nodes.map(([tag, attrs]) => '<' + tag + Object.entries(attrs).map(([k, v]) => ' ' + k + '="' + v + '"').join('') + '/>').join('') + '</svg>'; };
 
   const docLink = (re) => { const hit = docs && docs.articles.find(a => re.test(a.slug)); return hit ? `docs/${hit.slug}.html` : 'docs.html'; };
@@ -253,7 +255,7 @@ ${site.claude ? '        <a href="claude.html">Work with Claude</a>\n' : ''}    
   const logEntry = (entry, open) => `
         <li id="v${esc(entry.version)}">
           <div class="log-head">
-            <strong>v${esc(entry.version)}</strong>${entry.latest ? '<em>Latest</em>' : entry.next ? '<em>Next</em>' : ''}${entry.date ? `<span>${esc(entry.date)}</span>` : ''}${entry.fixes ? `<span>${entry.fixes} ${entry.fixes === 1 ? 'fix' : 'fixes'}</span>` : ''}
+            <strong>v${esc(entry.version)}${relName(entry)}</strong>${entry.latest ? '<em>Latest</em>' : entry.next ? '<em>Next</em>' : ''}${entry.date ? `<span>${esc(entry.date)}</span>` : ''}${entry.fixes ? `<span>${entry.fixes} ${entry.fixes === 1 ? 'fix' : 'fixes'}</span>` : ''}
           </div>
           <div class="log-body">
             <p>${esc(entry.summary)}</p>${entry.items && entry.items.length && open ? `
@@ -746,7 +748,7 @@ ${claudeBand()}
       <div class="wrap split">
         <div class="split-head">
           <p class="kicker">Latest release</p>
-          <h2>v${esc(latest.version)}</h2>
+          <h2>v${esc(latest.version)}${relName(latest)}</h2>
           <a class="more" href="changelog.html">Full changelog</a>
         </div>
         <div class="split-body">
@@ -1030,7 +1032,7 @@ ${docs.articles.filter(a => a.group === group.id).map(a => `          <li data-w
         </div>
         <ol class="releases">
 ${releases.map(r => `          <li>
-            <div class="rel-name"><strong>v${esc(r.version)}</strong>${r.latest ? '<em>Latest</em>' : ''}${r.date ? `<span>${esc(r.date.split(' · ')[0])}</span>` : ''}</div>
+            <div class="rel-name"><strong>v${esc(r.version)}${relName(r)}</strong>${r.latest ? '<em>Latest</em>' : ''}${r.date ? `<span>${esc(r.date.split(' · ')[0])}</span>` : ''}</div>
             <div class="rel-actions"><a class="more" href="changelog.html#v${esc(r.version)}">What changed</a><a class="btn" href="${repo}/archive/refs/tags/v${esc(r.version)}.zip" download rel="noopener" aria-label="Download v${esc(r.version)} as a zip">Download .zip</a></div>
           </li>`).join('\n')}
         </ol>

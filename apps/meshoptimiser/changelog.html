@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>Changelog — MeshOptimiser</title>
-  <meta name="description" content="What changed in each version of MeshOptimiser, newest first. Latest: v0.23.0." />
+  <meta name="description" content="What changed in each version of MeshOptimiser, newest first. Latest: v0.24.0." />
   <link rel="icon" type="image/svg+xml" href="../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/changelog" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="Changelog — MeshOptimiser" />
-  <meta property="og:description" content="What changed in each version of MeshOptimiser, newest first. Latest: v0.23.0." />
+  <meta property="og:description" content="What changed in each version of MeshOptimiser, newest first. Latest: v0.24.0." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/changelog" />
   <meta property="og:type" content="website" />
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=81" />
+  <link rel="stylesheet" href="site.css?v=82" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -52,9 +52,38 @@
     </section>
     <section class="wrap">
       <ol class="log">
+        <li id="v0.24.0">
+          <div class="log-head">
+            <strong>v0.24.0<b class="rel-code">Soča</b></strong><em>Latest</em><span>12 Oct 2026 · 20:58</span><span>4 fixes</span>
+          </div>
+          <div class="log-body">
+            <p>Into the mesh. Pick points, edges and polygons and move, weld, fill or dissolve them. The shortcuts window is a keyboard now, and every key is yours to change.</p>
+            <ul>
+              <li><b class="is-new">New</b><span>Edit mesh. Points, Edges, Polygons and Model, as in Cinema 4D. Keys 1, 2, 3 and 4 switch between them, and the selected parts show their polygons, not their triangles.</span></li>
+              <li><b class="is-new">New</b><span>Three ways to pick: Click, Box and Brush. Shift adds, Ctrl takes away, a double-click takes the whole loop. Ctrl+A takes everything.</span></li>
+              <li><b class="is-new">New</b><span>Move what you picked. The gizmo moves, turns and scales the pieces, Del takes them out, Reverse normals turns faces round. Each is one undo.</span></li>
+              <li><b class="is-new">New</b><span>Six tools for the pieces: Dissolve, Planarize, Straighten, Weld, Fill and Extract. Take points out without a hole, flatten polygons, straighten a line, join points, close a hole, lift polygons into a part of their own.</span></li>
+              <li><b class="is-new">New</b><span>The gizmo works along World or Local axes. Hold or right-click Move, Rotate or Scale to choose. In Edit mesh there is Normal too.</span></li>
+              <li><b class="is-new">New</b><span>A keyboard in the shortcuts window. Lit keys carry their command. Hold Ctrl, Shift or Alt and the keyboard shows what those do.</span></li>
+              <li><b class="is-new">New</b><span>Your own keys. Click a shortcut and press the new keys. A key that is taken warns you first. Keep your set in a profile, one per person if you like.</span></li>
+              <li><b class="is-new">New</b><span>Quick remesh on B. A column of levels opens under the pointer and the part changes as you move. Let go to keep it.</span></li>
+              <li><b class="is-new">New</b><span>Untriangulate clears more. It can take away the points on straight lines, and tidy faces that are only nearly flat.</span></li>
+              <li><b class="is-new">New</b><span>A Scale switch in the Transform panel, and a group can be scaled: type a scale for a group and its parts follow.</span></li>
+              <li><b class="is-new">New</b><span>Claude’s screenshots can fill the picture: framed on the whole model or on the selected parts.</span></li>
+              <li><b class="is-polish">Polish</b><span>The view modes moved to Alt+1 to Alt+4, so 1 to 4 can switch the Edit mesh mode.</span></li>
+              <li><b class="is-polish">Polish</b><span>Settings › Appearance uses the app’s own colour picker, and the window steps aside while you drag so you see the colour on the real thing.</span></li>
+              <li><b class="is-polish">Polish</b><span>A faster start. The browser keeps the app’s files and only asks whether one changed.</span></li>
+              <li><b class="is-polish">Polish</b><span>Wireframe with Quads no longer freezes the page on big parts.</span></li>
+              <li><b class="is-fix">Fix</b><span>A click on the gizmo in Edit mesh is no longer an empty Move in the history.</span></li>
+              <li><b class="is-fix">Fix</b><span>Delete in Edit mesh keeps the polygons of what stays, and Reverse normals no longer grows the mesh.</span></li>
+              <li><b class="is-fix">Fix</b><span>After a big change of scale the view follows, and parts no longer vanish as too small.</span></li>
+              <li><b class="is-fix">Fix</b><span>Alt+1 to Alt+4 work on a Mac.</span></li>
+            </ul>
+          </div>
+        </li>
         <li id="v0.23.0">
           <div class="log-head">
-            <strong>v0.23.0</strong><em>Latest</em><span>12 Oct 2026 · 16:41</span><span>15 fixes</span>
+            <strong>v0.23.0</strong><span>12 Oct 2026 · 16:41</span><span>15 fixes</span>
           </div>
           <div class="log-body">
             <p>Cleaner meshes, your way. Decide how a CAD file turns into triangles, close the holes that used to slip through, and find anything, even a setting, by typing a word or two.</p>
@@ -433,7 +462,7 @@
           <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="download.html">Download v0.23.0</a>
+          <a class="btn is-primary is-large" href="download.html">Download v0.24.0</a>
           <a class="btn is-large btn-demo" href="demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Try the demo</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>

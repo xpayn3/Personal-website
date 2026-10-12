@@ -393,6 +393,8 @@ b.is-refactor { color: var(--refactor); }
 .rel-name strong { font-size: 20px; font-weight: 500; }
 .rel-name em { color: var(--accent); font-size: 12px; font-style: normal; letter-spacing: 0.1em; text-transform: uppercase; }
 .rel-name span { color: var(--tx-3); font-size: 14px; }
+/* a release's name, beside its number */
+.rel-code { margin-left: 0.45em; color: var(--tx-2); font-weight: 400; }
 .rel-actions { display: flex; align-items: center; gap: 16px; }
 .split-note { color: var(--tx-2); font-size: 15px; max-width: 32ch; }
 
