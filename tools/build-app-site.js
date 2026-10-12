@@ -26,7 +26,7 @@ const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
 const CSS_V = 79;
 const RP_V = 2;           // report.js
-const JS_V = 26;
+const JS_V = 27;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -883,7 +883,7 @@ ${group.items.map(([name, line, flag]) => `          <li><i class="ico">${svgIco
 
 
   // ---- docs: a knowledge base (docs-content.js) ----
-  // Text in an article may hold: `code`, [[Ctrl + K]] for keys, {{Fill holes}}
+  // Text in an article may hold: `code`, [[Ctrl + K]] for keys, {{Remove holes}}
   // for the name of something in the app, [words](#slug) for another article
   // and [words](https://…) for a link out.
   const rich = (text) => esc(text)
@@ -1106,7 +1106,7 @@ ${reportKinds.map(([key, label]) => `              <label class="rp-chip"><input
           </section>
 
           <section class="rp-card" aria-labelledby="rp-h2">
-            <h2 id="rp-h2"><i>02</i>What happened?</h2>${rpField('f-title', 'A short title <b>needed</b>', rpInput('f-title', 'maxlength="120" placeholder="For example: Fill holes leaves one hole open on a bracket"'))}${rpField('f-where', 'Where in the app?', rpInput('f-where', 'maxlength="160" placeholder="The tool, the menu, the export format, or the window"'), 'Optional, but it saves a question.')}${rpField('f-steps', 'What did you do? <b>needed</b>', rpArea('f-steps', 5, 'placeholder="1. I opened a STEP file of 400 parts&#10;2. I pressed P to open Fill holes&#10;3. I pressed Enter"'), 'Step by step, as if you were telling someone who has never used the app.')}
+            <h2 id="rp-h2"><i>02</i>What happened?</h2>${rpField('f-title', 'A short title <b>needed</b>', rpInput('f-title', 'maxlength="120" placeholder="For example: Remove holes leaves one hole open on a bracket"'))}${rpField('f-where', 'Where in the app?', rpInput('f-where', 'maxlength="160" placeholder="The tool, the menu, the export format, or the window"'), 'Optional, but it saves a question.')}${rpField('f-steps', 'What did you do? <b>needed</b>', rpArea('f-steps', 5, 'placeholder="1. I opened a STEP file of 400 parts&#10;2. I pressed P to open Remove holes&#10;3. I pressed Enter"'), 'Step by step, as if you were telling someone who has never used the app.')}
             <div class="rp-two">${rpField('f-expected', 'What did you expect?', rpArea('f-expected', 3))}${rpField('f-actual', 'What happened instead?', rpArea('f-actual', 3, 'placeholder="The exact words of any message are the most useful part."'))}
             </div>
             <div class="rp-two">${rpField('f-often', 'How often does it happen?', '<select id="f-often"><option value="">I am not sure</option><option>Every time</option><option>Sometimes</option><option>Only once</option></select>')}${rpField('f-before', 'Did it work before?', '<select id="f-before"><option value="">I do not know</option><option>Yes, in an earlier version</option><option>No, it never worked</option></select>')}

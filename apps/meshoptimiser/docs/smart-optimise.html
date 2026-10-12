@@ -92,7 +92,7 @@
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
         <a href="../docs/fasteners.html">Fasteners</a>
         <a href="../docs/stacked-copies.html">Stacked copies</a>
-        <a href="../docs/fill-holes.html">Fill holes</a>
+        <a href="../docs/fill-holes.html">Remove holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
         <a href="../docs/decimate.html">Decimate</a>
@@ -166,7 +166,7 @@
             <div><dt>Remove parts hidden inside</dt><dd>Parts that cannot be seen from outside, from any direction. See <a href="../docs/select-hidden-parts.html">Select hidden parts</a>.</dd></div>
             <div><dt>Bolts, nuts, washers</dt><dd>Found by their shape, up to a thread of M30, as in <a href="../docs/fasteners.html">Fasteners</a>. <span class="ui">Keep</span> leaves them alone. <span class="ui">Simplify</span> turns each into a plain cylinder. <span class="ui">Delete</span> removes them.</dd></div>
             <div><dt>Remove parts under</dt><dd>Parts whose box, measured from corner to corner, is shorter than this share of the whole model. 0 leaves small parts alone. See <a href="../docs/delete-small-parts.html">Delete small parts</a>.</dd></div>
-            <div><dt>Fill holes</dt><dd>Closes holes in flat faces, with the settings and the size limit of the Fill holes panel. See <a href="../docs/fill-holes.html">Fill holes</a>.</dd></div>
+            <div><dt>Remove holes</dt><dd>Closes holes in flat faces, with the settings and the size limit of the Remove holes panel. See <a href="../docs/fill-holes.html">Remove holes</a>.</dd></div>
             <div><dt>Reduce triangles</dt><dd>A switch of its own. On: the densest meshes are reduced until the whole scene has the number of triangles in <span class="ui">Triangle target</span>, as in <a href="../docs/fit-to-budget.html">Fit to budget</a>. Off: the run only removes and tidies, and every mesh that stays keeps all its triangles. If the target is not lower than the scene has now, nothing is reduced.</dd></div>
             <div><dt>Triangle target</dt><dd>How many triangles the whole scene may have after the run. You can write <code>150000</code>, <code>150k</code> or <code>1.5m</code>. Choosing a level sets it from the scene you have now. A number you type is kept.</dd></div>
           </dl>
@@ -181,7 +181,7 @@
             <li><a href="../docs/fasteners.html">Fasteners</a></li>
             <li><a href="../docs/select-hidden-parts.html">Select hidden parts</a></li>
             <li><a href="../docs/delete-small-parts.html">Delete small parts</a></li>
-            <li><a href="../docs/fill-holes.html">Fill holes</a></li>
+            <li><a href="../docs/fill-holes.html">Remove holes</a></li>
             <li><a href="../docs/fit-to-budget.html">Fit to budget</a></li>
           </ul></div>
         </div>
@@ -250,6 +250,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=26"></script>
+  <script defer src="../site.js?v=27"></script>
 </body>
 </html>

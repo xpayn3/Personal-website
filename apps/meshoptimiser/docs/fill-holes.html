@@ -7,12 +7,12 @@
   <meta name="theme-color" content="#101010" />
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
-  <title>Fill holes — MeshOptimiser Docs</title>
+  <title>Remove holes — MeshOptimiser Docs</title>
   <meta name="description" content="Close bolt holes, slots, pockets and lettering in flat faces. Each closed hole removes the triangles of its walls." />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/fill-holes" />
   <meta property="og:site_name" content="MeshOptimiser" />
-  <meta property="og:title" content="Fill holes — MeshOptimiser Docs" />
+  <meta property="og:title" content="Remove holes — MeshOptimiser Docs" />
   <meta property="og:description" content="Close bolt holes, slots, pockets and lettering in flat faces. Each closed hole removes the triangles of its walls." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/fill-holes" />
@@ -92,7 +92,7 @@
         <a href="../docs/select-hidden-parts.html">Select hidden parts</a>
         <a href="../docs/fasteners.html">Fasteners</a>
         <a href="../docs/stacked-copies.html">Stacked copies</a>
-        <a href="../docs/fill-holes.html" aria-current="page">Fill holes</a>
+        <a href="../docs/fill-holes.html" aria-current="page">Remove holes</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
         <a href="../docs/decimate.html">Decimate</a>
@@ -133,15 +133,16 @@
       </nav>
       <article class="kb-article">
         <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#lighter">Make it lighter</a></p>
-        <h1>Fill holes</h1>
+        <h1>Remove holes</h1>
         <p class="lead">Close bolt holes, slots, pockets and lettering in flat faces. Each closed hole removes the triangles of its walls.</p>
         <div class="kb-body">
-          <p>A plate with forty bolt holes carries forty small cylinders of triangles that nobody notices from a distance. Fill holes closes holes in flat faces and leaves the rest of each part exactly as it was. The part keeps its outline and loses the triangles inside the holes.</p>
+          <p>A plate with forty bolt holes carries forty small cylinders of triangles that nobody notices from a distance. Remove holes closes holes in flat faces and leaves the rest of each part exactly as it was. The part keeps its outline and loses the triangles inside the holes.</p>
           <p>With the limit at 12 mm it closes bolt holes, slots and pockets up to that size, and leaves bosses and the bore of a washer or a nut alone.</p>
-          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-fill-holes.webp" data-group="article" data-caption="Fill holes: closes bolt holes, slots and pockets in flat faces and leaves the rest alone."><img src="../../../Images/apps/meshoptimiser-fill-holes.webp" alt="MeshOptimiser: Fill holes: closes bolt holes, slots and pockets in flat faces and leaves the rest alone." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Fill holes: closes bolt holes, slots and pockets in flat faces and leaves the rest alone.</figcaption></figure>
+          <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-fill-holes.webp" data-group="article" data-caption="Remove holes: closes bolt holes, slots and pockets in flat faces and leaves the rest alone."><img src="../../../Images/apps/meshoptimiser-fill-holes.webp" alt="MeshOptimiser: Remove holes: closes bolt holes, slots and pockets in flat faces and leaves the rest alone." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Remove holes: closes bolt holes, slots and pockets in flat faces and leaves the rest alone.</figcaption></figure>
           <h2 id="what-it-closes-and-what-it-leaves">What it closes, and what it leaves</h2>
           <ul class="kb-points">
             <li>Closed: holes that go right through, holes with a floor, counterbores, slots, pockets and engraved lettering in flat faces.</li>
+            <li>Countersinks and flared holes: the hole counts by its bore. The wide opening of a countersink may be up to three times the limit and is closed with the hole.</li>
             <li>Left alone: a boss or a pin that stands up from a face.</li>
             <li>Left alone: an opening that is what the part is, such as the bore of a washer, a nut or a bushing.</li>
             <li>Left alone: an opening that leads into a hollow space or out through a curved surface.</li>
@@ -151,9 +152,9 @@
           <h2 id="steps">Steps</h2>
           <ol class="kb-steps">
             <li>Select the parts to work on. With nothing selected, it works on every visible part.</li>
-            <li>Press <kbd>P</kbd>, or click <span class="ui">Fill holes</span> on the bottom toolbar. The panel opens at the bottom left of the viewport.</li>
+            <li>Press <kbd>P</kbd>, or click <span class="ui">Remove holes</span> on the bottom toolbar. The panel opens at the bottom left of the viewport.</li>
             <li>Set <span class="ui">up to</span> to the largest hole you want closed, in millimetres, measured across the hole’s widest point. It starts at 12.</li>
-            <li>Press <span class="ui">Fill holes</span>, or <kbd>Enter</kbd>.</li>
+            <li>Press <span class="ui">Remove holes</span>, or <kbd>Enter</kbd>.</li>
             <li>The holes close. The app reports how many, and the saving shows beside the triangle count.</li>
           </ol>
           <h2 id="what-the-advanced-options-mean">What the advanced options mean</h2>
@@ -166,6 +167,7 @@
             <div><dt>Raised, up to</dt><dd>A raised detail is flattened only if it stands no higher than this above its face. Embossed type is usually 0.1 to 0.5 mm high.</dd></div>
             <div><dt>Keep openings that shape the part</dt><dd>On: an opening that takes up much of its face and of the part is kept, such as the bore of a washer or a window in a frame. Off: only the size limit decides.</dd></div>
             <div><dt>Smallest hole</dt><dd>Holes narrower than this are left alone.</dd></div>
+            <div><dt>Remove vertices left over</dt><dd>On: the points that ringed each hole are taken out of the flat face, and the face is triangulated again with the fewest triangles. Press <span class="ui">Remove holes</span> a second time to clean the same way what an earlier run, or an earlier tool, left behind, even when no hole is left to close. It also works on parts that are already in n-gons. Loose walls that a broken file left floating in an opening, a cut-loose tube or cup that belongs to no solid, go with it.</dd></div>
             <div><dt>Depth limit</dt><dd>How far the inside of a hole may reach, as a multiple of the size limit. Lower it to leave deep bores alone.</dd></div>
             <div><dt>Flatness</dt><dd>How far apart the directions of two triangles may be and still count as one flat face. Raise it for meshes whose flat faces are slightly bent.</dd></div>
             <div><dt>Reset to defaults</dt><dd>Puts every option back.</dd></div>
@@ -177,6 +179,8 @@
             <li>Start with a small limit, look at the result, and raise it. A limit that is too high closes openings you wanted, such as a cable cut-out.</li>
             <li>The filled result is what gets saved and exported.</li>
             <li>A hole that was formed by pushing through the sheet, with a collar on the other side, is closed, and its collar stays as a small stub.</li>
+            <li>Points of a closed hole still show in the Lines view? Press <span class="ui">Remove holes</span> again: with <span class="ui">Remove vertices left over</span> on, it removes them.</li>
+            <li>A hole whose wall is wound the wrong way round, or whose edge is doubled, is found and closed too, instead of being closed twice.</li>
           </ul>
           <p><a href="../docs/smart-optimise.html">Smart optimise</a> can run this command as one of its steps, with the settings and the size limit of this panel.</p>
           <div class="kb-see"><h2>Related</h2><ul>
@@ -251,6 +255,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=26"></script>
+  <script defer src="../site.js?v=27"></script>
 </body>
 </html>

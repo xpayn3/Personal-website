@@ -490,7 +490,7 @@
         const dec = (v) => L('Decimate −' + Math.round(v * 100) + '%', 'triangle', fmt(total) + ' → ' + fmt(Math.round(total * (1 - v))), cmd.dec(v), { off: few });
         return [
           { leaf: L('Hide', 'eye-off', 'H', cmd.hide) },
-          { group: 'Reduce', icon: 'triangle', items: [dec(0.5), dec(0.25), dec(0.75), dec(0.9), L('Smart fit', 'wand-2', 'Ctrl+B', cmd.fit(false)), L('Split…', 'split', 'X', note('Split… opens a card in the app, where you choose how strict to be.')), L('Fill holes…', 'circle-off', 'P', note('Fill holes… opens a card in the app, where you set the size and the depth.'))] },
+          { group: 'Reduce', icon: 'triangle', items: [dec(0.5), dec(0.25), dec(0.75), dec(0.9), L('Smart fit', 'wand-2', 'Ctrl+B', cmd.fit(false)), L('Split…', 'split', 'X', note('Split… opens a card in the app, where you choose how strict to be.')), L('Remove holes…', 'circle-off', 'P', note('Remove holes… opens a card in the app, where you set the size and the depth.'))] },
           { leaf: L('Delete', 'trash-2', 'Del', cmd.del, { danger: true }) },
           { group: 'More', icon: 'ellipsis', items: [
             isolated ? L('Show all', 'eye', 'Alt+H', cmd.showAll) : L('Isolate', 'focus', 'S', cmd.isolate),
