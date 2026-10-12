@@ -24,7 +24,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 77;
+const CSS_V = 79;
 const RP_V = 2;           // report.js
 const JS_V = 26;
 
@@ -133,7 +133,7 @@ ${JSON.stringify({
         <span>${esc(app.title)}</span>${app.stage ? `<i>${esc(app.stage)}</i>` : ''}
       </a>
       <nav class="nav" id="nav" aria-label="${esc(app.title)}">
-${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.key === page.key || p.key === page.under ? ' aria-current="page"' : ''}>${p.label}${p.soon && site.claude ? '<em class="nav-soon">Soon</em>' : ''}</a>`).join('\n')}
+${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.key === page.key || p.key === page.under ? ' aria-current="page"' : ''}>${p.label}${p.soon && site.claude && (site.claude.badge || site.claude.tag) ? `<em class="${site.claude.badge ? 'nav-soon' : 'nav-new'}">${site.claude.badge ? 'Soon' : esc(site.claude.tag)}</em>` : ''}</a>`).join('\n')}
         <a class="nav-out" href="${repo}" rel="noopener">${GH_ICON}GitHub</a>
       </nav>
       <a class="btn is-primary bar-get" href="download.html"${page.key === 'download' ? ' aria-current="page"' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
@@ -443,7 +443,8 @@ ${pick.map(([key, label]) => `            <li><img src="library/${esc(key)}.webp
   };
 
   // Claude: the strip on the home page and the page of its own (claude.html). All words are `site.claude` in apps.js.
-  const SOON = (c, large) => `<span class="tag-soon${large ? ' is-large' : ''}">${esc(c.badge)}</span>`;
+  // Coming soon (amber) while `badge` is set; once it ships, `tag` ('New') shows in the accent colour; neither: nothing
+  const SOON = (c, large) => (c.badge || c.tag) ? `<b>·</b><span class="${c.badge ? 'tag-soon' : 'tag-new'}${large ? ' is-large' : ''}">${esc(c.badge || c.tag)}</span>` : '';
   const claudeBand = () => {
     const c = site.claude;
     if (!c) return '';
@@ -452,7 +453,7 @@ ${pick.map(([key, label]) => `            <li><img src="library/${esc(key)}.webp
     <section class="band cl-band" id="claude">
       <div class="wrap cl-band-in">
         <div class="cl-band-copy">
-          <p class="kicker">${esc(c.band.kicker)}<b>·</b>${SOON(c, true)}</p>
+          <p class="kicker">${esc(c.band.kicker)}${SOON(c, true)}</p>
           <h2>${esc(c.band.title)}</h2>
           <p class="lead">${esc(c.band.line)}</p>
           <ul class="cl-say">
@@ -462,8 +463,8 @@ ${c.band.prompts.map(p => `            <li>${esc(p)}</li>`).join('\n')}
         </div>
         <figure class="cl-band-art">
           <a class="zoom" href="${asset(src)}" data-group="claude" data-caption="${esc(caption)}"><img src="${asset(src)}" alt="${esc(app.title + ': ' + caption)}" width="2400" height="1350" loading="lazy" decoding="async" /></a>
-          <span class="soon-ribbon">${esc(c.badge)}</span>
-          <figcaption>${esc(caption)}</figcaption>
+${c.badge ? `          <span class="soon-ribbon">${esc(c.badge)}</span>
+` : ''}          <figcaption>${esc(caption)}</figcaption>
         </figure>
       </div>
     </section>`;
@@ -761,9 +762,9 @@ ${(latest.items || []).slice(0, 4).map(([tag, line]) => `            <li><b clas
     const c = site.claude;
     const docsLink = docs && docs.articles.some(a => a.slug === 'work-with-claude') ? 'docs/work-with-claude.html' : 'docs.html';
     return head(page, c.titleTag, c.description) + header(page) + `
-    <div class="soon-banner" role="note"><div class="wrap soon-banner-in"><strong>${esc(c.badge)}</strong><span>${esc(c.soon)}</span></div></div>
-    <section class="wrap page-head">
-      <p class="kicker">${esc(c.kicker)}<b>·</b>${SOON(c, true)}</p>
+${c.badge ? `    <div class="soon-banner" role="note"><div class="wrap soon-banner-in"><strong>${esc(c.badge)}</strong><span>${esc(c.soon)}</span></div></div>
+` : ''}    <section class="wrap page-head">
+      <p class="kicker">${esc(c.kicker)}${SOON(c, true)}</p>
       <h1>${esc(c.headline)}</h1>
       <p class="lead">${esc(c.lead)}</p>
       <div class="actions">
@@ -1013,6 +1014,7 @@ ${docs.articles.filter(a => a.group === group.id).map(a => `          <li data-w
           <li><i>02</i><h3>Start it</h3><p>${esc(app.start.text)}</p></li>
           <li><i>03</i><h3>Drop a file</h3><p>${esc(app.steps[0][1])}</p></li>
         </ol>${commands(app.start.commands)}
+        <p class="steps-note">From version 0.22.0 on, the app updates itself: open Settings, then Updates. It downloads a few megabytes, checks them, and keeps the old version so you can go back. An older version needs one manual update first. <a href="${docLink(/stop-restart/)}">How updating works</a></p>
       </div>
     </section>
 

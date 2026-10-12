@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>Changelog — MeshOptimiser</title>
-  <meta name="description" content="What changed in each version of MeshOptimiser, newest first. Latest: v0.21.0." />
+  <meta name="description" content="What changed in each version of MeshOptimiser, newest first. Latest: v0.22.0." />
   <link rel="icon" type="image/svg+xml" href="../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/changelog" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="Changelog — MeshOptimiser" />
-  <meta property="og:description" content="What changed in each version of MeshOptimiser, newest first. Latest: v0.21.0." />
+  <meta property="og:description" content="What changed in each version of MeshOptimiser, newest first. Latest: v0.22.0." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/changelog" />
   <meta property="og:type" content="website" />
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=77" />
+  <link rel="stylesheet" href="site.css?v=79" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -35,7 +35,7 @@
       </a>
       <nav class="nav" id="nav" aria-label="MeshOptimiser">
         <a href="features.html">Features</a>
-        <a href="claude.html">Claude<em class="nav-soon">Soon</em></a>
+        <a href="claude.html">Claude<em class="nav-new">New</em></a>
         <a href="docs.html">Docs</a>
         <a href="changelog.html" aria-current="page">Changelog</a>
         <a class="nav-out" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>GitHub</a>
@@ -52,9 +52,36 @@
     </section>
     <section class="wrap">
       <ol class="log">
+        <li id="v0.22.0">
+          <div class="log-head">
+            <strong>v0.22.0</strong><em>Latest</em><span>12 Oct 2026 · 08:57</span><span>5 fixes</span>
+          </div>
+          <div class="log-body">
+            <p>Claude can drive the optimiser, the app updates itself, and a crash no longer costs the scene. Connect the app to Claude and it can use the same 65 tools you click, with your permission and one undo for every change. Settings, Updates installs a newer version in a few megabytes. While a scene has changes that are not saved, a copy is kept, and the app offers it back after a crash.</p>
+            <ul>
+              <li><b class="is-new">New</b><span>Work with Claude. Switch on Let Claude connect in Settings, add the app to Claude once with one command, and Claude can use the same tools you click: 65 of them, from finding bolts and hidden parts to Smart optimise, reducing to a size, pictures and exports. It asks before it changes the model, and every change is one undo step.</span></li>
+              <li><b class="is-new">New</b><span>You stay in charge. Four switches (change the model; move, rename and group; delete; open files and save exports), an Allow or Don’t allow prompt before every edit, and deleting always asks. A pill in the top bar says whether Claude is listening, working or waiting for you, and Settings, Claude lists what it asked for and what happened.</span></li>
+              <li><b class="is-new">New</b><span>Try it, watch it, stop it. Sixteen steps take a dry run (the app does it, reads the numbers and takes it back), one call takes a scene to a size, compare_images draws before and after, a whole folder can be done in one go, and long jobs show their progress with a Stop button.</span></li>
+              <li><b class="is-new">New</b><span>Claude arrives knowing the app: six playbooks, about fifty of the help articles and six ready-made jobs, served by the app’s own server. render_image makes pictures for a client up to 8192 pixels a side, and turntable_video saves the film.</span></li>
+              <li><b class="is-new">New</b><span>Updates inside the app. Settings, Updates looks for a newer version, shows what is new and installs it: a few megabytes of the app’s own files, checked against a fingerprint before any file is replaced, with one earlier version kept and a way back that works by itself if the new one does not start. Choose how often, Stable or Beta, and whether a card shows in the corner. Versions before this one need one manual update.</span></li>
+              <li><b class="is-new">New</b><span>Your scene back after a crash. While a scene has changes that are not saved, a copy is kept in the browser every 2 minutes (or 1, or 5, or off). After a crash the app offers it back, and the start screen shows it first as a wide yellow Continue card. Saving clears the copy, and a window you close or reload on purpose is not offered back.</span></li>
+              <li><b class="is-new">New</b><span>New scenes start the way you like. Settings, General has a unit and an up axis for every scene you start from now on.</span></li>
+              <li><b class="is-new">New</b><span>Keep sharp edges. Decimate and Fit to budget hold on to rims, steps and corners while the triangles around them go. It is on by default, and a part that is mostly hard edges, like a gear, is reduced as before.</span></li>
+              <li><b class="is-new">New</b><span>Meshopt compression and Faster to draw in Export, for GLB. Meshopt makes a file about a quarter of the plain size (Draco is smaller still). Faster to draw only puts the triangles in the order the graphics card likes, so any viewer opens it.</span></li>
+              <li><b class="is-new">New</b><span>A Tasks chip in the status bar shows every tab’s running job and can cancel it. Pointing at a row in the tree pulses the part, and pointing at a part lights its row. Properties has a Shading angle, and about forty more actions are in the search.</span></li>
+              <li><b class="is-new">New</b><span>Drop a folder to open the model in it. A glTF with an external .bin or textures asks for its folder. A converted STEP is kept as GLB, so its Recent card opens at once, and Explode can send each part along its own axis.</span></li>
+              <li><b class="is-fix">Fix</b><span>Closing or reloading a tab while a conversion runs now stops the converter at once, and the server cancels a job that nobody has asked about for ten minutes. Before, a core and gigabytes of memory could stay busy for hours.</span></li>
+              <li><b class="is-fix">Fix</b><span>The selection stays selected while a model explodes.</span></li>
+              <li><b class="is-fix">Fix</b><span>A tool run on an exploded model no longer offsets the bounding box twice.</span></li>
+              <li><b class="is-fix">Fix</b><span>The floor grid refits after a model is added to a scene or a library part arrives, and stays visible until the camera is nearly level with it.</span></li>
+              <li><b class="is-fix">Fix</b><span>Smart fit’s cylinder now copes with a ring that has a tab or ears.</span></li>
+              <li><b class="is-polish">Polish</b><span>The loader is a spinning low-poly sphere, and opening a STEP shows its six steps with times. The camera pill sits under the view cube, the left sidebar starts wider, the tree’s colours are on by default and turntable videos are sharper.</span></li>
+            </ul>
+          </div>
+        </li>
         <li id="v0.21.0">
           <div class="log-head">
-            <strong>v0.21.0</strong><em>Latest</em><span>9 Oct 2026 · 19:37</span>
+            <strong>v0.21.0</strong><span>9 Oct 2026 · 19:37</span>
           </div>
           <div class="log-body">
             <p>Show it and ship it. A turntable video saves one slow turn round the model as a WebM, the Export dialog has presets for where the file is going, and the Selection bar has the actions I reach for most.</p>
@@ -368,7 +395,7 @@
           <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="download.html">Download v0.21.0</a>
+          <a class="btn is-primary is-large" href="download.html">Download v0.22.0</a>
           <a class="btn is-large btn-demo" href="demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Try the demo</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>

@@ -1045,3 +1045,11 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 .cl-points-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 1020px) { .cl-points-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 760px) { .cl-points-3 { grid-template-columns: minmax(0, 1fr); } }
+
+/* Claude after its release: a small accent tag where the amber "Coming soon" used to be */
+.tag-new { display: inline-flex; align-items: center; height: 22px; padding: 0 10px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 16%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 42%, transparent); color: var(--accent); font-size: 11px; letter-spacing: 0.08em; white-space: nowrap; }
+.tag-new.is-large { height: 30px; padding: 0 14px; background: var(--accent); box-shadow: none; color: #fff; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
+.nav-new { margin-left: 7px; padding: 1px 7px; border-radius: 999px; background: var(--accent); color: #fff; font-size: 10px; font-style: normal; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; vertical-align: 1px; }
+
+.steps-note { max-width: 62ch; margin: 28px 0 0; color: var(--tx-2); font-size: 15px; line-height: 1.6; }
+.steps-note a { color: var(--accent); }

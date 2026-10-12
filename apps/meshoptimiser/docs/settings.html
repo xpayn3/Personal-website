@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>Settings — MeshOptimiser Docs</title>
-  <meta name="description" content="One window with eight sections and a search. What each section holds, in a sentence or two, from the start-up options to the look of the interface." />
+  <meta name="description" content="One window with ten sections and a search. What each section holds, in a sentence or two, from the start-up options to the look of the interface." />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/settings" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="Settings — MeshOptimiser Docs" />
-  <meta property="og:description" content="One window with eight sections and a search. What each section holds, in a sentence or two, from the start-up options to the look of the interface." />
+  <meta property="og:description" content="One window with ten sections and a search. What each section holds, in a sentence or two, from the start-up options to the look of the interface." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/settings" />
   <meta property="og:type" content="website" />
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=77" />
+  <link rel="stylesheet" href="../site.css?v=79" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -35,7 +35,7 @@
       </a>
       <nav class="nav" id="nav" aria-label="MeshOptimiser">
         <a href="../features.html">Features</a>
-        <a href="../claude.html">Claude<em class="nav-soon">Soon</em></a>
+        <a href="../claude.html">Claude<em class="nav-new">New</em></a>
         <a href="../docs.html" aria-current="page">Docs</a>
         <a href="../changelog.html">Changelog</a>
         <a class="nav-out" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>GitHub</a>
@@ -113,6 +113,7 @@
         <a href="../docs/work-with-claude.html">Work with Claude</a>
         <h2>Save and export</h2>
         <a href="../docs/save-scene.html">Save a scene</a>
+        <a href="../docs/crash-recovery.html">Get your scene back after a crash</a>
         <a href="../docs/export.html">Export</a>
         <a href="../docs/choose-format.html">Which format should I choose</a>
         <h2>Common jobs, start to finish</h2>
@@ -133,7 +134,7 @@
       <article class="kb-article">
         <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#around">Find your way around</a></p>
         <h1>Settings</h1>
-        <p class="lead">One window with eight sections and a search. What each section holds, in a sentence or two, from the start-up options to the look of the interface.</p>
+        <p class="lead">One window with ten sections and a search. What each section holds, in a sentence or two, from the start-up options to the look of the interface.</p>
         <div class="kb-body">
           <p>Open it with <kbd>Ctrl</kbd><kbd>,</kbd> or <span class="ui">Menu</span>, then <span class="ui">Settings…</span>. Changes apply as you make them. There is nothing to confirm: press <span class="ui">Done</span> or <kbd>Esc</kbd> to close the window.</p>
           <p>The list at the left has the sections. The field at the top searches every section at once. Press <kbd>Ctrl</kbd><kbd>F</kbd> to jump to it. While a search is typed, <kbd>Esc</kbd> clears it first. At the bottom of the list are links to <span class="ui">Help &amp; docs</span> and <span class="ui">Keyboard shortcuts</span>, and the version number.</p>
@@ -150,6 +151,8 @@
             <div><dt>Warn before leaving with unsaved changes</dt><dd>Closing or reloading the window asks first when a scene has changes that are not saved. On by default.</dd></div>
             <div><dt>Undo history</dt><dd>How many steps <kbd>Ctrl</kbd><kbd>Z</kbd> can go back: <span class="ui">Short</span> (50), <span class="ui">Normal</span> (200) or <span class="ui">Long</span> (500). A longer history uses more memory. See <a href="../docs/undo-redo.html">Undo and redo</a>.</dd></div>
             <div><dt>Delete groups when they become empty</dt><dd>Remove a group automatically when an action empties it. Off by default.</dd></div>
+            <div><dt>Keep a recovery copy</dt><dd>While a scene has changes that are not saved, a copy of it is kept inside this browser every minute, every 2 minutes (the default) or every 5 minutes, and only when something changed. If the app crashes, it offers the scene back. <span class="ui">Off</span> stops it. See <a href="../docs/crash-recovery.html">Get your scene back after a crash</a>.</dd></div>
+            <div><dt>New scenes: Unit and Up axis</dt><dd>What a scene you start from now on shows sizes in (mm, cm, m, in, ft, or none), and which way is up (Z-up for CAD, Y-up for Maya, glTF and Unity). It applies to every new tab and every reload. The scene you have open keeps its own; change that one under <span class="ui">Scene</span>.</dd></div>
           </dl>
           <h2 id="appearance">Appearance</h2>
           <p>The look of the interface. It does not change the model or the 3D view. <span class="ui">Reset</span> at the bottom puts everything in this section back to the defaults.</p>
@@ -196,6 +199,10 @@
             <div><dt>Skip tiny parts</dt><dd>While the view moves, leave out parts that would be only a few pixels across.</dd></div>
             <div><dt>Lower the resolution if it stutters</dt><dd>While a heavy scene moves, draw it a little coarser, and sharp again when it stops.</dd></div>
           </dl>
+          <h2 id="claude">Claude</h2>
+          <p>The connection that lets Claude work with the open scene: the switch, what it may do, whether it asks first, and what it has asked for. It is explained in <a href="../docs/work-with-claude.html">Work with Claude</a>. It is not in the hosted demo.</p>
+          <h2 id="updates">Updates</h2>
+          <p>Look for a newer version, choose how the app tells you, and go back to the one before. It is explained in <a href="../docs/stop-restart-update.html">Stop, restart and update</a>. It is not in the hosted demo.</p>
           <h2 id="scene">Scene</h2>
           <p>These belong to the open scene and are saved with it. <kbd>Ctrl</kbd><kbd>;</kbd> opens this section directly, and so does <span class="ui">Scene settings…</span> in the menu.</p>
           <dl class="table">
@@ -213,6 +220,7 @@
             <div><dt>File access</dt><dd>Permissions that let the app reopen a recent file without asking where it is.</dd></div>
             <div><dt>Import options</dt><dd>Shows the options window again for the formats where you ticked “Don’t ask again”.</dd></div>
             <div><dt>Panel sizes</dt><dd>The widths of the sidebars and the heights of the drawers.</dd></div>
+            <div><dt>Recovery copies</dt><dd>The copies kept of scenes with changes that are not saved. Delete them and a crash can no longer be recovered from until the next change.</dd></div>
             <div><dt>All settings</dt><dd>Puts every preference back to its default, the look of the interface included.</dd></div>
           </dl>
           <h2 id="about">About</h2>
@@ -256,7 +264,7 @@
           <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.21.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.22.0</a>
           <a class="btn is-large btn-demo" href="../demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Try the demo</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
