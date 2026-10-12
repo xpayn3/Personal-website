@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>Split — MeshOptimiser Docs</title>
-  <meta name="description" content="Take apart a mesh that arrived as one piece but is really several separate solids, so each can be selected on its own." />
+  <meta name="description" content="Take apart a mesh that arrived as one piece but is really several separate solids, or cut it into its faces, so each can be selected on its own." />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/split" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="Split — MeshOptimiser Docs" />
-  <meta property="og:description" content="Take apart a mesh that arrived as one piece but is really several separate solids, so each can be selected on its own." />
+  <meta property="og:description" content="Take apart a mesh that arrived as one piece but is really several separate solids, or cut it into its faces, so each can be selected on its own." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/split" />
   <meta property="og:type" content="website" />
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=79" />
+  <link rel="stylesheet" href="../site.css?v=80" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -93,11 +93,13 @@
         <a href="../docs/fasteners.html">Fasteners</a>
         <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Remove holes</a>
+        <a href="../docs/remove-floating-pieces.html">Remove floating pieces</a>
+        <a href="../docs/remesh.html">Remesh: Untriangulate and Triangulate</a>
         <a href="../docs/split.html" aria-current="page">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
         <a href="../docs/decimate.html">Decimate</a>
         <a href="../docs/fit-to-budget.html">Fit to budget</a>
-        <a href="../docs/cleanup.html">Auto cleanup and Tidy geometry</a>
+        <a href="../docs/cleanup.html">Quick fixes and tidying up</a>
         <a href="../docs/workflow.html">A sensible order to work in</a>
         <h2>Look and arrange</h2>
         <a href="../docs/view-modes.html">View modes</a>
@@ -134,9 +136,9 @@
       <article class="kb-article">
         <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#lighter">Make it lighter</a></p>
         <h1>Split</h1>
-        <p class="lead">Take apart a mesh that arrived as one piece but is really several separate solids, so each can be selected on its own.</p>
+        <p class="lead">Take apart a mesh that arrived as one piece but is really several separate solids, or cut it into its faces, so each can be selected on its own.</p>
         <div class="kb-body">
-          <p>Some files arrive with several solid pieces fused into one part: a bracket, its pin and two bolts as a single row in the tree. You cannot hide, delete or simplify one of them without the others. Split finds the pieces that do not touch and makes each one a part of its own.</p>
+          <p>Some files arrive with several solid pieces fused into one part: a bracket, its pin and two bolts as a single row in the tree. You cannot hide, delete or simplify one of them without the others. Split finds the pieces that do not touch and makes each one a part of its own. It can also cut a mesh into its faces, at the creases.</p>
           <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-split.webp" data-group="article" data-caption="Split: recovers the separate solids of a mesh that was fused on export. Here the whole gearbox, merged into one mesh, comes back as 206 parts."><img src="../../../Images/apps/meshoptimiser-split.webp" alt="MeshOptimiser: Split: recovers the separate solids of a mesh that was fused on export. Here the whole gearbox, merged into one mesh, comes back as 206 parts." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Split: recovers the separate solids of a mesh that was fused on export. Here the whole gearbox, merged into one mesh, comes back as 206 parts.</figcaption></figure>
           <h2 id="when-to-use-it">When to use it</h2>
           <p>When clicking one thing selects several things that are clearly separate objects. An STL file, for example, holds a whole model as a single mesh.</p>
@@ -157,24 +159,34 @@
             <div><dt>Normal</dt><dd>Also joins points that are a tiny distance apart, to allow for small rounding differences.</dd></div>
             <div><dt>Loose</dt><dd>Joins points within 0.1% of the model’s size, so solids that touch are joined on purpose. Use it when you want fewer, larger parts.</dd></div>
           </dl>
+          <p>Right under the four buttons is <span class="ui">Weld tolerance</span>. It is the same distance, set by hand, for when none of the four fits. It sits on the panel itself, not under Advanced. The line below it says what the distance comes to at the size of your model.</p>
           <p><span class="ui">Algorithm</span> chooses how connection is decided:</p>
           <dl class="table">
             <div><dt>Vertex connectivity</dt><dd>The default. Triangles that share a corner point belong together.</dd></div>
             <div><dt>Edge connectivity</dt><dd>Stricter. Triangles belong together only when they share a whole edge, so solids that meet at a single point stay separate.</dd></div>
             <div><dt>Spatial proximity (AABB)</dt><dd>Groups triangles by where they are in space instead of how they are connected. Useful when the connections in the file are fused but the solids are still apart.</dd></div>
             <div><dt>Hybrid (vertex + spatial)</dt><dd>Vertex connectivity first, then a second pass by position on any piece that still holds more than half of the mesh.</dd></div>
+            <div><dt>Faces (split at creases)</dt><dd>Every face becomes a part. Triangles that share an edge and lie within the <span class="ui">Face angle</span> of each other stay together, and every crease starts another part. A crease is an edge where the surface turns sharply. A flat face, or a smooth curved one, comes out as one part.</dd></div>
           </dl>
+          <p>Two fields sit under the list:</p>
+          <dl class="table">
+            <div><dt>Face angle</dt><dd>Shown only with <span class="ui">Faces (split at creases)</span>. Two neighbouring triangles are one face if the angle between them is no more than this. It starts at 20°, which keeps a smooth curve as one face. 5° follows every facet of a curve, and 60° keeps only the sharp creases.</dd></div>
+            <div><dt>Smallest part</dt><dd>For every method. Pieces with fewer triangles than this do not become parts of their own: together they make one more part. It starts at 0, where every piece is a part. Raise it to go from thousands of parts to a few.</dd></div>
+          </dl>
+          <h2 id="good-to-know">Good to know</h2>
+          <p>The pieces of a split part stay in every group the part was a member of.</p>
           <h2 id="undo">Undo</h2>
           <p>One split is one undo step: <kbd>Ctrl</kbd><kbd>Z</kbd> puts the part back together.</p>
           <aside class="kb-note"><p>If the message says no separable parts were found, the mesh is one connected solid at this setting. Try <span class="ui">Strict</span>, or the <span class="ui">Spatial proximity (AABB)</span> algorithm.</p></aside>
           <div class="kb-see"><h2>Related</h2><ul>
             <li><a href="../docs/parts-tree.html">The parts tree</a></li>
             <li><a href="../docs/select-parts.html">Select parts</a></li>
+            <li><a href="../docs/remesh.html">Remesh: Untriangulate and Triangulate</a></li>
             <li><a href="../docs/workflow.html">A sensible order to work in</a></li>
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">
-          <a class="is-before" href="../docs/fill-holes.html"><span>Before</span><strong>Remove holes</strong></a>
+          <a class="is-before" href="../docs/remesh.html"><span>Before</span><strong>Remesh: Untriangulate and Triangulate</strong></a>
           <a class="is-after" href="../docs/smart-fit.html"><span>Next</span><strong>Smart fit</strong></a>
         </nav>
       </article>
@@ -195,10 +207,10 @@
       <div class="wrap get-in">
         <div>
           <h2>Run it on your own machine.</h2>
-          <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
+          <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.22.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.23.0</a>
           <a class="btn is-large btn-demo" href="../demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Try the demo</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
@@ -238,6 +250,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=27"></script>
+  <script defer src="../site.js?v=28"></script>
 </body>
 </html>

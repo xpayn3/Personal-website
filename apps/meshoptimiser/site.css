@@ -682,15 +682,16 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 .wq-subico.is-hot div { color: var(--wtx); }
 .wq-items, .wq-fanlabels { position: absolute; left: 0; top: 0; width: 0; height: 0; }
 .wq-item { position: absolute; translate: -50% -50%; display: flex; flex-direction: column; align-items: center; gap: 2px; width: 56px; text-align: center; line-height: 1.1; color: var(--wtx); font-size: 11px; transition: scale 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), translate 0.22s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.wq-item span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .wq-item svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; color: var(--wtx2); }
 .wq-item.is-hot { scale: 1.08; translate: calc(-50% + var(--dx, 0px)) calc(-50% + var(--dy, 0px)); }
 .wq-item.is-hot, .wq-item.is-hot svg { color: #fff; }
 .wq-item.danger, .wq-item.danger svg { color: var(--er); }
 .wq-item.danger.is-hot, .wq-item.danger.is-hot svg { color: #fff; }
 .wq .is-off { opacity: 0.42; }
-.wq-lab { position: absolute; white-space: nowrap; padding: 2px 7px; border-radius: 999px; background: var(--pop); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.07); color: var(--wtx2); font-size: 11px; animation: wq-fade-in 0.22s var(--ease) backwards; animation-delay: calc(var(--j, 0) * 24ms + 70ms); transition: scale 0.15s var(--ease), background 0.08s var(--ease); }
+.wq-lab { position: absolute; white-space: nowrap; padding: 2px 7px; border-radius: 999px; background: var(--pop); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.07); color: var(--wtx2); font-size: 11px; visibility: hidden; }
 .wq-lab-r { margin-left: 8px; opacity: 0.55; font-size: 9px; }
-.wq-lab.is-hot { background: color-mix(in srgb, var(--ac) 40%, var(--bg3)); color: var(--wtx); scale: 1.03; }
+.wq-lab.is-hot { visibility: visible; background: color-mix(in srgb, var(--ac) 40%, var(--bg3)); color: var(--wtx); }
 @keyframes wq-fan-in { from { opacity: 0; transform: scale(0.86); } }
 @keyframes wq-fade-in { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .wq-sub, .wq-subico, .wq-lab { animation: none; } .wq-pop, .wq-pop2, .wand-part { transition: none; } .wq-pop.is-on, .wq-pop2.is-on { transform: none; } .wq-item.is-hot { scale: 1; translate: -50% -50%; } }

@@ -24,9 +24,9 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 79;
+const CSS_V = 80;
 const RP_V = 2;           // report.js
-const JS_V = 27;
+const JS_V = 28;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -147,7 +147,7 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
       <div class="wrap get-in">
         <div>
           <h2>Run it on your own machine.</h2>
-          <p>Free and open source under the ${esc(licence)} licence. ${esc(platform.replace(/\s*·\s*/g, ' and '))}; your files never leave the computer.</p>
+          <p>Free and open source, ${esc(licence)}. ${esc(platform.replace(/\s*·\s*/g, ' and '))}. Your files never leave the computer.</p>
         </div>
         <div class="actions">
           <a class="btn is-primary is-large" href="download.html">Download ${version ? 'v' + esc(version) : ''}</a>
@@ -994,7 +994,7 @@ ${docs.articles.filter(a => a.group === group.id).map(a => `          <li data-w
     <section class="wrap page-head is-get">
       <p class="kicker">Download</p>
       <h1>${esc(app.title)}${version ? ` <span>v${esc(version)}</span>` : ''}</h1>
-      <p class="lead">The current code as a zip, straight from GitHub. Free, open source, ${esc(licence)} licence. ${esc(platform.replace(/\s*·\s*/g, ' and '))}.</p>
+      <p class="lead">A zip straight from GitHub. Free, open source, ${esc(licence)}. ${esc(platform.replace(/\s*·\s*/g, ' and '))}.</p>
       <div class="actions">
         <a class="btn is-primary is-large" href="${zip}" download rel="noopener">Download .zip</a>
         ${DEMO_BTN}
@@ -1010,11 +1010,11 @@ ${docs.articles.filter(a => a.group === group.id).map(a => `          <li data-w
           <h2>Unzip, start, drop a file.</h2>
         </div>
         <ol class="steps">
-          <li><i>01</i><h3>Download and unzip</h3><p>Unpack the folder anywhere. There is no installer: everything, its Python environment included, lives in that folder.</p></li>
+          <li><i>01</i><h3>Download and unzip</h3><p>Unpack it anywhere. No installer: everything lives in that folder.</p></li>
           <li><i>02</i><h3>Start it</h3><p>${esc(app.start.text)}</p></li>
           <li><i>03</i><h3>Drop a file</h3><p>${esc(app.steps[0][1])}</p></li>
         </ol>${commands(app.start.commands)}
-        <p class="steps-note">From version 0.22.0 on, the app updates itself: open Settings, then Updates. It downloads a few megabytes, checks them, and keeps the old version so you can go back. An older version needs one manual update first. <a href="${docLink(/stop-restart/)}">How updating works</a></p>
+        <p class="steps-note">From 0.22.0 the app updates itself in Settings › Updates, and keeps the old version. Older versions need one manual update first. <a href="${docLink(/stop-restart/)}">How updating works</a></p>
       </div>
     </section>
 
@@ -1023,7 +1023,7 @@ ${docs.articles.filter(a => a.group === group.id).map(a => `          <li data-w
         <div class="split-head">
           <p class="kicker">Versions</p>
           <h2>The last three releases.</h2>
-          <p class="split-note">Need an older one? Each is the exact code of that release, as a zip.</p>
+          <p class="split-note">Each is the exact code of that release, as a zip.</p>
         </div>
         <ol class="releases">
 ${releases.map(r => `          <li>

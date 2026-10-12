@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=79" />
+  <link rel="stylesheet" href="../site.css?v=80" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -93,11 +93,13 @@
         <a href="../docs/fasteners.html">Fasteners</a>
         <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Remove holes</a>
+        <a href="../docs/remove-floating-pieces.html">Remove floating pieces</a>
+        <a href="../docs/remesh.html">Remesh: Untriangulate and Triangulate</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
         <a href="../docs/decimate.html">Decimate</a>
         <a href="../docs/fit-to-budget.html">Fit to budget</a>
-        <a href="../docs/cleanup.html">Auto cleanup and Tidy geometry</a>
+        <a href="../docs/cleanup.html">Quick fixes and tidying up</a>
         <a href="../docs/workflow.html">A sensible order to work in</a>
         <h2>Look and arrange</h2>
         <a href="../docs/view-modes.html">View modes</a>
@@ -143,6 +145,7 @@
           <ul class="kb-points">
             <li>Drag the top edge of the drawer to make it taller. Double-click the edge to reset it.</li>
             <li>One drawer is open at a time. The library, the materials dock and the console give way to each other.</li>
+            <li>To keep the library open next to the materials, press <span class="ui">Pop out as a floating window</span> in its header. The library becomes a window over the view: drag it by its head, and resize it from any edge or corner. The same button, now <span class="ui">Dock to the bottom</span>, puts it back. Where you left it is remembered in this browser.</li>
           </ul>
           <p>The drawer has two halves. On the left are the parts, in shelves, each with a small picture. On the right is the part you have picked: a view of it, its facts, its parameters, and the button that adds it.</p>
           <h2 id="what-is-in-it">What is in it</h2>
@@ -157,8 +160,8 @@
           <h2 id="find-a-part">Find a part</h2>
           <ul class="kb-points">
             <li><span class="ui">Search…</span> in the header filters all the shelves as you type, by name or by shelf.</li>
-            <li>The dropdown next to it shows one shelf at a time. <span class="ui">All shelves</span> shows everything.</li>
-            <li>The parts you used last wait on a shelf called <span class="ui">Recently used</span> at the top. Its <span class="ui">Clear</span> button forgets them.</li>
+            <li>The shelves are tabs in a row under the header. Click a tab to see one shelf at a time. <span class="ui">All</span> shows everything.</li>
+            <li>The parts you used last wait on a shelf called <span class="ui">Recently used</span> at the top, and under the tab <span class="ui">Recent</span>. Its <span class="ui">Clear</span> button forgets them.</li>
             <li>Pick a part and press the star in the right half to keep it on the <span class="ui">Favourites</span> shelf. Press the star again to take it off.</li>
             <li>Two buttons in the header switch between large and small tiles.</li>
           </ul>
@@ -172,7 +175,7 @@
           <p>What you set in the right half is what the part has when it goes in. The numbers you change stay until you close the app’s page.</p>
           <h2 id="add-a-part">Add a part</h2>
           <ol class="kb-steps">
-            <li>For a fastener, first choose its thread size and length in the drawer’s header, under <span class="ui">Fasteners</span>. M6 and 24 mm to begin with. Every screw, nut and washer you add comes out in that size, even one you changed in the right half.</li>
+            <li>For a fastener, first choose its thread size and length. They sit at the right of the row of tabs, beside the word <span class="ui">Fasteners</span>, and show only on the shelves they are for: open the tab <span class="ui">Fasteners</span> or <span class="ui">Nuts</span>. M6 and 24 mm to begin with. Every screw, nut and washer you add comes out in that size, even one you changed in the right half.</li>
             <li>Add the part in one of three ways: double-click its tile, or press <span class="ui">Add to scene</span> in the right half, or drag the tile into the viewport.</li>
             <li>A double-click or <span class="ui">Add to scene</span> puts the part on the selected part, or on the floor at the origin when nothing is selected.</li>
             <li>When you drag, a see-through copy follows the pointer and shows where the part will stand: square to the face under the pointer, or upright on the floor. It has the parameters you set. Let go to drop it.</li>
@@ -232,10 +235,10 @@
       <div class="wrap get-in">
         <div>
           <h2>Run it on your own machine.</h2>
-          <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
+          <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.22.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.23.0</a>
           <a class="btn is-large btn-demo" href="../demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Try the demo</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
@@ -275,6 +278,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=27"></script>
+  <script defer src="../site.js?v=28"></script>
 </body>
 </html>

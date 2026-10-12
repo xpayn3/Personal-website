@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>Colours and materials — MeshOptimiser Docs</title>
-  <meta name="description" content="Open the materials dock to see every material in the scene, recolour all the parts that share one, and assign materials to parts." />
+  <meta name="description" content="Open the materials dock to see every material in the scene, recolour all the parts that share one, assign a material with a button or by dragging it onto a par…" />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/colours-materials" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="Colours and materials — MeshOptimiser Docs" />
-  <meta property="og:description" content="Open the materials dock to see every material in the scene, recolour all the parts that share one, and assign materials to parts." />
+  <meta property="og:description" content="Open the materials dock to see every material in the scene, recolour all the parts that share one, assign a material with a button or by dragging it onto a par…" />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/colours-materials" />
   <meta property="og:type" content="website" />
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=79" />
+  <link rel="stylesheet" href="../site.css?v=80" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -93,11 +93,13 @@
         <a href="../docs/fasteners.html">Fasteners</a>
         <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Remove holes</a>
+        <a href="../docs/remove-floating-pieces.html">Remove floating pieces</a>
+        <a href="../docs/remesh.html">Remesh: Untriangulate and Triangulate</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
         <a href="../docs/decimate.html">Decimate</a>
         <a href="../docs/fit-to-budget.html">Fit to budget</a>
-        <a href="../docs/cleanup.html">Auto cleanup and Tidy geometry</a>
+        <a href="../docs/cleanup.html">Quick fixes and tidying up</a>
         <a href="../docs/workflow.html">A sensible order to work in</a>
         <h2>Look and arrange</h2>
         <a href="../docs/view-modes.html">View modes</a>
@@ -134,7 +136,7 @@
       <article class="kb-article">
         <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#look">Look and arrange</a></p>
         <h1>Colours and materials</h1>
-        <p class="lead">Open the materials dock to see every material in the scene, recolour all the parts that share one, and assign materials to parts.</p>
+        <p class="lead">Open the materials dock to see every material in the scene, recolour all the parts that share one, assign a material with a button or by dragging it onto a part, and let the dock float as a window.</p>
         <div class="kb-body">
           <p>A material is what a surface looks like: its colour, and how rough or metallic it is. Parts share materials. A CAD file with fifty grey brackets usually has one grey material that all fifty use. Change that material and all fifty change.</p>
           <h2 id="open-the-materials-dock">Open the materials dock</h2>
@@ -145,7 +147,14 @@
             <li>Type in <span class="ui">Filter…</span> to filter by name, by colour (as a hex code such as <code>#ff6600</code>) or by type.</li>
             <li>Choose the order: <span class="ui">Most used</span>, <span class="ui">Most triangles</span>, <span class="ui">Name</span> or <span class="ui">Colour</span>.</li>
             <li>Switch between a grid and a list with the two small buttons.</li>
-            <li>Select a part in the viewport and look at <span class="ui">Properties</span>: it shows the part’s material.</li>
+            <li>Select a part in the viewport and look at <span class="ui">Properties</span>: it shows the part’s material. The small badge in the corner of that card is the number of parts that use the material.</li>
+          </ul>
+          <h2 id="let-the-dock-float-as-a-window">Let the dock float as a window</h2>
+          <p>The button <span class="ui">Pop out as a floating window</span> in the head of the dock turns it into a window over the view. Drag the window by its head to move it. Drag any edge or corner to resize it. The same button, now called <span class="ui">Dock to the bottom</span>, puts it back.</p>
+          <ul class="kb-points">
+            <li>A floating dock does not push the toolbar up and does not close the other dock. Materials and <a href="../docs/library.html">the library</a> can both float, so the two can be open side by side.</li>
+            <li>Where you left the window, and whether it floats, is remembered in this browser.</li>
+            <li>With several windows open, the one you pressed or typed in last stands in front.</li>
           </ul>
           <h2 id="see-where-a-material-is-used">See where a material is used</h2>
           <ol class="kb-steps">
@@ -164,28 +173,33 @@
             <div><dt>Metalness</dt><dd>How much the surface behaves like metal.</dd></div>
             <div><dt>Opacity</dt><dd>How solid the surface is. Lower values are see-through.</dd></div>
           </dl>
+          <p>The material editor is a small window of its own. It stays where you put it, also when you open another material in it, and it opens there again the next time. When it holds more than fits on the screen, its body scrolls. Drag its top or bottom edge to make it shorter.</p>
+          <h2 id="rename-a-material">Rename a material</h2>
+          <p>Select a part that uses the material and double-click anywhere on the material card in <span class="ui">Properties</span>. The name turns into a field you can type in. An open material editor takes the new name at once.</p>
           <h2 id="give-parts-a-different-material">Give parts a different material</h2>
           <ol class="kb-steps">
             <li>Select the parts in the viewport or in the tree.</li>
             <li>Click the material you want in the dock.</li>
             <li>Press <span class="ui">Assign</span> in the inspector.</li>
           </ol>
+          <p>You can do the same with the mouse. Drag a material out of the dock, a tile or a row, and drop it in the view. It goes onto everything that is selected. With nothing selected, it goes onto the part you drop it on. That part is tinted while the material is over it. It is one undo step.</p>
           <h2 id="make-copy-merge-delete">Make, copy, merge, delete</h2>
           <p>The buttons at the right of the dock’s header:</p>
           <dl class="table">
-            <div><dt>New material</dt><dd>Makes a new material. If parts are selected, they get it.</dd></div>
+            <div><dt>New material</dt><dd>The <code>+</code> button. Makes a new material. If parts are selected, they get it.</dd></div>
+            <div><dt>New material from a preset</dt><dd>Hold the <code>+</code> down, or right-click it, and a list of ready-made looks opens. You can press, slide to a preset and let go in one move. The arrow beside the <code>+</code> opens the same list with one click. A preset makes a new material, assigned to the selected parts if there are any, in one undo step.</dd></div>
             <div><dt>Duplicate</dt><dd>Copies the picked material.</dd></div>
             <div><dt>Merge</dt><dd>Turns several picked materials into one. Hold <kbd>Ctrl</kbd> and click to pick several.</dd></div>
             <div><dt>Delete</dt><dd>Deletes the picked materials.</dd></div>
-            <div><dt>Industry presets</dt><dd>Applies a ready-made look to the picked material, such as brushed steel, glass or rubber.</dd></div>
           </dl>
-          <p>A right-click on a material gives the same commands, and one to copy its colour code.</p>
+          <p>To merge two materials with the mouse, hold <kbd>Shift</kbd> and drag one onto the other. The dragged material stays and takes the other one over. A tip that starts with “Merge into” shows before you let go. Without <kbd>Shift</kbd>, a drop on another material does nothing.</p>
+          <p>A right-click on a material gives the same commands, and one to copy its colour code. The material card in <span class="ui">Properties</span> has the same menu.</p>
           <h2 id="good-to-know">Good to know</h2>
           <ul class="kb-points">
             <li>A new material is named after its colour, and the name follows the colour when you change it.</li>
             <li>Every change in the dock is an undo step.</li>
             <li>Drag the top edge of the dock to make it taller. Double-click the edge to reset it.</li>
-            <li>The dock and the console share the same place and take turns.</li>
+            <li>While it is docked at the bottom, the dock shares its place with the library and the console, and they take turns. A floating dock stays open.</li>
           </ul>
           <div class="kb-see"><h2>Related</h2><ul>
             <li><a href="../docs/view-modes.html">View modes</a></li>
@@ -215,10 +229,10 @@
       <div class="wrap get-in">
         <div>
           <h2>Run it on your own machine.</h2>
-          <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
+          <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.22.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.23.0</a>
           <a class="btn is-large btn-demo" href="../demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Try the demo</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
@@ -258,6 +272,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=27"></script>
+  <script defer src="../site.js?v=28"></script>
 </body>
 </html>

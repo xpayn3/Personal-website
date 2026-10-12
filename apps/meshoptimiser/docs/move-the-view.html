@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=79" />
+  <link rel="stylesheet" href="../site.css?v=80" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -93,11 +93,13 @@
         <a href="../docs/fasteners.html">Fasteners</a>
         <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Remove holes</a>
+        <a href="../docs/remove-floating-pieces.html">Remove floating pieces</a>
+        <a href="../docs/remesh.html">Remesh: Untriangulate and Triangulate</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
         <a href="../docs/decimate.html">Decimate</a>
         <a href="../docs/fit-to-budget.html">Fit to budget</a>
-        <a href="../docs/cleanup.html">Auto cleanup and Tidy geometry</a>
+        <a href="../docs/cleanup.html">Quick fixes and tidying up</a>
         <a href="../docs/workflow.html">A sensible order to work in</a>
         <h2>Look and arrange</h2>
         <a href="../docs/view-modes.html">View modes</a>
@@ -149,7 +151,10 @@
           <dl class="kb-keys">
             <div><dt><kbd>F</kbd></dt><dd>Frame: fit the selected parts in the view, or the whole model when nothing is selected</dd></div>
           </dl>
+          <p>Frame stops where everything it frames is in the picture, with a small margin. A long thin part seen from the side fills the width, and a small part in a big assembly fills the view.</p>
           <p>If you get lost, click an empty spot to clear the selection and press <kbd>F</kbd>. The whole model comes back into view.</p>
+          <h2 id="the-arrow-to-a-selection-out-of-sight">The arrow to a selection out of sight</h2>
+          <p>When something is selected and none of it is in the picture, a faint arrow sits at the edge of the view, on the side the selection is on. Click the arrow and the view frames the selection. To switch the arrow off, open <span class="ui">Settings</span>, <span class="ui">Viewport</span> and turn off <span class="ui">Arrow to a selection out of view</span>.</p>
           <h2 id="standard-views">Standard views</h2>
           <p>The pill at the top centre of the viewport names the current view. Click it to choose another.</p>
           <dl class="kb-keys">
@@ -169,8 +174,11 @@
             <div><dt>Projection</dt><dd>Perspective, where far things look smaller, or Orthographic, where they do not.</dd></div>
             <div><dt>Field of view</dt><dd>How wide the lens is.</dd></div>
             <div><dt>Clip planes</dt><dd>How near and how far the camera can see. Leave it on Auto unless parts of a very small or very large model are cut off.</dd></div>
-            <div><dt>Orbit around the selection</dt><dd>With something selected, the view turns around it. Off, or with nothing selected, it turns around the centre of the view.</dd></div>
+            <div><dt>Orbit around</dt><dd>What the view turns around. <span class="ui">Selection</span>: the selected parts, or the centre of the view when nothing is selected. <span class="ui">Scene</span>: always the centre of the view. <span class="ui">Cursor</span>: the point under the pointer when the drag starts.</dd></div>
             <div><dt>Zoom toward the cursor</dt><dd>The wheel zooms toward the pointer instead of the centre.</dd></div>
+            <div><dt>Pan speed</dt><dd>How far a pan drag moves the view. Orbit speed and Zoom speed are beside it.</dd></div>
+            <div><dt>Invert orbit direction</dt><dd>The view turns the other way for a drag: drag right and the model turns left.</dd></div>
+            <div><dt>Stop at the horizon</dt><dd>The camera cannot go below the grid, so you do not end up looking at the model from underneath by accident.</dd></div>
           </dl>
           <aside class="kb-note"><p>On a heavy model, very small parts are left out while the view is moving and drawn again the moment it stops. This keeps movement smooth. You can turn it off under <span class="ui">Settings</span>, <span class="ui">Performance</span>, <span class="ui">Skip tiny parts</span>.</p></aside>
           <div class="kb-see"><h2>Related</h2><ul>
@@ -202,10 +210,10 @@
       <div class="wrap get-in">
         <div>
           <h2>Run it on your own machine.</h2>
-          <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
+          <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.22.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.23.0</a>
           <a class="btn is-large btn-demo" href="../demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Try the demo</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
@@ -245,6 +253,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=27"></script>
+  <script defer src="../site.js?v=28"></script>
 </body>
 </html>

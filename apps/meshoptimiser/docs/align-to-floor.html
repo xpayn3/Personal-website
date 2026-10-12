@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=79" />
+  <link rel="stylesheet" href="../site.css?v=80" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -93,11 +93,13 @@
         <a href="../docs/fasteners.html">Fasteners</a>
         <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Remove holes</a>
+        <a href="../docs/remove-floating-pieces.html">Remove floating pieces</a>
+        <a href="../docs/remesh.html">Remesh: Untriangulate and Triangulate</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
         <a href="../docs/decimate.html">Decimate</a>
         <a href="../docs/fit-to-budget.html">Fit to budget</a>
-        <a href="../docs/cleanup.html">Auto cleanup and Tidy geometry</a>
+        <a href="../docs/cleanup.html">Quick fixes and tidying up</a>
         <a href="../docs/workflow.html">A sensible order to work in</a>
         <h2>Look and arrange</h2>
         <a href="../docs/view-modes.html">View modes</a>
@@ -164,12 +166,12 @@
             <div><dt>Sits at zero with its: X and Y</dt><dd>Which side of the model goes to 0 on that axis: <span class="ui">Low</span>, <span class="ui">Mid</span> (the middle), <span class="ui">High</span>, or <span class="ui">Keep</span> to leave it where it is. The rows are named after the scene’s floor axes: X and Y when Z is up.</dd></div>
             <div><dt>Sits at zero with its: Up</dt><dd><span class="ui">Floor</span> stands the model on the grid. <span class="ui">Top</span> hangs it from the grid. <span class="ui">Mid</span> centres it. <span class="ui">Keep</span> leaves its height alone.</dd></div>
             <div><dt>Align to floor</dt><dd>Does it: turns and moves the model as the drawing shows.</dd></div>
-            <div><dt>Reset</dt><dd>Puts the model back where and how it was loaded, and puts the card back to its start: no turn waiting, and Mid, Mid and Floor.</dd></div>
+            <div><dt>Back to how it was loaded</dt><dd>Puts the model back where and how it was loaded, and puts the card back to its start: no turn waiting, and Mid, Mid and Floor.</dd></div>
           </dl>
           <p>Mid, Mid and Floor is the usual choice: it stands the model on the grid, centred over the origin.</p>
           <p>To repeat the last choices without opening the card, press <kbd>Ctrl</kbd><kbd>K</kbd> and choose <span class="ui">Align model to the floor (with the last choices)</span>.</p>
           <h2 id="undo">Undo</h2>
-          <p>Pressing <span class="ui">Align to floor</span> is one undo step. <span class="ui">Reset</span> in the card goes back to how the file was loaded.</p>
+          <p>Pressing <span class="ui">Align to floor</span> is one undo step. <span class="ui">Back to how it was loaded</span> in the card does what its name says.</p>
           <aside class="kb-note"><p>Which direction is “up” is a setting of the scene: <span class="ui">Up axis (viewport)</span> under <span class="ui">Settings</span>, <span class="ui">Scene</span>. CAD files normally use Z as up. If the whole scene looks turned by a quarter, check that setting before you turn the model.</p></aside>
           <div class="kb-see"><h2>Related</h2><ul>
             <li><a href="../docs/move-rotate-scale.html">Move, rotate, scale and measure</a></li>
@@ -199,10 +201,10 @@
       <div class="wrap get-in">
         <div>
           <h2>Run it on your own machine.</h2>
-          <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
+          <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.22.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.23.0</a>
           <a class="btn is-large btn-demo" href="../demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Try the demo</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
@@ -242,6 +244,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=27"></script>
+  <script defer src="../site.js?v=28"></script>
 </body>
 </html>

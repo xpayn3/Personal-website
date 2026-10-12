@@ -432,7 +432,7 @@
     const data = JSON.parse($('[data-wand-data]', demo).textContent), ICONS = data.icons || {};
     const parts = data.parts.map(([name, tris], i) => ({ name, orig: tris, tris, hidden: false, gone: false, on: false }));
     const fmt = (n) => n.toLocaleString('en-US');
-    const R_IN = 31, R_OUT = 82, F_IN = 89, F_OUT = 122, DEAD = 16, V = F_OUT + 24, R_ICON = (R_IN + R_OUT) / 2, POP = 0.075, POP2 = 0.03;
+    const R_IN = 22, R_OUT = 58, F_IN = 64, F_OUT = 94, DEAD = 12, V = F_OUT + 24, R_ICON = (R_IN + R_OUT) / 2, POP = 0.075, POP2 = 0.03;
     let isolated = false, view = 'solid', grid = true, root = null, open = false, sticky = false, rested = false, viaPointer = false;
     let startedAt = 0, moved = false, ox = 0, oy = 0, px = 0, py = 0, lastX = 0, lastY = 0, over = false, closedAt = -1e9;
     let slots = [], slice = 90, hot = -1, sub = -1, fanFor = -1, entryD = 0, committed = false, hold = null;

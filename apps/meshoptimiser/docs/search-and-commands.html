@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>Search and commands — MeshOptimiser Docs</title>
-  <meta name="description" content="Press Ctrl + K to find any command, part or library part by name, and to work out a sum or convert a length." />
+  <meta name="description" content="Press Ctrl + K or Shift + C to find any command, part, library part or setting by name, turn a switch without leaving the list, and work out a sum or convert a…" />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/search-and-commands" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="Search and commands — MeshOptimiser Docs" />
-  <meta property="og:description" content="Press Ctrl + K to find any command, part or library part by name, and to work out a sum or convert a length." />
+  <meta property="og:description" content="Press Ctrl + K or Shift + C to find any command, part, library part or setting by name, turn a switch without leaving the list, and work out a sum or convert a…" />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/search-and-commands" />
   <meta property="og:type" content="website" />
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=79" />
+  <link rel="stylesheet" href="../site.css?v=80" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -93,11 +93,13 @@
         <a href="../docs/fasteners.html">Fasteners</a>
         <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Remove holes</a>
+        <a href="../docs/remove-floating-pieces.html">Remove floating pieces</a>
+        <a href="../docs/remesh.html">Remesh: Untriangulate and Triangulate</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
         <a href="../docs/decimate.html">Decimate</a>
         <a href="../docs/fit-to-budget.html">Fit to budget</a>
-        <a href="../docs/cleanup.html">Auto cleanup and Tidy geometry</a>
+        <a href="../docs/cleanup.html">Quick fixes and tidying up</a>
         <a href="../docs/workflow.html">A sensible order to work in</a>
         <h2>Look and arrange</h2>
         <a href="../docs/view-modes.html">View modes</a>
@@ -134,12 +136,12 @@
       <article class="kb-article">
         <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#around">Find your way around</a></p>
         <h1>Search and commands</h1>
-        <p class="lead">Press Ctrl + K to find any command, part or library part by name, and to work out a sum or convert a length.</p>
+        <p class="lead">Press Ctrl + K or Shift + C to find any command, part, library part or setting by name, turn a switch without leaving the list, and work out a sum or convert a length.</p>
         <div class="kb-body">
           <p>You do not have to remember where a button is. The search finds it. It is the fastest way to use the app once you know roughly what you want.</p>
           <h2 id="open-the-search">Open the search</h2>
           <ol class="kb-steps">
-            <li>Press <kbd>Ctrl</kbd><kbd>K</kbd>, or click the magnifying glass at the left of the bottom toolbar.</li>
+            <li>Press <kbd>Ctrl</kbd><kbd>K</kbd> or <kbd>Shift</kbd><kbd>C</kbd>, or click the magnifying glass at the left of the bottom toolbar.</li>
             <li>Start typing. The list below narrows as you type.</li>
             <li>Use <kbd>↑</kbd> and <kbd>↓</kbd> to choose a line.</li>
             <li>Press <kbd>Enter</kbd> to run it. Press <kbd>Esc</kbd> to close the search without doing anything.</li>
@@ -148,10 +150,34 @@
           <dl class="table">
             <div><dt>Commands</dt><dd>Everything in the menus and on the toolbars, each with its shortcut. Before you type, the commands you ran lately come first, with suggestions that fit what is selected.</dd></div>
             <div><dt>Sidebar controls</dt><dd>Every button, slider, switch and field in the right sidebar, listed under the name of its card. Choosing a button runs it. Choosing anything else opens its card and scrolls to it.</dd></div>
-            <div><dt>Parts</dt><dd>Parts of the scene by name. <kbd>Enter</kbd> selects the part and frames it, even when it is hidden.</dd></div>
+            <div><dt>Parts</dt><dd>Parts of the scene by name. <kbd>Enter</kbd> selects the part and frames it, even when it is hidden. When several parts carry what you typed in their name, one row selects them all. Hidden parts are left out of that row.</dd></div>
             <div><dt>Library parts</dt><dd>Parts you can add. Type <code>add flange</code> or just <code>flange</code>, and <kbd>Enter</kbd> adds one.</dd></div>
+            <div><dt>Settings</dt><dd>The rows of the Settings window, by name. Choosing one opens the window at the right section and takes your eye to the row.</dd></div>
           </dl>
           <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-search.webp" data-group="article" data-caption="Search for “bolt”: the parts in the scene by name, and the bolts in the library ready to add."><img src="../../../Images/apps/meshoptimiser-search.webp" alt="MeshOptimiser: Search for “bolt”: the parts in the scene by name, and the bolts in the library ready to add." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Search for “bolt”: the parts in the scene by name, and the bolts in the library ready to add.</figcaption></figure>
+          <p>Each kind of result has a colour of its own on its icon: commands by their group, parts, library parts, settings and answers.</p>
+          <h2 id="turn-a-switch-without-leaving-the-search">Turn a switch without leaving the search</h2>
+          <p>When the search finds a switch, it draws the switch in the result. That goes for a setting, and for a switch in the sidebars or on a command card. Press <kbd>Enter</kbd>, click the row or click the switch itself, and it turns on or off. The search stays open, so you can turn another one.</p>
+          <p>Press <kbd>Shift</kbd><kbd>Enter</kbd> to go to the switch instead. The options of a tool stay ordinary results: choosing one takes you to it.</p>
+          <h2 id="you-do-not-have-to-type-it-exactly">You do not have to type it exactly</h2>
+          <ul class="kb-points">
+            <li>The words can be in any order.</li>
+            <li>Another word for the same thing works: <code>remove</code> finds Delete, <code>bolts</code> finds Fasteners and <code>picture</code> finds Screenshot.</li>
+            <li>One slip of the finger is forgiven: a letter wrong, a letter missing, one too many, or two the wrong way round.</li>
+            <li>Two to five letters are read as initials too: <code>rh</code> finds Remove holes.</li>
+          </ul>
+          <p>The better a command fits, the higher it stands in the list. Among commands that fit about as well, the ones you ran lately stand higher.</p>
+          <h2 id="narrow-it-with-a-mark">Narrow it with a mark</h2>
+          <p>Type one of these marks in front of the words, and the list holds one kind of result only.</p>
+          <dl class="table">
+            <div><dt><code>&gt;</code></dt><dd>Commands.</dd></div>
+            <div><dt><code>@</code></dt><dd>Parts of the scene. <code>@bracket</code> lists parts and nothing else.</dd></div>
+            <div><dt><code>+</code></dt><dd>Library parts.</dd></div>
+            <div><dt><code>#</code></dt><dd>Settings.</dd></div>
+          </dl>
+          <h2 id="commands-that-cannot-run-right-now">Commands that cannot run right now</h2>
+          <p>A command that cannot run right now is greyed out, and says why: “Select a part first”, “Open a model first” or “Nothing to undo”. A command that works on the selection, or on every part when nothing is selected, needs only an open model.</p>
+          <p>What the search looks through, and how loosely it reads what you type, can be changed under <span class="ui">Settings</span>, <span class="ui">Search</span>. See <a href="../docs/settings.html">Settings</a>.</p>
           <h2 id="commands-worth-knowing">Commands worth knowing</h2>
           <p>Some tools have no button in the sidebar, or no key of their own. The search is the easy way to reach them. Type a few letters of the name:</p>
           <dl class="table">
@@ -161,6 +187,8 @@
             <div><dt>Select hidden parts…</dt><dd>Finds the parts that cannot be seen from outside. See <a href="../docs/select-hidden-parts.html">Select hidden parts</a>.</dd></div>
             <div><dt>Align model to the floor…</dt><dd>Opens the card that stands the model on the floor. <span class="ui">Align model to the floor (with the last choices)</span> does it at once, without opening the card. See <a href="../docs/align-to-floor.html">Align to floor</a>.</dd></div>
             <div><dt>Dynamic place</dt><dd>Turns on dragging the selected part over other surfaces (<kbd>D</kbd>). See <a href="../docs/move-rotate-scale.html">Move, rotate and scale</a>.</dd></div>
+            <div><dt>Remove floating pieces…</dt><dd>Deletes the small loose pieces of a part. See <a href="../docs/remove-floating-pieces.html">Remove floating pieces</a>.</dd></div>
+            <div><dt>Sweep…</dt><dd>Opens the Sweep card, which has no button on the toolbar. See <a href="../docs/sweep.html">Sweep</a>.</dd></div>
             <div><dt>Fit to triangle budget</dt><dd>Takes you to the budget field so you can type a number.</dd></div>
             <div><dt>Optimisation report</dt><dd>Shows the model as it was opened against what it is now.</dd></div>
             <div><dt>Duplicate scene, Close other scenes, Close all scenes</dt><dd>Work on the scene tabs. See <a href="../docs/scene-tabs.html">Scene tabs</a>.</dd></div>
@@ -180,13 +208,15 @@
           <h2 id="the-list-of-all-commands">The list of all commands</h2>
           <p>The <code>…</code> button at the right end of the bottom toolbar opens every command that acts on the model in one list, with its shortcut. A command that cannot run right now is dimmed. Hover over it to see why, for example because nothing is selected.</p>
           <h2 id="command-cards">Command cards</h2>
-          <p>Some commands have settings: Split, Remove holes, Smart fit, Select hidden parts, Fasteners, Stacked copies, Align to floor and Dynamic place. They open as a card over the bottom left of the viewport.</p>
+          <p>Some commands have settings: Split, Remove holes, Remove floating pieces, Remesh, Smart fit, Select hidden parts, Fasteners, Stacked copies, Align to floor and Dynamic place. They open as a card over the bottom left of the viewport.</p>
           <dl class="kb-keys">
             <div><dt><kbd>Enter</kbd></dt><dd>Run the open card</dd></div>
             <div><dt><kbd>Esc</kbd></dt><dd>Put the card away. A second press clears the selection.</dd></div>
           </dl>
+          <p>A tool that has a key of its own, such as <kbd>X</kbd> for Split, closes its card when you press the key again.</p>
           <h2 id="numbers-you-can-drag">Numbers you can drag</h2>
           <p>Any number field in the app can be dragged sideways to change it, or clicked to type a value. Hold <kbd>Shift</kbd> while dragging to go ten times faster and <kbd>Alt</kbd> to go ten times finer.</p>
+          <p>Right-click a number field for a menu of its own. It has Cut, Copy, Paste, Select all and Reset, which puts the field back to its own default. It also has a few quick edits of the number: a step up or down, doubled or halved, a round value, or the other sign. The value of a slider has the same menu. A name you are typing has a menu like it, with quick edits for names: the case, a suffix such as <code>_L</code> or <code>_01</code>, and a clean-up.</p>
           <div class="kb-see"><h2>Related</h2><ul>
             <li><a href="../docs/shortcuts.html">Keyboard shortcuts</a></li>
             <li><a href="../docs/library.html">The parts library and shapes</a></li>
@@ -215,10 +245,10 @@
       <div class="wrap get-in">
         <div>
           <h2>Run it on your own machine.</h2>
-          <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
+          <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.22.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.23.0</a>
           <a class="btn is-large btn-demo" href="../demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Try the demo</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
@@ -258,6 +288,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=27"></script>
+  <script defer src="../site.js?v=28"></script>
 </body>
 </html>

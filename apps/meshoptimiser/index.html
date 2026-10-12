@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>MeshOptimiser — Heavy CAD, made light enough for a browser.</title>
-  <meta name="description" content="View complex CAD and 3D files, clear out what nobody sees, and export a lighter model. Free, and it never leaves your computer." />
+  <meta name="description" content="Open a CAD assembly, strip what nobody sees, export a light GLB. Free, and it never leaves your computer." />
   <link rel="icon" type="image/svg+xml" href="../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="MeshOptimiser — Heavy CAD, made light enough for a browser." />
-  <meta property="og:description" content="View complex CAD and 3D files, clear out what nobody sees, and export a lighter model. Free, and it never leaves your computer." />
+  <meta property="og:description" content="Open a CAD assembly, strip what nobody sees, export a light GLB. Free, and it never leaves your computer." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/" />
   <meta property="og:type" content="website" />
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=79" />
+  <link rel="stylesheet" href="site.css?v=80" />
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/"}}</script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
@@ -30,10 +30,10 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "MeshOptimiser",
-  "description": "View complex CAD and 3D files, clear out what nobody sees, and export a lighter model. Free, and it never leaves your computer.",
+  "description": "Open a CAD assembly, strip what nobody sees, export a light GLB. Free, and it never leaves your computer.",
   "applicationCategory": "DesignApplication",
   "operatingSystem": "Windows, macOS",
-  "softwareVersion": "0.22.0",
+  "softwareVersion": "0.23.0",
   "url": "https://lukagrcar.com/apps/meshoptimiser/",
   "image": "https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp",
   "downloadUrl": "https://github.com/xpayn3/MeshOptimiser/archive/HEAD.zip",
@@ -73,9 +73,9 @@
   </header>
   <main id="main">
     <section class="wrap hero">
-      <p class="kicker">v0.22.0<b>·</b>Beta<b>·</b>MIT<b>·</b>Windows and macOS</p>
+      <p class="kicker">v0.23.0<b>·</b>Beta<b>·</b>MIT<b>·</b>Windows and macOS</p>
       <h1>Heavy CAD, made light enough for a browser.</h1>
-      <p class="lead">View complex CAD and 3D files, clear out what nobody sees, and export a lighter model. Free, and it never leaves your computer.</p>
+      <p class="lead">Open a CAD assembly, strip what nobody sees, export a light GLB. Free, and it never leaves your computer.</p>
       <div class="actions">
         <a class="btn is-primary is-large" href="download.html">Download</a>
         <a class="btn is-large btn-demo" href="demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Try the demo</a>
@@ -87,10 +87,10 @@
     <section class="band">
       <div class="wrap">
         <dl class="figures">
-          <div><dt>320 → 11 MB</dt><dd>A STEP assembly down to a compressed GLB. The README’s example, with Meshopt compression through gltfpack.</dd></div>
-          <div><dt>−50% triangles</dt><dd>One press of Smart optimise on a real assembly. The model looks the same, and one undo takes it all back.</dd></div>
-          <div><dt>400 → 1 mesh</dt><dd>Identical parts are found at any rotation or position, kept once, and placed again from a list.</dd></div>
-          <div><dt>0 uploads</dt><dd>It runs on your own computer, so the model never leaves it. Free and open source, MIT licence.</dd></div>
+          <div><dt>320 → 11 MB</dt><dd>A STEP assembly as a compressed GLB.</dd></div>
+          <div><dt>−50% triangles</dt><dd>One press of Smart optimise. One undo takes it back.</dd></div>
+          <div><dt>400 → 1 mesh</dt><dd>Identical parts are kept once and placed from a list.</dd></div>
+          <div><dt>0 uploads</dt><dd>Runs on your computer. Free, open source, MIT.</dd></div>
         </dl>
       </div>
     </section>
@@ -99,15 +99,15 @@
       <div class="pop-pin">
         <div class="wrap pop-stage">
           <div class="pop-art">
-            <a class="zoom pop-frame" href="../../Images/apps/meshoptimiser-hero.webp" data-group="hero" data-caption="A gearbox assembly open in MeshOptimiser: 95 parts, 646,064 triangles. The parts tree is on the left, the totals and the tools on the right.">
-              <img class="pop-ui" src="../../Images/apps/meshoptimiser-hero-ui.webp?v=4" alt="MeshOptimiser: A gearbox assembly open in MeshOptimiser: 95 parts, 646,064 triangles. The parts tree is on the left, the totals and the tools on the right." width="2400" height="1551" decoding="async" fetchpriority="high" />
+            <a class="zoom pop-frame" href="../../Images/apps/meshoptimiser-hero.webp" data-group="hero" data-caption="A gearbox assembly: 95 parts, 646,064 triangles.">
+              <img class="pop-ui" src="../../Images/apps/meshoptimiser-hero-ui.webp?v=4" alt="MeshOptimiser: A gearbox assembly: 95 parts, 646,064 triangles." width="2400" height="1551" decoding="async" fetchpriority="high" />
             </a>
             <img class="pop-model" src="../../Images/apps/meshoptimiser-hero-model.webp?v=4" alt="" width="1074" height="1231" decoding="async" style="left:34.46%;top:18.13%;width:31.08%" />
           </div>
           <div class="pop-copy" aria-hidden="false">
             <p class="kicker">Exploded view</p>
             <h2>Take it apart. Inspect every part.</h2>
-            <p>Scroll to pull this real rear derailleur, 43 parts, apart. In the app one slider does it along any axis, so no part hides behind another. Every pin, bolt and bushing has its own row and triangle count, and a button to hide it, isolate it or take it out.</p>
+            <p>Scroll to pull this 43-part rear derailleur apart. In the app one slider does it, and every part has its own row and triangle count.</p>
           </div>
         </div>
       </div>
@@ -117,11 +117,11 @@
       <div class="wrap split">
         <div class="split-head">
           <p class="kicker">Why</p>
-          <h2>Made for the one STEP assembly you have to get onto a web page.</h2>
+          <h2>For the STEP assembly that has to go on a web page.</h2>
         </div>
         <div class="split-body">
-          <p>The problem is a practical one. A real STEP file can hold 400 identical bolts, 80 duplicate brackets and half a million broken triangles, and a browser is still expected to draw it. MeshOptimiser reads the assembly, spots the parts that are the same and keeps one mesh with a list of positions, rebuilds the bad geometry, and drops what’s too small to see.</p>
-          <p>What you get back is a compressed GLB and a viewer to look at it in: the part tree, recolouring, mesh tools, a library of parts to add, and export. It runs on your own machine with Python and a browser, so the model never leaves it, and you choose what goes: every part has a row, every action can be undone, and a report puts the scene as it was opened next to the scene now.</p>
+          <p>A STEP file can hold 400 identical bolts, 80 duplicate brackets and half a million broken triangles. MeshOptimiser keeps each repeated part once, rebuilds the bad geometry and drops what is too small to see.</p>
+          <p>You get a compressed GLB and a viewer to check it in. It runs on your own machine, every part has a row, and every action can be undone.</p>
           <table class="collapse">
             <caption>What the pipeline collapses</caption>
             <tr><th scope="row">400 bolts × 50 KB</th><td aria-hidden="true">→</td><td>1 mesh × 50 KB + 400 positions</td></tr>
@@ -143,23 +143,23 @@
         <div class="clips">
         <figure class="clip">
           <video muted loop playsinline preload="none" disablepictureinpicture poster="../../Images/apps/meshoptimiser-clip-fill-holes_thumb.webp" data-src="../../Images/apps/meshoptimiser-clip-fill-holes.webm" aria-label="MeshOptimiser: Remove holes" width="592" height="370"></video>
-          <figcaption><i>01</i><strong>Remove holes</strong><span>Bolt holes, slots and pockets in flat faces close a few at a time. Everything else stays as it was.</span><a class="clip-more" href="docs/fill-holes.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Remove holes</span></a></figcaption>
+          <figcaption><i>01</i><strong>Remove holes</strong><span>Closes bolt holes, slots and pockets in flat faces. Nothing else changes.</span><a class="clip-more" href="docs/fill-holes.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Remove holes</span></a></figcaption>
         </figure>
         <figure class="clip">
           <video muted loop playsinline preload="none" disablepictureinpicture poster="../../Images/apps/meshoptimiser-clip-split_thumb.webp" data-src="../../Images/apps/meshoptimiser-clip-split.webm" aria-label="MeshOptimiser: Split" width="592" height="370"></video>
-          <figcaption><i>02</i><strong>Split</strong><span>A mesh that was fused on export comes apart into the solids it was made of.</span><a class="clip-more" href="docs/split.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Split</span></a></figcaption>
+          <figcaption><i>02</i><strong>Split</strong><span>Cuts a fused mesh back into its solids.</span><a class="clip-more" href="docs/split.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Split</span></a></figcaption>
         </figure>
         <figure class="clip">
           <video muted loop playsinline preload="none" disablepictureinpicture poster="../../Images/apps/meshoptimiser-clip-select-hidden_thumb.webp" data-src="../../Images/apps/meshoptimiser-clip-select-hidden.webm" aria-label="MeshOptimiser: Select hidden parts" width="592" height="370"></video>
-          <figcaption><i>03</i><strong>Select hidden parts</strong><span>Screws, bearings and brackets inside a housing light up: everything you can’t see from outside.</span><a class="clip-more" href="docs/select-hidden-parts.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Select hidden parts</span></a></figcaption>
+          <figcaption><i>03</i><strong>Select hidden parts</strong><span>Finds every part you can’t see from outside.</span><a class="clip-more" href="docs/select-hidden-parts.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Select hidden parts</span></a></figcaption>
         </figure>
         <figure class="clip">
           <video muted loop playsinline preload="none" disablepictureinpicture poster="../../Images/apps/meshoptimiser-clip-fasteners_thumb.webp" data-src="../../Images/apps/meshoptimiser-clip-fasteners.webm" aria-label="MeshOptimiser: Fasteners" width="592" height="370"></video>
-          <figcaption><i>04</i><strong>Fasteners</strong><span>Bolts, nuts and washers light up by their shape, whatever they are called, and are taken away. The bracket and the plate stay.</span><a class="clip-more" href="docs/fasteners.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Fasteners</span></a></figcaption>
+          <figcaption><i>04</i><strong>Fasteners</strong><span>Finds bolts, nuts and washers by shape, whatever they are named.</span><a class="clip-more" href="docs/fasteners.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Fasteners</span></a></figcaption>
         </figure>
         <figure class="clip">
           <video muted loop playsinline preload="none" disablepictureinpicture poster="../../Images/apps/meshoptimiser-clip-smart-fit_thumb.webp" data-src="../../Images/apps/meshoptimiser-clip-smart-fit.webm" aria-label="MeshOptimiser: Smart fit" width="592" height="370"></video>
-          <figcaption><i>05</i><strong>Smart fit</strong><span>A dense part becomes a box, a cylinder, a few boxes or blocks that keep its outline.</span><a class="clip-more" href="docs/smart-fit.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Smart fit</span></a></figcaption>
+          <figcaption><i>05</i><strong>Smart fit</strong><span>Swaps a dense part for a box, a cylinder or blocks that keep its outline.</span><a class="clip-more" href="docs/smart-fit.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Smart fit</span></a></figcaption>
         </figure>
         </div>
       </div>
@@ -178,7 +178,7 @@
       <path class="o" d="M182 36v22h22"/>
       <text x="160" y="100" text-anchor="middle" class="t a">.STEP</text>
       <path class="f" d="M160 6v13m-5-5 5 5 5-5"/>
-    </svg></div><i>01</i><h3>Drop in a file</h3><p>Drag a STEP, GLB, FBX or OBJ file onto the start screen. STEP files are converted first. The others open straight away.</p></li>
+    </svg></div><i>01</i><h3>Drop in a file</h3><p>Drag in a STEP, GLB, FBX or OBJ file. STEP is converted first.</p></li>
           <li><div class="st-fig"><svg viewBox="0 0 320 160" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <g class="o"><circle cx="46" cy="50" r="7"/><circle cx="72" cy="50" r="7"/><circle cx="98" cy="50" r="7"/><circle cx="46" cy="80" r="7"/><circle cx="72" cy="80" r="7"/><circle cx="98" cy="80" r="7"/><circle cx="46" cy="110" r="7"/><circle cx="72" cy="110" r="7"/><circle cx="98" cy="110" r="7"/></g>
       <g class="f"><path d="M107 50 196 80M107 80h89M107 110 196 80"/></g>
@@ -186,7 +186,7 @@
       <path class="a" d="m236 64 14 8v16l-14 8-14-8V72Z"/>
       <circle class="a" cx="236" cy="80" r="5"/>
       <text x="236" y="130" text-anchor="middle" class="t">1 mesh + 9 positions</text>
-    </svg></div><i>02</i><h3>Clean it up</h3><p>Repeated parts become one mesh, hidden and tiny parts go, and Smart optimise reduces the rest. Names and colours stay, and every step can be undone.</p></li>
+    </svg></div><i>02</i><h3>Clean it up</h3><p>Repeats become one mesh, hidden and tiny parts go, and Smart optimise reduces the rest. Every step can be undone.</p></li>
           <li><div class="st-fig"><svg viewBox="0 0 320 160" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <rect class="f" x="28" y="16" width="264" height="128" rx="8"/>
       <path class="f" d="M28 38h264"/>
@@ -194,7 +194,7 @@
       <path class="a" d="M160 54 193 73v38l-33 19-33-19V73Z"/>
       <path class="a" d="m127 73 33 19 33-19M160 92v38"/>
       <text x="44" y="132" class="t">.GLB</text>
-    </svg></div><i>03</i><h3>Look inside, then export</h3><p>Pull the model apart, pick any part, recolour it or reduce it. When it looks right, export a light GLB, FBX or OBJ.</p></li>
+    </svg></div><i>03</i><h3>Check, then export</h3><p>Pull it apart, inspect any part, then export a light GLB, FBX or OBJ.</p></li>
         </ol>
       </div>
     </section>
@@ -211,7 +211,7 @@
           <div>
             <i>01</i>
             <h3>One button, half the triangles</h3>
-            <p>Smart optimise runs every clean-up the app has, in order: empty and broken parts, hidden parts, fasteners, tiny parts, holes in flat faces, and then a reduction to the target you set. On this gearbox it took 646,064 triangles down to 322,988 and showed what it had saved. One Ctrl+Z puts it all back.</p>
+            <p>Smart optimise runs every clean-up in order, then reduces to your target. This gearbox went from 646,064 triangles to 322,988. One Ctrl+Z puts it all back.</p>
           </div>
         </article>
         <article class="spot is-flipped">
@@ -219,7 +219,7 @@
           <div>
             <i>02</i>
             <h3>Bolts, found by their shape</h3>
-            <p>Names in a CAD export rarely say what a part is. Fasteners cuts each part across its axis and reads the outline: a round shank with a wider head, six flats around a hole, a flat ring. It finds hex bolts, socket screws, nuts and washers whatever they’re called, and leaves bushings, bearings and O-rings alone. Forty-eight here, 22,760 triangles.</p>
+            <p>CAD names rarely say what a part is. Fasteners reads each part’s outline and finds bolts, screws, nuts and washers, and leaves bushings and bearings alone. Forty-eight here, 22,760 triangles.</p>
           </div>
         </article>
         <article class="spot">
@@ -227,7 +227,7 @@
           <div>
             <i>03</i>
             <h3>72,666 triangles down to 212</h3>
-            <p>Smart fit used to turn a bracket into a brick. Blocks rebuilds a part from a coarse grid, so its steps, arms and openings stay where they were. Here it took two heavy parts of a gearbox from 72,666 triangles to 212.</p>
+            <p>Blocks rebuilds a part from a coarse grid, so its steps, arms and openings stay. Two heavy gearbox parts went from 72,666 triangles to 212.</p>
           </div>
         </article>
         </div>
@@ -240,7 +240,7 @@
           <p class="kicker">What it saves</p>
           <h2>Half the triangles, the same gearbox.</h2>
         </div>
-        <p class="lead sv-lead">One press of Optimise on a real CAD assembly. These are the app’s own numbers, read off its Properties card after each run.</p>
+        <p class="lead sv-lead">One press of Optimise on a real CAD assembly, read off the app’s own Properties card.</p>
         <div class="sv" data-reveal>
           <div class="sv-big">
             <p class="sv-sub">Result</p>
@@ -281,7 +281,7 @@
             </div>
           </div>
         </div>
-        <p class="sv-note">Measured in MeshOptimiser v0.15.0 on the Gearbox Assy (95 parts, 646,064 triangles) with Smart optimise on Balanced and Reduce triangles on. Light reaches the same count with fewer clean-ups. Strong aims at a quarter and ends at 161,980 triangles and 1.6 MB.</p>
+        <p class="sv-note">MeshOptimiser v0.15.0, Gearbox Assy (95 parts, 646,064 triangles), Smart optimise on Balanced with Reduce triangles on. Strong ends at 161,980 triangles and 1.6 MB.</p>
       </div>
     </section>
 
@@ -292,7 +292,7 @@
           <p class="kicker">The library</p>
           <h2>Eighty-six parts, ready to use.</h2>
         </div>
-        <p class="lead lib-lead">Bolts, nuts, pipe fittings, profiles, gears, a stepper motor. In the app each of these is a real part, with sizes you can change before it goes in.</p>
+        <p class="lead lib-lead">Bolts, nuts, pipe fittings, profiles, gears, a stepper motor. Set the size, then drag it in.</p>
         <div class="lib-show">
           <ul class="lib-tiles">
             <li><img src="library/cube.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Cube</span></li>
@@ -328,12 +328,12 @@
         </div>
         <div class="demo-row">
           <div class="demo-copy">
-            <p>This is the app’s own search, filled with a rear derailleur’s parts. Type a part, a library item or a command. The arrow keys move, Enter runs, and it does sums too.</p>
+            <p>The app’s own search. Type a part, a library item, a command or a sum.</p>
             <ul>
-              <li><kbd>bolt</kbd><span>The bolts in the scene and every bolt in the library, in one list.</span></li>
-              <li><kbd>12*25.4</kbd><span>Sums are worked out as you type. Enter copies the answer.</span></li>
-              <li><kbd>2 in</kbd><span>A length in inches comes back in millimetres, which is what the scene uses.</span></li>
-              <li><kbd>fill</kbd><span>Commands are in the same list, with their shortcuts.</span></li>
+              <li><kbd>bolt</kbd><span>Scene parts and library parts, in one list.</span></li>
+              <li><kbd>12*25.4</kbd><span>Sums as you type. Enter copies the answer.</span></li>
+              <li><kbd>2 in</kbd><span>Inches come back as millimetres.</span></li>
+              <li><kbd>fill</kbd><span>Commands, with their shortcuts.</span></li>
             </ul>
           </div>
           <div class="demo" data-demo>
@@ -359,7 +359,7 @@
           <p class="kicker">Try it</p>
           <h2>The commands come to you.</h2>
         </div>
-        <p class="lead wand-lead">This is the app’s own Quick wand, on three parts of a rear derailleur, drawn with the app’s shapes, icons and colours. Point at a slice and it lights up; a slice with a group fans its commands out; click one to run it. Click a part first and the ring changes to work on it.</p>
+        <p class="lead wand-lead">The app’s own Quick wand. Point at a slice, click a command. Select a part and the ring changes to fit it.</p>
         <div class="wand-demo" data-wand>
           <div class="wand-stage" data-wand-stage role="group" aria-label="The Quick wand ring, open in the middle. Point at a slice and click a command."></div>
           <p class="wand-out" aria-live="polite" data-wand-out></p>
@@ -371,10 +371,10 @@
           <script type="application/json" data-wand-data>{"parts":[["Cage plate",165071],["Upper pulley",109430],["Pivot bolt M5",4812]],"icons":{"maximize":[["path",{"d":"M8 3H5a2 2 0 0 0-2 2v3"}],["path",{"d":"M21 8V5a2 2 0 0 0-2-2h-3"}],["path",{"d":"M3 16v3a2 2 0 0 0 2 2h3"}],["path",{"d":"M16 21h3a2 2 0 0 0 2-2v-3"}]],"check":[["path",{"d":"M20 6 9 17l-5-5"}]],"video":[["path",{"d":"m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"}],["rect",{"x":"2","y":"6","width":"14","height":"12","rx":"2"}]],"eye":[["path",{"d":"M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"}],["circle",{"cx":"12","cy":"12","r":"3"}]],"eye-off":[["path",{"d":"M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"}],["path",{"d":"M14.084 14.158a3 3 0 0 1-4.242-4.242"}],["path",{"d":"M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"}],["path",{"d":"m2 2 20 20"}]],"folder":[["path",{"d":"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"}]],"sparkles":[["path",{"d":"M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"}],["path",{"d":"M20 2v4"}],["path",{"d":"M22 4h-4"}],["circle",{"cx":"4","cy":"20","r":"2"}]],"triangle":[["path",{"d":"M13.73 4a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"}]],"ellipsis":[["circle",{"cx":"12","cy":"12","r":"1"}],["circle",{"cx":"19","cy":"12","r":"1"}],["circle",{"cx":"5","cy":"12","r":"1"}]],"trash-2":[["path",{"d":"M10 11v6"}],["path",{"d":"M14 11v6"}],["path",{"d":"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"}],["path",{"d":"M3 6h18"}],["path",{"d":"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"}]],"square":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}]],"box":[["path",{"d":"M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"}],["path",{"d":"m3.3 7 8.7 5 8.7-5"}],["path",{"d":"M12 22V12"}]],"grid-3x3":[["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M3 9h18"}],["path",{"d":"M3 15h18"}],["path",{"d":"M9 3v18"}],["path",{"d":"M15 3v18"}]],"crosshair":[["circle",{"cx":"12","cy":"12","r":"10"}],["line",{"x1":"22","x2":"18","y1":"12","y2":"12"}],["line",{"x1":"6","x2":"2","y1":"12","y2":"12"}],["line",{"x1":"12","x2":"12","y1":"6","y2":"2"}],["line",{"x1":"12","x2":"12","y1":"22","y2":"18"}]],"camera":[["path",{"d":"M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"}],["circle",{"cx":"12","cy":"13","r":"3"}]],"save":[["path",{"d":"M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"}],["path",{"d":"M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"}],["path",{"d":"M7 3v4a1 1 0 0 0 1 1h7"}]],"rotate-ccw":[["path",{"d":"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"}],["path",{"d":"M3 3v5h5"}]],"target":[["circle",{"cx":"12","cy":"12","r":"10"}],["circle",{"cx":"12","cy":"12","r":"6"}],["circle",{"cx":"12","cy":"12","r":"2"}]],"arrow-down-to-line":[["path",{"d":"M12 17V3"}],["path",{"d":"m6 11 6 6 6-6"}],["path",{"d":"M19 21H5"}]],"box-select":[["path",{"d":"M5 3a2 2 0 0 0-2 2"}],["path",{"d":"M19 3a2 2 0 0 1 2 2"}],["path",{"d":"M21 19a2 2 0 0 1-2 2"}],["path",{"d":"M5 21a2 2 0 0 1-2-2"}],["path",{"d":"M9 3h1"}],["path",{"d":"M9 21h1"}],["path",{"d":"M14 3h1"}],["path",{"d":"M14 21h1"}],["path",{"d":"M3 9v1"}],["path",{"d":"M21 9v1"}],["path",{"d":"M3 14v1"}],["path",{"d":"M21 14v1"}]],"circle-minus":[["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"M8 12h8"}]],"copy":[["rect",{"width":"14","height":"14","x":"8","y":"8","rx":"2","ry":"2"}],["path",{"d":"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"}]],"asterisk":[["path",{"d":"M12 5v14"}],["path",{"d":"m18.065 8.496-12.125 7"}],["path",{"d":"m5.94 8.504 12.125 7"}]],"focus":[["circle",{"cx":"12","cy":"12","r":"3"}],["path",{"d":"M3 7V5a2 2 0 0 1 2-2h2"}],["path",{"d":"M17 3h2a2 2 0 0 1 2 2v2"}],["path",{"d":"M21 17v2a2 2 0 0 1-2 2h-2"}],["path",{"d":"M7 21H5a2 2 0 0 1-2-2v-2"}]],"scan":[["path",{"d":"M3 7V5a2 2 0 0 1 2-2h2"}],["path",{"d":"M17 3h2a2 2 0 0 1 2 2v2"}],["path",{"d":"M21 17v2a2 2 0 0 1-2 2h-2"}],["path",{"d":"M7 21H5a2 2 0 0 1-2-2v-2"}]],"shapes":[["path",{"d":"M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z"}],["rect",{"x":"3","y":"14","width":"7","height":"7","rx":"1"}],["circle",{"cx":"17.5","cy":"17.5","r":"3.5"}]],"combine":[["path",{"d":"M14 3a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1"}],["path",{"d":"M19 3a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1"}],["path",{"d":"m7 15 3 3"}],["path",{"d":"m7 21 3-3H5a2 2 0 0 1-2-2v-2"}],["rect",{"x":"14","y":"14","width":"7","height":"7","rx":"1"}],["rect",{"x":"3","y":"3","width":"7","height":"7","rx":"1"}]],"folder-plus":[["path",{"d":"M12 10v6"}],["path",{"d":"M9 13h6"}],["path",{"d":"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"}]],"copy-plus":[["line",{"x1":"15","x2":"15","y1":"12","y2":"18"}],["line",{"x1":"12","x2":"18","y1":"15","y2":"15"}],["rect",{"width":"14","height":"14","x":"8","y":"8","rx":"2","ry":"2"}],["path",{"d":"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"}]],"palette":[["path",{"d":"M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"}],["circle",{"cx":"13.5","cy":"6.5","r":".5","fill":"currentColor"}],["circle",{"cx":"17.5","cy":"10.5","r":".5","fill":"currentColor"}],["circle",{"cx":"6.5","cy":"12.5","r":".5","fill":"currentColor"}],["circle",{"cx":"8.5","cy":"7.5","r":".5","fill":"currentColor"}]],"wand-2":[["path",{"d":"m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"}],["path",{"d":"m14 7 3 3"}],["path",{"d":"M5 6v4"}],["path",{"d":"M19 14v4"}],["path",{"d":"M10 2v2"}],["path",{"d":"M7 8H3"}],["path",{"d":"M21 16h-4"}],["path",{"d":"M11 3H9"}]],"split":[["path",{"d":"M16 3h5v5"}],["path",{"d":"M8 3H3v5"}],["path",{"d":"M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"}],["path",{"d":"m15 9 6-6"}]],"circle-off":[["path",{"d":"m2 2 20 20"}],["path",{"d":"M8.35 2.69A10 10 0 0 1 21.3 15.65"}],["path",{"d":"M19.08 19.08A10 10 0 1 1 4.92 4.92"}]]}}</script>
         </div>
         <ul class="wand-tips">
-          <li><kbd>Point</kbd><span>Point at a slice and it lights up. A slice that holds a group fans its commands out.</span></li>
-          <li><kbd>Click</kbd><span>Click a command to run it. Click a part first, and the ring changes to work on that part.</span></li>
-          <li><kbd>Hold W</kbd><span>In the app the ring opens round the pointer. Here it moves to it: let go on a slice to run it.</span></li>
-          <li><kbd>Esc</kbd><span>Puts the ring back in the middle and runs nothing.</span></li>
+          <li><kbd>Point</kbd><span>A slice lights up. A group fans its commands out.</span></li>
+          <li><kbd>Click</kbd><span>Runs the command. Click a part first to work on it.</span></li>
+          <li><kbd>Hold W</kbd><span>The ring comes to the pointer. Let go on a slice to run it.</span></li>
+          <li><kbd>Esc</kbd><span>Back to the middle. Runs nothing.</span></li>
         </ul>
       </div>
     </section>
@@ -384,7 +384,7 @@
         <div class="cl-band-copy">
           <p class="kicker">Claude<b>·</b><span class="tag-new is-large">New</span></p>
           <h2>Ask Claude. It does the clean-up.</h2>
-          <p class="lead">Connect the app to Claude and describe the job. It uses the same tools you click: finds bolts and hidden parts, runs Smart optimise, reduces to a size, takes pictures. It asks before it changes the model, and every change is one undo step.</p>
+          <p class="lead">Connect the app to Claude and describe the job. It uses the same tools you click, asks before it changes the model, and every change is one undo.</p>
           <ul class="cl-say">
             <li>Find all the bolts and hide them.</li>
             <li>Get this under 5 MB for the web.</li>
@@ -406,14 +406,14 @@
         </div>
       </div>
       <div class="strip" data-strip>
-        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-hero.webp" data-group="strip" data-caption="A gearbox assembly open in MeshOptimiser: 95 parts, 646,064 triangles. The parts tree is on the left, the totals and the tools on the right."><img src="../../Images/apps/meshoptimiser-hero.webp" alt="MeshOptimiser: A gearbox assembly open in MeshOptimiser: 95 parts, 646,064 triangles. The parts tree is on the left, the totals and the tools on the right." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>A gearbox assembly open in MeshOptimiser: 95 parts, 646,064 triangles. The parts tree is on the left, the totals and the tools on the right.</figcaption></figure>
-        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-smart-optimise.webp" data-group="strip" data-caption="Smart optimise is one button that runs the clean-ups in order. Reduce triangles is on and aims at half: 323,000."><img src="../../Images/apps/meshoptimiser-smart-optimise.webp" alt="MeshOptimiser: Smart optimise is one button that runs the clean-ups in order. Reduce triangles is on and aims at half: 323,000." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Smart optimise is one button that runs the clean-ups in order. Reduce triangles is on and aims at half: 323,000.</figcaption></figure>
-        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-fasteners.webp" data-group="strip" data-caption="Fasteners found 48 by their shape: 18 bolts and screws, 20 nuts and 10 washers, 22,760 triangles, ready to isolate or delete."><img src="../../Images/apps/meshoptimiser-fasteners.webp" alt="MeshOptimiser: Fasteners found 48 by their shape: 18 bolts and screws, 20 nuts and 10 washers, 22,760 triangles, ready to isolate or delete." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Fasteners found 48 by their shape: 18 bolts and screws, 20 nuts and 10 washers, 22,760 triangles, ready to isolate or delete.</figcaption></figure>
-        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-blocks.webp" data-group="strip" data-caption="Blocks on two heavy parts: 72,666 triangles down to 212, and the outline is still there."><img src="../../Images/apps/meshoptimiser-blocks.webp" alt="MeshOptimiser: Blocks on two heavy parts: 72,666 triangles down to 212, and the outline is still there." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Blocks on two heavy parts: 72,666 triangles down to 212, and the outline is still there.</figcaption></figure>
-        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-heatmap.webp" data-group="strip" data-caption="Heatmap: every part coloured by how many triangles it carries."><img src="../../Images/apps/meshoptimiser-heatmap.webp" alt="MeshOptimiser: Heatmap: every part coloured by how many triangles it carries." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Heatmap: every part coloured by how many triangles it carries.</figcaption></figure>
-        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-exploded.webp" data-group="strip" data-caption="The exploded view at 50%, with a slider for each axis."><img src="../../Images/apps/meshoptimiser-exploded.webp" alt="MeshOptimiser: The exploded view at 50%, with a slider for each axis." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>The exploded view at 50%, with a slider for each axis.</figcaption></figure>
-        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-inspect.webp" data-group="strip" data-caption="One part selected: its 30,590 triangles, its share of the scene and its rank by weight."><img src="../../Images/apps/meshoptimiser-inspect.webp" alt="MeshOptimiser: One part selected: its 30,590 triangles, its share of the scene and its rank by weight." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>One part selected: its 30,590 triangles, its share of the scene and its rank by weight.</figcaption></figure>
-        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-library.webp" data-group="strip" data-caption="The library drawer. Click a part, look at it, and set its size before it goes in."><img src="../../Images/apps/meshoptimiser-library.webp" alt="MeshOptimiser: The library drawer. Click a part, look at it, and set its size before it goes in." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>The library drawer. Click a part, look at it, and set its size before it goes in.</figcaption></figure>
+        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-hero.webp" data-group="strip" data-caption="A gearbox assembly: 95 parts, 646,064 triangles."><img src="../../Images/apps/meshoptimiser-hero.webp" alt="MeshOptimiser: A gearbox assembly: 95 parts, 646,064 triangles." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>A gearbox assembly: 95 parts, 646,064 triangles.</figcaption></figure>
+        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-smart-optimise.webp" data-group="strip" data-caption="Smart optimise: every clean-up in order, aiming at half the triangles."><img src="../../Images/apps/meshoptimiser-smart-optimise.webp" alt="MeshOptimiser: Smart optimise: every clean-up in order, aiming at half the triangles." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Smart optimise: every clean-up in order, aiming at half the triangles.</figcaption></figure>
+        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-fasteners.webp" data-group="strip" data-caption="Fasteners: 48 found by shape, 22,760 triangles."><img src="../../Images/apps/meshoptimiser-fasteners.webp" alt="MeshOptimiser: Fasteners: 48 found by shape, 22,760 triangles." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Fasteners: 48 found by shape, 22,760 triangles.</figcaption></figure>
+        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-blocks.webp" data-group="strip" data-caption="Blocks: 72,666 triangles down to 212, outline intact."><img src="../../Images/apps/meshoptimiser-blocks.webp" alt="MeshOptimiser: Blocks: 72,666 triangles down to 212, outline intact." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Blocks: 72,666 triangles down to 212, outline intact.</figcaption></figure>
+        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-heatmap.webp" data-group="strip" data-caption="Heatmap: parts coloured by triangle count."><img src="../../Images/apps/meshoptimiser-heatmap.webp" alt="MeshOptimiser: Heatmap: parts coloured by triangle count." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Heatmap: parts coloured by triangle count.</figcaption></figure>
+        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-exploded.webp" data-group="strip" data-caption="Exploded view at 50%, a slider per axis."><img src="../../Images/apps/meshoptimiser-exploded.webp" alt="MeshOptimiser: Exploded view at 50%, a slider per axis." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Exploded view at 50%, a slider per axis.</figcaption></figure>
+        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-inspect.webp" data-group="strip" data-caption="One part selected: its triangles, its share and its rank."><img src="../../Images/apps/meshoptimiser-inspect.webp" alt="MeshOptimiser: One part selected: its triangles, its share and its rank." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>One part selected: its triangles, its share and its rank.</figcaption></figure>
+        <figure><a class="zoom" href="../../Images/apps/meshoptimiser-library.webp" data-group="strip" data-caption="The library drawer: pick a part, set its size, drop it in."><img src="../../Images/apps/meshoptimiser-library.webp" alt="MeshOptimiser: The library drawer: pick a part, set its size, drop it in." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>The library drawer: pick a part, set its size, drop it in.</figcaption></figure>
       </div>
       <div class="dots" aria-hidden="true"></div>
       <div class="wrap">
@@ -425,16 +425,16 @@
       <div class="wrap split">
         <div class="split-head">
           <p class="kicker">Latest release</p>
-          <h2>v0.22.0</h2>
+          <h2>v0.23.0</h2>
           <a class="more" href="changelog.html">Full changelog</a>
         </div>
         <div class="split-body">
-          <p>Just ask Claude. Updates that install themselves. And if the app ever crashes, your work is waiting for you.</p>
+          <p>Cleaner meshes, your way. Decide how a CAD file turns into triangles, close the holes that used to slip through, and find anything, even a setting, by typing a word or two.</p>
           <ul class="changes">
-            <li><b class="is-new">New</b><span>Meet Claude in MeshOptimiser. Say what you want: “find all the bolts and hide them”, “get this under 5 MB”. Claude does it with the same tools you use. Turn it on in Settings when you’re ready. It stays off until you do.</span></li>
-            <li><b class="is-new">New</b><span>You’re always in charge. Claude asks before it changes anything, and deleting always asks. Every change is one Ctrl+Z away from undone.</span></li>
-            <li><b class="is-new">New</b><span>Try before you commit. Claude can show you exactly what a step would do, then take it back. And big jobs take one request: shrink a model to the size you need, see before and after side by side, or work through a whole folder. Watch it go, and stop it any time.</span></li>
-            <li><b class="is-new">New</b><span>Pictures that are ready to send. Clean renders up to 8192 pixels, from several angles at once, on a plain or transparent background. Plus a turntable video.</span></li>
+            <li><b class="is-new">New</b><span>You decide how a CAD file comes in. A new Tessellation block sets how closely triangles follow the surface, how round curves stay and how small an edge may get. By part size brings big parts in fine and keeps screws light.</span></li>
+            <li><b class="is-new">New</b><span>Smoother from the first second. Shading comes straight from the CAD surfaces: fillets blend in, cylinders show no seam, sharp edges stay sharp. Swap Y and Z stands up a model that arrives on its side.</span></li>
+            <li><b class="is-new">New</b><span>Fill holes is now Remove holes, and it finishes the job. No more ring of points where a hole was, no loose bits of wall, and it can seal openings into hollow spaces. Press it again to tidy what an earlier run left.</span></li>
+            <li><b class="is-new">New</b><span>Remove floating pieces. Plugs, shavings and dots that hang in the air next to a part go in one click. The biggest piece always stays.</span></li>
           </ul>
         </div>
       </div>
@@ -443,10 +443,10 @@
       <div class="wrap get-in">
         <div>
           <h2>Run it on your own machine.</h2>
-          <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
+          <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="download.html">Download v0.22.0</a>
+          <a class="btn is-primary is-large" href="download.html">Download v0.23.0</a>
           <a class="btn is-large btn-demo" href="demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Try the demo</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
@@ -486,6 +486,6 @@
       <span><a href="../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="site.js?v=27"></script>
+  <script defer src="site.js?v=28"></script>
 </body>
 </html>

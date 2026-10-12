@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=79" />
+  <link rel="stylesheet" href="../site.css?v=80" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -93,11 +93,13 @@
         <a href="../docs/fasteners.html">Fasteners</a>
         <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html" aria-current="page">Remove holes</a>
+        <a href="../docs/remove-floating-pieces.html">Remove floating pieces</a>
+        <a href="../docs/remesh.html">Remesh: Untriangulate and Triangulate</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
         <a href="../docs/decimate.html">Decimate</a>
         <a href="../docs/fit-to-budget.html">Fit to budget</a>
-        <a href="../docs/cleanup.html">Auto cleanup and Tidy geometry</a>
+        <a href="../docs/cleanup.html">Quick fixes and tidying up</a>
         <a href="../docs/workflow.html">A sensible order to work in</a>
         <h2>Look and arrange</h2>
         <a href="../docs/view-modes.html">View modes</a>
@@ -142,10 +144,12 @@
           <h2 id="what-it-closes-and-what-it-leaves">What it closes, and what it leaves</h2>
           <ul class="kb-points">
             <li>Closed: holes that go right through, holes with a floor, counterbores, slots, pockets and engraved lettering in flat faces.</li>
-            <li>Countersinks and flared holes: the hole counts by its bore. The wide opening of a countersink may be up to three times the limit and is closed with the hole.</li>
+            <li>Countersinks and flared holes: the hole counts by its bore. The wide opening of a countersink may be up to five times the limit and is closed with the hole.</li>
+            <li>An opening that leads into a hollow space: with <span class="ui">Close openings into hollow spaces</span> on, as it is to begin with, it is closed flush with the face from outside. What lies behind it stays as it was, out of sight. With the switch off, it is left alone.</li>
+            <li>Loose walls: a broken file can leave a cut-loose tube or cup floating where a hole was. With <span class="ui">Remove vertices left over</span> on, it is taken out and the opening it sat in is closed. Only a piece that is small next to its part goes, never more than a third of the part.</li>
             <li>Left alone: a boss or a pin that stands up from a face.</li>
             <li>Left alone: an opening that is what the part is, such as the bore of a washer, a nut or a bushing.</li>
-            <li>Left alone: an opening that leads into a hollow space or out through a curved surface.</li>
+            <li>Left alone: an opening that leads out through a curved surface.</li>
             <li>Left alone: holes in curved surfaces. The tool works on flat faces only.</li>
             <li>Left alone: instanced parts, which the file stores as repeats of one shared shape. The result line says how many it passed over.</li>
           </ul>
@@ -153,7 +157,7 @@
           <ol class="kb-steps">
             <li>Select the parts to work on. With nothing selected, it works on every visible part.</li>
             <li>Press <kbd>P</kbd>, or click <span class="ui">Remove holes</span> on the bottom toolbar. The panel opens at the bottom left of the viewport.</li>
-            <li>Set <span class="ui">up to</span> to the largest hole you want closed, in millimetres, measured across the hole’s widest point. It starts at 12.</li>
+            <li>Set <span class="ui">Hole width up to</span> to the largest hole you want closed, in millimetres, measured across the hole’s widest point. It starts at 12.</li>
             <li>Press <span class="ui">Remove holes</span>, or <kbd>Enter</kbd>.</li>
             <li>The holes close. The app reports how many, and the saving shows beside the triangle count.</li>
           </ol>
@@ -163,6 +167,7 @@
             <div><dt>Through holes</dt><dd>Holes that go right through: an opening on both sides.</dd></div>
             <div><dt>Blind holes and pockets</dt><dd>Holes and pockets with a floor: an opening on one side only.</dd></div>
             <div><dt>Open holes</dt><dd>Openings with nothing behind them: a missing patch in a flat face.</dd></div>
+            <div><dt>Close openings into hollow spaces</dt><dd>An opening that leads into a hollow space cannot be taken out whole. On: it is closed flush with the face from outside, and the wall of the hole under it is removed. What lies behind stays as it was, out of sight. Off: such an opening is left alone. It is on to begin with.</dd></div>
             <div><dt>Raised lettering and logos</dt><dd>Lettering and marks that stand proud of a flat face are flattened into it. Bosses, pins and ribs are taller than the limit and stay.</dd></div>
             <div><dt>Raised, up to</dt><dd>A raised detail is flattened only if it stands no higher than this above its face. Embossed type is usually 0.1 to 0.5 mm high.</dd></div>
             <div><dt>Keep openings that shape the part</dt><dd>On: an opening that takes up much of its face and of the part is kept, such as the bore of a washer or a window in a frame. Off: only the size limit decides.</dd></div>
@@ -170,6 +175,7 @@
             <div><dt>Remove vertices left over</dt><dd>On: the points that ringed each hole are taken out of the flat face, and the face is triangulated again with the fewest triangles. Press <span class="ui">Remove holes</span> a second time to clean the same way what an earlier run, or an earlier tool, left behind, even when no hole is left to close. It also works on parts that are already in n-gons. Loose walls that a broken file left floating in an opening, a cut-loose tube or cup that belongs to no solid, go with it.</dd></div>
             <div><dt>Depth limit</dt><dd>How far the inside of a hole may reach, as a multiple of the size limit. Lower it to leave deep bores alone.</dd></div>
             <div><dt>Flatness</dt><dd>How far apart the directions of two triangles may be and still count as one flat face. Raise it for meshes whose flat faces are slightly bent.</dd></div>
+            <div><dt>Surface may move</dt><dd>After a hole is closed, a vertex of the flat face round it may be a little off the plane of that face, as on a gently curved panel. It may still be removed if the surface moves no more than this, and never more than 1% of the part’s size. It starts at 0.5 mm. With 0, only vertices exactly in the plane go.</dd></div>
             <div><dt>Reset to defaults</dt><dd>Puts every option back.</dd></div>
           </dl>
           <h2 id="undo">Undo</h2>
@@ -181,9 +187,14 @@
             <li>A hole that was formed by pushing through the sheet, with a collar on the other side, is closed, and its collar stays as a small stub.</li>
             <li>Points of a closed hole still show in the Lines view? Press <span class="ui">Remove holes</span> again: with <span class="ui">Remove vertices left over</span> on, it removes them.</li>
             <li>A hole whose wall is wound the wrong way round, or whose edge is doubled, is found and closed too, instead of being closed twice.</li>
+            <li>Two holes that touch at a corner, or a hole that touches the edge of its face, are closed as well.</li>
+            <li>While it runs, Remove holes shows in the Tasks list of the status bar.</li>
+            <li>Small loose pieces left next to a part are a job for <a href="../docs/remove-floating-pieces.html">Remove floating pieces</a>. To turn the closed faces into clean polygons, or back into triangles, see <a href="../docs/remesh.html">Remesh</a>.</li>
           </ul>
           <p><a href="../docs/smart-optimise.html">Smart optimise</a> can run this command as one of its steps, with the settings and the size limit of this panel.</p>
           <div class="kb-see"><h2>Related</h2><ul>
+            <li><a href="../docs/remove-floating-pieces.html">Remove floating pieces</a></li>
+            <li><a href="../docs/remesh.html">Remesh: Untriangulate and Triangulate</a></li>
             <li><a href="../docs/smart-fit.html">Smart fit</a></li>
             <li><a href="../docs/decimate.html">Decimate</a></li>
             <li><a href="../docs/smart-optimise.html">Smart optimise</a></li>
@@ -192,7 +203,7 @@
         </div>
         <nav class="kb-turn" aria-label="More articles">
           <a class="is-before" href="../docs/stacked-copies.html"><span>Before</span><strong>Stacked copies</strong></a>
-          <a class="is-after" href="../docs/split.html"><span>Next</span><strong>Split</strong></a>
+          <a class="is-after" href="../docs/remove-floating-pieces.html"><span>Next</span><strong>Remove floating pieces</strong></a>
         </nav>
       </article>
       <aside class="kb-rail" aria-label="Quick links">
@@ -212,10 +223,10 @@
       <div class="wrap get-in">
         <div>
           <h2>Run it on your own machine.</h2>
-          <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
+          <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.22.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.23.0</a>
           <a class="btn is-large btn-demo" href="../demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Try the demo</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
@@ -255,6 +266,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=27"></script>
+  <script defer src="../site.js?v=28"></script>
 </body>
 </html>

@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>Keyboard shortcuts — MeshOptimiser Docs</title>
-  <meta name="description" content="Every keyboard shortcut and mouse action in MeshOptimiser v0.20.0, grouped by what it does." />
+  <meta name="description" content="Every keyboard shortcut and mouse action in MeshOptimiser v0.23.0, grouped by what it does." />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/shortcuts" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="Keyboard shortcuts — MeshOptimiser Docs" />
-  <meta property="og:description" content="Every keyboard shortcut and mouse action in MeshOptimiser v0.20.0, grouped by what it does." />
+  <meta property="og:description" content="Every keyboard shortcut and mouse action in MeshOptimiser v0.23.0, grouped by what it does." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/shortcuts" />
   <meta property="og:type" content="website" />
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=79" />
+  <link rel="stylesheet" href="../site.css?v=80" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -93,11 +93,13 @@
         <a href="../docs/fasteners.html">Fasteners</a>
         <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Remove holes</a>
+        <a href="../docs/remove-floating-pieces.html">Remove floating pieces</a>
+        <a href="../docs/remesh.html">Remesh: Untriangulate and Triangulate</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
         <a href="../docs/decimate.html">Decimate</a>
         <a href="../docs/fit-to-budget.html">Fit to budget</a>
-        <a href="../docs/cleanup.html">Auto cleanup and Tidy geometry</a>
+        <a href="../docs/cleanup.html">Quick fixes and tidying up</a>
         <a href="../docs/workflow.html">A sensible order to work in</a>
         <h2>Look and arrange</h2>
         <a href="../docs/view-modes.html">View modes</a>
@@ -134,14 +136,14 @@
       <article class="kb-article">
         <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#reference">Reference</a></p>
         <h1>Keyboard shortcuts</h1>
-        <p class="lead">Every keyboard shortcut and mouse action in MeshOptimiser v0.20.0, grouped by what it does.</p>
+        <p class="lead">Every keyboard shortcut and mouse action in MeshOptimiser v0.23.0, grouped by what it does.</p>
         <div class="kb-body">
           <p>On macOS, use <kbd>⌘</kbd> wherever this page says <kbd>Ctrl</kbd>.</p>
           <p>Inside the app, press <kbd>?</kbd> for the same list with a search field. Shortcuts with a single key do nothing while you are typing in a field, or while a window is open in front.</p>
           <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-shortcuts.webp" data-group="article" data-caption="The keyboard shortcuts overlay, with search."><img src="../../../Images/apps/meshoptimiser-shortcuts.webp" alt="MeshOptimiser: The keyboard shortcuts overlay, with search." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>The keyboard shortcuts overlay, with search.</figcaption></figure>
           <h2 id="file">File</h2>
           <dl class="kb-keys">
-            <div><dt><kbd>Ctrl</kbd><kbd>N</kbd></dt><dd>New scene, in a new tab</dd></div>
+            <div><dt><kbd>Alt</kbd><kbd>N</kbd></dt><dd>New scene, in a new tab. A browser keeps Ctrl + N for itself, to open a new browser window. In the installed app, Ctrl + N works too.</dd></div>
             <div><dt><kbd>Ctrl</kbd><kbd>O</kbd></dt><dd>Open a file</dd></div>
             <div><dt><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>O</kbd></dt><dd>Import a file into the open scene</dd></div>
             <div><dt><kbd>Ctrl</kbd><kbd>S</kbd></dt><dd>Save the scene</dd></div>
@@ -168,12 +170,15 @@
             <div><dt><kbd>X</kbd></dt><dd>Split</dd></div>
             <div><dt><kbd>P</kbd></dt><dd>Remove holes</dd></div>
             <div><dt><kbd>Ctrl</kbd><kbd>B</kbd></dt><dd>Smart fit</dd></div>
+            <div><dt><kbd>U</kbd></dt><dd>Untriangulate the selection</dd></div>
+            <div><dt><kbd>Shift</kbd><kbd>U</kbd></dt><dd>Triangulate the selection</dd></div>
             <div><dt><kbd>M</kbd></dt><dd>Measure</dd></div>
             <div><dt><kbd>L</kbd></dt><dd>Draw lines and shapes</dd></div>
             <div><dt><kbd>Enter</kbd></dt><dd>Run the open command card</dd></div>
             <div><dt><kbd>Esc</kbd></dt><dd>Put the open command card away. A second press clears the selection.</dd></div>
           </dl>
-          <p>Smart optimise, Decimate, Fit to budget, Select hidden parts, Fasteners, Stacked copies and Align to floor have no key of their own. Find them on the toolbar, in the <code>…</code> list or with the search.</p>
+          <p>The key of a tool also closes its card when the card is already open. <kbd>U</kbd> and <kbd>Shift</kbd><kbd>U</kbd> work on the selection only. See <a href="../docs/remesh.html">Remesh</a>.</p>
+          <p>Smart optimise, Decimate, Fit to budget, Remove floating pieces, Sweep, Select hidden parts, Fasteners, Stacked copies and Align to floor have no key of their own. Find them on the toolbar, in the <code>…</code> list or with the search.</p>
           <h2 id="selection">Selection</h2>
           <dl class="kb-keys">
             <div><dt><kbd>Ctrl</kbd><kbd>A</kbd></dt><dd>Select all</dd></div>
@@ -182,6 +187,9 @@
             <div><dt><kbd>Shift</kbd><kbd>S</kbd></dt><dd>Find the selected part in the tree</dd></div>
             <div><dt><kbd>Ctrl</kbd><kbd>Click</kbd></dt><dd>In the tree: add a row to the selection or take it out. A group goes in or out with its parts.</dd></div>
             <div><dt><kbd>Shift</kbd><kbd>Click</kbd></dt><dd>In the tree: pick every row from the last one you clicked to this one, groups and parts alike.</dd></div>
+            <div><dt><kbd>↑ ↓</kbd></dt><dd>After a click in the tree: go to the row above or below. With <kbd>Shift</kbd>, add a row to the selection.</dd></div>
+            <div><dt><kbd>→ ←</kbd></dt><dd>After a click in the tree: open a group, or close it. On a part, <kbd>←</kbd> goes to the group that holds it.</dd></div>
+            <div><dt><kbd>Home End</kbd></dt><dd>After a click in the tree: go to the first or the last row.</dd></div>
           </dl>
           <h2 id="visibility">Visibility</h2>
           <dl class="kb-keys">
@@ -217,7 +225,9 @@
           </dl>
           <h2 id="panels-and-windows">Panels and windows</h2>
           <dl class="kb-keys">
-            <div><dt><kbd>Ctrl</kbd><kbd>K</kbd></dt><dd>Search commands, parts and the library</dd></div>
+            <div><dt><kbd>Ctrl</kbd><kbd>K</kbd></dt><dd>Search commands, parts, the library and settings</dd></div>
+            <div><dt><kbd>Shift</kbd><kbd>C</kbd></dt><dd>The same search</dd></div>
+            <div><dt><kbd>Shift</kbd><kbd>Enter</kbd></dt><dd>In the search, on a switch: go to the switch instead of turning it</dd></div>
             <div><dt><kbd>W</kbd></dt><dd>Quick wand: hold it over the viewport, flick toward a command, let go. A quick tap leaves the ring open.</dd></div>
             <div><dt><kbd>Shift</kbd><kbd>L</kbd></dt><dd>Library drawer</dd></div>
             <div><dt><kbd>Shift</kbd><kbd>M</kbd></dt><dd>Materials drawer</dd></div>
@@ -227,7 +237,7 @@
             <div><dt><kbd>?</kbd></dt><dd>Keyboard shortcuts</dd></div>
             <div><dt><kbd>Ctrl</kbd><kbd>F</kbd></dt><dd>In Settings: jump to the search field</dd></div>
             <div><dt><kbd>Ctrl</kbd><kbd>Enter</kbd></dt><dd>In Batch rename: apply</dd></div>
-            <div><dt><kbd>Esc</kbd></dt><dd>Close the open window or menu</dd></div>
+            <div><dt><kbd>Esc</kbd></dt><dd>Close the open window or menu. It closes the Export, Import and Save scene windows too.</dd></div>
           </dl>
           <h2 id="in-the-help-window">In the help window</h2>
           <dl class="kb-keys">
@@ -262,6 +272,10 @@
             <div><dt><kbd>Shift</kbd></dt><dd>While dragging a number: ten times faster</dd></div>
             <div><dt><kbd>Alt</kbd></dt><dd>While dragging a number: ten times finer</dd></div>
             <div><dt><kbd>Click</kbd></dt><dd>On a number: type a value</dd></div>
+            <div><dt><kbd>Right-click</kbd></dt><dd>On a number field: Cut, Copy, Paste, Select all, Reset and quick edits of the number</dd></div>
+            <div><dt><kbd>Double-click</kbd></dt><dd>On the material card in Properties: rename the material</dd></div>
+            <div><dt><kbd>Drag</kbd></dt><dd>A material from the Materials dock into the view: assign it</dd></div>
+            <div><dt><kbd>Shift</kbd><kbd>Drag</kbd></dt><dd>A material onto another material: merge the two</dd></div>
           </dl>
           <h2 id="on-the-start-screen">On the start screen</h2>
           <dl class="kb-keys">
@@ -297,10 +311,10 @@
       <div class="wrap get-in">
         <div>
           <h2>Run it on your own machine.</h2>
-          <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
+          <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.22.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.23.0</a>
           <a class="btn is-large btn-demo" href="../demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Try the demo</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
@@ -340,6 +354,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=27"></script>
+  <script defer src="../site.js?v=28"></script>
 </body>
 </html>

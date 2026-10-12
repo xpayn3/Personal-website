@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=79" />
+  <link rel="stylesheet" href="../site.css?v=80" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -93,11 +93,13 @@
         <a href="../docs/fasteners.html">Fasteners</a>
         <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Remove holes</a>
+        <a href="../docs/remove-floating-pieces.html">Remove floating pieces</a>
+        <a href="../docs/remesh.html">Remesh: Untriangulate and Triangulate</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
         <a href="../docs/decimate.html">Decimate</a>
         <a href="../docs/fit-to-budget.html">Fit to budget</a>
-        <a href="../docs/cleanup.html">Auto cleanup and Tidy geometry</a>
+        <a href="../docs/cleanup.html">Quick fixes and tidying up</a>
         <a href="../docs/workflow.html" aria-current="page">A sensible order to work in</a>
         <h2>Look and arrange</h2>
         <a href="../docs/view-modes.html">View modes</a>
@@ -146,10 +148,10 @@
             <li>Remove copies that lie on top of each other with <a href="../docs/stacked-copies.html">Stacked copies</a>. Find, isolate, check, delete.</li>
             <li>Find the bolts, nuts and washers with <a href="../docs/fasteners.html">Fasteners</a>. Delete them if the model does not need them, or replace them with stand-ins using <a href="../docs/smart-fit.html">Smart fit</a>.</li>
             <li>Remove other small parts with <a href="../docs/delete-small-parts.html">Delete small parts</a>, if the model does not need them.</li>
-            <li>Close holes with <a href="../docs/fill-holes.html">Remove holes</a>.</li>
+            <li>Close holes with <a href="../docs/fill-holes.html">Remove holes</a>. If small loose pieces are left beside a part, take them out with <a href="../docs/remove-floating-pieces.html">Remove floating pieces</a>.</li>
             <li>Replace other filler parts with stand-ins, using <a href="../docs/smart-fit.html">Smart fit</a>.</li>
             <li>Reduce the heavy parts that remain with <a href="../docs/decimate.html">Decimate</a>, or bring the whole scene to a number with <a href="../docs/fit-to-budget.html">Fit to budget</a>.</li>
-            <li>Tidy up: <span class="ui">Remove empty parts</span> and <span class="ui">Delete empty groups</span> in the card <span class="ui">Auto cleanup</span>.</li>
+            <li>Tidy up: <span class="ui">Remove empty parts</span> and <span class="ui">Delete empty groups</span> in the card <span class="ui">Quick fixes</span>.</li>
             <li>Look at the whole model again in the normal view (<kbd>1</kbd>) and in clay (<kbd>5</kbd>). Open the <span class="ui">Optimisation report</span> to see what you saved.</li>
             <li>Save the scene, so you can come back to it. See <a href="../docs/save-scene.html">Save a scene</a>.</li>
             <li>Export the file for the program it is meant for. See <a href="../docs/export.html">Export</a>.</li>
@@ -163,13 +165,15 @@
           </ul>
           <div class="kb-see"><h2>Related</h2><ul>
             <li><a href="../docs/smart-optimise.html">Smart optimise</a></li>
+            <li><a href="../docs/remove-floating-pieces.html">Remove floating pieces</a></li>
+            <li><a href="../docs/remesh.html">Remesh: Untriangulate and Triangulate</a></li>
             <li><a href="../docs/read-the-numbers.html">How to read the numbers</a></li>
             <li><a href="../docs/save-scene.html">Save a scene</a></li>
             <li><a href="../docs/export.html">Export</a></li>
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">
-          <a class="is-before" href="../docs/cleanup.html"><span>Before</span><strong>Auto cleanup and Tidy geometry</strong></a>
+          <a class="is-before" href="../docs/cleanup.html"><span>Before</span><strong>Quick fixes and tidying up</strong></a>
           <a class="is-after" href="../docs/view-modes.html"><span>Next</span><strong>View modes</strong></a>
         </nav>
       </article>
@@ -190,10 +194,10 @@
       <div class="wrap get-in">
         <div>
           <h2>Run it on your own machine.</h2>
-          <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
+          <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.22.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.23.0</a>
           <a class="btn is-large btn-demo" href="../demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Try the demo</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
@@ -233,6 +237,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=27"></script>
+  <script defer src="../site.js?v=28"></script>
 </body>
 </html>

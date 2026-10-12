@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=79" />
+  <link rel="stylesheet" href="../site.css?v=80" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -93,11 +93,13 @@
         <a href="../docs/fasteners.html">Fasteners</a>
         <a href="../docs/stacked-copies.html">Stacked copies</a>
         <a href="../docs/fill-holes.html">Remove holes</a>
+        <a href="../docs/remove-floating-pieces.html">Remove floating pieces</a>
+        <a href="../docs/remesh.html">Remesh: Untriangulate and Triangulate</a>
         <a href="../docs/split.html">Split</a>
         <a href="../docs/smart-fit.html">Smart fit</a>
         <a href="../docs/decimate.html">Decimate</a>
         <a href="../docs/fit-to-budget.html">Fit to budget</a>
-        <a href="../docs/cleanup.html">Auto cleanup and Tidy geometry</a>
+        <a href="../docs/cleanup.html">Quick fixes and tidying up</a>
         <a href="../docs/workflow.html">A sensible order to work in</a>
         <h2>Look and arrange</h2>
         <a href="../docs/view-modes.html">View modes</a>
@@ -157,17 +159,30 @@
           </ul>
           <h2 id="the-import-settings-for-a-step-file">The import settings for a STEP file</h2>
           <dl class="table">
-            <div><dt>Tessellation quality</dt><dd>How closely the triangles follow curved surfaces. The choices run from Coarse (1.0), the fastest with visibly faceted curves, to Ultra (0.05), slow and very smooth. Standard (0.5) is the recommended one.</dd></div>
-            <div><dt>Colours &amp; materials</dt><dd>Read colours, names and the hierarchy, or geometry only. Geometry only is the fastest and gives you neither colours nor a tree. It suits huge files where you only need the shape.</dd></div>
-            <div><dt>XCAF read modes</dt><dd>Five switches for extra information in the file. Each one costs time. Turning off <span class="ui">SHUO overrides</span> saves the most on assemblies with many repeated parts.</dd></div>
-            <div><dt>Drop parts smaller than (% of model)</dt><dd>Leaves out tiny parts during conversion. 0 keeps everything.</dd></div>
-            <div><dt>Force re-convert</dt><dd>Ignores a stored conversion of the same file, if there is one, and converts from scratch.</dd></div>
-            <div><dt>Collapse identical shapes into instances</dt><dd>Stores a repeated shape once. Leave it on.</dd></div>
-            <div><dt>Append to current scene</dt><dd>Adds the file to the scene that is open, instead of opening it as a scene of its own.</dd></div>
-            <div><dt>Fit view after loading</dt><dd>Moves the camera so the whole model is in view when it has loaded.</dd></div>
+            <div><dt>Surface quality</dt><dd>How closely the triangles follow curved surfaces: <span class="ui">Coarse</span>, <span class="ui">Standard</span>, <span class="ui">Fine</span> or <span class="ui">Ultra</span>. Coarse is the fastest and shows facets on curves. Ultra is slow and very smooth. Standard is the recommended one. <span class="ui">Custom</span> means your own numbers, under Tessellation.</dd></div>
+            <div><dt>Tessellation</dt><dd>The numbers behind that choice. Click the row to open it. It is explained below.</dd></div>
+            <div><dt>Colours and structure</dt><dd><span class="ui">Colours &amp; hierarchy</span> reads colours, names and the assembly tree. <span class="ui">Geometry only</span> is the fastest and gives you neither colours nor a tree. It suits huge files where you only need the shape.</dd></div>
+            <div><dt>What to read</dt><dd>Five switches for extra information in the file: <span class="ui">Instance overrides</span>, <span class="ui">Layers</span>, <span class="ui">Materials</span>, <span class="ui">Product names</span> and <span class="ui">Validation properties</span>. Each one adds a pass over the file. Instance overrides is the slowest on assemblies with many repeated parts.</dd></div>
+            <div><dt>Drop small parts</dt><dd>Leaves out parts smaller than this share of the model during conversion. 0 keeps everything.</dd></div>
+            <div><dt>Share identical shapes</dt><dd>Stores a repeated shape once. Leave it on.</dd></div>
+            <div><dt>Swap Y and Z</dt><dd>Stands a model up that comes in lying on its side.</dd></div>
+            <div><dt>Convert again</dt><dd>Ignores a stored conversion of the same file, if there is one, and converts from scratch.</dd></div>
+            <div><dt>Add to the open scene</dt><dd>Adds the file to the scene that is open, instead of opening it as a scene of its own.</dd></div>
+            <div><dt>Fit the view</dt><dd>Moves the camera so the whole model is in view when it has loaded.</dd></div>
             <div><dt>Don't ask again for this format</dt><dd>Skips this window next time and uses the same answers. Leave it unticked until you know which settings you want.</dd></div>
           </dl>
-          <p>FBX, OBJ, 3MF and STL files get a shorter version of this window, with only the last three choices. GLB and glTF files open without it.</p>
+          <p>IGES and BREP files, two other CAD formats, get the same window. FBX, OBJ, 3MF and STL files get a shorter version of it, with only the last three choices. GLB and glTF files open without it.</p>
+          <h2 id="tessellation-how-the-surfaces-become-triangles">Tessellation: how the surfaces become triangles</h2>
+          <p>Tessellation is the step that covers the exact CAD surfaces with triangles. You do not have to open this block: the four choices of <span class="ui">Surface quality</span> fill it in for you. Open it when curves come in too faceted, or the model comes in too heavy.</p>
+          <dl class="table">
+            <div><dt>Sag</dt><dd>How far a triangle may stand off the true surface, in millimetres. Smaller is smoother, and makes more triangles.</dd></div>
+            <div><dt>Angle</dt><dd>The most a curve may turn from one triangle to the next, in degrees. Smaller means rounder holes and rounder fillets (a fillet is a rounded edge).</dd></div>
+            <div><dt>Min edge</dt><dd>The smallest triangle edge allowed, in millimetres. It keeps tiny fillets and threads from filling up with thin slivers. 0 is no limit.</dd></div>
+            <div><dt>The four choices and Custom</dt><dd>Each choice sets the sag and the angle: Coarse is 1 mm and 30°, Standard 0.5 mm and 30°, Fine 0.2 mm and 20°, Ultra 0.05 mm and 12°. Type a number of your own and <span class="ui">Custom</span> is selected.</dd></div>
+            <div><dt>By part size</dt><dd>Fine on the large parts, coarse on the small ones. Small, medium and large parts each get a sag and an angle of their own, so the housing comes in fine and the screws coarse. Two fields, <span class="ui">Small under</span> and <span class="ui">large from</span>, say where the limits are, as a share of the model’s size: 5% and 30% to begin with. While it is on, the four choices are greyed out. <span class="ui">Min edge</span> still applies.</dd></div>
+            <div><dt>Smooth shading</dt><dd>Takes the normals, the directions the light is worked out from, from the real CAD surfaces. A fillet then runs into the faces beside it without a visible seam, and sharp edges stay sharp. On by default.</dd></div>
+          </dl>
+          <aside class="kb-note"><p>A coarser setting here makes fewer triangles at the source. That usually looks better than reducing a fine mesh afterwards.</p></aside>
           <h2 id="follow-the-progress-or-stop-it">Follow the progress, or stop it</h2>
           <ul class="kb-points">
             <li>The progress card shows the latest message from the converter. <span class="ui">Copy log</span> copies all messages, which is useful when you report a problem.</li>
@@ -211,10 +226,10 @@
       <div class="wrap get-in">
         <div>
           <h2>Run it on your own machine.</h2>
-          <p>Free and open source under the MIT licence. Windows and macOS; your files never leave the computer.</p>
+          <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.22.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.23.0</a>
           <a class="btn is-large btn-demo" href="../demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Try the demo</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
@@ -254,6 +269,6 @@
       <span><a href="../../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="../site.js?v=27"></script>
+  <script defer src="../site.js?v=28"></script>
 </body>
 </html>
