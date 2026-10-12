@@ -1,26 +1,26 @@
 {
- "schema": 1,
- "stable": {
-  "version": "0.22.0",
-  "date": "2026-10-12",
-  "headline": "Claude can drive the optimiser, the app updates itself, and a crash no longer costs the scene.",
-  "notes": [
-   "Work with Claude: 65 tools, with your permission and one undo for every change",
-   "Updates inside the app, with a way back",
-   "Your scene back after a crash",
-   "Keep sharp edges when reducing triangles",
-   "Meshopt compression and Faster to draw in Export",
-   "A unit and up axis for new scenes"
-  ],
-  "more": "https://lukagrcar.com/apps/meshoptimiser/changelog.html",
-  "archive": {
-   "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.22.0/meshoptimiser-app-0.22.0.zip",
-   "sha256": "23cfd988078bbee1d5de0650813ea9c906ac522f2c47b7066ec4aae421f9fe77",
-   "size": 4839889
-  },
-  "requirements_sha256": "e3af5e22260095931b56d0d0d5c9215cd98b7540739be7eda417276748a7a322",
-  "requirements_changed": false,
-  "launcher": 1,
-  "min_from": ""
- }
+  "schema": 1,
+  "stable": {
+    "version": "0.24.0",
+    "date": "2026-10-12",
+    "headline": "Edit mesh with points, edges and polygons, a keyboard in the shortcuts window with keys you can change, and a faster start.",
+    "notes": [
+      "Edit mesh: points, edges and polygons, picked with Click, Box or Brush.",
+      "Move, delete, dissolve, weld, fill and extract what you picked.",
+      "The shortcuts window shows the keyboard, and every key can be changed.",
+      "Quick remesh on B, and Untriangulate clears points on straight lines.",
+      "A Scale switch in the Transform panel, and groups can be scaled.",
+      "A faster start."
+    ],
+    "more": "https://lukagrcar.com/apps/meshoptimiser/changelog.html",
+    "archive": {
+      "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.24.0/meshoptimiser-app-0.24.0.zip",
+      "sha256": "f64840044f69ab1a5ffb5ac1d1a8d93bc4ea570fc31eff967243bfadec7b4eea",
+      "size": 5020939
+    },
+    "requirements_sha256": "f1a93ffe65235c3537c454bcad32277ba82c666c35ece65e2fe598556d0f2f7d",
+    "requirements_changed": true,
+    "launcher": 1,
+    "min_from": ""
+  }
 }
