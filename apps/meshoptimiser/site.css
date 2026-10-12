@@ -279,6 +279,17 @@ b.is-refactor { color: var(--refactor); }
 .tools li:hover .ico { background: color-mix(in srgb, var(--ico, var(--accent)) 20%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ico, var(--accent)) 44%, transparent); }
 .tools div { display: grid; gap: 5px; align-content: start; padding-top: 1px; }
 .tools strong { font-size: 15px; font-weight: 500; }
+.allfeat { border-top: 1px solid var(--line-strong); border-bottom: 1px solid var(--line-strong); }
+.allfeat summary { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; cursor: pointer; list-style: none; font-size: 18px; color: var(--tx); }
+.allfeat summary::-webkit-details-marker { display: none; }
+.allfeat summary i { width: 10px; height: 10px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); transition: transform 0.2s ease; margin-right: 4px; }
+.allfeat[open] summary i { transform: rotate(-135deg); }
+.allfeat-body { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px clamp(24px, 3vw, 48px); padding: 8px 0 32px; }
+.allfeat h3 { margin-bottom: 10px; font-size: 13px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--tx-3); }
+.allfeat ul { list-style: none; display: grid; gap: 6px; }
+.allfeat li { font-size: 15px; color: var(--tx-2, var(--tx)); }
+@media (max-width: 1060px) { .allfeat-body { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .allfeat-body { grid-template-columns: 1fr; } }
 .tools .tag-new { margin-left: 8px; padding: 2px 7px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 16%, transparent); color: color-mix(in srgb, var(--accent) 80%, var(--tx)); font: 500 10.5px/1.4 var(--font); font-style: normal; letter-spacing: 0.06em; text-transform: uppercase; vertical-align: 1px; }
 .tools span { color: var(--tx-2); font-size: 15px; line-height: 1.5; }
 .tools-more { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 clamp(24px, 3vw, 48px); list-style: none; }

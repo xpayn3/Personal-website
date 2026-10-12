@@ -24,7 +24,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 82;
+const CSS_V = 83;
 const RP_V = 2;           // report.js
 const JS_V = 28;
 
@@ -884,7 +884,21 @@ ${group.items.map(([name, line, flag]) => `          <li><i class="ico">${svgIco
 ${group.more.map(([name, line, flag]) => `          <li><strong>${esc(name)}${flag === 'new' ? '<em class="tag-new">New</em>' : ''}</strong><span>${esc(line)}</span></li>`).join('\n')}
         </ul>` : ''}
       </div>
-    </section>`).join('')}` + footer(page);
+    </section>`).join('') + `
+    <section class="band" id="all-features">
+      <div class="wrap tools-wrap">
+        <div class="split-head">
+          <p class="kicker">At a glance</p>
+          <h2>Every feature, by name.</h2>
+        </div>
+        <details class="allfeat">
+          <summary>All ${app.featureGroups.reduce((n, g) => n + g.items.length, 0)} features<i aria-hidden="true"></i></summary>
+          <div class="allfeat-body">
+${app.featureGroups.map(group => `            <div><h3>${esc(group.title)}</h3><ul>${group.items.map(([name]) => `<li>${esc(name)}</li>`).join('')}</ul></div>`).join('\n')}
+          </div>
+        </details>
+      </div>
+    </section>`}` + footer(page);
 
 
   // ---- docs: a knowledge base (docs-content.js) ----
