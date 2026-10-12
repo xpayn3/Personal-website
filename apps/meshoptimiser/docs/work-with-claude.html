@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=83" />
+  <link rel="stylesheet" href="../site.css?v=84" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -105,6 +105,7 @@
         <a href="../docs/view-modes.html">View modes</a>
         <a href="../docs/colours-materials.html">Colours and materials</a>
         <a href="../docs/move-rotate-scale.html">Move, rotate, scale and measure</a>
+        <a href="../docs/edit-mesh.html">Edit mesh: points, edges and polygons</a>
         <a href="../docs/align-to-floor.html">Align to floor</a>
         <a href="../docs/exploded-view.html">Exploded view</a>
         <a href="../docs/library.html">The parts library and shapes</a>
@@ -194,7 +195,7 @@
           <p>While a long job runs, the badge in the top bar says which step it is on and the dropdown shows a progress bar with a Stop button. Cancelling in Claude stops it too. The job ends after the step it is on and says what was done.</p>
           <h2 id="pictures-for-a-client">Pictures for a client</h2>
           <p>Claude can make clean pictures of the model with the tool <span class="ui">render_image</span>: big (up to 8192 pixels a side), drawn at twice the size and scaled down so the edges are smooth, in one angle or several (perspective, front, side, top), in solid, clay, CAD, wireframe, x-ray or the heat view, on a white, light, grey, dark or black background or on none at all (a transparent PNG). The model is framed to fill the picture and the grid is left out. Each picture is saved as a PNG in the <span class="ui">exports</span> folder next to the app, and Claude looks at a small preview of it. For a before and after, ask for the same pictures before and after you optimise: the camera, the look and the size are the same.</p>
-          <p>The quick tool <span class="ui">screenshot</span> is only a look at the viewport. <span class="ui">turntable_video</span> saves one slow turn round the model.</p>
+          <p>The quick tool <span class="ui">screenshot</span> is a look at the viewport exactly as it is. Claude can also frame the picture on the whole model or on the selected parts: it is then fitted edge to edge on the geometry itself, the move handles are left out, and your own camera is put back afterwards. <span class="ui">turntable_video</span> saves one slow turn round the model.</p>
           <h2 id="what-claude-already-knows">What Claude already knows</h2>
           <p>Claude does not start from nothing. The app gives it the know-how of an experienced user, so it works in the order a person would and asks the questions a person would ask.</p>
           <ul class="kb-points">

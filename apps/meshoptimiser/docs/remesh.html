@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=83" />
+  <link rel="stylesheet" href="../site.css?v=84" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -105,6 +105,7 @@
         <a href="../docs/view-modes.html">View modes</a>
         <a href="../docs/colours-materials.html">Colours and materials</a>
         <a href="../docs/move-rotate-scale.html">Move, rotate, scale and measure</a>
+        <a href="../docs/edit-mesh.html">Edit mesh: points, edges and polygons</a>
         <a href="../docs/align-to-floor.html">Align to floor</a>
         <a href="../docs/exploded-view.html">Exploded view</a>
         <a href="../docs/library.html">The parts library and shapes</a>
@@ -139,7 +140,7 @@
         <p class="lead">Join the triangles of each flat face into one polygon and take away the vertices in its middle, or go back to even triangles. The shape stays as it is.</p>
         <div class="kb-body">
           <p>Screens draw triangles, so every flat face of a part is cut into triangles, often more than it needs. A polygon, also called an n-gon, is a flat face with any number of corners: several triangles in one plane, joined into one face.</p>
-          <p>Remesh has two actions in one panel. <span class="ui">Untriangulate</span> joins flat triangles into polygons and takes away the vertices in the middle of each flat face. <span class="ui">Triangulate</span> is the way back: the flat faces stop being polygons and show their triangles again.</p>
+          <p>Remesh has two actions in one panel, and a quick way to make a part lighter, <a href="../docs/remesh.html">Quick remesh</a>, further down. <span class="ui">Untriangulate</span> joins flat triangles into polygons and takes away the vertices in the middle of each flat face. <span class="ui">Triangulate</span> is the way back: the flat faces stop being polygons and show their triangles again.</p>
           <h2 id="when-to-use-it">When to use it</h2>
           <ul class="kb-points">
             <li>Untriangulate: on a part whose flat faces carry vertices they do not need, for example around holes you closed with <a href="../docs/fill-holes.html">Remove holes</a>. The part loses those vertices and the triangles that hung on them.</li>
@@ -166,6 +167,8 @@
             <div><dt>Flatten shading on flat faces</dt><dd>A vertex whose triangles all lie in one plane is shaded flat. The rim of a hole you closed needs this. It still carries the tilted shading it had against the wall of the hole, and a face like that is not joined.</dd></div>
             <div><dt>Shading tolerance</dt><dd>A flat face is left alone if the shading at its vertices differs from the face by more than this, because joining it would change smooth shading. It starts at 5°.</dd></div>
             <div><dt>Surface may move</dt><dd>A vertex that is a little off the plane of its face, as on a gently curved panel, may still go if the surface moves no more than this, and never more than 1% of the part’s size. It starts at 0: only vertices in the plane go.</dd></div>
+            <div><dt>Points on straight lines</dt><dd>Also takes away the points that only sit on a straight line of a face’s outline, such as a long edge cut into pieces. They go from every face that touches them at once, so nothing cracks and the shape does not change.</dd></div>
+            <div><dt>Dissolve nearly flat within</dt><dd>For faces that are only nearly flat, such as a panel with a little noise or a gentle bend. A point that is left goes if the triangles round it turn from each other by less than this angle and the surface moves by less than <span class="ui">Surface may move</span>. 0 turns it off.</dd></div>
           </dl>
           <p>Untriangulate repeats until nothing more can be joined. Joining faces makes bigger faces, and a vertex that was on the edge between two of them is then in the middle of one.</p>
           <h2 id="the-settings-of-triangulate">The settings of Triangulate</h2>
@@ -177,7 +180,16 @@
           <h2 id="what-does-not-change">What does not change</h2>
           <p>The shape of the part. Untriangulate takes away only vertices that lie in the middle of a flat face, so the face keeps its outline. Only when you raise <span class="ui">Surface may move</span> above 0 can the surface shift, and by no more than the distance you typed. Triangulate adds no vertex and takes none away.</p>
           <h2 id="how-it-shows-in-the-view">How it shows in the view</h2>
-          <p>In the wireframe view (<kbd>2</kbd>), a part that has been through Untriangulate draws its polygons, and a part that has been through Triangulate draws its triangles. That holds whatever <span class="ui">Lines</span> is set to under <span class="ui">Settings</span>, <span class="ui">Viewport</span>.</p>
+          <p>In the wireframe view (<kbd>Alt</kbd><kbd>2</kbd>), a part that has been through Untriangulate draws its polygons, and a part that has been through Triangulate draws its triangles. That holds whatever <span class="ui">Lines</span> is set to under <span class="ui">Settings</span>, <span class="ui">Viewport</span>.</p>
+          <h2 id="quick-remesh">Quick remesh</h2>
+          <p>Quick remesh makes the selected parts lighter by choosing a level, with a live preview, instead of typing numbers. It is a separate tool from Untriangulate and Triangulate: it removes triangles, so it is lossy, like <a href="../docs/decimate.html">Decimate</a>.</p>
+          <ol class="kb-steps">
+            <li>Select the parts to make lighter.</li>
+            <li>Press <kbd>B</kbd>, or find <span class="ui">Quick remesh</span> with the search. A column of levels opens under the pointer. Each level is how many of the triangles stay.</li>
+            <li>Move up and down the column. The selected parts take the level the pointer is on straight away, so you judge the result on the real model. Moving back up gives the detail back.</li>
+            <li>Let go of the mouse button on a level, press <kbd>Enter</kbd>, or let go of <kbd>B</kbd> if you held it, to keep that level.</li>
+          </ol>
+          <p>Keeping a level is one undo step. <kbd>Esc</kbd> or a press beside the column puts the parts back as they were. It needs a selection: with nothing selected it says “Select a part first”. It does not run while <a href="../docs/edit-mesh.html">Edit mesh</a> is on.</p>
           <h2 id="undo">Undo</h2>
           <p>A run is one undo step. Press <kbd>Ctrl</kbd><kbd>Z</kbd> and the mesh is as it was.</p>
           <div class="kb-see"><h2>Related</h2><ul>
@@ -186,6 +198,7 @@
             <li><a href="../docs/decimate.html">Decimate</a></li>
             <li><a href="../docs/view-modes.html">View modes</a></li>
             <li><a href="../docs/workflow.html">A sensible order to work in</a></li>
+            <li><a href="../docs/edit-mesh.html">Edit mesh: points, edges and polygons</a></li>
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">

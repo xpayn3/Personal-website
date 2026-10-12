@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=83" />
+  <link rel="stylesheet" href="../site.css?v=84" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -105,6 +105,7 @@
         <a href="../docs/view-modes.html">View modes</a>
         <a href="../docs/colours-materials.html">Colours and materials</a>
         <a href="../docs/move-rotate-scale.html">Move, rotate, scale and measure</a>
+        <a href="../docs/edit-mesh.html">Edit mesh: points, edges and polygons</a>
         <a href="../docs/align-to-floor.html">Align to floor</a>
         <a href="../docs/exploded-view.html">Exploded view</a>
         <a href="../docs/library.html">The parts library and shapes</a>
@@ -151,7 +152,10 @@
             <li>A tool that changes many parts at once is one step. One <kbd>Ctrl</kbd><kbd>Z</kbd> takes back a whole Remove holes run or a whole Fit to budget.</li>
             <li>In Align to floor, a run of adjustments is one step.</li>
             <li>Changing the threshold of Delete small parts while its parts are isolated adds no step of its own.</li>
+            <li>In <a href="../docs/edit-mesh.html">Edit mesh</a>, a move, turn or scale of the picked pieces is one step, however long you drag, and so is each of Delete, Dissolve, Planarize, Straighten, Weld, Fill, Extract and Reverse normals. After an undo the pieces are picked again.</li>
+            <li>Quick remesh (<kbd>B</kbd>) is one step, taken when you let go on a level.</li>
           </ul>
+          <p>In Edit mesh, <kbd>Ctrl</kbd><kbd>Z</kbd> also takes back the last change of what is picked (a click, a box or a stroke of the brush).</p>
           <h2 id="each-tab-has-its-own-history">Each tab has its own history</h2>
           <p>Undo works on the scene in the tab you are looking at. Other tabs are not touched. See <a href="../docs/scene-tabs.html">Scene tabs</a>.</p>
           <h2 id="start-over">Start over</h2>
@@ -162,6 +166,7 @@
             <li><a href="../docs/save-scene.html">Save a scene</a></li>
             <li><a href="../docs/scene-tabs.html">Scene tabs</a></li>
             <li><a href="../docs/shortcuts.html">Keyboard shortcuts</a></li>
+            <li><a href="../docs/edit-mesh.html">Edit mesh: points, edges and polygons</a></li>
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">

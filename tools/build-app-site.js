@@ -24,7 +24,9 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 83;
+// the features page shows this many of each section's features with an icon; the rest sit in the accordion
+const FEATURED_PER_GROUP = 2;
+const CSS_V = 84;
 const RP_V = 2;           // report.js
 const JS_V = 28;
 
@@ -878,23 +880,20 @@ ${app.featureGroups.map((group, gi) => `
           <h2>${esc(group.title)}</h2>
         </div>
         <ul class="tools">
-${group.items.map(([name, line, flag]) => `          <li><i class="ico">${svgIcon(ICONS.items[name])}</i><div><strong>${esc(name)}${flag === 'new' ? '<em class="tag-new">New</em>' : ''}</strong><span>${esc(line)}</span></div></li>`).join('\n')}
-        </ul>${group.more && group.more.length ? `
-        <ul class="tools-more">
-${group.more.map(([name, line, flag]) => `          <li><strong>${esc(name)}${flag === 'new' ? '<em class="tag-new">New</em>' : ''}</strong><span>${esc(line)}</span></li>`).join('\n')}
-        </ul>` : ''}
+${group.items.slice(0, FEATURED_PER_GROUP).map(([name, line, flag]) => `          <li><i class="ico">${svgIcon(ICONS.items[name])}</i><div><strong>${esc(name)}${flag === 'new' ? '<em class="tag-new">New</em>' : ''}</strong><span>${esc(line)}</span></div></li>`).join('\n')}
+        </ul>
       </div>
     </section>`).join('') + `
     <section class="band" id="all-features">
       <div class="wrap tools-wrap">
         <div class="split-head">
-          <p class="kicker">At a glance</p>
-          <h2>Every feature, by name.</h2>
+          <p class="kicker">And more</p>
+          <h2>Everything else, by name.</h2>
         </div>
         <details class="allfeat">
-          <summary>All ${app.featureGroups.reduce((n, g) => n + g.items.length, 0)} features<i aria-hidden="true"></i></summary>
+          <summary>${app.featureGroups.reduce((n, g) => n + g.items.slice(FEATURED_PER_GROUP).length + (g.more || []).length, 0)} more features<i aria-hidden="true"></i></summary>
           <div class="allfeat-body">
-${app.featureGroups.map(group => `            <div><h3>${esc(group.title)}</h3><ul>${group.items.map(([name]) => `<li>${esc(name)}</li>`).join('')}</ul></div>`).join('\n')}
+${app.featureGroups.map(group => ({ group, rest: group.items.slice(FEATURED_PER_GROUP).concat(group.more || []) })).filter(x => x.rest.length).map(({ group, rest }) => `            <div><h3>${esc(group.title)}</h3><ul>${rest.map(([name, , flag]) => `<li>${esc(name)}${flag === 'new' ? '<em class="tag-new">New</em>' : ''}</li>`).join('')}</ul></div>`).join('\n')}
           </div>
         </details>
       </div>

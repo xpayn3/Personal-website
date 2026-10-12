@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../site.css?v=83" />
+  <link rel="stylesheet" href="../site.css?v=84" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -105,6 +105,7 @@
         <a href="../docs/view-modes.html" aria-current="page">View modes</a>
         <a href="../docs/colours-materials.html">Colours and materials</a>
         <a href="../docs/move-rotate-scale.html">Move, rotate, scale and measure</a>
+        <a href="../docs/edit-mesh.html">Edit mesh: points, edges and polygons</a>
         <a href="../docs/align-to-floor.html">Align to floor</a>
         <a href="../docs/exploded-view.html">Exploded view</a>
         <a href="../docs/library.html">The parts library and shapes</a>
@@ -138,12 +139,13 @@
         <h1>View modes</h1>
         <p class="lead">Six ways to draw the same model: solid, wireframe, X-ray, heatmap, clay and CAD. One key each, plus the Shading card for the clay and CAD looks.</p>
         <div class="kb-body">
-          <p>A view mode changes how the model is drawn, not the model itself. Switch with the number keys. The first four also have buttons on the tool strip at the left edge of the viewport. Clay and CAD are chosen on the <span class="ui">Shading</span> card in the right sidebar (see below).</p>
+          <p>A view mode changes how the model is drawn, not the model itself. Switch with <kbd>Alt</kbd> and a number for the first four, and with the number alone for Clay and CAD. The first four also have buttons on the tool strip at the left edge of the viewport. Clay and CAD are chosen on the <span class="ui">Shading</span> card in the right sidebar (see below).</p>
+          <aside class="kb-note"><p>Since v0.24.0 the keys <kbd>1</kbd> to <kbd>4</kbd> without <kbd>Alt</kbd> pick Points, Edges, Polygons and Model in <a href="../docs/edit-mesh.html">Edit mesh</a>. They used to switch the view. On a Mac the keys are read by their place on the keyboard, so <kbd>Option</kbd><kbd>1</kbd> to <kbd>Option</kbd><kbd>4</kbd> work although Option + 1 types another character there.</p></aside>
           <dl class="kb-keys">
-            <div><dt><kbd>1</kbd></dt><dd>Solid: the normal view, with colours and lighting</dd></div>
-            <div><dt><kbd>2</kbd></dt><dd>Wireframe: only the edges of the triangles</dd></div>
-            <div><dt><kbd>3</kbd></dt><dd>X-ray: every part as a see-through shell</dd></div>
-            <div><dt><kbd>4</kbd></dt><dd>Heatmap: parts coloured by triangle density</dd></div>
+            <div><dt><kbd>Alt</kbd><kbd>1</kbd></dt><dd>Solid: the normal view, with colours and lighting</dd></div>
+            <div><dt><kbd>Alt</kbd><kbd>2</kbd></dt><dd>Wireframe: only the edges of the triangles</dd></div>
+            <div><dt><kbd>Alt</kbd><kbd>3</kbd></dt><dd>X-ray: every part as a see-through shell</dd></div>
+            <div><dt><kbd>Alt</kbd><kbd>4</kbd></dt><dd>Heatmap: parts coloured by triangle density</dd></div>
             <div><dt><kbd>5</kbd></dt><dd>Clay: every part in one plain material. Press it again to return to solid.</dd></div>
             <div><dt><kbd>6</kbd></dt><dd>CAD: flat, matte shading with a dark line on every sharp edge. Press it again to return to solid.</dd></div>
           </dl>
@@ -193,6 +195,7 @@
             <li><a href="../docs/read-the-numbers.html">How to read the numbers</a></li>
             <li><a href="../docs/hide-isolate.html">Hide, isolate, show all</a></li>
             <li><a href="../docs/screenshots.html">Screenshots</a></li>
+            <li><a href="../docs/edit-mesh.html">Edit mesh: points, edges and polygons</a></li>
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">

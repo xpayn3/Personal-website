@@ -1071,3 +1071,4 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 
 .steps-note { max-width: 62ch; margin: 28px 0 0; color: var(--tx-2); font-size: 15px; line-height: 1.6; }
 .steps-note a { color: var(--accent); }
+.allfeat li .tag-new { margin-left: 8px; height: 18px; padding: 0 7px; font-size: 10px; }
