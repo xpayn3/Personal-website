@@ -94,8 +94,8 @@
         </div>
         <ol class="steps">
           <li><i>01</i><h3>Switch it on</h3><p>In MeshOptimiser open Settings, choose Claude, and turn on Let Claude connect. A small “Claude connected” pill shows in the top bar while it is on.</p></li>
-          <li><i>02</i><h3>Add it to Claude</h3><p>Once, in a terminal on the same computer. This points Claude at the app. Nothing is installed.</p></li>
-          <li><i>03</i><h3>Ask</h3><p>Describe the job in plain words. Claude calls the app’s tools one at a time and tells you what it did.</p></li>
+          <li><i>02</i><h3>Add it to Claude</h3><p>One line, once, in a terminal on the same computer. It points Claude at the app. Nothing is installed.</p></li>
+          <li><i>03</i><h3>Ask</h3><p>Just describe the job. Claude uses the app’s tools one at a time and tells you what it did.</p></li>
         </ol>
         <dl class="commands">
           <div><dt>Add it to Claude</dt><dd><code>claude mcp add --transport http meshoptimiser http://localhost:4242/mcp</code><button type="button" class="copy" data-copy="claude mcp add --transport http meshoptimiser http://localhost:4242/mcp">Copy</button></dd></div>
@@ -239,10 +239,10 @@
     <section class="band" id="jobs">
       <div class="wrap">
         <div class="band-head">
-          <p class="kicker">Longer jobs</p>
-          <h2>Try a step, watch it run, stop it.</h2>
+          <p class="kicker">Big jobs</p>
+          <h2>Try it. Watch it. Stop it any time.</h2>
         </div>
-        <p class="lead">Some jobs take a while: taking a model to the web limits, or doing every file in a folder. Claude can try a step without keeping it, run the whole job in one call and show the result as before and after. You can see how far it has got, and stop it.</p>
+        <p class="lead">Some jobs take a while: getting a model down to web size, or doing every file in a folder. Claude can try a step without keeping it, run the whole job from one request and show you before and after. You can see how far it has got, and stop it whenever you like.</p>
         <div class="cl-shots cl-renders">
           <figure><a class="zoom" href="../../Images/apps/meshoptimiser-claude-compare.webp" data-group="jobs" data-caption="compare_images on the Gearbox Assy after optimise_to_target with the web limits: 646,064 triangles on the left, 97,022 on the right."><img src="../../Images/apps/meshoptimiser-claude-compare.webp" alt="MeshOptimiser: compare_images on the Gearbox Assy after optimise_to_target with the web limits: 646,064 triangles on the left, 97,022 on the right." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>compare_images on the Gearbox Assy after optimise_to_target with the web limits: 646,064 triangles on the left, 97,022 on the right.</figcaption></figure>
           <figure><a class="zoom" href="../../Images/apps/meshoptimiser-claude-job.webp" data-group="jobs" data-caption="A folder of four models being optimised. The badge says which file and step, and the dropdown shows the progress and the Stop button."><img src="../../Images/apps/meshoptimiser-claude-job.webp" alt="MeshOptimiser: A folder of four models being optimised. The badge says which file and step, and the dropdown shows the progress and the Stop button." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>A folder of four models being optimised. The badge says which file and step, and the dropdown shows the progress and the Stop button.</figcaption></figure>
@@ -261,10 +261,10 @@
     <section class="band" id="renders">
       <div class="wrap">
         <div class="band-head">
-          <p class="kicker">Pictures for your client</p>
-          <h2>Renders for a client or a report.</h2>
+          <p class="kicker">Ready to send</p>
+          <h2>Pictures worth sending.</h2>
         </div>
-        <p class="lead">Once the model is light enough, Claude can make the pictures that go with it: a set of angles on a plain background, a cut-out, the model exploded. They are saved as PNG files on your computer.</p>
+        <p class="lead">Once your model is light, Claude can make the pictures that go with it: a set of angles on a clean background, a cut-out, the model pulled apart. They are saved as PNG files on your computer.</p>
         <div class="cl-shots cl-renders">
           <figure><a class="zoom" href="../../Images/apps/meshoptimiser-claude-render-exploded.webp" data-group="renders" data-caption="The Gearbox Assy exploded to 55%, solid, on a dark background. Made with render_image."><img src="../../Images/apps/meshoptimiser-claude-render-exploded.webp" alt="MeshOptimiser: The Gearbox Assy exploded to 55%, solid, on a dark background. Made with render_image." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>The Gearbox Assy exploded to 55%, solid, on a dark background. Made with render_image.</figcaption></figure>
           <figure><a class="zoom" href="../../Images/apps/meshoptimiser-claude-render-set.webp" data-group="renders" data-caption="Four angles in one request: perspective, front, side and top, in clay on white."><img src="../../Images/apps/meshoptimiser-claude-render-set.webp" alt="MeshOptimiser: Four angles in one request: perspective, front, side and top, in clay on white." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>Four angles in one request: perspective, front, side and top, in clay on white.</figcaption></figure>
@@ -283,10 +283,10 @@
     <section class="band" id="knows">
       <div class="wrap">
         <div class="band-head">
-          <p class="kicker">What Claude is told</p>
-          <h2>A short guide, so it works in a sensible order.</h2>
+          <p class="kicker">It already knows the app</p>
+          <h2>It knows how the app is used.</h2>
         </div>
-        <p class="lead">Claude does not have to guess how the app is used. The app hands it a short guide and its own help articles: the order to work in, what each step costs, what is safe, and what to do when something fails.</p>
+        <p class="lead">Claude doesn’t have to guess. The app hands it a short guide and its own help articles: the order to work in, what each step costs, what is safe, and what to do when something goes wrong.</p>
         <div class="kn-grid">
           <article class="kn-card">
             <h3>Six playbooks</h3>
@@ -345,7 +345,7 @@
           <figure><a class="zoom" href="../../Images/apps/meshoptimiser-claude-badge.webp" data-group="claude" data-caption="The Claude badge in the top bar, and its dropdown."><img src="../../Images/apps/meshoptimiser-claude-badge.webp" alt="MeshOptimiser: The Claude badge in the top bar, and its dropdown." width="470" height="540" loading="lazy" decoding="async" /></a><figcaption>The Claude badge in the top bar, and its dropdown.</figcaption></figure>
           <div>
             <p class="kicker">Always in view</p>
-            <h3>The badge in the top bar is a small control panel.</h3>
+            <h3>A small control panel, always in view.</h3>
             <p class="lead">While Claude is connected, a badge sits at the right of the top bar. Click it for a dropdown with the numbers and the basic switches. For everything else, More opens Settings.</p>
             <dl class="cl-points is-one">
               <div><dt>The state</dt><dd>Listening, working, or waiting for your answer, with how long it has been connected and what Claude asked for last.</dd></div>

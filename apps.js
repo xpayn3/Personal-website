@@ -92,9 +92,9 @@ window.labApps = [
         ],
         // pictures for a client (see claudeRenders in tools/build-app-site.js): made with render_image on the Gearbox Assy
         renders: {
-          kicker: 'Pictures for your client',
-          title: 'Renders for a client or a report.',
-          line: 'Once the model is light enough, Claude can make the pictures that go with it: a set of angles on a plain background, a cut-out, the model exploded. They are saved as PNG files on your computer.',
+          kicker: 'Ready to send',
+          title: 'Pictures worth sending.',
+          line: 'Once your model is light, Claude can make the pictures that go with it: a set of angles on a clean background, a cut-out, the model pulled apart. They are saved as PNG files on your computer.',
           points: [
             ['Big and smooth', 'Up to 8192 pixels a side. Each picture is drawn at twice its size and scaled down, so the edges are clean.'],
             ['A set of angles', 'Perspective, front, side and top in one request: one file for each, one sheet for Claude to look at.'],
@@ -110,9 +110,9 @@ window.labApps = [
         },
         // longer jobs (see claudeJobs in tools/build-app-site.js): a dry run, one call to a size, before and after, a folder, progress and Stop
         jobs: {
-          kicker: 'Longer jobs',
-          title: 'Try a step, watch it run, stop it.',
-          line: 'Some jobs take a while: taking a model to the web limits, or doing every file in a folder. Claude can try a step without keeping it, run the whole job in one call and show the result as before and after. You can see how far it has got, and stop it.',
+          kicker: 'Big jobs',
+          title: 'Try it. Watch it. Stop it any time.',
+          line: 'Some jobs take a while: getting a model down to web size, or doing every file in a folder. Claude can try a step without keeping it, run the whole job from one request and show you before and after. You can see how far it has got, and stop it whenever you like.',
           points: [
             ['Try it first', 'Add dry run to a step and the app does it, reads the numbers and takes it back: “these parts would go and this many triangles would be saved”. Nothing is asked and nothing stays changed.'],
             ['One call to a size', 'Get this under 5 MB, or ready for the web, Shopify, AR or a phone. Claude tidies, runs Smart optimise, then reduces in rounds against the app’s own size estimate, and says whether it got there.'],
@@ -128,9 +128,9 @@ window.labApps = [
         },
         // what Claude arrives knowing (see claudeKnows in tools/build-app-site.js)
         knows: {
-          kicker: 'What Claude is told',
-          title: 'A short guide, so it works in a sensible order.',
-          line: 'Claude does not have to guess how the app is used. The app hands it a short guide and its own help articles: the order to work in, what each step costs, what is safe, and what to do when something fails.',
+          kicker: 'It already knows the app',
+          title: 'It knows how the app is used.',
+          line: 'Claude doesn’t have to guess. The app hands it a short guide and its own help articles: the order to work in, what each step costs, what is safe, and what to do when something goes wrong.',
           playbooks: [
             ['How to optimise', 'The rules and the order: look first, tidy, remove what nobody sees, remove what nobody needs, close detail, replace filler, reduce last.'],
             ['Recipes by goal', 'The tool calls for a web viewer, AR, a game engine, 3D printing, sending to a customer, a review, or a number and nothing else.'],
@@ -155,8 +155,8 @@ window.labApps = [
         command: 'claude mcp add --transport http meshoptimiser http://localhost:4242/mcp',
         steps: [
           ['Switch it on', 'In MeshOptimiser open Settings, choose Claude, and turn on Let Claude connect. A small “Claude connected” pill shows in the top bar while it is on.'],
-          ['Add it to Claude', 'Once, in a terminal on the same computer. This points Claude at the app. Nothing is installed.'],
-          ['Ask', 'Describe the job in plain words. Claude calls the app’s tools one at a time and tells you what it did.'],
+          ['Add it to Claude', 'One line, once, in a terminal on the same computer. It points Claude at the app. Nothing is installed.'],
+          ['Ask', 'Just describe the job. Claude uses the app’s tools one at a time and tells you what it did.'],
         ],
         // what Claude can do: [title, icon, note, [[tool, line, asks?], …]]
         groups: [
@@ -262,7 +262,7 @@ window.labApps = [
           // the badge in the top bar and its dropdown (the picture is a close-up of the app's top right corner)
           badge: {
             kicker: 'Always in view',
-            title: 'The badge in the top bar is a small control panel.',
+            title: 'A small control panel, always in view.',
             line: 'While Claude is connected, a badge sits at the right of the top bar. Click it for a dropdown with the numbers and the basic switches. For everything else, More opens Settings.',
             points: [
               ['The state', 'Listening, working, or waiting for your answer, with how long it has been connected and what Claude asked for last.'],
