@@ -27,7 +27,8 @@
 //   highlights  the headline cards: [big figure, a line about it] (optional)
 //   steps     how it works, in order: [name, a line about it] (optional)
 //   features  [name, a line about it] pairs, or for a long list
-//   featureGroups  [{ title, note, items: [[name, line], …] }, …]
+//   featureGroups  [{ title, note, items: [[name, line], …], more: [[name, line], …] }, …]
+//                  (more: a plain list under the main ones, no icons; app sites only)
 //   start     { text, commands: [[label, command], …] } (optional)
 //   changelog { link, versions: [{ version, date, latest, summary,
 //             items: [[tag, text], …] }, …] }, newest first (optional)
@@ -572,6 +573,7 @@ window.labApps = [
         ['You set the tessellation', 'Sag, angle and smallest edge when a CAD file opens. By part size: big parts fine, screws light.', 'new'],
         ['Smooth from the CAD surfaces', 'Fillets blend in, cylinders show no seam, sharp edges stay sharp.', 'new'],
         ['Compresses', 'Meshopt makes GLBs about ten times smaller.'],
+      ], more: [
         ['Reads IGES and BREP too', 'IGES and BREP open like STEP. IGES keeps names, colours and layers.'],
         ['A whole folder at once', '--batch converts every CAD file in a folder and reports each one.'],
         ['Level-of-detail files', '--lod 100,50,25 writes three files, each lighter, with the same names.'],
@@ -583,32 +585,34 @@ window.labApps = [
         ['Smart optimise', 'Every clean-up in one go. One undo.'],
         ['Fasteners', 'Finds bolts, screws, nuts and washers by shape.'],
         ['Select hidden parts', 'Picks the parts you can’t see from outside.'],
-        ['Stacked copies', 'Removes a part only when an identical one sits in the same place.'],
         ['Finds copies in other tools’ files', 'Repeats in a GLB, FBX, OBJ or 3MF are found on open. A 600-mesh test file went from 2.72 MB to 186 KB.'],
         ['Decimate within a distance', 'Reduce until no point moves more than the millimetres you set. Measured, not assumed.'],
-        ['Recipes', 'Save Smart optimise settings by name, run them again, share them as a file.'],
-        ['Merge by colour', 'One mesh per colour. One undo.'],
         ['Remove holes', 'Closes bolt holes, slots and pockets in flat faces, by size, depth and kind. No ring of points left behind.', 'new'],
         ['Remove floating pieces', 'Deletes the plugs, shavings and dots that hang in the air next to a part.', 'new'],
-        ['Decimate', 'By percentage or triangle count. Normals, UVs and vertex colours stay.'],
-        ['Sharp edges stay sharp', 'Rims, steps and corners hold their shape when triangles go.'],
         ['Split', 'Cuts a fused mesh back into its solids, or at its creases into faces.', 'new'],
         ['Smart fit', 'Swaps a part for a box, a cylinder or blocks that keep the outline.'],
         ['Fit to budget', 'Set a triangle count for the scene. The heaviest meshes go first.'],
+        ['Remove hidden faces', 'Deletes faces that never show: inside a housing, where two parts meet.'],
+        ['Remesh', 'Untriangulate re-cuts flat faces with the fewest triangles: a 200-triangle plate becomes 38. Triangulate is the way back.', 'new'],
+      ], more: [
+        ['Stacked copies', 'Removes a part only when an identical one sits in the same place.'],
+        ['Recipes', 'Save Smart optimise settings by name, run them again, share them as a file.'],
+        ['Merge by colour', 'One mesh per colour. One undo.'],
+        ['Decimate', 'By percentage or triangle count. Normals, UVs and vertex colours stay.'],
+        ['Sharp edges stay sharp', 'Rims, steps and corners hold their shape when triangles go.'],
         ['Align to floor', 'Stands a model that arrived on its side, with a preview first.'],
         ['Delete small parts', 'Removes parts too small to see, plus empty, duplicate and broken ones.'],
         ['Repair mesh', 'Joins doubled vertices, drops empty triangles, fixes flipped faces.'],
-        ['Remove hidden faces', 'Deletes faces that never show: inside a housing, where two parts meet.'],
         ['Merge by material or group', 'One mesh per material, or one per group.'],
         ['Select by rule', 'Pick parts by name, material, group, triangles, size or state, with a live count.'],
-        ['Remesh', 'Untriangulate re-cuts flat faces with the fewest triangles: a 200-triangle plate becomes 38. Triangulate is the way back.', 'new'],
         ['What it saved', 'Every action shows what it removed. Every part remembers its original count.'],
       ] },
       { title: 'The part tree', items: [
         ['Built for big assemblies', 'Ten thousand rows scroll smoothly.'],
         ['Search and filters', 'Find parts by name, and tint the small ones.'],
-        ['Flatten, dissolve, ungroup', 'Collapse chains of single groups, dissolve a group, or ungroup a branch.'],
         ['Batch rename (F2)', 'Templates, find and replace with regular expressions, a live preview, and presets.'],
+      ], more: [
+        ['Flatten, dissolve, ungroup', 'Collapse chains of single groups, dissolve a group, or ungroup a branch.'],
         ['Collapse the way you want', 'The whole tree, the selection, or from the selection down.'],
         ['Organise from the right-click menu', 'Dissolve, flatten, sort, move or delete groups from one menu.'],
         ['Groups and parts together', 'Ctrl toggles a row, Shift picks a range. Groups and parts alike.'],
@@ -625,18 +629,20 @@ window.labApps = [
       ] },
       { title: 'Build', items: [
         ['A library of 86 parts', 'Bolts, nuts, pipe fittings, profiles and gears. Set the size, drag it in.'],
-        ['A bolt with its own nut', 'The nut is part of the bolt, so it moves and undoes with it.'],
         ['Exploded view', 'One slider pulls the parts apart. Three pills choose the axes.'],
-        ['Pull it apart your way', 'Explode along the scene’s axes, or send each part along its own direction.'],
         ['Dynamic place (D)', 'Drag a part over other surfaces. It rests on them and turns to face them.'],
+      ], more: [
+        ['A bolt with its own nut', 'The nut is part of the bolt, so it moves and undoes with it.'],
+        ['Pull it apart your way', 'Explode along the scene’s axes, or send each part along its own direction.'],
         ['Measure', 'Click two points. Measurements stay in a list.'],
       ] },
       { title: 'Export', items: [
         ['GLB and glTF', 'Draco or Meshopt compression, textures embedded if you want.'],
-        ['Lighter, or just faster to draw', 'Meshopt cuts a GLB to about a quarter. Or keep the size and make it faster to draw.'],
         ['FBX, USDZ, OBJ, STL, PLY', 'Common 3D and AR formats, with scale presets for mm, cm, m and inches.'],
-        ['Parts list', 'A CSV bill of materials: every part and its size.'],
         ['Check against where it’s going', 'Check the scene against the limits for a web page, Shopify, AR Quick Look or a phone app.'],
+      ], more: [
+        ['Lighter, or just faster to draw', 'Meshopt cuts a GLB to about a quarter. Or keep the size and make it faster to draw.'],
+        ['Parts list', 'A CSV bill of materials: every part and its size.'],
         ['Name the file', 'File names built from pills: date, triangle count, version. A summary before you write.'],
         ['Save scene', 'Keeps the view, the selection and the recolouring in a small file next to the model.'],
       ] },
@@ -650,18 +656,19 @@ window.labApps = [
         ['It knows the app', 'Six playbooks, about fifty help articles and six ready-made jobs.'],
       ] },
       { title: 'The app', items: [
-        ['Start screen', 'Drop a file anywhere, open a recent one, or begin from a shape.'],
         ['Scene tabs', 'Each tab is its own scene. Opening a file never replaces your work.'],
         ['Cards over the model', 'Tools open as cards you can move. Enter runs, Esc closes.'],
-        ['Help inside the app (F1)', 'The whole knowledge base, searchable, offline.'],
         ['A look of your own', 'Accent colour, tones, font, text size, corners and density.'],
         ['Numbers you drag', 'Drag any number sideways to change it, or click to type. Right-click to reset, step, double or halve it.', 'new'],
-        ['One Settings window', 'Every setting in one window, with one search.'],
         ['Search (Shift + C)', 'Every command, setting, part and library part. A typo or initials still find it, and a switch flips right in the results.', 'new'],
         ['Floating Materials and Library', 'Pop either out as a window, move it, resize it. Both open side by side.', 'new'],
         ['Drag a material onto the model', 'Drop it on the view to assign it. Shift and a drop on another material merges the two.', 'new'],
         ['Find your selection', 'Out of view? A faint arrow at the edge points to it. Click to frame it.', 'new'],
         ['Orbit your way', 'Around the selection, the scene or the point under the pointer.', 'new'],
+      ], more: [
+        ['Start screen', 'Drop a file anywhere, open a recent one, or begin from a shape.'],
+        ['Help inside the app (F1)', 'The whole knowledge base, searchable, offline.'],
+        ['One Settings window', 'Every setting in one window, with one search.'],
         ['Shortcuts', 'A searchable list of every key.'],
         ['Comes back where you left it', 'Your files and saved scenes are still there after a reload.'],
         ['Looks after itself', 'The server closes with the window. A crash is noticed at the next start.'],

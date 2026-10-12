@@ -281,6 +281,10 @@ b.is-refactor { color: var(--refactor); }
 .tools strong { font-size: 15px; font-weight: 500; }
 .tools .tag-new { margin-left: 8px; padding: 2px 7px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 16%, transparent); color: color-mix(in srgb, var(--accent) 80%, var(--tx)); font: 500 10.5px/1.4 var(--font); font-style: normal; letter-spacing: 0.06em; text-transform: uppercase; vertical-align: 1px; }
 .tools span { color: var(--tx-2); font-size: 15px; line-height: 1.5; }
+.tools-more { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 clamp(24px, 3vw, 48px); list-style: none; }
+.tools-more li { display: grid; gap: 3px; align-content: start; padding: 13px 0 14px; border-top: 1px solid var(--line); }
+.tools-more strong { font-size: 14px; font-weight: 500; }
+.tools-more span { color: var(--tx-2); font-size: 14px; line-height: 1.45; }
 .features li { display: grid; gap: 6px; align-content: start; padding: 18px 0 20px; border-top: 1px solid var(--line); }
 .features strong { font-size: 15px; }
 .features span { color: var(--tx-2); font-size: 15px; line-height: 1.5; }
@@ -481,7 +485,7 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
   .nav a:hover { background: none; }
 
   .steps { grid-template-columns: minmax(0, 1fr); }
-  .features, .tools, .kb-turn { grid-template-columns: minmax(0, 1fr); }
+  .features, .tools, .tools-more, .kb-turn { grid-template-columns: minmax(0, 1fr); }
   .kb-turn a.is-after { text-align: left; }
   .band-head { grid-template-columns: minmax(0, 1fr); }
   .strip figure { width: 86%; }
@@ -875,7 +879,7 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
   .wand-tips { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 20px; }
 }
 
-@media (min-width: 761px) and (max-width: 1060px) { .tools { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 761px) and (max-width: 1060px) { .tools, .tools-more { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 /* the demo needs a window of at least 960 px, so phones do not get the button */
 .btn-demo { gap: 8px; }

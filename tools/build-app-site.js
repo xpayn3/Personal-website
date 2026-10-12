@@ -24,7 +24,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-const CSS_V = 80;
+const CSS_V = 81;
 const RP_V = 2;           // report.js
 const JS_V = 28;
 
@@ -877,7 +877,10 @@ ${app.featureGroups.map((group, gi) => `
         </div>
         <ul class="tools">
 ${group.items.map(([name, line, flag]) => `          <li><i class="ico">${svgIcon(ICONS.items[name])}</i><div><strong>${esc(name)}${flag === 'new' ? '<em class="tag-new">New</em>' : ''}</strong><span>${esc(line)}</span></div></li>`).join('\n')}
-        </ul>
+        </ul>${group.more && group.more.length ? `
+        <ul class="tools-more">
+${group.more.map(([name, line, flag]) => `          <li><strong>${esc(name)}${flag === 'new' ? '<em class="tag-new">New</em>' : ''}</strong><span>${esc(line)}</span></li>`).join('\n')}
+        </ul>` : ''}
       </div>
     </section>`).join('')}` + footer(page);
 
