@@ -24,21 +24,18 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://lukagrcar.com/';
 // bump when site.css / site.js change, then re-run
-// the features page shows these with an icon; every other feature sits in the accordion by name
-const FEATURED = new Set([
-  'Reads the whole assembly', 'Finds repeats', 'Rebuilds the surfaces',
-  'Smart optimise', 'Fasteners', 'Select hidden parts', 'Quick remesh (B)', 'Fit to budget',
-  'Points, edges, polygons', 'Move what you picked', 'Dissolve',
-  'Built for big assemblies', 'Search and filters',
-  'A Draw tool (L)', 'Edit any line', 'Sweep',
-  'A library of 86 parts', 'Exploded view', 'Dynamic place (D)',
-  'GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going',
-  'Just ask', 'You decide', 'One request, a whole job', 'It knows the app',
-  'Search (Shift + C)', 'Your own keys', 'Scene tabs', 'Cards over the model',
-]);
-const featured = (group) => group.items.filter(i => FEATURED.has(i[0]));
-const others = (group) => group.items.filter(i => !FEATURED.has(i[0])).concat(group.more || []);
-const CSS_V = 87;
+// the features page shows these categories, up to six features each with an icon; the accordion lists every feature by name
+const SHOWCASE = [
+  { title: 'Open and convert', note: 'Import', names: ['Reads the whole assembly', 'Finds repeats', 'Rebuilds the surfaces', 'You set the tessellation', 'Smooth from the CAD surfaces', 'Compresses'] },
+  { title: 'Clean up and optimise', note: 'Make it light', names: ['Smart optimise', 'Fasteners', 'Select hidden parts', 'Remove hidden faces', 'Quick remesh (B)', 'Fit to budget'] },
+  { title: 'Repair and tidy', note: 'Make it right', names: ['Remove holes', 'Remove floating pieces', 'Repair mesh', 'Split', 'Stacked copies', 'Align to floor'] },
+  { title: 'Edit mesh', note: 'Go inside', names: ['Points, edges, polygons', 'Click, Box, Brush', 'Move what you picked', 'Dissolve', 'Weld and Fill', 'Planarize and Straighten'] },
+  { title: 'Find and organise', note: 'Big assemblies', names: ['Built for big assemblies', 'Search and filters', 'Search (Shift + C)', 'Batch rename (F2)', 'Select by rule', 'Point to find'] },
+  { title: 'Draw and build', note: 'Make new parts', names: ['A Draw tool (L)', 'Edit any line', 'Sweep', 'A library of 86 parts', 'Exploded view', 'Dynamic place (D)'] },
+  { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
+  { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
+];
+const CSS_V = 88;
 const RP_V = 2;           // report.js
 const JS_V = 28;
 
@@ -875,6 +872,11 @@ ${c.faq.map(([q, a]) => `            <div><dt>${esc(q)}</dt><dd>${esc(a)}</dd></
     </section>` + footer(page);
   };
 
+  // the features page's categories: each name in SHOWCASE is looked up in featureGroups (items and more)
+  const showcase = () => {
+    const all = new Map(app.featureGroups.flatMap(g => g.items.concat(g.more || [])).map(i => [i[0], i]));
+    return SHOWCASE.map(g => ({ ...g, items: g.names.map(n => { if (!all.has(n)) throw new Error('SHOWCASE: no feature named ' + n); return all.get(n); }) }));
+  };
   pages.features = (page) => head(page, `Features — ${app.title}`, `Everything ${app.title} does: the STEP to GLB pipeline, the WebGPU viewer, mesh tools, hierarchy editing and export.`) + header(page) +
     pageHead('Features', 'A free, private viewer and optimiser for complex CAD and 3D files.', '') + `
     <section class="band is-first">
@@ -884,7 +886,7 @@ ${app.spotlights.map(([name, line, image], i) => `        <figure><a class="zoom
       <div class="dots" aria-hidden="true"></div>
     </section>
 ${savingsBand()}
-${app.featureGroups.map((group, gi) => `
+${showcase().map((group, gi) => `
     <section class="band" id="${slug(group.title)}" style="--ico: ${GROUP_COLOURS[gi % GROUP_COLOURS.length]}">
       <div class="wrap tools-wrap">
         <div class="split-head">
@@ -892,7 +894,7 @@ ${app.featureGroups.map((group, gi) => `
           <h2>${esc(group.title)}</h2>
         </div>
         <ul class="tools">
-${featured(group).map(([name, line, flag]) => `          <li><i class="ico">${svgIcon(ICONS.items[name])}</i><div><strong>${esc(name)}${flag === 'new' ? '<em class="tag-new">New</em>' : ''}</strong><span>${esc(line)}</span></div></li>`).join('\n')}
+${group.items.map(([name, line, flag]) => `          <li><i class="ico">${svgIcon(ICONS.items[name])}</i><div><strong>${esc(name)}${flag === 'new' ? '<em class="tag-new">New</em>' : ''}</strong><span>${esc(line)}</span></div></li>`).join('\n')}
         </ul>
       </div>
     </section>`).join('') + `
@@ -903,11 +905,11 @@ ${featured(group).map(([name, line, flag]) => `          <li><i class="ico">${sv
           <h2>${app.allFeatures ? 'Every feature, by name.' : 'Everything else, by name.'}</h2>
         </div>
         <details class="allfeat">
-          <summary>${app.allFeatures ? `All ${app.allFeatures.reduce((n, g) => n + g.items.length, 0)} features` : `${app.featureGroups.reduce((n, g) => n + others(g).length, 0)} more features`}<i aria-hidden="true"></i></summary>
+          <summary>${app.allFeatures ? `All ${app.allFeatures.reduce((n, g) => n + g.items.length, 0)} features` : `${app.featureGroups.reduce((n, g) => n + g.items.length + (g.more || []).length, 0)} features`}<i aria-hidden="true"></i></summary>
           <div class="allfeat-body">
 ${app.allFeatures
   ? app.allFeatures.filter(g => g.items.length).map(g => `            <div><h3>${esc(g.title)}</h3><ul>${g.items.map(name => `<li>${esc(name)}</li>`).join('')}</ul></div>`).join('\n')
-  : app.featureGroups.map(group => ({ group, rest: others(group) })).filter(x => x.rest.length).map(({ group, rest }) => `            <div><h3>${esc(group.title)}</h3><ul>${rest.map(([name, , flag]) => `<li>${esc(name)}${flag === 'new' ? '<em class="tag-new">New</em>' : ''}</li>`).join('')}</ul></div>`).join('\n')}
+  : app.featureGroups.map(group => ({ group, rest: group.items.concat(group.more || []) })).filter(x => x.rest.length).map(({ group, rest }) => `            <div><h3>${esc(group.title)}</h3><ul>${rest.map(([name, , flag]) => `<li>${esc(name)}${flag === 'new' ? '<em class="tag-new">New</em>' : ''}</li>`).join('')}</ul></div>`).join('\n')}
           </div>
         </details>
       </div>
