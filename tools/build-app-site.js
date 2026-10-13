@@ -35,7 +35,7 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 89;
+const CSS_V = 90;
 const RP_V = 2;           // report.js
 const JS_V = 28;
 
@@ -209,32 +209,6 @@ ${site.claude ? '        <a href="claude.html">Work with Claude</a>\n' : ''}    
 </html>
 `;
 
-  // hairline drawings for the three steps on the home page (strokes only, in the page's own colours)
-  const STEP_ART = [
-    `<svg viewBox="0 0 320 160" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <rect class="f" x="28" y="20" width="264" height="120" rx="8" stroke-dasharray="3 5"/>
-      <path class="o" d="M138 36h44l22 22v66a2 2 0 0 1-2 2h-64a2 2 0 0 1-2-2V38a2 2 0 0 1 2-2Z"/>
-      <path class="o" d="M182 36v22h22"/>
-      <text x="160" y="100" text-anchor="middle" class="t a">.STEP</text>
-      <path class="f" d="M160 6v13m-5-5 5 5 5-5"/>
-    </svg>`,
-    `<svg viewBox="0 0 320 160" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <g class="o"><circle cx="46" cy="50" r="7"/><circle cx="72" cy="50" r="7"/><circle cx="98" cy="50" r="7"/><circle cx="46" cy="80" r="7"/><circle cx="72" cy="80" r="7"/><circle cx="98" cy="80" r="7"/><circle cx="46" cy="110" r="7"/><circle cx="72" cy="110" r="7"/><circle cx="98" cy="110" r="7"/></g>
-      <g class="f"><path d="M107 50 196 80M107 80h89M107 110 196 80"/></g>
-      <circle class="a" cx="236" cy="80" r="26"/>
-      <path class="a" d="m236 64 14 8v16l-14 8-14-8V72Z"/>
-      <circle class="a" cx="236" cy="80" r="5"/>
-      <text x="236" y="130" text-anchor="middle" class="t">1 mesh + 9 positions</text>
-    </svg>`,
-    `<svg viewBox="0 0 320 160" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <rect class="f" x="28" y="16" width="264" height="128" rx="8"/>
-      <path class="f" d="M28 38h264"/>
-      <circle class="f" cx="43" cy="27" r="3"/><circle class="f" cx="55" cy="27" r="3"/><circle class="f" cx="67" cy="27" r="3"/>
-      <path class="a" d="M160 54 193 73v38l-33 19-33-19V73Z"/>
-      <path class="a" d="m127 73 33 19 33-19M160 92v38"/>
-      <text x="44" y="132" class="t">.GLB</text>
-    </svg>`
-  ];
 
   const pageHead = (kicker, title, lead) => `
     <section class="wrap page-head">
@@ -409,6 +383,85 @@ ${pick.map(([key, label]) => `            <li><img src="library/${esc(key)}.webp
   // The design band: close-ups of the controls, the app's layout drawn as a
   // plan, and the numbers it is built from. `site.design` holds the words.
   // What the optimiser saves, drawn as bars from numbers measured in the app (site.savings in apps.js)
+// Compression: the same models as a plain GLB, with Meshopt and with Draco (site.compression, bytes)
+  const compressionBand = () => {
+    const c = site.compression;
+    if (!c) return '';
+    const mb = (b) => (b / 1e6).toFixed(2) + ' MB';
+    const left = (a, b) => Math.round((b / a) * 100);
+    const [first] = c.models;
+    const rows = c.models.map(([name, plain, mo, dr]) => `
+          <div class="sv-row">
+            <div class="sv-label"><span>${esc(name)}</span><em>−${100 - left(plain, mo)}% · −${100 - left(plain, dr)}%</em></div>
+            <div class="sv-bar is-before"><i style="--w:100%"></i><b>Plain GLB ${mb(plain)}</b></div>
+            <div class="sv-bar is-after"><i style="--w:${(mo / plain * 100).toFixed(1)}%"></i><b>Meshopt ${mb(mo)}</b></div>
+            <div class="sv-bar is-draco"><i style="--w:${(dr / plain * 100).toFixed(1)}%"></i><b>Draco ${mb(dr)}</b></div>
+          </div>`).join('');
+    const cols = [['Plain GLB', first[1], 'is-original'], ['Meshopt', first[2], ''], ['Draco', first[3], 'is-draco']].map(([n, v, cls], i) => `
+            <div class="sv-col ${cls}" style="--h:${(v / first[1] * 100).toFixed(1)}%;--i:${i}">
+              <b>${mb(v)}</b><i></i><span>${esc(n)}</span>${i ? '<em>−' + (100 - left(first[1], v)) + '%</em>' : ''}
+            </div>`).join('');
+    return `
+    <section class="band savings" id="compression">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">${esc(c.kicker)}</p>
+          <h2>${esc(c.title)}</h2>
+        </div>
+        <p class="lead sv-lead">${esc(c.line)}</p>
+        <div class="sv" data-reveal>
+          <div class="sv-big">
+            <p class="sv-sub">${esc(first[0])}, Meshopt</p>
+            <b>−${100 - left(first[1], first[2])}<small>%</small></b>
+            <span>file size</span>
+            <em>${mb(first[1])} → ${mb(first[2])}</em>
+          </div>
+          <div class="sv-rows">
+            <p class="sv-sub">Three sample models</p>${rows}
+          </div>
+          <div class="sv-levels" role="img" aria-label="File size of the ${esc(first[0])} as a plain GLB, with Meshopt and with Draco">
+            <p class="sv-sub">${esc(first[0])}, file size</p>
+            <div class="sv-cols" style="--n:3">${cols}
+            </div>
+          </div>
+        </div>
+        <dl class="cp-points">
+${c.points.map(([t, d]) => `          <div><dt>${esc(t)}</dt><dd>${esc(d)}</dd></div>`).join('\n')}
+        </dl>
+        <p class="sv-note">${esc(c.note)}</p>
+      </div>
+    </section>`;
+  };
+
+  // The clean-up tools, as the stars of the page (site.cleanup)
+  const cleanupBand = () => {
+    const c = site.cleanup;
+    if (!c) return '';
+    const media = (src, name) => /\.(webm|mp4)$/.test(src)
+      ? `<video muted loop playsinline preload="none" disablepictureinpicture poster="${asset(src.replace(/\.(webm|mp4)$/, '_thumb.webp'))}" data-src="${asset(src)}" aria-label="${esc(app.title + ': ' + name)}" width="592" height="370"></video>`
+      : `<img src="${asset(src)}" alt="${esc(app.title + ': ' + name)}" width="2400" height="1350" loading="lazy" decoding="async" />`;
+    const link = (doc, name) => doc ? `<a class="clip-more" href="docs/${esc(doc)}.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about ${esc(name)}</span></a>` : '';
+    return `
+    <section class="band" id="clean-up-tools">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">${esc(c.kicker)}</p>
+          <h2>${esc(c.title)}</h2>
+        </div>
+        <p class="lead sv-lead">${esc(c.line)}</p>
+        <div class="stars">${c.stars.map(([name, line, src, doc], i) => `
+          <figure class="star">
+            ${media(src, name)}
+            <figcaption><i>${pad2(i + 1)}</i><strong>${esc(name)}</strong><span>${esc(line)}</span>${link(doc, name)}</figcaption>
+          </figure>`).join('')}
+        </div>
+        <ul class="star-more">${c.more.map(([name, line, doc]) => `
+          <li><strong>${esc(name)}</strong><span>${esc(line)}</span>${link(doc, name)}</li>`).join('')}
+        </ul>
+      </div>
+    </section>`;
+  };
+
   const savingsBand = () => {
     const s = site.savings;
     if (!s) return '';
@@ -714,18 +767,6 @@ ${site.collapse.map(([from, to], i, all) => `            <tr${i === all.length -
     <section class="band">
       <div class="wrap">
         <div class="band-head">
-          <p class="kicker">How it works</p>
-          <h2>Three steps to a lighter model.</h2>
-        </div>
-        <ol class="steps is-visual">
-${app.steps.map(([name, line], i) => `          <li>${STEP_ART[i] ? `<div class="st-fig">${STEP_ART[i]}</div>` : ''}<i>${pad2(i + 1)}</i><h3>${esc(name)}</h3><p>${esc(line)}</p></li>`).join('\n')}
-        </ol>
-      </div>
-    </section>
-
-    <section class="band">
-      <div class="wrap">
-        <div class="band-head">
           <p class="kicker">A closer look</p>
           <h2>Built for assemblies with thousands of parts.</h2>
         </div>
@@ -886,6 +927,8 @@ ${app.spotlights.map(([name, line, image], i) => `        <figure><a class="zoom
       <div class="dots" aria-hidden="true"></div>
     </section>
 ${savingsBand()}
+${cleanupBand()}
+${compressionBand()}
 ${showcase().map((group, gi) => `
     <section class="band" id="${slug(group.title)}" style="--ico: ${GROUP_COLOURS[gi % GROUP_COLOURS.length]}">
       <div class="wrap tools-wrap">

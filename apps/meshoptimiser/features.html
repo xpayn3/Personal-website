@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=89" />
+  <link rel="stylesheet" href="site.css?v=90" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -109,6 +109,109 @@
           </div>
         </div>
         <p class="sv-note">MeshOptimiser v0.15.0, Gearbox Assy (95 parts, 646,064 triangles), Smart optimise on Balanced with Reduce triangles on. Strong ends at 161,980 triangles and 1.6 MB.</p>
+      </div>
+    </section>
+
+    <section class="band" id="clean-up-tools">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">Mesh clean-up</p>
+          <h2>The tools this app is for.</h2>
+        </div>
+        <p class="lead sv-lead">A CAD assembly arrives with bolt holes nobody will see, screws inside housings and copies drawn twice. These find them by shape, show you what will go, and take them out in one undo.</p>
+        <div class="stars">
+          <figure class="star">
+            <video muted loop playsinline preload="none" disablepictureinpicture poster="../../Images/apps/meshoptimiser-clip-fill-holes_thumb.webp" data-src="../../Images/apps/meshoptimiser-clip-fill-holes.webm" aria-label="MeshOptimiser: Remove holes" width="592" height="370"></video>
+            <figcaption><i>01</i><strong>Remove holes</strong><span>Closes bolt holes, slots, pockets and lettering in flat faces. Each closed hole takes its walls with it. Nothing else changes.</span><a class="clip-more" href="docs/fill-holes.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Remove holes</span></a></figcaption>
+          </figure>
+          <figure class="star">
+            <video muted loop playsinline preload="none" disablepictureinpicture poster="../../Images/apps/meshoptimiser-clip-select-hidden_thumb.webp" data-src="../../Images/apps/meshoptimiser-clip-select-hidden.webm" aria-label="MeshOptimiser: Select hidden parts" width="592" height="370"></video>
+            <figcaption><i>02</i><strong>Select hidden parts</strong><span>Finds every part you can’t see from outside the model, such as screws inside a housing, and deletes them in one step.</span><a class="clip-more" href="docs/select-hidden-parts.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Select hidden parts</span></a></figcaption>
+          </figure>
+          <figure class="star">
+            <video muted loop playsinline preload="none" disablepictureinpicture poster="../../Images/apps/meshoptimiser-clip-fasteners_thumb.webp" data-src="../../Images/apps/meshoptimiser-clip-fasteners.webm" aria-label="MeshOptimiser: Fasteners" width="592" height="370"></video>
+            <figcaption><i>03</i><strong>Fasteners</strong><span>Finds every bolt, screw, nut and washer by its shape, whatever the parts are called, then isolates or deletes them.</span><a class="clip-more" href="docs/fasteners.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Fasteners</span></a></figcaption>
+          </figure>
+          <figure class="star">
+            <video muted loop playsinline preload="none" disablepictureinpicture poster="../../Images/apps/meshoptimiser-clip-smart-fit_thumb.webp" data-src="../../Images/apps/meshoptimiser-clip-smart-fit.webm" aria-label="MeshOptimiser: Smart fit" width="592" height="370"></video>
+            <figcaption><i>04</i><strong>Smart fit</strong><span>Swaps a detailed part for a simple stand-in of the same size and place: a box, a cylinder, a few boxes, or blocks that keep its outline.</span><a class="clip-more" href="docs/smart-fit.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Smart fit</span></a></figcaption>
+          </figure>
+          <figure class="star">
+            <video muted loop playsinline preload="none" disablepictureinpicture poster="../../Images/apps/meshoptimiser-clip-split_thumb.webp" data-src="../../Images/apps/meshoptimiser-clip-split.webm" aria-label="MeshOptimiser: Split" width="592" height="370"></video>
+            <figcaption><i>05</i><strong>Split</strong><span>Takes apart a mesh that arrived as one piece but is really several solids, or cuts it into its faces, so each can be picked on its own.</span><a class="clip-more" href="docs/split.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Split</span></a></figcaption>
+          </figure>
+          <figure class="star">
+            <img src="../../Images/apps/meshoptimiser-smart-optimise.webp" alt="MeshOptimiser: Smart optimise" width="2400" height="1350" loading="lazy" decoding="async" />
+            <figcaption><i>06</i><strong>Smart optimise</strong><span>Every clean-up the app has, run one after another on the whole scene. Choose how far to go, read the plan, press Optimise. One undo takes it all back.</span><a class="clip-more" href="docs/smart-optimise.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Smart optimise</span></a></figcaption>
+          </figure>
+        </div>
+        <ul class="star-more">
+          <li><strong>Remove floating pieces</strong><span>Deletes the plugs, shavings and dots that hang next to a part. The biggest piece always stays.</span><a class="clip-more" href="docs/remove-floating-pieces.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Remove floating pieces</span></a></li>
+          <li><strong>Remove hidden faces</strong><span>Deletes faces that never show: inside a housing, where two parts meet.</span></li>
+          <li><strong>Remesh</strong><span>Joins the triangles of each flat face into one polygon, or goes back to even triangles. The shape stays.</span><a class="clip-more" href="docs/remesh.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Remesh</span></a></li>
+          <li><strong>Delete small parts</strong><span>Removes screws, washers and clips too small to matter, with a slider and a preview.</span><a class="clip-more" href="docs/delete-small-parts.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Delete small parts</span></a></li>
+          <li><strong>Repair mesh</strong><span>Joins doubled vertices, drops empty triangles, fixes flipped faces.</span><a class="clip-more" href="docs/cleanup.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Repair mesh</span></a></li>
+          <li><strong>Stacked copies</strong><span>Finds parts drawn twice on top of each other and removes the extra ones.</span><a class="clip-more" href="docs/stacked-copies.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Stacked copies</span></a></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="band savings" id="compression">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">Smaller files</p>
+          <h2>The same models, a fifth of the size or less.</h2>
+        </div>
+        <p class="lead sv-lead">Two ways to pack a GLB, side by side on real sample models. The shape is the same; only the file is smaller.</p>
+        <div class="sv" data-reveal>
+          <div class="sv-big">
+            <p class="sv-sub">Gearbox, Meshopt</p>
+            <b>−79<small>%</small></b>
+            <span>file size</span>
+            <em>4.95 MB → 1.03 MB</em>
+          </div>
+          <div class="sv-rows">
+            <p class="sv-sub">Three sample models</p>
+          <div class="sv-row">
+            <div class="sv-label"><span>Gearbox</span><em>−79% · −88%</em></div>
+            <div class="sv-bar is-before"><i style="--w:100%"></i><b>Plain GLB 4.95 MB</b></div>
+            <div class="sv-bar is-after"><i style="--w:20.8%"></i><b>Meshopt 1.03 MB</b></div>
+            <div class="sv-bar is-draco"><i style="--w:11.9%"></i><b>Draco 0.59 MB</b></div>
+          </div>
+          <div class="sv-row">
+            <div class="sv-label"><span>Reciprocating saw</span><em>−78% · −87%</em></div>
+            <div class="sv-bar is-before"><i style="--w:100%"></i><b>Plain GLB 3.56 MB</b></div>
+            <div class="sv-bar is-after"><i style="--w:21.8%"></i><b>Meshopt 0.78 MB</b></div>
+            <div class="sv-bar is-draco"><i style="--w:12.7%"></i><b>Draco 0.45 MB</b></div>
+          </div>
+          <div class="sv-row">
+            <div class="sv-label"><span>Two-cylinder engine</span><em>−76% · −86%</em></div>
+            <div class="sv-bar is-before"><i style="--w:100%"></i><b>Plain GLB 1.83 MB</b></div>
+            <div class="sv-bar is-after"><i style="--w:24.3%"></i><b>Meshopt 0.44 MB</b></div>
+            <div class="sv-bar is-draco"><i style="--w:13.6%"></i><b>Draco 0.25 MB</b></div>
+          </div>
+          </div>
+          <div class="sv-levels" role="img" aria-label="File size of the Gearbox as a plain GLB, with Meshopt and with Draco">
+            <p class="sv-sub">Gearbox, file size</p>
+            <div class="sv-cols" style="--n:3">
+            <div class="sv-col is-original" style="--h:100.0%;--i:0">
+              <b>4.95 MB</b><i></i><span>Plain GLB</span>
+            </div>
+            <div class="sv-col " style="--h:20.8%;--i:1">
+              <b>1.03 MB</b><i></i><span>Meshopt</span><em>−79%</em>
+            </div>
+            <div class="sv-col is-draco" style="--h:11.9%;--i:2">
+              <b>0.59 MB</b><i></i><span>Draco</span><em>−88%</em>
+            </div>
+            </div>
+          </div>
+        </div>
+        <dl class="cp-points">
+          <div><dt>Meshopt</dt><dd>About a fifth to a quarter of the plain size. Fast to unpack, so it suits the web. The viewer has to read it.</dd></div>
+          <div><dt>Draco</dt><dd>Smaller still, about an eighth here. Slower to unpack, and the first export fetches glTF Transform, so it needs a connection once.</dd></div>
+          <div><dt>Faster to draw</dt><dd>Not a compression: the triangles are only put in the order the graphics card likes. The size stays, and any viewer opens it.</dd></div>
+        </dl>
+        <p class="sv-note">Measured on GearboxAssy, ReciprocatingSaw and 2CylinderEngine (Khronos glTF-Sample-Models), as a plain GLB, then Meshopt at its high setting and Draco at its defaults, with glTF Transform 4.1, the library the Export window uses. Sizes are file bytes, shown in MB (1 MB = 1,000,000 bytes). Very light meshes can end up larger with Draco.</p>
       </div>
     </section>
 

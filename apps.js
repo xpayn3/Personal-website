@@ -342,6 +342,41 @@ window.labApps = [
         levels: [['Light, Balanced', 322988], ['Strong', 161980]],
         note: 'MeshOptimiser v0.15.0, Gearbox Assy (95 parts, 646,064 triangles), Smart optimise on Balanced with Reduce triangles on. Strong ends at 161,980 triangles and 1.6 MB.',
       },
+      // file sizes with and without compression (see compressionBand in tools/build-app-site.js): bytes, measured with glTF Transform 4.1 on the three sample GLBs of the hosted demo (Khronos glTF-Sample-Models)
+      compression: {
+        kicker: 'Smaller files',
+        title: 'The same models, a fifth of the size or less.',
+        line: 'Two ways to pack a GLB, side by side on real sample models. The shape is the same; only the file is smaller.',
+        models: [['Gearbox', 4951652, 1030352, 588072], ['Reciprocating saw', 3556740, 777100, 450988], ['Two-cylinder engine', 1830588, 444548, 249408]],
+        points: [
+          ['Meshopt', 'About a fifth to a quarter of the plain size. Fast to unpack, so it suits the web. The viewer has to read it.'],
+          ['Draco', 'Smaller still, about an eighth here. Slower to unpack, and the first export fetches glTF Transform, so it needs a connection once.'],
+          ['Faster to draw', 'Not a compression: the triangles are only put in the order the graphics card likes. The size stays, and any viewer opens it.'],
+        ],
+        note: 'Measured on GearboxAssy, ReciprocatingSaw and 2CylinderEngine (Khronos glTF-Sample-Models), as a plain GLB, then Meshopt at its high setting and Draco at its defaults, with glTF Transform 4.1, the library the Export window uses. Sizes are file bytes, shown in MB (1 MB = 1,000,000 bytes). Very light meshes can end up larger with Draco.',
+      },
+      // the clean-up showcase on the features page (see cleanupBand in tools/build-app-site.js): stars are [name, line, picture or clip, docs slug]; more are [name, line, docs slug]
+      cleanup: {
+        kicker: 'Mesh clean-up',
+        title: 'The tools this app is for.',
+        line: 'A CAD assembly arrives with bolt holes nobody will see, screws inside housings and copies drawn twice. These find them by shape, show you what will go, and take them out in one undo.',
+        stars: [
+          ['Remove holes', 'Closes bolt holes, slots, pockets and lettering in flat faces. Each closed hole takes its walls with it. Nothing else changes.', 'Images/apps/meshoptimiser-clip-fill-holes.webm', 'fill-holes'],
+          ['Select hidden parts', 'Finds every part you can’t see from outside the model, such as screws inside a housing, and deletes them in one step.', 'Images/apps/meshoptimiser-clip-select-hidden.webm', 'select-hidden-parts'],
+          ['Fasteners', 'Finds every bolt, screw, nut and washer by its shape, whatever the parts are called, then isolates or deletes them.', 'Images/apps/meshoptimiser-clip-fasteners.webm', 'fasteners'],
+          ['Smart fit', 'Swaps a detailed part for a simple stand-in of the same size and place: a box, a cylinder, a few boxes, or blocks that keep its outline.', 'Images/apps/meshoptimiser-clip-smart-fit.webm', 'smart-fit'],
+          ['Split', 'Takes apart a mesh that arrived as one piece but is really several solids, or cuts it into its faces, so each can be picked on its own.', 'Images/apps/meshoptimiser-clip-split.webm', 'split'],
+          ['Smart optimise', 'Every clean-up the app has, run one after another on the whole scene. Choose how far to go, read the plan, press Optimise. One undo takes it all back.', 'Images/apps/meshoptimiser-smart-optimise.webp', 'smart-optimise'],
+        ],
+        more: [
+          ['Remove floating pieces', 'Deletes the plugs, shavings and dots that hang next to a part. The biggest piece always stays.', 'remove-floating-pieces'],
+          ['Remove hidden faces', 'Deletes faces that never show: inside a housing, where two parts meet.', ''],
+          ['Remesh', 'Joins the triangles of each flat face into one polygon, or goes back to even triangles. The shape stays.', 'remesh'],
+          ['Delete small parts', 'Removes screws, washers and clips too small to matter, with a slider and a preview.', 'delete-small-parts'],
+          ['Repair mesh', 'Joins doubled vertices, drops empty triangles, fixes flipped faces.', 'cleanup'],
+          ['Stacked copies', 'Finds parts drawn twice on top of each other and removes the extra ones.', 'stacked-copies'],
+        ],
+      },
       // the search on the page (see searchDemo in tools/build-app-site.js): [name, shortcut / note, detail]
       demo: {
         kicker: 'Try it',
