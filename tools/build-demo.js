@@ -1,6 +1,6 @@
 /* ===================================================================
    tools/build-demo.js — copies the app's front end into apps/meshoptimiser/demo/
-   so the site can offer "Try the demo": the real app, running in the
+   so the site can offer "Open online": the real app, running in the
    browser from static files, with no server.
 
      node tools/build-demo.js [path to the app folder]
@@ -49,7 +49,7 @@ let patched = html.replace('<meta charset="UTF-8">', '<meta charset="UTF-8">\n<m
 if (patched === html) throw new Error('index.html: the charset line was not found');
 const noManifest = patched.replace(/<link rel="manifest"[^>]*>\n?/, '');
 if (noManifest === patched) throw new Error('index.html: the manifest line was not found');
-patched = noManifest.replace('<title>MeshOptimiser</title>', '<title>MeshOptimiser demo</title>');
+patched = noManifest.replace('<title>MeshOptimiser</title>', '<title>MeshOptimiser online</title>');
 fs.writeFileSync(path.join(OUT, 'index.html'), patched);
 
 const size = (dir) => fs.readdirSync(dir, { withFileTypes: true }).reduce((n, e) => n + (e.isDirectory() ? size(path.join(dir, e.name)) : fs.statSync(path.join(dir, e.name)).size), 0);
