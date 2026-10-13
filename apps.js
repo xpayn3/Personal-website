@@ -56,7 +56,7 @@ window.labApps = [
       ['Images/apps/meshoptimiser-small-parts.webp', 'Delete small parts: 102 parts under 2% of the model’s size, highlighted before they go.'],
       ['Images/apps/meshoptimiser-heatmap-axle.webp', 'Heatmap: parts coloured by triangle count.'],
       ['Images/apps/meshoptimiser-fasteners-axle.webp', 'Fasteners: 88 found by shape, 45,498 triangles.'],
-      ['Images/apps/meshoptimiser-library.webp', 'The library drawer: pick a part, set its size, drop it in.'],
+      ['Images/apps/meshoptimiser-exploded-165.webp', 'Exploded view: the axle pulled apart to 165%, with four parts picked out.'],
     ],
     site: {
       path: 'apps/meshoptimiser/',
