@@ -578,7 +578,6 @@ ${c.points.map(([t, d]) => `          <div><dt>${esc(t)}</dt><dd>${esc(d)}</dd><
           </div>
         </div>
         <div class="cl-shot">
-          <video muted loop playsinline preload="none" disablepictureinpicture poster="${asset('Images/apps/meshoptimiser-claude-clip_thumb.webp')}" data-src="${asset('Images/apps/meshoptimiser-claude-clip.webm')}" aria-label="${esc(app.title + ': turning Claude on in Settings, then the Claude pill in the top bar')}" width="1600" height="940"></video>
           <ul class="cl-say">
 ${c.band.prompts.map(p => `            <li>${esc(p)}</li>`).join('\n')}
           </ul>
