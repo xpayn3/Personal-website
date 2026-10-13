@@ -107,7 +107,7 @@
           <div class="pop-copy" aria-hidden="false">
             <p class="kicker">Exploded view</p>
             <h2>Take it apart. Inspect every part.</h2>
-            <p>Scroll to pull this 43-part rear derailleur apart. In the app one slider does it, and every part has its own row and triangle count.</p>
+            <p>Scroll to pull this 43-part derailleur apart. One slider does it in the app, and every part has its own row and triangle count.</p>
           </div>
         </div>
       </div>
@@ -120,8 +120,8 @@
           <h2>For the STEP assembly that has to go on a web page.</h2>
         </div>
         <div class="split-body">
-          <p>A STEP file can hold 400 identical bolts, 80 duplicate brackets and half a million broken triangles. MeshOptimiser keeps each repeated part once, rebuilds the bad geometry and drops what is too small to see.</p>
-          <p>You get a compressed GLB and a viewer to check it in. It runs on your own machine, every part has a row, and every action can be undone.</p>
+          <p>400 identical bolts, 80 duplicate brackets, half a million broken triangles. MeshOptimiser keeps each repeat once, rebuilds the bad geometry and drops what you can’t see.</p>
+          <p>A compressed GLB, and a viewer to check it in. It runs on your machine. Every part has a row. Every action has an undo.</p>
           <table class="collapse">
             <caption>What the pipeline collapses</caption>
             <tr><th scope="row">400 bolts × 50 KB</th><td aria-hidden="true">→</td><td>1 mesh × 50 KB + 400 positions</td></tr>
@@ -143,23 +143,23 @@
         <div class="clips">
         <figure class="clip">
           <video muted loop playsinline preload="none" disablepictureinpicture poster="../../Images/apps/meshoptimiser-clip-fill-holes_thumb.webp" data-src="../../Images/apps/meshoptimiser-clip-fill-holes.webm" aria-label="MeshOptimiser: Remove holes" width="592" height="370"></video>
-          <figcaption><i>01</i><strong>Remove holes</strong><span>Closes bolt holes, slots and pockets in flat faces. Nothing else changes.</span><a class="clip-more" href="docs/fill-holes.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Remove holes</span></a></figcaption>
+          <figcaption><i>01</i><strong>Remove holes</strong><span>Bolt holes, slots and pockets closed. Nothing else changes.</span><a class="clip-more" href="docs/fill-holes.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Remove holes</span></a></figcaption>
         </figure>
         <figure class="clip">
           <video muted loop playsinline preload="none" disablepictureinpicture poster="../../Images/apps/meshoptimiser-clip-split_thumb.webp" data-src="../../Images/apps/meshoptimiser-clip-split.webm" aria-label="MeshOptimiser: Split" width="592" height="370"></video>
-          <figcaption><i>02</i><strong>Split</strong><span>Cuts a fused mesh back into its solids.</span><a class="clip-more" href="docs/split.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Split</span></a></figcaption>
+          <figcaption><i>02</i><strong>Split</strong><span>One fused lump becomes the separate solids it always was.</span><a class="clip-more" href="docs/split.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Split</span></a></figcaption>
         </figure>
         <figure class="clip">
           <video muted loop playsinline preload="none" disablepictureinpicture poster="../../Images/apps/meshoptimiser-clip-select-hidden_thumb.webp" data-src="../../Images/apps/meshoptimiser-clip-select-hidden.webm" aria-label="MeshOptimiser: Select hidden parts" width="592" height="370"></video>
-          <figcaption><i>03</i><strong>Select hidden parts</strong><span>Finds every part you can’t see from outside.</span><a class="clip-more" href="docs/select-hidden-parts.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Select hidden parts</span></a></figcaption>
+          <figcaption><i>03</i><strong>Select hidden parts</strong><span>Every part you can’t see from outside, found in one click.</span><a class="clip-more" href="docs/select-hidden-parts.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Select hidden parts</span></a></figcaption>
         </figure>
         <figure class="clip">
           <video muted loop playsinline preload="none" disablepictureinpicture poster="../../Images/apps/meshoptimiser-clip-fasteners_thumb.webp" data-src="../../Images/apps/meshoptimiser-clip-fasteners.webm" aria-label="MeshOptimiser: Fasteners" width="592" height="370"></video>
-          <figcaption><i>04</i><strong>Fasteners</strong><span>Finds bolts, nuts and washers by shape, whatever they are named.</span><a class="clip-more" href="docs/fasteners.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Fasteners</span></a></figcaption>
+          <figcaption><i>04</i><strong>Fasteners</strong><span>Every bolt, nut and washer, found by shape. Whatever the CAD file called them.</span><a class="clip-more" href="docs/fasteners.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Fasteners</span></a></figcaption>
         </figure>
         <figure class="clip">
           <video muted loop playsinline preload="none" disablepictureinpicture poster="../../Images/apps/meshoptimiser-clip-smart-fit_thumb.webp" data-src="../../Images/apps/meshoptimiser-clip-smart-fit.webm" aria-label="MeshOptimiser: Smart fit" width="592" height="370"></video>
-          <figcaption><i>05</i><strong>Smart fit</strong><span>Swaps a dense part for a box, a cylinder or blocks that keep its outline.</span><a class="clip-more" href="docs/smart-fit.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Smart fit</span></a></figcaption>
+          <figcaption><i>05</i><strong>Smart fit</strong><span>A dense part becomes a box, a cylinder or blocks that keep its outline.</span><a class="clip-more" href="docs/smart-fit.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Smart fit</span></a></figcaption>
         </figure>
         </div>
       </div>
@@ -350,7 +350,7 @@
         <div class="cl-band-copy">
           <p class="kicker">Claude<b>·</b><span class="tag-new is-large">New</span></p>
           <h2>Ask Claude. It does the clean-up.</h2>
-          <p class="lead">Connect the app to Claude and describe the job. It uses the same tools you click, asks before it changes the model, and every change is one undo.</p>
+          <p class="lead">Describe the job. Claude does the clean-up with the same tools you click, asks before it changes anything, and every change is one undo.</p>
           <ul class="cl-say">
             <li>Find all the bolts and hide them.</li>
             <li>Get this under 5 MB for the web.</li>
