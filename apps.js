@@ -451,16 +451,18 @@ window.labApps = [
       // the library on the page: shelves of [file name in Images, name]; the pictures are the app’s own
       library: {
         kicker: 'The library',
-        title: 'Eighty-six parts, ready to use.',
-        line: 'Bolts, nuts, pipe fittings, profiles, gears, a stepper motor. Set the size, then drag it in.',
+        title: '112 parts, ready to use.',
+        line: 'Bolts, nuts, pipe fittings, bearings, brackets, gears, a servo, a circuit board. Set the size, then drag it in.',
         hint: 'Drag a part here',
         shelves: [
           ['Shapes', [['cube', 'Cube'], ['sphere', 'Sphere'], ['cylinder', 'Cylinder'], ['cone', 'Cone'], ['torus', 'Torus'], ['plane', 'Plane'], ['capsule', 'Capsule'], ['wedge', 'Wedge'], ['pyramid', 'Pyramid'], ['prism', 'Prism'], ['hemisphere', 'Hemisphere'], ['roundedbox', 'Rounded box'], ['halfcyl', 'Half cylinder'], ['tetra', 'Tetrahedron'], ['star', 'Star'], ['plus', 'Cross'], ['arrow', 'Arrow']]],
-          ['Fasteners', [['hexbolt', 'Hex bolt'], ['allen', 'Socket head screw'], ['countersunk', 'Countersunk screw'], ['buttonhead', 'Button head screw'], ['threadedrod', 'Threaded rod'], ['eyebolt', 'Eye bolt'], ['washer', 'Washer'], ['pin', 'Dowel pin'], ['rivet', 'Rivet'], ['key', 'Parallel key'], ['standoff', 'Hex standoff'], ['setscrew', 'Set screw'], ['carriagebolt', 'Carriage bolt'], ['ubolt', 'U bolt'], ['circlip', 'Retaining ring'], ['springwasher', 'Spring washer']]],
+          ['Fasteners', [['hexbolt', 'Hex bolt'], ['allen', 'Socket head screw'], ['countersunk', 'Countersunk screw'], ['buttonhead', 'Button head screw'], ['threadedrod', 'Threaded rod'], ['eyebolt', 'Eye bolt'], ['washer', 'Washer'], ['pin', 'Dowel pin'], ['rivet', 'Rivet'], ['key', 'Parallel key'], ['standoff', 'Hex standoff'], ['setscrew', 'Set screw'], ['carriagebolt', 'Carriage bolt'], ['ubolt', 'U bolt'], ['circlip', 'Retaining ring'], ['springwasher', 'Spring washer'], ['flangebolt', 'Flange bolt'], ['clevispin', 'Clevis pin'], ['woodscrew', 'Wood screw'], ['thumbscrew', 'Thumb screw']]],
           ['Nuts', [['hexnut', 'Hex nut'], ['jamnut', 'Thin nut'], ['locknut', 'Lock nut'], ['flangenut', 'Flange nut'], ['capnut', 'Cap nut'], ['castlenut', 'Castle nut'], ['squarenut', 'Square nut'], ['couplingnut', 'Coupling nut'], ['wingnut', 'Wing nut'], ['thumbnut', 'Knurled nut'], ['tslotnut', 'T-slot nut'], ['eyenut', 'Eye nut']]],
           ['Pipes and flanges', [['tube', 'Tube'], ['elbow', 'Pipe elbow'], ['tee', 'Pipe tee'], ['reducer', 'Pipe reducer'], ['endcap', 'Pipe cap'], ['flange', 'Flange'], ['pipecross', 'Pipe cross']]],
-          ['Profiles and plates', [['plate', 'Plate'], ['flatbar', 'Flat bar'], ['angle', 'Angle profile'], ['channel', 'U channel'], ['tprofile', 'T profile'], ['zprofile', 'Z profile'], ['ibeam', 'I beam'], ['boxtube', 'Box tube'], ['extrusion', 'T-slot extrusion'], ['roundbar', 'Round bar'], ['hexbar', 'Hex bar'], ['cchannel', 'C channel'], ['gusset', 'Gusset plate'], ['perfplate', 'Perforated plate'], ['slotplate', 'Slotted plate'], ['hinge', 'Hinge']]],
-          ['Machine parts', [['gear', 'Spur gear'], ['rack', 'Gear rack'], ['sprocket', 'Sprocket'], ['pulley', 'V pulley'], ['bearing', 'Ball bearing'], ['bushing', 'Flanged bushing'], ['spring', 'Spring'], ['handwheel', 'Handwheel'], ['knob', 'Star knob'], ['bracket', 'Corner bracket'], ['stepper', 'Stepper motor'], ['collar', 'Shaft collar'], ['pillowblock', 'Pillow block'], ['wheel', 'Wheel'], ['rail', 'Linear rail'], ['foot', 'Levelling foot'], ['handle', 'Pull handle'], ['enclosure', 'Enclosure']]],
+          ['Profiles and plates', [['plate', 'Plate'], ['flatbar', 'Flat bar'], ['angle', 'Angle profile'], ['channel', 'U channel'], ['tprofile', 'T profile'], ['zprofile', 'Z profile'], ['ibeam', 'I beam'], ['boxtube', 'Box tube'], ['extrusion', 'T-slot extrusion'], ['roundbar', 'Round bar'], ['hexbar', 'Hex bar'], ['cchannel', 'C channel'], ['gusset', 'Gusset plate'], ['perfplate', 'Perforated plate'], ['slotplate', 'Slotted plate'], ['hinge', 'Hinge'], ['strutchannel', 'Strut channel']]],
+          ['Machine parts', [['gear', 'Spur gear'], ['rack', 'Gear rack'], ['sprocket', 'Sprocket'], ['pulley', 'V pulley'], ['bearing', 'Ball bearing'], ['bushing', 'Flanged bushing'], ['spring', 'Spring'], ['handwheel', 'Handwheel'], ['knob', 'Star knob'], ['bracket', 'Corner bracket'], ['stepper', 'Stepper motor'], ['collar', 'Shaft collar'], ['pillowblock', 'Pillow block'], ['wheel', 'Wheel'], ['rail', 'Linear rail'], ['foot', 'Levelling foot'], ['handle', 'Pull handle'], ['enclosure', 'Enclosure'], ['thrustbearing', 'Thrust bearing'], ['flangebearing', 'Flanged bearing'], ['rollerbearing', 'Roller bearing'], ['shaft', 'Stepped shaft'], ['coupler', 'Shaft coupler'], ['gt2pulley', 'Timing pulley'], ['carriage', 'Rail carriage']]],
+          ['Electronics', [['fan', 'Axial fan'], ['heatsink', 'Heatsink'], ['pinheader', 'Pin header'], ['pcb', 'Circuit board'], ['servo', 'Micro servo']]],
+          ['Brackets and connectors', [['anglebracket', 'Angle bracket'], ['tslotangle', 'T-slot bracket'], ['corner3', 'Three-way corner'], ['jointplate', 'Joining plate'], ['shelfbracket', 'Shelf bracket'], ['joisthanger', 'Joist hanger'], ['postbase', 'Post base'], ['baseplate', 'Column base plate'], ['pipeclamp', 'Pipe clamp']]],
         ],
       },
       // the design band: the app's own components on a stage ([part, x, y, depth, tilt in degrees, delay in ms],
@@ -584,7 +586,7 @@ window.labApps = [
       ['Fasteners', 'Every bolt, nut and washer, found by shape. Whatever the CAD file called them.', 'Images/apps/meshoptimiser-clip-fasteners.webm', 'fasteners'],
       ['Smart fit', 'A dense part becomes a box, a cylinder or blocks that keep its outline.', 'Images/apps/meshoptimiser-clip-smart-fit.webm', 'smart-fit'],
     ],
-    stats: [['Version', '0.24.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
+    stats: [['Version', '0.25.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
     about: [
       'For the STEP assembly that has to go on a web page.',
       '400 identical bolts, 80 duplicate brackets, half a million broken triangles. MeshOptimiser keeps each repeat once, rebuilds the bad geometry and drops what you can’t see.',
@@ -627,7 +629,7 @@ window.labApps = [
         ['Remove floating pieces', 'Plugs, shavings and stray dots, gone.'],
         ['Split', 'One fused lump, back to the solids it was.'],
         ['Smart fit', 'Swaps a part for a box, a cylinder or blocks that keep the outline.'],
-        ['Quick remesh (B)', 'Slide down a column of levels and watch the part change.', 'new'],
+        ['Quick remesh (B)', 'Slide down a column of levels and watch the part change.'],
         ['Fit to budget', 'Name a triangle count. The heaviest meshes go first.'],
         ['Remove hidden faces', 'Faces that never show, gone: inside housings, where parts meet.'],
         ['Remesh', 'Untriangulate re-cuts flat faces with the fewest triangles: a 200-triangle plate becomes 38. Triangulate is the way back.'],
@@ -645,21 +647,22 @@ window.labApps = [
         ['What it saved', 'Every action shows what it removed. Every part remembers its original count.'],
       ] },
       { title: 'Edit mesh', note: 'Points, edges, polygons', items: [
-        ['Points, edges, polygons', 'Pick the pieces of a mesh, as in Cinema 4D. Keys 1 to 4 switch mode.', 'new'],
+        ['Points, edges, polygons', 'Pick the pieces of a mesh, as in Cinema 4D. Keys 1 to 4 switch mode.'],
         ['Click, Box, Brush', 'Three ways to pick. Double-click takes the whole loop.'],
         ['Move what you picked', 'Move, turn and scale pieces with the gizmo. One undo.'],
         ['Dissolve', 'Points out, surface closed, no hole.'],
         ['Weld and Fill', 'Join points. Close a hole from its rim.'],
         ['Planarize and Straighten', 'Flat polygons. Straight lines of edges.'],
       ], more: [
-        ['Extract', 'Picked polygons become a part of their own.', 'new'],
-        ['Reverse normals', 'Turns round the faces that came in the wrong way.', 'new'],
-        ['World, Local or Normal', 'Choose the axes the gizmo works along.', 'new'],
+        ['Extract', 'Picked polygons become a part of their own.'],
+        ['Reverse normals', 'Turns round the faces that came in the wrong way.'],
+        ['World, Local or Normal', 'Choose the axes the gizmo works along.'],
       ] },
       { title: 'The part tree', items: [
         ['Built for big assemblies', 'Ten thousand rows, still smooth.'],
         ['Search and filters', 'Find parts by name, with the small ones tinted.'],
         ['Batch rename (F2)', 'Templates, regex, live preview, presets.'],
+        ['Typo-proof part search', 'Words in any order, quotes, or, minus, >5000 triangles. A typo still finds it.', 'new'],
       ], more: [
         ['Flatten, dissolve, ungroup', 'Collapse chains of single groups, dissolve a group, or ungroup a branch.'],
         ['Collapse the way you want', 'The whole tree, the selection, or from the selection down.'],
@@ -677,9 +680,10 @@ window.labApps = [
         ['Sweep', 'Carry a profile along a path. Scale, twist, closed ends. The result is a normal part.'],
       ] },
       { title: 'Build', items: [
-        ['A library of 86 parts', 'Bolts, nuts, pipe fittings, profiles, gears. Set the size, drag it in.'],
+        ['A library of 112 parts', 'Bolts, nuts, pipe fittings, bearings, brackets, gears, a servo. Set the size, drag it in.'],
         ['Exploded view', 'One slider pulls it apart, along the axes you choose.'],
         ['Dynamic place (D)', 'Drag a part over a surface: it rests on it and turns to face it.'],
+        ['Align parts', 'Align or spread parts along X, Y and Z, with a gap if you want one. One undo.', 'new'],
       ], more: [
         ['A bolt with its own nut', 'The nut is part of the bolt, so it moves and undoes with it.'],
         ['Pull it apart your way', 'Explode along the scene’s axes, or send each part along its own direction.'],
@@ -708,7 +712,7 @@ window.labApps = [
         ['Scene tabs', 'Each tab is its own scene. Opening a file never replaces your work.'],
         ['Cards over the model', 'Tools open as cards you can move. Enter runs, Esc closes.'],
         ['A look of your own', 'Accent colour, tones, font, text size, corners and density.'],
-        ['Your own keys', 'The shortcuts window is a keyboard. Change any key, and keep your set in a profile.', 'new'],
+        ['Your own keys', 'The shortcuts window is a keyboard. Change any key, and keep your set in a profile.'],
         ['Numbers you drag', 'Drag any number sideways to change it, or click to type. Right-click to reset, step, double or halve it.'],
         ['Search (Shift + C)', 'Commands, settings, parts, library: one box. Typos and initials still find it.'],
         ['Floating Materials and Library', 'Pop either out as a window, move it, resize it. Both open side by side.'],
@@ -759,16 +763,21 @@ window.labApps = [
       { title: 'Edit mesh', items: [
         'Move picked pieces', 'Extract polygons', 'Reverse normals', 'Quads and n-gons remembered',
         'Pick points, edges and polygons', 'Planarize and straighten', 'Weld and fill',
+        'Edit mesh bar',
+        'Live box pick',
       ] },
       { title: 'Selection and visibility', items: [
         'Select similar', 'Select by colour', 'Select by name', 'Select by rule', 'Arrow to a selection out of view',
       ] },
       { title: 'Parts tree', items: [
         'Highlight small parts', 'Batch rename', 'Flatten', 'Lock a part', 'Point to find', 'Tidy the tree',
+        'Part search language',
       ] },
       { title: 'Transform and place', items: [
         'Exact position, rotation, size', 'Dynamic place', 'Align to floor', 'Recentre on origin', 'Bake gizmo transforms',
         'Snapping',
+        'Align parts',
+        'Transform several parts',
       ] },
       { title: 'View and camera', items: [
         'Orbit around selection', 'Exploded view', 'Sun direction gizmo', 'HDRI environments',
@@ -785,7 +794,10 @@ window.labApps = [
         'Lines in GLB and glTF',
       ] },
       { title: 'Library and build', items: [
-        'Library of 86 parts', 'Parametric parts', 'A bolt with its own nut',
+        'Library of 112 parts', 'Parametric parts', 'A bolt with its own nut',
+        'Electronics shelf',
+        'Brackets and connectors shelf',
+        'Bake geo',
       ] },
       { title: 'Measure and inspect', items: [
         'Measure two points', 'Triangle share bar', 'Rank by weight',
@@ -802,6 +814,8 @@ window.labApps = [
       ] },
       { title: 'Search and commands', items: [
         'Command search', 'Typo-tolerant search', 'Calculator in the search', 'Quick wand', 'Numbers you can drag',
+        'Movable search',
+        'Resizable search',
       ] },
       { title: 'Keyboard', items: [
         'Picture of the keyboard', 'Change any key', 'Key profiles',
@@ -838,7 +852,24 @@ window.labApps = [
     changelog: {
       link: 'https://github.com/xpayn3/MeshOptimiser/blob/main/CHANGELOG.md',
       versions: [
-        { version: '0.24.0', name: 'Soča', fixes: 4, date: '12 Oct 2026 · 20:58', latest: true,
+        { version: '0.25.0', name: 'Bled', fixes: 6, date: '13 Oct 2026 · 10:39', latest: true,
+          summary: 'More to build with, and a better way to line it all up. Twenty-six new library parts, an Align parts panel, a Transform panel that works on several parts, and a search you can move.',
+          items: [
+            ['New', '26 new library parts on two new shelves. The library has 112 parts on eight shelves now. Bearings, a timing pulley, a rail carriage, fans, a circuit board, a servo, and nine brackets and connectors.'],
+            ['New', 'Align parts. Line parts up or spread them evenly along X, Y and Z, to the selection, the last part you picked or the origin. Set a gap if you want one. Each press is one undo.'],
+            ['New', 'Transform several parts at once. A field shows the number the parts share, or mixed. Type one and it goes to each part on its own, about its own origin.'],
+            ['New', 'Move the search. Drag its icon and it goes where you want it, drag its edge to change the width. It remembers, and a double-click puts it back.'],
+            ['New', 'A part search that forgives a typo. Words in any order, quotes, or, minus, triangle filters like >5000, and a second try when nothing matches: braket finds Bracket.'],
+            ['New', 'Bake geo turns a library shape into an ordinary mesh, so the Edit mesh tools work on it. Ctrl+Z gives the shape back.'],
+            ['Polish', 'The Edit mesh tools are a bar at the right of the view, and Box pick follows the box while you drag.'],
+            ['Polish', 'With several parts selected, the gizmo keeps their shared turn instead of snapping to the scene’s axes.'],
+            ['Polish', 'Long messages scroll like a banner until you have read them, and the Quick remesh column is slimmer.'],
+            ['Fix', 'Frame selected works from an orthographic camera.'],
+            ['Fix', 'Wireframe lines of a thin part no longer show through from far away, and Edit mesh edges no longer vanish close to the camera.'],
+            ['Fix', 'Quick remesh no longer leaves a small part with a quarter of its surface. It takes the next gentler level.'],
+            ['Fix', 'Dragging the size of a heavy shape is smoother, and the start fade follows each sidebar’s own opacity.'],
+          ] },
+        { version: '0.24.0', name: 'Soča', fixes: 4, date: '12 Oct 2026 · 20:58',
           summary: 'Into the mesh. Pick points, edges and polygons and move, weld, fill or dissolve them. The shortcuts window is a keyboard now, and every key is yours to change.',
           items: [
             ['New', 'Edit mesh. Points, Edges, Polygons and Model, as in Cinema 4D. Keys 1, 2, 3 and 4 switch between them, and the selected parts show their polygons, not their triangles.'],

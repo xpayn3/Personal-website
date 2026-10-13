@@ -107,6 +107,7 @@
         <a href="../docs/move-rotate-scale.html">Move, rotate, scale and measure</a>
         <a href="../docs/edit-mesh.html">Edit mesh: points, edges and polygons</a>
         <a href="../docs/align-to-floor.html">Align to floor</a>
+        <a href="../docs/align-parts.html">Align parts</a>
         <a href="../docs/exploded-view.html">Exploded view</a>
         <a href="../docs/library.html">The parts library and shapes</a>
         <a href="../docs/draw-lines.html">Draw lines and shapes</a>
@@ -185,11 +186,12 @@
           <p>Quick remesh makes the selected parts lighter by choosing a level, with a live preview, instead of typing numbers. It is a separate tool from Untriangulate and Triangulate: it removes triangles, so it is lossy, like <a href="../docs/decimate.html">Decimate</a>.</p>
           <ol class="kb-steps">
             <li>Select the parts to make lighter.</li>
-            <li>Press <kbd>B</kbd>, or find <span class="ui">Quick remesh</span> with the search. A column of levels opens under the pointer. Each level is how many of the triangles stay.</li>
+            <li>Press <kbd>B</kbd>, or find <span class="ui">Quick remesh</span> with the search. A column of levels opens under the pointer. Each level is how many of the triangles stay, written as a number without a % sign.</li>
             <li>Move up and down the column. The selected parts take the level the pointer is on straight away, so you judge the result on the real model. Moving back up gives the detail back.</li>
             <li>Let go of the mouse button on a level, press <kbd>Enter</kbd>, or let go of <kbd>B</kbd> if you held it, to keep that level.</li>
           </ol>
           <p>Keeping a level is one undo step. <kbd>Esc</kbd> or a press beside the column puts the parts back as they were. It needs a selection: with nothing selected it says “Select a part first”. It does not run while <a href="../docs/edit-mesh.html">Edit mesh</a> is on.</p>
+          <p>A small or thin part can lose its shape if too much is taken away. If a level would leave a part with less than about 60 % of its surface, or would shrink it by more than about 10 % of its diagonal, that result is refused and the part takes the next gentler level instead. So a small bolt does not shrink to a scrap while the big parts beside it go down to the level you chose.</p>
           <h2 id="undo">Undo</h2>
           <p>A run is one undo step. Press <kbd>Ctrl</kbd><kbd>Z</kbd> and the mesh is as it was.</p>
           <div class="kb-see"><h2>Related</h2><ul>
@@ -226,7 +228,7 @@
           <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.24.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.25.0</a>
           <a class="btn is-large btn-demo" href="../demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Open online</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>

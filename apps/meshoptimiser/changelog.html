@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>Changelog — MeshOptimiser</title>
-  <meta name="description" content="What changed in each version of MeshOptimiser, newest first. Latest: v0.24.0." />
+  <meta name="description" content="What changed in each version of MeshOptimiser, newest first. Latest: v0.25.0." />
   <link rel="icon" type="image/svg+xml" href="../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/changelog" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="Changelog — MeshOptimiser" />
-  <meta property="og:description" content="What changed in each version of MeshOptimiser, newest first. Latest: v0.24.0." />
+  <meta property="og:description" content="What changed in each version of MeshOptimiser, newest first. Latest: v0.25.0." />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/changelog" />
   <meta property="og:type" content="website" />
@@ -52,9 +52,32 @@
     </section>
     <section class="wrap">
       <ol class="log">
+        <li id="v0.25.0">
+          <div class="log-head">
+            <strong>v0.25.0<b class="rel-code">Bled</b></strong><em>Latest</em><span>13 Oct 2026 · 10:39</span><span>6 fixes</span>
+          </div>
+          <div class="log-body">
+            <p>More to build with, and a better way to line it all up. Twenty-six new library parts, an Align parts panel, a Transform panel that works on several parts, and a search you can move.</p>
+            <ul>
+              <li><b class="is-new">New</b><span>26 new library parts on two new shelves. The library has 112 parts on eight shelves now. Bearings, a timing pulley, a rail carriage, fans, a circuit board, a servo, and nine brackets and connectors.</span></li>
+              <li><b class="is-new">New</b><span>Align parts. Line parts up or spread them evenly along X, Y and Z, to the selection, the last part you picked or the origin. Set a gap if you want one. Each press is one undo.</span></li>
+              <li><b class="is-new">New</b><span>Transform several parts at once. A field shows the number the parts share, or mixed. Type one and it goes to each part on its own, about its own origin.</span></li>
+              <li><b class="is-new">New</b><span>Move the search. Drag its icon and it goes where you want it, drag its edge to change the width. It remembers, and a double-click puts it back.</span></li>
+              <li><b class="is-new">New</b><span>A part search that forgives a typo. Words in any order, quotes, or, minus, triangle filters like &gt;5000, and a second try when nothing matches: braket finds Bracket.</span></li>
+              <li><b class="is-new">New</b><span>Bake geo turns a library shape into an ordinary mesh, so the Edit mesh tools work on it. Ctrl+Z gives the shape back.</span></li>
+              <li><b class="is-polish">Polish</b><span>The Edit mesh tools are a bar at the right of the view, and Box pick follows the box while you drag.</span></li>
+              <li><b class="is-polish">Polish</b><span>With several parts selected, the gizmo keeps their shared turn instead of snapping to the scene’s axes.</span></li>
+              <li><b class="is-polish">Polish</b><span>Long messages scroll like a banner until you have read them, and the Quick remesh column is slimmer.</span></li>
+              <li><b class="is-fix">Fix</b><span>Frame selected works from an orthographic camera.</span></li>
+              <li><b class="is-fix">Fix</b><span>Wireframe lines of a thin part no longer show through from far away, and Edit mesh edges no longer vanish close to the camera.</span></li>
+              <li><b class="is-fix">Fix</b><span>Quick remesh no longer leaves a small part with a quarter of its surface. It takes the next gentler level.</span></li>
+              <li><b class="is-fix">Fix</b><span>Dragging the size of a heavy shape is smoother, and the start fade follows each sidebar’s own opacity.</span></li>
+            </ul>
+          </div>
+        </li>
         <li id="v0.24.0">
           <div class="log-head">
-            <strong>v0.24.0<b class="rel-code">Soča</b></strong><em>Latest</em><span>12 Oct 2026 · 20:58</span><span>4 fixes</span>
+            <strong>v0.24.0<b class="rel-code">Soča</b></strong><span>12 Oct 2026 · 20:58</span><span>4 fixes</span>
           </div>
           <div class="log-body">
             <p>Into the mesh. Pick points, edges and polygons and move, weld, fill or dissolve them. The shortcuts window is a keyboard now, and every key is yours to change.</p>
@@ -462,7 +485,7 @@
           <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="download.html">Download v0.24.0</a>
+          <a class="btn is-primary is-large" href="download.html">Download v0.25.0</a>
           <a class="btn is-large btn-demo" href="demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Open online</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>

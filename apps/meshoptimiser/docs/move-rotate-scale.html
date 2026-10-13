@@ -107,6 +107,7 @@
         <a href="../docs/move-rotate-scale.html" aria-current="page">Move, rotate, scale and measure</a>
         <a href="../docs/edit-mesh.html">Edit mesh: points, edges and polygons</a>
         <a href="../docs/align-to-floor.html">Align to floor</a>
+        <a href="../docs/align-parts.html">Align parts</a>
         <a href="../docs/exploded-view.html">Exploded view</a>
         <a href="../docs/library.html">The parts library and shapes</a>
         <a href="../docs/draw-lines.html">Draw lines and shapes</a>
@@ -169,6 +170,15 @@
             <li>Press <span class="ui">Reset</span> to put position, rotation and size back.</li>
           </ol>
           <p>The switch beside <span class="ui">Reset</span> turns the third column from <span class="ui">Size</span> into a scale factor. It works for instanced copies too. A scale typed for a group in the parts tree scales the parts inside it, with undo, and <span class="ui">Reset</span> takes it back. <kbd>Tab</kbd> goes down each column.</p>
+          <h2 id="several-parts-at-once">Several parts at once</h2>
+          <p>The nine fields work on a whole selection too. With several parts selected, a field shows the number when every part has the same one, and <span class="ui">mixed</span> when they differ.</p>
+          <p>A number you type goes to each part on its own, about its own origin. Every part gets that position, that rotation or that size, and the other eight numbers of each part stay as they were. The whole change is one undo step.</p>
+          <ul class="kb-points">
+            <li>Locked parts, shared (instanced) copies and parts with no thickness along an axis are skipped. A message lists what stayed.</li>
+            <li>With more than 400 parts selected, the fields just say <span class="ui">mixed</span>, without comparing the parts. You can still type a number into them.</li>
+            <li>The <span class="ui">Scale</span> switch is respected: with it on, the third column is a scale factor for every part.</li>
+          </ul>
+          <p>The gizmo helps too. When the selected parts are all turned the same way, the gizmo keeps that turn instead of snapping to the scene’s axes as soon as a second part is picked. To line parts up on an axis or space them evenly, see <a href="../docs/align-parts.html">Align parts</a>.</p>
           <p>Right-click a column heading to copy all three values or paste them onto another part. The units follow <span class="ui">Display units</span> under <span class="ui">Settings</span>, <span class="ui">Scene</span>.</p>
           <h2 id="dynamic-place">Dynamic place</h2>
           <p>Dynamic place moves a part by dragging it over the model, instead of by its handles. The part rests on whatever surface is under the pointer and turns to face it, as when you drag a part out of the <a href="../docs/library.html">library</a> onto a model. It is handy for putting a bolt on a plate or a bracket on a wall.</p>
@@ -217,6 +227,7 @@
           <p>Moves, turns and scalings are undo steps, whether you dragged the gizmo or typed a value.</p>
           <aside class="kb-note"><p>Moving a part with the gizmo changes where it sits, not its mesh. To write the change into the mesh itself, use <span class="ui">Bake gizmo transforms</span> in the card <span class="ui">Edit selection</span>. Most people never need to.</p></aside>
           <div class="kb-see"><h2>Related</h2><ul>
+            <li><a href="../docs/align-parts.html">Align parts</a></li>
             <li><a href="../docs/align-to-floor.html">Align to floor</a></li>
             <li><a href="../docs/select-parts.html">Select parts</a></li>
             <li><a href="../docs/cleanup.html">Quick fixes and tidying up</a></li>
@@ -248,7 +259,7 @@
           <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.24.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.25.0</a>
           <a class="btn is-large btn-demo" href="../demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Open online</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>

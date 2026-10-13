@@ -30,8 +30,8 @@ const SHOWCASE = [
   { title: 'Clean up and optimise', note: 'Make it light', names: ['Smart optimise', 'Fasteners', 'Select hidden parts', 'Remove hidden faces', 'Quick remesh (B)', 'Fit to budget'] },
   { title: 'Repair and tidy', note: 'Make it right', names: ['Remove holes', 'Remove floating pieces', 'Repair mesh', 'Split', 'Stacked copies', 'Align to floor'] },
   { title: 'Edit mesh', note: 'Go inside', names: ['Points, edges, polygons', 'Click, Box, Brush', 'Move what you picked', 'Dissolve', 'Weld and Fill', 'Planarize and Straighten'] },
-  { title: 'Find and organise', note: 'Big assemblies', names: ['Built for big assemblies', 'Search and filters', 'Search (Shift + C)', 'Batch rename (F2)', 'Select by rule', 'Point to find'] },
-  { title: 'Build and arrange', note: 'Make new parts', names: ['A Draw tool (L)', 'Edit any line', 'Sweep', 'A library of 86 parts', 'Exploded view', 'Dynamic place (D)'] },
+  { title: 'Find and organise', note: 'Big assemblies', names: ['Built for big assemblies', 'Search and filters', 'Search (Shift + C)', 'Batch rename (F2)', 'Select by rule', 'Typo-proof part search'] },
+  { title: 'Build and arrange', note: 'Make new parts', names: ['A Draw tool (L)', 'Align parts', 'Sweep', 'A library of 112 parts', 'Exploded view', 'Dynamic place (D)'] },
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];

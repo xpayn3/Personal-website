@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>The parts library and shapes — MeshOptimiser Docs</title>
-  <meta name="description" content="Add standard parts to a scene from a drawer under the viewport: 86 bolts, nuts, pipes, profiles and machine parts. Look at a part and set its size before it go…" />
+  <meta name="description" content="Add standard parts to a scene from a drawer under the viewport: 112 bolts, nuts, pipes, profiles, machine parts, electronics and brackets. Look at a part and s…" />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/library" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="The parts library and shapes — MeshOptimiser Docs" />
-  <meta property="og:description" content="Add standard parts to a scene from a drawer under the viewport: 86 bolts, nuts, pipes, profiles and machine parts. Look at a part and set its size before it go…" />
+  <meta property="og:description" content="Add standard parts to a scene from a drawer under the viewport: 112 bolts, nuts, pipes, profiles, machine parts, electronics and brackets. Look at a part and s…" />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/library" />
   <meta property="og:type" content="website" />
@@ -107,6 +107,7 @@
         <a href="../docs/move-rotate-scale.html">Move, rotate, scale and measure</a>
         <a href="../docs/edit-mesh.html">Edit mesh: points, edges and polygons</a>
         <a href="../docs/align-to-floor.html">Align to floor</a>
+        <a href="../docs/align-parts.html">Align parts</a>
         <a href="../docs/exploded-view.html">Exploded view</a>
         <a href="../docs/library.html" aria-current="page">The parts library and shapes</a>
         <a href="../docs/draw-lines.html">Draw lines and shapes</a>
@@ -137,9 +138,9 @@
       <article class="kb-article">
         <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#look">Look and arrange</a></p>
         <h1>The parts library and shapes</h1>
-        <p class="lead">Add standard parts to a scene from a drawer under the viewport: 86 bolts, nuts, pipes, profiles and machine parts. Look at a part and set its size before it goes in.</p>
+        <p class="lead">Add standard parts to a scene from a drawer under the viewport: 112 bolts, nuts, pipes, profiles, machine parts, electronics and brackets. Look at a part and set its size before it goes in.</p>
         <div class="kb-body">
-          <p>MeshOptimiser can also add parts. The library holds 86 ready-made parts. Each one is parametric, which means it is built from numbers such as a diameter and a length, and you can change those numbers before you place it and after.</p>
+          <p>MeshOptimiser can also add parts. The library holds 112 ready-made parts on eight shelves. Each one is parametric, which means it is built from numbers such as a diameter and a length, and you can change those numbers before you place it and after.</p>
           <figure class="kb-figure"><a class="zoom" href="../../../Images/apps/meshoptimiser-library.webp" data-group="article" data-caption="The library drawer: a pillow block and a handwheel placed, and a stepper motor on its way in, shown where it will stand."><img src="../../../Images/apps/meshoptimiser-library.webp" alt="MeshOptimiser: The library drawer: a pillow block and a handwheel placed, and a stepper motor on its way in, shown where it will stand." width="2400" height="1350" loading="lazy" decoding="async" /></a><figcaption>The library drawer: a pillow block and a handwheel placed, and a stepper motor on its way in, shown where it will stand.</figcaption></figure>
           <h2 id="open-the-library">Open the library</h2>
           <p>Press <kbd>Shift</kbd><kbd>L</kbd>, or click the button with the small shapes on the bottom toolbar, just left of the palette button. The library is a drawer: it slides up from the bottom of the viewport and leaves the parts tree where it is. Press <kbd>Shift</kbd><kbd>L</kbd> again, or click the cross in its header, to close it.</p>
@@ -152,12 +153,15 @@
           <h2 id="what-is-in-it">What is in it</h2>
           <dl class="table">
             <div><dt>Shapes</dt><dd>Cube, sphere, cylinder, cone, torus, capsule, wedge, rounded box, star and more.</dd></div>
-            <div><dt>Fasteners</dt><dd>Hex bolt, Allen screw, countersunk and button head screws, carriage bolt, U-bolt, eye bolt, set screw, threaded rod, rivet, washers, retaining ring, standoff.</dd></div>
+            <div><dt>Fasteners</dt><dd>Hex bolt, flange bolt, Allen screw, countersunk and button head screws, wood screw, thumb screw, carriage bolt, U-bolt, eye bolt, set screw, threaded rod, rivet, clevis pin, washers, retaining ring, standoff.</dd></div>
             <div><dt>Nuts</dt><dd>Hex, lock, jam, flange, cap, castle, wing, thumb, square, coupling, eye and T-slot nuts.</dd></div>
             <div><dt>Pipes and flanges</dt><dd>Tube, elbow, tee, cross, reducer, pipe cap, flange.</dd></div>
-            <div><dt>Profiles and plates</dt><dd>I-beam, box tube, angle, C-channel, T and Z profiles, T-slot extrusion, flat bar, round and hex bar, perforated and slotted plate, gusset, hinge.</dd></div>
-            <div><dt>Machine parts</dt><dd>Gear, rack, sprocket, pulley, bearing, bushing, pillow block, shaft collar, linear rail, spring, handwheel, star knob, pull handle, levelling foot, wheel, enclosure, stepper motor.</dd></div>
+            <div><dt>Profiles and plates</dt><dd>I-beam, box tube, angle, C-channel, strut channel, T and Z profiles, T-slot extrusion, flat bar, round and hex bar, perforated and slotted plate, gusset, hinge.</dd></div>
+            <div><dt>Machine parts</dt><dd>Gear, rack, sprocket, pulley, timing pulley, bearing, thrust bearing, flanged bearing, roller bearing, bushing, pillow block, shaft collar, stepped shaft, shaft coupler, linear rail, rail carriage, spring, handwheel, star knob, pull handle, levelling foot, wheel, enclosure, stepper motor.</dd></div>
+            <div><dt>Electronics</dt><dd>Axial fan, heatsink, pin header, circuit board, micro servo.</dd></div>
+            <div><dt>Brackets and connectors</dt><dd>Angle bracket, T-slot bracket, three-way corner, joining plate, shelf bracket, joist hanger, post base, column base plate, pipe clamp.</dd></div>
           </dl>
+          <p>The timing pulley is made for GT2 belts, with 10 to 80 teeth.</p>
           <h2 id="find-a-part">Find a part</h2>
           <ul class="kb-points">
             <li><span class="ui">Search…</span> in the header filters all the shelves as you type, by name or by shelf.</li>
@@ -189,6 +193,9 @@
             <li>Drag a number sideways to change it, or click it and type. Hold <kbd>Shift</kbd> to go ten times faster and <kbd>Alt</kbd> to go ten times finer.</li>
             <li>The part rebuilds as you go.</li>
           </ol>
+          <h2 id="turn-a-shape-into-an-ordinary-mesh-bake-geo">Turn a shape into an ordinary mesh: Bake geo</h2>
+          <p>A library part is built from its numbers, so the mesh tools cannot change it in place: a change to its parameters would build it again. When you want to work on its mesh, select the part and press <span class="ui">Bake geo</span>, the button under <span class="ui">Shape parameters</span> in <span class="ui">Properties</span>. The shape looks exactly as it did, but it is now an ordinary mesh part. The parameters go, and <a href="../docs/edit-mesh.html">Edit mesh</a>, <a href="../docs/decimate.html">Decimate</a>, <a href="../docs/split.html">Split</a> and <a href="../docs/fill-holes.html">Remove holes</a> work on it as they do on an imported part.</p>
+          <p>Baking is one undo step, and <kbd>Ctrl</kbd><kbd>Z</kbd> gives the parameters back. The button is off while the part is locked. A part that has been baked cannot be resized with its parameters any more, so bake it last.</p>
           <h2 id="a-bolt-with-its-own-nut">A bolt with its own nut</h2>
           <p>A hex bolt, an Allen screw, a threaded rod or an eye bolt can carry a nut.</p>
           <ol class="kb-steps">
@@ -206,12 +213,14 @@
             <li>The start screen: pick Cube, Sphere, Cylinder or Torus to start a new scene with that shape.</li>
           </ul>
           <h2 id="undo">Undo</h2>
-          <p>Adding a part is an undo step, and so is each change to its parameters.</p>
+          <p>Adding a part is an undo step, and so is each change to its parameters and each use of <span class="ui">Bake geo</span>.</p>
           <aside class="kb-note"><p>Library parts count like any other part: they have triangles, appear in the totals, and are saved and exported with the scene.</p></aside>
           <div class="kb-see"><h2>Related</h2><ul>
             <li><a href="../docs/search-and-commands.html">Search and commands</a></li>
             <li><a href="../docs/move-rotate-scale.html">Move, rotate, scale and measure</a></li>
             <li><a href="../docs/parts-tree.html">The parts tree</a></li>
+            <li><a href="../docs/edit-mesh.html">Edit mesh: points, edges and polygons</a></li>
+            <li><a href="../docs/align-parts.html">Align parts</a></li>
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">
@@ -239,7 +248,7 @@
           <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.24.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.25.0</a>
           <a class="btn is-large btn-demo" href="../demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Open online</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>

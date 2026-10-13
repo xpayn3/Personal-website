@@ -107,6 +107,7 @@
         <a href="../docs/move-rotate-scale.html">Move, rotate, scale and measure</a>
         <a href="../docs/edit-mesh.html">Edit mesh: points, edges and polygons</a>
         <a href="../docs/align-to-floor.html">Align to floor</a>
+        <a href="../docs/align-parts.html">Align parts</a>
         <a href="../docs/exploded-view.html">Exploded view</a>
         <a href="../docs/library.html">The parts library and shapes</a>
         <a href="../docs/draw-lines.html">Draw lines and shapes</a>
@@ -170,6 +171,16 @@
           <p>When you add a file to a scene that is already open (<span class="ui">Import into scene…</span>, or a dropped file with <span class="ui">Add to this scene</span>), the new parts are selected, shown in the tree and framed in the 3D view. That tells you where they landed.</p>
           <h2 id="search">Search</h2>
           <p>Type in <span class="ui">Search parts…</span> above the tree. Only the rows whose names match stay, including matches inside closed groups. Press the small cross in the field to clear the search.</p>
+          <p>The search reads more than a plain word. Case, accents and the marks <code>_</code>, <code>-</code> and <code>.</code> are ignored, and so are the joins inside a name such as GearBox, so <code>gearbox</code> finds Gear_Box and <code>gear box</code> finds GearBox. You can combine these:</p>
+          <dl class="table">
+            <div><dt><code>gear box</code></dt><dd>Several words: every word has to be in the name, in any order.</dd></div>
+            <div><dt><code>&quot;m6 bolt&quot;</code></dt><dd>Words in quotes are matched together, as you wrote them.</dd></div>
+            <div><dt><code>bolt, nut</code></dt><dd>A comma means or: names with either.</dd></div>
+            <div><dt><code>-washer</code></dt><dd>A minus sign leaves out the names that have the word.</dd></div>
+            <div><dt><code>&gt;5000</code>, <code>&lt;200</code></dt><dd>Parts with more or fewer triangles than the number. <code>5k</code> and <code>1.2m</code> work as numbers.</dd></div>
+            <div><dt><code>is:hidden</code>, <code>is:visible</code>, <code>is:selected</code></dt><dd>Parts by state.</dd></div>
+          </dl>
+          <p>When nothing at all is found, the search tries again more forgivingly. In a word of four letters or more, one letter may be wrong, missing, extra or swapped with its neighbour, and in a word of eight letters or more, two. So <code>braket</code> finds Bracket. Groups are matched by their names only, so the triangle and state marks do not apply to them.</p>
           <h2 id="rename-one-row">Rename one row</h2>
           <ol class="kb-steps">
             <li>Double-click the name of a part or a group.</li>
@@ -245,7 +256,7 @@
           <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.24.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.25.0</a>
           <a class="btn is-large btn-demo" href="../demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Open online</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>

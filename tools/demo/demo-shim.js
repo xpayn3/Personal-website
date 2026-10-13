@@ -68,7 +68,7 @@
     ['try', 'Try it here', [
       'Open GLB, glTF, FBX, OBJ, 3MF and STL files, or one of three sample models.',
       'Smart optimise, Decimate, Remove holes, Fasteners, Hidden parts and Smart fit.',
-      'Edit mesh, Draw and Sweep, and the library of 86 parts.',
+      'Edit mesh, Draw and Sweep, and the library of 112 parts.',
       'Exploded view, measuring, search, and export.'
     ]],
     ['out', 'Left out of the online version', [

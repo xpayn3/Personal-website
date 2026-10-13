@@ -107,6 +107,7 @@
         <a href="../docs/move-rotate-scale.html">Move, rotate, scale and measure</a>
         <a href="../docs/edit-mesh.html">Edit mesh: points, edges and polygons</a>
         <a href="../docs/align-to-floor.html">Align to floor</a>
+        <a href="../docs/align-parts.html">Align parts</a>
         <a href="../docs/exploded-view.html">Exploded view</a>
         <a href="../docs/library.html">The parts library and shapes</a>
         <a href="../docs/draw-lines.html">Draw lines and shapes</a>
@@ -154,6 +155,8 @@
             <li>Changing the threshold of Delete small parts while its parts are isolated adds no step of its own.</li>
             <li>In <a href="../docs/edit-mesh.html">Edit mesh</a>, a move, turn or scale of the picked pieces is one step, however long you drag, and so is each of Delete, Dissolve, Planarize, Straighten, Weld, Fill, Extract and Reverse normals. After an undo the pieces are picked again.</li>
             <li>Quick remesh (<kbd>B</kbd>) is one step, taken when you let go on a level.</li>
+            <li>Each press of a button in <a href="../docs/align-parts.html">Align parts</a> is one step, and so is <a href="../docs/library.html">Bake geo</a> on a library shape (<kbd>Ctrl</kbd><kbd>Z</kbd> gives its parameters back).</li>
+            <li>A number typed into the Transform panel with several parts selected is one step for all of them.</li>
           </ul>
           <p>In Edit mesh, <kbd>Ctrl</kbd><kbd>Z</kbd> also takes back the last change of what is picked (a click, a box or a stroke of the brush).</p>
           <h2 id="each-tab-has-its-own-history">Each tab has its own history</h2>
@@ -167,6 +170,7 @@
             <li><a href="../docs/scene-tabs.html">Scene tabs</a></li>
             <li><a href="../docs/shortcuts.html">Keyboard shortcuts</a></li>
             <li><a href="../docs/edit-mesh.html">Edit mesh: points, edges and polygons</a></li>
+            <li><a href="../docs/align-parts.html">Align parts</a></li>
           </ul></div>
         </div>
         <nav class="kb-turn" aria-label="More articles">
@@ -194,7 +198,7 @@
           <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.24.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.25.0</a>
           <a class="btn is-large btn-demo" href="../demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Open online</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
