@@ -1,27 +1,26 @@
 {
-  "schema": 1,
-  "stable": {
-    "version": "0.25.0",
-    "date": "2026-10-13",
-    "headline": "26 new library parts, Align parts, Transform on several parts at once, and a search you can move.",
-    "notes": [
-      "26 new library parts on two new shelves: 112 parts in all.",
-      "Align parts: line parts up or spread them evenly.",
-      "The Transform panel works on several parts at once.",
-      "Move the search by its icon. It remembers where you put it.",
-      "A part search that forgives a typo.",
-      "Bake geo turns a library shape into an ordinary mesh.",
-      "The Edit mesh tools are a bar at the right of the view, and Box pick is live."
-    ],
-    "more": "https://lukagrcar.com/apps/meshoptimiser/changelog.html",
-    "archive": {
-      "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.25.0/meshoptimiser-app-0.25.0.zip",
-      "sha256": "f9d2771ebf8a57a1c5fba28e986a08a4c62685d20b96852894dab644be5bc2a5",
-      "size": 5122908
-    },
-    "requirements_sha256": "f1a93ffe65235c3537c454bcad32277ba82c666c35ece65e2fe598556d0f2f7d",
-    "requirements_changed": false,
-    "launcher": 1,
-    "min_from": ""
-  }
+ "schema": 1,
+ "stable": {
+  "version": "0.26.0",
+  "date": "2026-10-13",
+  "headline": "Box and Brush select whole parts, the same STEP opens instantly, big files open without freezing, and the app gives memory back.",
+  "notes": [
+   "Box and Brush select whole parts, behind one toolbar button.",
+   "Opening the same STEP again is instant.",
+   "Big files open without freezing the page.",
+   "The app gives memory back after Undo and Delete.",
+   "A selection draws at once, and curves are no longer a bundle of lines.",
+   "One look for sliders, scrollbars and menus."
+  ],
+  "more": "https://lukagrcar.com/apps/meshoptimiser/changelog.html",
+  "archive": {
+   "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.26.0/meshoptimiser-app-0.26.0.zip",
+   "sha256": "9c264f48872b670b6c643667c45c36d2dbfe4dfb4c638f9f08764f7144caf665",
+   "size": 5132833
+  },
+  "requirements_sha256": "f1a93ffe65235c3537c454bcad32277ba82c666c35ece65e2fe598556d0f2f7d",
+  "requirements_changed": false,
+  "launcher": 1,
+  "min_from": ""
+ }
 }
