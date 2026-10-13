@@ -558,14 +558,14 @@ window.labApps = [
           'You want to use it in a browser tab with nothing to install. It needs Python 3.10 to 3.12 on your computer.',
         ]],
       },
-      // the band at the top of the home page, a bento of claims: [small label, the claim, the second half of it (greyed), a line under it]
+      // the band at the top of the home page, a bento of claims: [small label, the claim, the second half of it (greyed), a line under it, its colour (from the app's own palette: file, selection, edit, part, tool)]
       strengths: {
         tiles: [
-          ['Convert', 'STEP in.', 'Light GLB out.', 'Names, colours and the whole part tree come through. IGES, BREP, FBX and OBJ open too.'],
-          ['Clean', 'Finds what nobody sees.', 'Gone in one click.', 'Hidden parts, bolts, tiny pieces and holes, found by shape.'],
-          ['Shrink', '320 MB becomes 11.', 'Repeats stored once.', 'Smart optimise halves the triangles on top of it.'],
-          ['Trust', 'Every step undoes.', 'Nothing is uploaded.', 'It runs on your computer. Free and open source.'],
-          ['Claude', 'Just tell Claude.', 'It runs the tools.', 'Say what the model is for. Claude does the job and checks the result.'],
+          ['Convert', 'STEP in.', 'Light GLB out.', 'Names, colours and the part tree come through.', '#4db5ff'],
+          ['Clean', 'Finds the hidden.', 'Gone in one click.', 'Bolts, tiny parts and holes.', '#a78bfa'],
+          ['Shrink', '320 MB to 11 MB.', 'Half the triangles.', 'One press of Smart optimise.', '#fbbf24'],
+          ['Trust', 'Every step undoes.', 'Nothing uploaded.', 'Runs on your computer. Free.', '#10b981'],
+          ['Claude', 'Just tell Claude.', 'It runs the tools.', 'Say what it is for. Claude does the job.', '#e879f9'],
         ],
       },
       // what the pipeline collapses (the README's example)
@@ -902,7 +902,7 @@ window.labApps = [
             ['Fix', 'After a big change of scale the view follows, and parts no longer vanish as too small.'],
             ['Fix', 'Alt+1 to Alt+4 work on a Mac.'],
           ] },
-        { version: '0.23.0', fixes: 15, date: '12 Oct 2026 · 16:41',
+        { version: '0.23.0', name: 'Rače', fixes: 15, date: '12 Oct 2026 · 16:41',
           summary: 'Cleaner meshes, your way. Decide how a CAD file turns into triangles, close the holes that used to slip through, and find anything, even a setting, by typing a word or two.',
           items: [
             ['New', 'You decide how a CAD file comes in. A new Tessellation block sets how closely triangles follow the surface, how round curves stay and how small an edge may get. By part size brings big parts in fine and keeps screws light.'],
@@ -936,7 +936,7 @@ window.labApps = [
             ['Fix', 'Pressing Centre pivot twice no longer makes the gizmo disappear.'],
             ['Fix', 'Shift+click in the tree starts from the row you picked last.'],
           ] },
-        { version: '0.22.0', fixes: 5, date: '12 Oct 2026 · 08:57',
+        { version: '0.22.0', name: 'Ig', fixes: 5, date: '12 Oct 2026 · 08:57',
           summary: 'Just ask Claude. Updates that install themselves. And if the app ever crashes, your work is waiting for you.',
           items: [
             ['New', 'Meet Claude in MeshOptimiser. Say what you want: “find all the bolts and hide them”, “get this under 5 MB”. Claude does it with the same tools you use. Turn it on in Settings when you’re ready. It stays off until you do.'],
@@ -955,7 +955,7 @@ window.labApps = [
             ['Fix', 'Smart fit now handles a ring with a small tab or ears.'],
             ['Polish', 'A new loading animation, a clear six-step view while a STEP file opens, a wider left sidebar and sharper turntable videos.'],
           ] },
-        { version: '0.21.0', date: '9 Oct 2026 · 19:37',
+        { version: '0.21.0', name: 'Bloke', date: '9 Oct 2026 · 19:37',
           summary: 'Show it and ship it. A turntable video saves one slow turn round the model as a WebM, the Export dialog has presets for where the file is going, and the Selection bar has the actions I reach for most.',
           items: [
             ['New', 'Turntable video. The film button next to the camera takes the camera once round the model and saves a WebM: 720p to 1440p, square or portrait, 4 to 12 seconds, 24, 30 or 60 frames a second. It fits the model to the frame, loops, and is encoded in the browser, so nothing is uploaded.'],
@@ -963,7 +963,7 @@ window.labApps = [
             ['New', 'Hide, Isolate, Frame and Duplicate are buttons in the Selection bar, next to the others.'],
             ['Polish', 'The Selection bar is calmer: outlined buttons directly on the panel, the Delete count in the header, and the selection actions in one bar under Properties.'],
           ] },
-        { version: '0.20.0', fixes: 9, date: '9 Oct 2026 · 14:50',
+        { version: '0.20.0', name: 'Kanal', fixes: 9, date: '9 Oct 2026 · 14:50',
           summary: 'You can draw. A Draw tool makes lines and shapes, and they are real parts of the scene: rows in the tree, in groups, moved with the gizmo, with Shape and Spline cards in Properties and a Sweep that turns a path and a profile into a solid. The tree gets organising commands, the converter reads IGES and BREP, copies are found in files from other tools, and the app looks after itself.',
           items: [
             ['New', 'A Draw tool (L). Pen, rectangle, circle, arc, polygon, freehand and edit, in Bezier, Cubic, B-spline or Linear. Place a shape with two clicks and type its size: 20 x 10, Enter. Draw on the ground, the front, the side, the view, or on the face of a part.'],
@@ -984,7 +984,7 @@ window.labApps = [
             ['Fix', 'Shift no longer lights up the button you just clicked.'],
             ['Polish', 'The Draw card is compact, and the next tooltip appears at once while one is showing. Smart fit is tidier, and its Advanced section has its own reset button.'],
           ] },
-        { version: '0.15.0', date: '9 Oct 2026 · 02:07',
+        { version: '0.15.0', name: 'Tabor', date: '9 Oct 2026 · 02:07',
           summary: 'The commands come to the pointer. Hold W and a ring of commands opens under it. The rest is about making a model lighter without breaking it: a repair, a way to remove the faces nobody sees, merging and selecting by rule, Untriangulate, a wireframe that shows polygons, and a simplifier that now looks after normals, UVs and colours.',
           items: [
             ['New', 'Quick wand (hold W). A ring of commands opens round the pointer; move toward a slice and let go of W. Only the direction counts, so a short flick is enough. With a selection it has Hide, Reduce, Delete and More; with nothing selected it has Fit view, Select all, View, Show all, File and Clean. A slice that holds a group fans out when the pointer is on it (Decimate −25 % to −90 %, Smart fit, Split and Fill holes; the views; Save; the clean-ups). A command that cannot run stays on the ring, dimmed, and says why. A quick tap of W leaves the ring open to click; Esc, any other key, the wheel or a click outside closes it, and it never runs anything by accident. You can try it on the home page.'],
@@ -996,7 +996,7 @@ window.labApps = [
             ['Polish', 'The animations at the top of the Help cards are redrawn so that they match, with one lighting and the accent blue for what is selected. The sidebar drag handles sit on the status-bar row.'],
           ],
         },
-        { version: '0.14.0', fixes: 72, date: '8 Oct 2026 · 23:50',
+        { version: '0.14.0', name: 'Most', fixes: 72, date: '8 Oct 2026 · 23:50',
           summary: 'The biggest release so far. A CAD view and a Shading card, Dynamic place, an Align to floor that shows what it will do, Help inside the app, a Settings window that can change the look of the interface, a rebuilt Export window, and three tools that clean a scene up for you. I also read the whole code base, tested it hard on assemblies with thousands of parts and fixed 72 things, most of them in the places you only notice when they go wrong: undo, exports and big files. Opening a big model is faster, too.',
           items: [
             ['New', 'A CAD view (key 6) and a Shading card. The CAD view has no lights or reflections: every surface is shaded by which way it faces the camera, with a dark line on every sharp edge. The card under Properties holds every look as a small 3D nut: Default, Clay, Porcelain, Steel and Red wax, and the CAD looks Ceramic, Light and Mono. One Outlines switch draws the edge lines in every view.'],
@@ -1039,7 +1039,7 @@ window.labApps = [
             ['Fix', 'The launchers check for Python 3.10 to 3.12 and say what’s wrong when it’s another version. Starting the app twice opens the window on the server that’s already running. The macOS launchers are executable after a clone.'],
             ['Fix', 'Dozens of smaller ones: Lock on a mixed selection, Find and Replace treating $ as text, OBJ export keeping non-Latin names, ASCII FBX keeping its precision at any scale, the cloner leaving a copy at the centre, redo in the cloner throwing the rest of the redo list away, and more. The full list is on GitHub.'],
           ] },
-        { version: '0.13.0', fixes: 1, date: '8 Oct 2026 · 03:04',
+        { version: '0.13.0', name: 'Gore', fixes: 1, date: '8 Oct 2026 · 03:04',
           summary: 'It now feels like an app. You can install it, it opens in a window with no address bar or browser tabs, and the title bar can fold away. The scene tabs got better too, and a view that’s moving skips what you couldn’t see anyway.',
           items: [
             ['New', 'Install it from Chrome or Edge and you get a desktop icon and a window of its own. start.bat opens that window directly.'],
@@ -1051,7 +1051,7 @@ window.labApps = [
             ['Fix', 'Properties no longer jumps when a tag appears. “782 hidden” arriving on Isolate used to push the rest of the card down.'],
             ['Polish', 'The renderer picker moved to Settings, the Menu button lost its arrow, and the loading bar is one flat blue.'],
           ] },
-        { version: '0.12.0', fixes: 2, date: '8 Oct 2026 · 01:43',
+        { version: '0.12.0', name: 'Med', fixes: 2, date: '8 Oct 2026 · 01:43',
           summary: 'Until now MeshOptimiser opened a model and made it lighter. From this version it can build too: a drawer of 86 parts to drag in, a sideways model stood up on the floor from one card, a whole scene brought down to a triangle count you type, and dark parts that finally look like something.',
           items: [
             ['New', 'The library drawer has 86 parts on six shelves: hex bolts, socket screws, carriage bolts and U bolts; wing, castle, lock and T-slot nuts; pipe tees, elbows and flanges; I beams, box tube and T-slot extrusion; gears, sprockets, bearings, pillow blocks, a linear rail and a stepper motor.'],
@@ -1066,7 +1066,7 @@ window.labApps = [
             ['Fix', 'Recent files keep their location after a drag and drop, a re-pick, and when the file has changed size.'],
             ['Polish', 'The right sidebar is grouped into Inspect, Clean up and Reduce, and the selected row in the tree is easier to spot. The section plane is gone.'],
           ] },
-        { version: '0.11.0', fixes: 11, date: '7 Oct 2026 · 19:11',
+        { version: '0.11.0', name: 'Sol', fixes: 11, date: '7 Oct 2026 · 19:11',
           summary: 'The way you use it changed. Scenes open in tabs, tools show up as cards beside the model instead of sitting in a sidebar, every number can be dragged, and one Settings window replaces the three places that used to hold options. It also fixed a long list of things that went wrong with undo.',
           items: [
             ['New', 'Scene tabs. Each tab has its own scene and its own undo history. New and Open never replace a scene that has something in it, and a spare tab is kept ready so a new one is there at once.'],
@@ -1083,7 +1083,7 @@ window.labApps = [
             ['Fix', 'Dragging a number could go on following the mouse after you let go, and a click didn’t always put the caret in the field. Tooltips inside a card appeared instantly and cut off after the first words; they wait now and show the whole tip.'],
             ['Polish', 'A darker, calmer interface in one tone. The GPU path tracer is gone, and nothing is fetched from a CDN at start-up.'],
           ] },
-        { version: '0.10', fixes: 17, date: '7 Oct 2026 · 15:37 and 15:47',
+        { version: '0.10', name: 'Kit', fixes: 17, date: '7 Oct 2026 · 15:37 and 15:47',
           summary: 'Faster, with tools it didn’t have before: a hole filler that can tell a hole from a boss, a materials drawer, a decimator that keeps normals and UVs, background workers, and a part tree that keeps up with five million triangles. And a long list of things that were quietly wrong in the tree. Version 0.10.1 followed ten minutes later with one change: the libraries the viewer needs now come with the app, so it starts without a CDN and works with no connection at all.',
           items: [
             ['Fix', 'The tree hides nothing. A group used to vanish from the hierarchy as soon as it had no live parts, although it still existed. Every group is listed now, and one with nothing in it says “empty”.'],
@@ -1100,7 +1100,7 @@ window.labApps = [
             ['Fix', 'Collapsing and re-expanding a group no longer brings back the rows of deleted parts, and adding a shape highlights the new part in the tree instead of the previous one.'],
             ['Fix', 'The icon set is pinned to one version (0.10.1). It used to load as “latest”, so an upstream release could rename or drop an icon without warning.'],
           ] },
-        { version: '0.9.0', fixes: 24, date: '7 Oct 2026 · 12:41',
+        { version: '0.9.0', name: 'Mir', fixes: 24, date: '7 Oct 2026 · 12:41',
           summary: 'More trustworthy. A self-test that runs inside the app, undo for every action, exports that match the scene, and a restyled interface. This was the version where I stopped trusting that things worked and started checking.',
           items: [
             ['New', 'A self-test that runs inside the app and checks the things that broke before.'],
@@ -1116,7 +1116,7 @@ window.labApps = [
             ['Fix', 'The ruler only measured on Ctrl+click while the hint said “Click two points”. A plain click picks now, and picking no longer changes the selection.'],
             ['Fix', 'Shift-click range no longer sweeps up rows hidden by a search or a collapsed group. “% of model” showed 173% for a single cube. Three sidebar cards wouldn’t collapse. A few shortcut hints were wrong.'],
           ] },
-        { version: '0.8.0', fixes: 9, date: '11 May 2026 · 17:20',
+        { version: '0.8.0', name: 'Dim', fixes: 9, date: '11 May 2026 · 17:20',
           summary: 'The groundwork got modern: a ray-marched floor grid, one keycap style on every shortcut, undo rebuilt as a flat list of commands, and all the CSS that was injected at runtime moved into the stylesheet.',
           items: [
             ['New', 'A ray-marched ground grid. It stays sharp at any distance, doesn’t shimmer when you orbit, and doesn’t fight with the model for depth.'],
@@ -1128,35 +1128,35 @@ window.labApps = [
             ['Fix', 'The group button no longer asks for a name, and the path tracer no longer throws an error into the console on an empty scene.'],
             ['Fix', 'Three bugs in the materials panel: adding a material toasted a confusing hint, duplicating one needed a part selected for no reason, and merging left the absorbed materials in the list as ghosts and leaked their GPU memory.'],
           ] },
-        { version: '0.7.0', date: '11 May 2026 · 13:12', summary: 'A GPU path tracer with a render window that builds up samples, a hint strip that follows what you’re doing, an add-a-shape picker on long press, a standalone Cloner you can drag parts into, and Revert to source.' },
-        { version: '0.6.0', fixes: 3, date: '11 May 2026 · 09:18',
+        { version: '0.7.0', name: 'Slap', date: '11 May 2026 · 13:12', summary: 'A GPU path tracer with a render window that builds up samples, a hint strip that follows what you’re doing, an add-a-shape picker on long press, a standalone Cloner you can drag parts into, and Revert to source.' },
+        { version: '0.6.0', name: 'Sir', fixes: 3, date: '11 May 2026 · 09:18',
           summary: 'A live Cloner, a Ctrl-click measure tool, an origin marker for every group, a two-panel Export window, simplification and Meshopt on by default, and mouse buttons that work the way CAD programs expect.',
           items: [
             ['Fix', 'Face winding. Only truly reversed faces are flipped now. The old check also flipped internal and external faces and left back-face artefacts on cellular geometry.'],
             ['Fix', 'Two different shapes could end up with the same hash, so a cube and its diagonal mirror were treated as one. They aren’t any more.'],
             ['Fix', 'The size readout of a Meshopt-compressed GLB was blind, because the library that read it can’t decode compressed files. It reads the file’s own header now.'],
           ] },
-        { version: '0.5.0', fixes: 1, date: '8 May 2026 · 14:35',
+        { version: '0.5.0', name: 'Vas', fixes: 1, date: '8 May 2026 · 14:35',
           summary: 'Scene management (New scene, Import and merge, Scene settings), parametric shapes with millimetre inputs, transforms that know their units, backgrounds without banding, and a clean shutdown.',
           items: [
             ['Fix', 'The Transform panel refreshes after a shape is rebuilt, so the numbers match the new geometry instead of staying on the old ones.'],
           ] },
-        { version: '0.4.0', fixes: 4, date: '7 May 2026 · 18:57',
+        { version: '0.4.0', name: 'Rob', fixes: 4, date: '7 May 2026 · 18:57',
           summary: 'HDRI lighting, an endless floor grid with fog, parametric shapes, a camera pill with Ctrl or ⌘ + 1 to 4, popups without borders, and a refreshed blue.',
           items: [
             ['Fix', 'The right-click menu in the viewport was completely broken: another handler cancelled every right-click before the app’s menu could build. It works again.'],
             ['Fix', 'Going back to an HDRI background after loading another one gave a black scene. A rapid edit of a shape’s parameters could crash the renderer on a buffer race.'],
             ['Fix', 'Tooltips no longer get stranded on screen when a popup opens, a dialog shows, the window loses focus, or a panel slides in over the button.'],
           ] },
-        { version: '0.3.0', fixes: 5, date: '7 May 2026 · 03:22',
+        { version: '0.3.0', name: 'Log', fixes: 5, date: '7 May 2026 · 03:22',
           summary: 'A full material editor with shader-ball previews, a scale gizmo that snaps with Shift and shows live values, screenshots at any size, Top, Front and Side views, and a rescue path for old FBX files.',
           items: [
             ['Fix', 'Saving a screenshot fired the save dialog twice and wrote a 0-byte PNG. A save that was refused, or locked by OneDrive, silently dropped the file; all three failures now fall back to a normal download.'],
             ['Fix', 'Textures leaked memory every time you swapped models. They’re all released now, and material thumbnails fall back to a simple 2D drawing when WebGL isn’t there, instead of blank tiles.'],
             ['Fix', 'Copy, Paste and Select All work again on every number and text field. A custom right-click had been eating them everywhere.'],
           ] },
-        { version: '0.2.0', date: '6 May 2026 · 20:58', summary: 'The editing side arrived: a start screen, a command palette, a shortcuts overlay, settings, section planes, a switchable renderer, batch rename, flatten, dissolve and ungroup, undo and redo, and Save scene. Expanding and collapsing a tree of 10,000 nodes went from about a second to under 10 ms.' },
-        { version: '0.1.0', date: '5 May 2026 · 21:30', summary: 'The first public commit: the STEP to GLB pipeline, the WebGPU viewer with the part tree, picking, hide, isolate and colouring by group, the local server, one-click launchers, and bundled Draco and Assimp decoders.' },
+        { version: '0.2.0', name: 'Dom', date: '6 May 2026 · 20:58', summary: 'The editing side arrived: a start screen, a command palette, a shortcuts overlay, settings, section planes, a switchable renderer, batch rename, flatten, dissolve and ungroup, undo and redo, and Save scene. Expanding and collapsing a tree of 10,000 nodes went from about a second to under 10 ms.' },
+        { version: '0.1.0', name: 'Pot', date: '5 May 2026 · 21:30', summary: 'The first public commit: the STEP to GLB pipeline, the WebGPU viewer with the part tree, picking, hide, isolate and colouring by group, the local server, one-click launchers, and bundled Draco and Assimp decoders.' },
       ],
     },
     info: [

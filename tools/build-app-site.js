@@ -35,9 +35,9 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 97;
+const CSS_V = 152;
 const RP_V = 2;           // report.js
-const JS_V = 30;
+const JS_V = 36;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -221,9 +221,10 @@ ${site.claude ? '        <a href="claude.html">Work with Claude</a>\n' : ''}    
   const shot = ([src, caption], group, eager) =>
     `<figure><a class="zoom" href="${asset(src)}" data-group="${group}" data-caption="${esc(caption)}"><img src="${asset(src)}" alt="${esc(app.title + ': ' + caption)}" width="2400" height="1350"${eager ? '' : ' loading="lazy"'} decoding="async" /></a><figcaption>${esc(caption)}</figcaption></figure>`;
 
+  const clipColours = ['#35c9c0', '#fb923c', '#a78bfa', '#f472b6', '#fbbf24'];
   const clipCards = () => (app.clips || []).map(([name, line, src, doc], i) => `
-        <figure class="clip">
-          <video muted loop playsinline preload="none" disablepictureinpicture poster="${asset(src.replace(/\.(webm|mp4)$/, '_thumb.webp'))}" data-src="${asset(src)}" aria-label="${esc(app.title + ': ' + name)}" width="592" height="370"></video>
+        <figure class="clip" style="--tile-c:${clipColours[i % clipColours.length]}">
+          ${tileArt[5 + i] ? tileArt[5 + i].replace('<svg ', `<svg role="img" aria-label="${esc(app.title + ': ' + name)}" `).replace(' aria-hidden="true"', '') : ''}
           <figcaption><i>${pad2(i + 1)}</i><strong>${esc(name)}</strong><span>${esc(line)}</span>${doc ? `<a class="clip-more" href="docs/${esc(doc)}.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about ${esc(name)}</span></a>` : ''}</figcaption>
         </figure>`).join('');
 
@@ -717,6 +718,72 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
   const tileArt = (() => {
     const f = n => Math.round(n * 10) / 10;
     const wrap = (cls, inner) => `<svg class="tile-art ${cls}" viewBox="0 0 360 200" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${inner}</svg>`;
+    // an isometric box: the outline, and the three edges that meet in front
+    const cube = (cx, cy, s) => {
+      const w = 0.866 * s, h = s / 2;
+      const P = [[0, -s], [w, -h], [w, h], [0, s], [-w, h], [-w, -h]].map(([x, y]) => [f(cx + x), f(cy + y)]);
+      return `M${P.map(p => p.join(' ')).join(' L')} Z M${P[5].join(' ')} L${cx} ${cy} L${P[1].join(' ')} M${cx} ${cy} L${P[3].join(' ')}`;
+    };
+    // wire meshes of a sphere, a cylinder and a box: the same solid with many facets and with few
+    const ell = (cx, cy, rx, ry) => `M${f(cx - rx)} ${f(cy)} A${f(rx)} ${f(ry)} 0 1 0 ${f(cx + rx)} ${f(cy)} A${f(rx)} ${f(ry)} 0 1 0 ${f(cx - rx)} ${f(cy)}`;
+    const sphereFine = (cx, cy, r) => [20, 40, 60, 80].map(d => ell(cx, cy, r * Math.sin(d * Math.PI / 180), r)).join(' ') + ' ' + [-60, -35, -12, 12, 35, 60].map(d => { const k = Math.sin(d * Math.PI / 180), c = Math.cos(d * Math.PI / 180); return ell(cx, cy + r * k, r * c, r * c * 0.3); }).join(' ');
+    const sphereLow = (cx, cy, r) => `${ell(cx, cy, r * 0.62, r)} ${ell(cx, cy, r, r * 0.3)}`;
+    const cylFine = (cx, cy, rx, ry, h) => {
+      let d = '';
+      for (let i = 1; i < 16; i++) { const x = cx - rx + i * 2 * rx / 16; const e = ry * Math.sqrt(1 - Math.pow((x - cx) / rx, 2)); d += ` M${f(x)} ${f(cy - h / 2 + e)} V${f(cy + h / 2 + e)}`; }
+      for (let k = 1; k < 5; k++) d += ` M${f(cx - rx)} ${f(cy - h / 2 + k * h / 5)} A${rx} ${ry} 0 0 0 ${f(cx + rx)} ${f(cy - h / 2 + k * h / 5)}`;
+      return d;
+    };
+    const cylLow = (cx, cy, rx, ry, h) => ` M${f(cx - rx * 0.5)} ${f(cy - h / 2 + ry * 0.87)} V${f(cy + h / 2 + ry * 0.87)} M${f(cx + rx * 0.5)} ${f(cy - h / 2 + ry * 0.87)} V${f(cy + h / 2 + ry * 0.87)} M${f(cx)} ${f(cy - h / 2 + ry)} V${f(cy + h / 2 + ry)}`;
+    const cylBody = (cx, cy, rx, ry, h) => `${ell(cx, cy - h / 2, rx, ry)} M${f(cx - rx)} ${f(cy - h / 2)} V${f(cy + h / 2)} A${rx} ${ry} 0 0 0 ${f(cx + rx)} ${f(cy + h / 2)} V${f(cy - h / 2)}`;
+    const boxFine = (cx, cy, s) => {
+      const w = 0.866 * s, h = s / 2, n = 4, pt = (x, y) => [cx + x, cy + y];
+      const faces = [[[0, -s], [w, -h], [0, 0], [-w, -h]], [[-w, -h], [0, 0], [0, s], [-w, h]], [[0, 0], [w, -h], [w, h], [0, s]]];
+      let d = '';
+      for (const [a, b, c, e] of faces) for (let k = 1; k < n; k++) {
+        const m = (p, q, t) => [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t];
+        const l1 = [m(a, b, k / n), m(e, c, k / n)], l2 = [m(a, e, k / n), m(b, c, k / n)];
+        for (const [p, q] of [l1, l2]) d += ` M${f(cx + p[0])} ${f(cy + p[1])} L${f(cx + q[0])} ${f(cy + q[1])}`;
+      }
+      return d;
+    };
+    const boxLow = (cx, cy, s) => { const w = 0.866 * s, h = s / 2; return ` M${f(cx)} ${f(cy - s)} L${f(cx)} ${f(cy)} M${f(cx - w)} ${f(cy - h)} L${f(cx + w)} ${f(cy + h)} M${f(cx - w)} ${f(cy + h)} L${f(cx + w)} ${f(cy - h)}`; };
+    // a barrel-shaped part turned on a lathe: rings from bottom to top, and the triangles between them
+    const rings = (() => {
+      const cx = 286, n = 13, out = [];
+      for (let k = 0; k < n; k++) { const t = k / (n - 1), y = 164 - k * 10, r = 12 + 29 * Math.pow(Math.sin(Math.PI * t), 0.8); out.push({ k, y, r }); }
+      return { cx, list: out };
+    })();
+    const ringPaths = () => rings.list.map(({ k, y, r }) => `<path class="art-ring" style="--k:${k}" d="${ell(rings.cx, y, r, r * 0.28)}"/>`).join('');
+    const meshPath = () => {
+      let d = '';
+      for (let k = 0; k < rings.list.length - 1; k++) {
+        const a = rings.list[k], b = rings.list[k + 1];
+        for (let j = 0; j <= 8; j++) {
+          const th = j * Math.PI / 8, pa = [rings.cx + a.r * Math.cos(th), a.y + a.r * 0.28 * Math.sin(th)], pb = [rings.cx + b.r * Math.cos(th), b.y + b.r * 0.28 * Math.sin(th)];
+          d += ` M${f(pa[0])} ${f(pa[1])} L${f(pb[0])} ${f(pb[1])}`;
+          if (j < 8) { const th2 = (j + 1) * Math.PI / 8; d += ` M${f(pa[0])} ${f(pa[1])} L${f(rings.cx + b.r * Math.cos(th2))} ${f(b.y + b.r * 0.28 * Math.sin(th2))}`; }
+        }
+      }
+      return d;
+    };
+    // a detailed turned part (flanges and grooves), for Smart fit: its rings, its profile and its facets
+    const knurl = (() => {
+      const cx = 180, R = [44, 44, 31, 38, 31, 38, 31, 38, 31, 38, 31, 38, 31, 44, 44], rows = R.map((r, k) => ({ y: 30 + k * 10, r }));
+      let d = rows.map(({ y, r }) => ell(cx, y, r, r * 0.3)).join(' ');
+      d += ' M' + rows.map(({ y, r }) => `${f(cx - r)} ${f(y)}`).join(' L') + ' M' + rows.map(({ y, r }) => `${f(cx + r)} ${f(y)}`).join(' L');
+      for (let j = 1; j < 8; j++) { const th = j * Math.PI / 8; d += ' M' + rows.map(({ y, r }) => `${f(cx + r * Math.cos(th))} ${f(y + r * 0.3 * Math.sin(th))}`).join(' L'); }
+      return d;
+    })();
+    // 3D boxes and points on them, for the guide drawings: a box with half-sizes a and b along the two floor directions, h tall
+    const isoU = (a) => [0.866 * a, 0.5 * a], isoV = (b) => [-0.866 * b, 0.5 * b];
+    const isoPt = (cx, cy, a, b, s, t) => { const U = isoU(a), V = isoV(b); return [f(cx + s * U[0] + t * V[0]), f(cy + s * U[1] + t * V[1])]; };
+    const isoBox = (cx, cy, a, b, h) => {
+      const P = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([s, t]) => isoPt(cx, cy, a, b, s, t));
+      return `M${P.map(p => p.join(' ')).join(' L')} Z M${P[1][0]} ${P[1][1]} V${f(P[1][1] + h)} M${P[2][0]} ${P[2][1]} V${f(P[2][1] + h)} M${P[3][0]} ${P[3][1]} V${f(P[3][1] + h)} M${P[1][0]} ${f(P[1][1] + h)} L${P[2][0]} ${f(P[2][1] + h)} L${P[3][0]} ${f(P[3][1] + h)}`;
+    };
+    // a bolt standing on a box: a head with its flats, as a short drum
+    const isoBolt = (x, y, r, h) => `${ell(x, y - h, r, r * 0.5)} ${ell(x, y - h, r * 0.45, r * 0.22)} M${f(x - r)} ${f(y - h)} V${f(y)} A${f(r)} ${f(r * 0.5)} 0 0 0 ${f(x + r)} ${f(y)} V${f(y - h)}`;
     // a hex bolt seen from the side, pointing right: head, shank and thread
     const bolt = (x, y, len, d) => {
       const hw = d * 0.9, hh = d * 1.7, sx = x + hw, ex = sx + len;
@@ -736,44 +803,92 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
       return `M${pts.join(' L')} Z M${f(cx + r * 0.35)} ${f(cy)} A${f(r * 0.35)} ${f(r * 0.35)} 0 1 0 ${f(cx - r * 0.35)} ${f(cy)} A${f(r * 0.35)} ${f(r * 0.35)} 0 1 0 ${f(cx + r * 0.35)} ${f(cy)} Z`;
     };
     return [
-      // Convert: a STEP sheet, an arrow, a bolt that is built from triangles
+      // Convert: a STEP sheet streams out as data and is turned into a mesh, ring by ring
       wrap('art-convert', `
         <path d="M24 28 H98 L124 54 V172 H24 Z M98 28 V54 H124"/>
-        <text x="34" y="50" class="art-t">STEP</text>
         <path class="art-dim" d="M36 82 H100 M36 98 H86 M36 114 H104 M36 130 H78 M36 146 H96"/>
-        <path class="art-flow art-hot" d="M140 100 H190"/><path class="art-hot" d="M182 92 L192 100 L182 108"/>
-        <path d="${bolt(208, 100, 112, 24)}"/>
-        <path class="art-tri art-hot" d="M208 80 L230 120 M208 120 L230 80 M230 88 L262 112 L294 88 L326 112 M230 112 L262 88 L294 112 L326 88"/>
-        <text x="262" y="156" class="art-t">GLB</text>`),
-      // Clean: a housing, the fasteners hidden in it, a scan that finds them
+        <path class="art-dots art-hot" d="M138 100 C170 100 176 100 214 100"/>
+        ${ringPaths()}
+        <path class="art-mesh art-hot" pathLength="1" d="${meshPath()}"/>`),
+      // Clean: a boxy casing with detailed parts inside; the scan line wipes them away as it passes
       wrap('art-clean', `
-        <rect x="56" y="36" width="248" height="128" rx="6"/>
-        <g class="art-hida art-hot"><path d="${bolt(84, 82, 82, 16)}"/></g>
-        <g class="art-hidb art-hot"><path d="${bolt(204, 126, 66, 16)}"/><path d="M262 108 V144 M270 108 V144"/></g>
-        <path class="art-scan art-hot" d="M56 28 V172"/>`),
-      // Shrink: the same nut over and over, stored once
+        <defs><clipPath id="clean-wipe"><rect class="art-wipeclip" x="46" y="0" width="276" height="200"/></clipPath></defs>
+        <rect x="46" y="30" width="268" height="140" rx="7"/>
+        <rect x="56" y="40" width="248" height="120" rx="3" class="art-dim"/>
+        <path class="art-dim" d="M46 56 H56 M46 144 H56 M304 56 H314 M304 144 H314" />
+        <path class="art-dim" d="M58 100 H302" stroke-dasharray="2 5"/>
+        <g class="art-parts art-hot" clip-path="url(#clean-wipe)">
+          <path d="${nut(72, 56, 7)}"/><path d="${nut(72, 144, 7)}"/><circle cx="104" cy="100" r="26"/><circle cx="104" cy="100" r="19"/><circle cx="104" cy="100" r="11"/><circle cx="104" cy="100" r="4"/><path d="M104 74 V81 M104 119 V126 M78 100 H85 M123 100 H130"/>
+          <path d="${gear(158, 100, 19, 26, 10)}"/><path d="${gear(210, 100, 19, 26, 10)}"/>
+          <path d="${nut(288, 56, 7)}"/><path d="${nut(288, 144, 7)}"/><circle cx="256" cy="100" r="26"/><circle cx="256" cy="100" r="19"/><circle cx="256" cy="100" r="11"/><circle cx="256" cy="100" r="4"/><path d="M256 74 V81 M256 119 V126 M230 100 H237 M275 100 H282"/>
+        </g>
+        <g class="art-scan art-hot"><path d="M46 22 V178"/><path d="M39 28 V172" opacity="0.5" stroke-dasharray="4 5"/><path d="M32 34 V166" opacity="0.28" stroke-dasharray="2 7"/><path d="M25 40 V160" opacity="0.14" stroke-dasharray="1 9"/><path d="M40 22 H52 M40 178 H52"/></g>`),
+      // Shrink: a sphere, a cylinder and a box, each as a fine mesh that thins out to a few facets
       wrap('art-shrink', `
-        <path d="${nut(60, 96, 26)}" class="art-hot"/>
-        <g class="art-rep" style="--dx:-60px"><path d="${nut(120, 96, 26)}"/></g>
-        <g class="art-rep" style="--dx:-120px"><path d="${nut(180, 96, 26)}"/></g>
-        <g class="art-rep" style="--dx:-180px"><path d="${nut(240, 96, 26)}"/></g>
-        <g class="art-rep" style="--dx:-240px"><path d="${nut(300, 96, 26)}"/></g>
-        <path class="art-dim" d="M34 148 H326"/>
-        <text x="46" y="174" class="art-t art-once">x 400, stored once</text>`),
-      // Trust: a nut goes on, and comes off again with one step back
+        <path d="${ell(66, 100, 52, 52)}"/>
+        <path d="${cylBody(184, 100, 44, 14, 96)}"/>
+        <path d="${cube(298, 100, 54)}"/>
+        <g class="art-fine art-dim"><path d="${sphereFine(66, 100, 52)}"/><path d="${cylFine(184, 100, 44, 14, 96)}"/><path d="${boxFine(298, 100, 54)}"/></g>
+        <g class="art-low art-hot"><path d="${sphereLow(66, 100, 52)}"/><path d="${cylLow(184, 100, 44, 14, 96)}"/><path d="${boxLow(298, 100, 54)}"/></g>`),
+      // Trust: boxes of data bounce around a computer, hop inside one after another, and then the lock closes
       wrap('art-trust', `
-        <path d="${bolt(56, 110, 220, 26)}"/>
-        <g class="art-nut"><path d="M196 86 H220 V134 H196 Z M203 86 V134 M213 86 V134"/></g>
-        <path class="art-back art-hot" d="M252 64 Q196 14 140 64"/><path class="art-hot" d="M148 50 L139 65 L156 69"/>`),
+        <g transform="translate(-21.6 -10.3) scale(1.12)" stroke-width="1.34">
+          <rect x="104" y="34" width="152" height="104" rx="8"/><path d="M180 138 V160 M150 160 H210"/>
+          <g class="art-boxes art-hot">
+            <g class="art-box" style="--tx:76px;--ty:2px;--s:0.48;--i:0"><g class="art-bounce" style="--b:0s"><path d="${cube(52, 62, 21)}"/></g></g>
+            <g class="art-box" style="--tx:-76px;--ty:8px;--s:0.5;--i:1"><g class="art-bounce" style="--b:-0.35s"><path d="${cube(308, 56, 20)}"/></g></g>
+            <g class="art-box" style="--tx:66px;--ty:-12px;--s:0.55;--i:2"><g class="art-bounce" style="--b:-0.7s"><path d="${cube(64, 128, 18)}"/></g></g>
+            <g class="art-box" style="--tx:-68px;--ty:-8px;--s:0.43;--i:3"><g class="art-bounce" style="--b:-0.2s"><path d="${cube(298, 124, 23)}"/></g></g>
+            <g class="art-box" style="--tx:26px;--ty:32px;--s:0.67;--i:4"><g class="art-bounce" style="--b:-0.55s"><path d="${cube(180, 20, 15)}"/></g></g>
+          </g>
+          <g class="art-lockg">
+            <path class="art-shackle" d="M171 84 V72 a9 9 0 0 1 18 0 V84"/>
+            <g class="art-lockbody"><rect x="164" y="84" width="32" height="26" rx="4"/><circle cx="180" cy="95" r="3"/><path d="M180 98 V103"/></g>
+          </g>
+        </g>`),
       // Claude: a prompt, and the parts it puts to work
       wrap('art-claude', `
-        <path d="M30 56 H136 a12 12 0 0 1 12 12 V104 a12 12 0 0 1-12 12 H66 L44 136 V116 H42 a12 12 0 0 1-12-12 V68 a12 12 0 0 1 12-12 Z"/>
-        <path class="art-dim" d="M46 78 H118 M46 94 H92"/><path class="art-cursor art-hot" d="M100 90 V100"/>
-        <path class="art-flow art-hot" d="M148 86 C186 86 192 52 232 52 M148 86 H232 M148 86 C186 86 192 124 232 124"/>
-        <g class="art-gear"><path d="${gear(262, 52, 15, 21, 8)}"/></g>
-        <path d="${nut(262, 86, 17)}"/>
-        <path d="${bolt(246, 124, 30, 10)}"/>
-        <path class="art-dim" d="M300 52 H336 M300 86 H328 M300 124 H340"/>`),
+        <g transform="translate(-27 -15) scale(1.15)" stroke-width="1.3">
+          <path d="M42 56 H136 a12 12 0 0 1 12 12 V104 a12 12 0 0 1-12 12 H66 L44 136 V116 H42 a12 12 0 0 1-12-12 V68 a12 12 0 0 1 12-12 Z"/>
+          <path class="art-dim" d="M46 78 H118 M46 94 H92"/><path class="art-cursor art-hot" d="M100 90 V100"/>
+          <path class="art-flow art-hot" d="M148 86 C190 86 192 38 232 38 M148 86 C190 86 192 92 232 92 M148 86 C190 86 192 148 232 148"/>
+          <g class="art-gear"><path d="${gear(262, 38, 15, 21, 8)}"/></g>
+          <path d="${nut(262, 92, 16)}"/>
+          <path d="${bolt(246, 148, 30, 10)}"/>
+        </g>`),
+      // Remove holes: a plate seen from above at an angle, with holes of every size, none touching, and each one closes
+      wrap('clip-art art-holes', `
+        <path d="${isoBox(180, 86, 70, 44, 14)}"/>
+        <g>
+          <g class="art-hole" style="--i:0"><path d="${ell(...isoPt(180, 86, 70, 44, -0.6, -0.5), 13, 6.8)}"/></g>
+          <g class="art-hole" style="--i:3"><path d="${ell(...isoPt(180, 86, 70, 44, 0, -0.5), 8, 4.2)}"/></g>
+          <g class="art-hole" style="--i:1"><path d="${ell(...isoPt(180, 86, 70, 44, 0.6, -0.5), 11, 5.8)}"/></g>
+          <g class="art-hole" style="--i:4"><path d="${ell(...isoPt(180, 86, 70, 44, -0.6, 0.5), 7, 3.7)}"/></g>
+          <g class="art-hole" style="--i:2"><path d="${ell(...isoPt(180, 86, 70, 44, 0, 0.5), 19, 10)}"/><path d="${ell(...isoPt(180, 86, 70, 44, 0, 0.5), 10, 5.3)}"/></g>
+          <g class="art-hole" style="--i:5"><path d="${ell(...isoPt(180, 86, 70, 44, 0.6, 0.5), 12, 6.3)}"/></g>
+        </g>`),
+      // Split: a block held together by bolts is two parts fused; the bolts come out, a cutting plane passes through, and the parts slide apart
+      wrap('clip-art art-split', `
+        <g class="art-sa"><path class="art-face" d="M${isoPt(180, 86, 64, 40, 0, -1).join(' ')} L${isoPt(180, 86, 64, 40, 0, 1).join(' ')} V${f(isoPt(180, 86, 64, 40, 0, 1)[1] + 34)} L${isoPt(180, 86, 64, 40, 0, -1)[0]} ${f(isoPt(180, 86, 64, 40, 0, -1)[1] + 34)} Z"/><path d="${isoBox(...isoPt(180, 86, 64, 40, -0.5, 0), 32, 40, 34)}"/><g class="art-bolt"><path d="${isoBolt(...isoPt(180, 86, 64, 40, -0.5, -0.3), 8, 7)}"/><path d="${isoBolt(...isoPt(180, 86, 64, 40, -0.5, 0.35), 8, 7)}"/></g></g>
+        <g class="art-sb"><path class="art-face" d="M${isoPt(180, 86, 64, 40, 0, -1).join(' ')} L${isoPt(180, 86, 64, 40, 0, 1).join(' ')} V${f(isoPt(180, 86, 64, 40, 0, 1)[1] + 34)} L${isoPt(180, 86, 64, 40, 0, -1)[0]} ${f(isoPt(180, 86, 64, 40, 0, -1)[1] + 34)} Z"/><path d="${isoBox(...isoPt(180, 86, 64, 40, 0.5, 0), 32, 40, 34)}"/><g class="art-bolt"><path d="${isoBolt(...isoPt(180, 86, 64, 40, 0.5, -0.3), 8, 7)}"/><path d="${isoBolt(...isoPt(180, 86, 64, 40, 0.5, 0.35), 8, 7)}"/></g></g>
+        <path class="art-plane art-hot" pathLength="1" d="M${isoPt(180, 86, 64, 40, 0, -1.12)[0]} ${f(isoPt(180, 86, 64, 40, 0, -1.12)[1] - 9)} L${isoPt(180, 86, 64, 40, 0, 1.12)[0]} ${f(isoPt(180, 86, 64, 40, 0, 1.12)[1] - 9)} V${f(isoPt(180, 86, 64, 40, 0, 1.12)[1] + 43)} L${isoPt(180, 86, 64, 40, 0, -1.12)[0]} ${f(isoPt(180, 86, 64, 40, 0, -1.12)[1] + 43)} Z"/>`),
+      // Select hidden parts: the shell goes see-through and what was inside is picked
+      wrap('clip-art art-hidden', `
+        <g class="art-shell"><path d="${cube(180, 100, 72)}"/></g>
+        <g class="art-found art-hot"><path d="${cube(160, 108, 15)}"/><path d="${cube(204, 98, 13)}"/><path d="${nut(182, 80, 9)}"/></g>
+        <path class="art-brk art-hot" pathLength="1" d="M128 64 h14 M128 64 v14 M232 64 h-14 M232 64 v14 M128 142 h14 M128 142 v-14 M232 142 h-14 M232 142 v-14"/>`),
+      // Fasteners: a plate with bolts standing on it, each found by its shape
+      wrap('clip-art art-fast', `
+        <path d="${isoBox(180, 96, 70, 44, 14)}"/>
+        <g class="art-fnd art-hot" style="--i:0"><path d="${isoBolt(...isoPt(180, 96, 70, 44, -0.55, -0.4), 11, 18)}"/></g>
+        <g class="art-fnd art-hot" style="--i:1"><path d="${isoBolt(...isoPt(180, 96, 70, 44, 0.5, -0.4), 11, 18)}"/></g>
+        <g class="art-fnd art-hot" style="--i:2"><path d="${isoBolt(...isoPt(180, 96, 70, 44, -0.5, 0.45), 11, 18)}"/></g>
+        <g class="art-fnd art-hot" style="--i:3"><path d="${isoBolt(...isoPt(180, 96, 70, 44, 0.55, 0.45), 11, 18)}"/></g>
+        <g class="art-fnd art-hot" style="--i:4"><path d="${isoBolt(...isoPt(180, 96, 70, 44, 0.02, 0.02), 9, 12)}"/></g>`),
+      // Smart fit: a detailed part becomes a plain cylinder, in place, and keeps its outline
+      wrap('clip-art art-smart', `
+        <g class="art-dense2"><path d="${knurl}"/></g>
+        <path class="art-fit art-hot" pathLength="1" d="${cylBody(180, 100, 46, 14, 140)}"/>`),
     ];
   })();
 
@@ -790,7 +905,7 @@ ${app.highlights.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt>
     return `    <section class="band is-first">
       <div class="wrap">
         <div class="bento">
-${st.tiles.map(([label, claim, rest, line], i) => `          <article class="tile"><p class="tile-label">${esc(label)}</p>${tileArt[i] || ''}<h2>${esc(claim)} <span>${esc(rest)}</span></h2><p class="tile-line">${esc(line)}</p></article>`).join('\n')}
+${st.tiles.map(([label, claim, rest, line, colour], i) => `          <article class="tile"${colour ? ` style="--tile-c:${esc(colour)}"` : ''}>${tileArt[i] || ''}<p class="tile-label">${esc(label)}</p><h2>${esc(claim)} <span>${esc(rest)}</span></h2><p class="tile-line">${esc(line)}</p></article>`).join('\n')}
         </div>
       </div>
     </section>`;
@@ -841,16 +956,6 @@ ${site.collapse.map(([from, to], i, all) => `            <tr${i === all.length -
       </div>
     </section>
 
-    <section class="band">
-      <div class="wrap">
-        <div class="band-head">
-          <p class="kicker">A closer look</p>
-          <h2>Built for assemblies with thousands of parts.</h2>
-        </div>
-        <div class="spots">${spotRows(app.spotlights.slice(0, 3), 'spots')}
-        </div>
-      </div>
-    </section>
 ${savingsBand()}
 ${/* designBand() is switched off: the band is not shown on the home page */ ''}
 ${libraryBand()}

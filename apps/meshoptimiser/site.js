@@ -432,7 +432,9 @@
     const data = JSON.parse($('[data-wand-data]', demo).textContent), ICONS = data.icons || {};
     const parts = data.parts.map(([name, tris], i) => ({ name, orig: tris, tris, hidden: false, gone: false, on: false }));
     const fmt = (n) => n.toLocaleString('en-US');
-    const R_IN = 22, R_OUT = 58, F_IN = 64, F_OUT = 94, DEAD = 12, V = F_OUT + 24, R_ICON = (R_IN + R_OUT) / 2, POP = 0.075, POP2 = 0.03;
+    let K, R_IN, R_OUT, F_IN, F_OUT, DEAD, V, R_ICON; const POP = 0.075, POP2 = 0.03;
+    // the ring's size follows the window when it opens (the window may still have been settling when the page started)
+    const setK = () => { K = (window.innerWidth > 0 && window.innerWidth <= 760) ? 1.3 : 1.7; R_IN = 22 * K; R_OUT = 58 * K; F_IN = 64 * K; F_OUT = 94 * K; DEAD = 12 * K; V = F_OUT + 24; R_ICON = (R_IN + R_OUT) / 2; }; setK();
     let isolated = false, view = 'solid', grid = true, root = null, open = false, sticky = false, rested = false, viaPointer = false;
     let startedAt = 0, moved = false, ox = 0, oy = 0, px = 0, py = 0, lastX = 0, lastY = 0, over = false, closedAt = -1e9;
     let slots = [], slice = 90, hot = -1, sub = -1, fanFor = -1, entryD = 0, committed = false, hold = null;
@@ -544,6 +546,7 @@
     };
     const build = () => {
       if (!root) { root = el('div', 'wq'); root.setAttribute('aria-hidden', 'true'); stage.appendChild(root); }
+      setK(); root.style.setProperty('--k', K);
       slots = layout().filter((sl) => sl && (sl.leaf || (sl.items && sl.items.length))); slice = 360 / slots.length;
       let svg = '<g class="wq-slices">', items = '';
       slots.forEach((sl, i) => {
@@ -583,7 +586,7 @@
         const dn = arcR(F_IN, F_OUT, aa, aa + step, [first, last, last, first], 6), dl = arcR(F_IN, F_OUT, aa, aa + step, [true, true, true, true], 6);
         paths += '<path class="wq-sub' + (it.off ? ' is-off' : '') + (it.danger ? ' danger' : '') + '" data-j="' + j + '" data-d="' + dn + '" data-dh="' + dl + '" d="' + dn + '" style="--j:' + j + '"/>';
         const [ix, iy] = pol((F_IN + F_OUT) / 2, am), [kx, ky] = pol((F_IN + F_OUT) / 2 * POP2, am);
-        icons += '<foreignObject x="' + (ix - 9).toFixed(1) + '" y="' + (iy - 9).toFixed(1) + '" width="18" height="18" class="wq-subico' + (it.off ? ' is-off' : '') + '" data-j="' + j + '" style="--j:' + j + ';--dx:' + kx.toFixed(1) + 'px;--dy:' + ky.toFixed(1) + 'px"><div xmlns="http://www.w3.org/1999/xhtml">' + ico(it.icon) + '</div></foreignObject>';
+        icons += '<foreignObject x="' + (ix - 9 * K).toFixed(1) + '" y="' + (iy - 9 * K).toFixed(1) + '" width="' + (18 * K).toFixed(1) + '" height="' + (18 * K).toFixed(1) + '" class="wq-subico' + (it.off ? ' is-off' : '') + '" data-j="' + j + '" style="--j:' + j + ';--dx:' + kx.toFixed(1) + 'px;--dy:' + ky.toFixed(1) + 'px"><div xmlns="http://www.w3.org/1999/xhtml">' + ico(it.icon) + '</div></foreignObject>';
         const [lx, ly] = pol(F_OUT + 10, am), sx = Math.sin(am * Math.PI / 180);
         const al = Math.abs(sx) > 0.2 ? (sx > 0 ? '0 -50%' : '-100% -50%') : '-50% ' + (-Math.cos(am * Math.PI / 180) > 0 ? '0' : '-100%');
         labels += '<div class="wq-lab' + (it.off ? ' is-off' : '') + '" data-j="' + j + '" style="--j:' + j + ';left:' + lx.toFixed(1) + 'px;top:' + ly.toFixed(1) + 'px;translate:' + al + '">' + esc(it.label) + ((it.off || it.right) ? '<span class="wq-lab-r">' + esc(it.off ? String(it.off) : it.right) + '</span>' : '') + '</div>';
@@ -636,7 +639,7 @@
     const show = (asSticky) => {
       if (open) return;
       ox = px = lastX; oy = py = lastY; sticky = !!asSticky; moved = false; startedAt = performance.now(); hot = -1; sub = -1; fanFor = -1; committed = false;
-      build(); place();
+      setK(); build(); place();
       open = true; demo.classList.add('is-open');
       root.classList.remove('is-in'); root.style.display = 'block'; void root.offsetWidth; root.classList.add('is-in');
       aim();
@@ -777,7 +780,7 @@
   }
 
   // ---- tile drawings move only while their tile is on screen ----
-  const tiles = $$('.tile');
+  const tiles = $$('.tile, .clip');
   if (tiles.length && 'IntersectionObserver' in window) {
     const live = new IntersectionObserver(entries => entries.forEach(e => e.target.classList.toggle('is-live', e.isIntersecting)), { threshold: 0.2 });
     tiles.forEach(t => live.observe(t));
