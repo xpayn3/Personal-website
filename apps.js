@@ -27,6 +27,7 @@
 //   highlights  the headline cards: [big figure, a line about it] (optional)
 //   steps     how it works, in order: [name, a line about it] (optional)
 //   features  [name, a line about it] pairs, or for a long list
+//   allFeatures    [{ title, items: ['Short name', …] }, …]  (every feature by name; the accordion on the features page; app sites only)
 //   featureGroups  [{ title, note, items: [[name, line], …], more: [[name, line], …] }, …]
 //                  (more: a plain list under the main ones, no icons; app sites only)
 //   start     { text, commands: [[label, command], …] } (optional)
@@ -75,7 +76,7 @@ window.labApps = [
         band: {
           kicker: 'Claude',
           title: 'Ask Claude. It does the clean-up.',
-          line: 'Connect the app to Claude and describe the job. It uses the same tools you click, asks before it changes the model, and every change is one undo.',
+          line: 'Describe the job. Claude does the clean-up with the same tools you click, asks before it changes anything, and every change is one undo.',
           prompts: ['Find all the bolts and hide them.', 'Get this under 5 MB for the web.', 'Show me before and after.'],
         },
         // an example session (the numbers are what the app returned on the Gearbox Assy): [who, text, tools?, ask?, result?]
@@ -341,6 +342,41 @@ window.labApps = [
         levels: [['Light, Balanced', 322988], ['Strong', 161980]],
         note: 'MeshOptimiser v0.15.0, Gearbox Assy (95 parts, 646,064 triangles), Smart optimise on Balanced with Reduce triangles on. Strong ends at 161,980 triangles and 1.6 MB.',
       },
+      // file sizes with and without compression (see compressionBand in tools/build-app-site.js): bytes, measured with glTF Transform 4.1 on the three sample GLBs of the hosted demo (Khronos glTF-Sample-Models)
+      compression: {
+        kicker: 'Smaller files',
+        title: '5 MB in. 1 MB out.',
+        line: 'Same model, same shape, a fraction of the file. Send it, load it, share it.',
+        models: [['Gearbox', 4951652, 1030352, 588072], ['Reciprocating saw', 3556740, 777100, 450988], ['Two-cylinder engine', 1830588, 444548, 249408]],
+        points: [
+          ['Meshopt', 'Small and quick to open. About a fifth of the size, built for the web.'],
+          ['Draco', 'The smallest file. About an eighth of the size, for when every kilobyte counts.'],
+          ['Faster to draw', 'Same file size, smoother on screen. Opens in any viewer.'],
+        ],
+        note: 'Measured on the Khronos sample models (Gearbox, Reciprocating Saw, Two-Cylinder Engine) with glTF Transform 4.1: Meshopt at high, Draco at its defaults. 1 MB = 1,000,000 bytes. Very light meshes can come out larger with Draco.',
+      },
+      // the clean-up showcase on the features page (see cleanupBand in tools/build-app-site.js): stars are [name, line, picture or clip, docs slug]; more are [name, line, docs slug]
+      cleanup: {
+        kicker: 'Mesh clean-up',
+        title: 'The tools this app is for.',
+        line: 'Bolt holes nobody will see. Screws sealed inside housings. Parts drawn twice. Found by shape, gone in one click, back with one undo.',
+        stars: [
+          ['Remove holes', 'Bolt holes, slots, pockets and lettering: closed, with their walls. Nothing else changes.', 'Images/apps/meshoptimiser-clip-fill-holes.webm', 'fill-holes'],
+          ['Select hidden parts', 'Every screw sealed inside a housing, found and gone in one step.', 'Images/apps/meshoptimiser-clip-select-hidden.webm', 'select-hidden-parts'],
+          ['Fasteners', 'Every bolt, screw, nut and washer, found by shape. Whatever the CAD file called them.', 'Images/apps/meshoptimiser-clip-fasteners.webm', 'fasteners'],
+          ['Smart fit', 'Two heavy parts: 72,666 triangles down to 212. Same size, same place, same outline.', 'Images/apps/meshoptimiser-clip-smart-fit.webm', 'smart-fit'],
+          ['Split', 'One fused lump becomes the separate solids it always was.', 'Images/apps/meshoptimiser-clip-split.webm', 'split'],
+          ['Smart optimise', 'Every clean-up above, in one press. 646,064 triangles down to 322,988, and one undo puts it all back.', 'Images/apps/meshoptimiser-smart-optimise.webp', 'smart-optimise'],
+        ],
+        more: [
+          ['Remove floating pieces', 'Plugs, shavings and stray dots, gone. The main body always stays.', 'remove-floating-pieces'],
+          ['Remove hidden faces', 'Deletes faces that never show: inside a housing, where two parts meet.', ''],
+          ['Remesh', 'Flat faces rebuilt with the fewest triangles. The shape doesn’t move.', 'remesh'],
+          ['Delete small parts', 'Screws and clips too small to see, gone. A slider and a preview show what goes.', 'delete-small-parts'],
+          ['Repair mesh', 'Doubled points, empty triangles and flipped faces, fixed.', 'cleanup'],
+          ['Stacked copies', 'Parts drawn twice in the same place, found and removed.', 'stacked-copies'],
+        ],
+      },
       // the search on the page (see searchDemo in tools/build-app-site.js): [name, shortcut / note, detail]
       demo: {
         kicker: 'Try it',
@@ -474,7 +510,7 @@ window.labApps = [
         label: 'A rear derailleur comes out of the MeshOptimiser window and pulls itself apart',
         kicker: 'Exploded view',
         title: 'Take it apart. Inspect every part.',
-        line: 'Scroll to pull this 43-part rear derailleur apart. In the app one slider does it, and every part has its own row and triangle count.',
+        line: 'Scroll to pull this 43-part derailleur apart. One slider does it in the app, and every part has its own row and triangle count.',
       },
       // the first screen: headline (the subtitle above stays as the line under it), the lead, the page title and the meta description
       headline: 'Make a CAD assembly light enough for the web, on your own computer. Free.',
@@ -542,17 +578,17 @@ window.labApps = [
       ['Pull it apart', 'One slider, and a pill for each axis, so a gearbox can open along one direction only. One click puts it back.', 'Images/apps/meshoptimiser-exploded.webp', 'cube'],
     ],
     clips: [
-      ['Remove holes', 'Closes bolt holes, slots and pockets in flat faces. Nothing else changes.', 'Images/apps/meshoptimiser-clip-fill-holes.webm', 'fill-holes'],
-      ['Split', 'Cuts a fused mesh back into its solids.', 'Images/apps/meshoptimiser-clip-split.webm', 'split'],
-      ['Select hidden parts', 'Finds every part you can’t see from outside.', 'Images/apps/meshoptimiser-clip-select-hidden.webm', 'select-hidden-parts'],
-      ['Fasteners', 'Finds bolts, nuts and washers by shape, whatever they are named.', 'Images/apps/meshoptimiser-clip-fasteners.webm', 'fasteners'],
-      ['Smart fit', 'Swaps a dense part for a box, a cylinder or blocks that keep its outline.', 'Images/apps/meshoptimiser-clip-smart-fit.webm', 'smart-fit'],
+      ['Remove holes', 'Bolt holes, slots and pockets closed. Nothing else changes.', 'Images/apps/meshoptimiser-clip-fill-holes.webm', 'fill-holes'],
+      ['Split', 'One fused lump becomes the separate solids it always was.', 'Images/apps/meshoptimiser-clip-split.webm', 'split'],
+      ['Select hidden parts', 'Every part you can’t see from outside, found in one click.', 'Images/apps/meshoptimiser-clip-select-hidden.webm', 'select-hidden-parts'],
+      ['Fasteners', 'Every bolt, nut and washer, found by shape. Whatever the CAD file called them.', 'Images/apps/meshoptimiser-clip-fasteners.webm', 'fasteners'],
+      ['Smart fit', 'A dense part becomes a box, a cylinder or blocks that keep its outline.', 'Images/apps/meshoptimiser-clip-smart-fit.webm', 'smart-fit'],
     ],
     stats: [['Version', '0.24.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
     about: [
       'For the STEP assembly that has to go on a web page.',
-      'A STEP file can hold 400 identical bolts, 80 duplicate brackets and half a million broken triangles. MeshOptimiser keeps each repeated part once, rebuilds the bad geometry and drops what is too small to see.',
-      'You get a compressed GLB and a viewer to check it in. It runs on your own machine, every part has a row, and every action can be undone.',
+      '400 identical bolts, 80 duplicate brackets, half a million broken triangles. MeshOptimiser keeps each repeat once, rebuilds the bad geometry and drops what you can’t see.',
+      'A compressed GLB, and a viewer to check it in. It runs on your machine. Every part has a row. Every action has an undo.',
     ],
     highlights: [
       ['320 → 11 MB', 'A STEP assembly as a compressed GLB.'],
@@ -567,12 +603,12 @@ window.labApps = [
     ],
     featureGroups: [
       { title: 'Convert', note: 'STEP to GLB', items: [
-        ['Reads the whole assembly', 'Colours, names and the full part tree.'],
-        ['Finds repeats', 'The same shape at any angle becomes one mesh, drawn many times.'],
-        ['Rebuilds the surfaces', 'Set the detail in millimetres or as a share of the model.'],
-        ['You set the tessellation', 'Sag, angle and smallest edge when a CAD file opens. By part size: big parts fine, screws light.'],
-        ['Smooth from the CAD surfaces', 'Fillets blend in, cylinders show no seam, sharp edges stay sharp.'],
-        ['Compresses', 'Meshopt makes GLBs about ten times smaller.'],
+        ['Reads the whole assembly', 'Colours, names and the whole part tree come through.'],
+        ['Finds repeats', 'Same shape, any angle: stored once, drawn many times.'],
+        ['Rebuilds the surfaces', 'Set the detail in millimetres, or as a share of the model.'],
+        ['You set the tessellation', 'Big parts fine, screws light. You choose the detail by part size.'],
+        ['Smooth from the CAD surfaces', 'Fillets blend, cylinders have no seam, sharp edges stay sharp.'],
+        ['Compresses', 'Meshopt turns your GLBs into a fraction of the size.'],
       ], more: [
         ['Reads IGES and BREP too', 'IGES and BREP open like STEP. IGES keeps names, colours and layers.'],
         ['A whole folder at once', '--batch converts every CAD file in a folder and reports each one.'],
@@ -582,48 +618,48 @@ window.labApps = [
         ['Long jobs in the background', 'Big conversions run as jobs, with progress in the window.'],
       ] },
       { title: 'Clean up', items: [
-        ['Smart optimise', 'Every clean-up in one go. One undo.'],
-        ['Fasteners', 'Finds bolts, screws, nuts and washers by shape.'],
-        ['Select hidden parts', 'Picks the parts you can’t see from outside.'],
+        ['Smart optimise', 'Every clean-up in one press. One undo.'],
+        ['Fasteners', 'Every bolt, screw, nut and washer, found by shape.'],
+        ['Select hidden parts', 'The parts nobody can see, found in one click.'],
         ['Finds copies in other tools’ files', 'Repeats in a GLB, FBX, OBJ or 3MF are found on open. A 600-mesh test file went from 2.72 MB to 186 KB.'],
         ['Decimate within a distance', 'Reduce until no point moves more than the millimetres you set. Measured, not assumed.'],
-        ['Remove holes', 'Closes bolt holes, slots and pockets in flat faces, by size, depth and kind. No ring of points left behind.'],
-        ['Remove floating pieces', 'Deletes the plugs, shavings and dots that hang in the air next to a part.'],
-        ['Split', 'Cuts a fused mesh back into its solids, or at its creases into faces.'],
+        ['Remove holes', 'Bolt holes, slots and pockets closed, with no ring of points left behind.'],
+        ['Remove floating pieces', 'Plugs, shavings and stray dots, gone.'],
+        ['Split', 'One fused lump, back to the solids it was.'],
         ['Smart fit', 'Swaps a part for a box, a cylinder or blocks that keep the outline.'],
-        ['Quick remesh (B)', 'A column of levels under the pointer. The part changes as you move.', 'new'],
-        ['Fit to budget', 'Set a triangle count for the scene. The heaviest meshes go first.'],
-        ['Remove hidden faces', 'Deletes faces that never show: inside a housing, where two parts meet.'],
+        ['Quick remesh (B)', 'Slide down a column of levels and watch the part change.', 'new'],
+        ['Fit to budget', 'Name a triangle count. The heaviest meshes go first.'],
+        ['Remove hidden faces', 'Faces that never show, gone: inside housings, where parts meet.'],
         ['Remesh', 'Untriangulate re-cuts flat faces with the fewest triangles: a 200-triangle plate becomes 38. Triangulate is the way back.'],
       ], more: [
-        ['Stacked copies', 'Removes a part only when an identical one sits in the same place.'],
+        ['Stacked copies', 'Parts drawn twice in the same place, removed. Only true copies go.'],
         ['Recipes', 'Save Smart optimise settings by name, run them again, share them as a file.'],
         ['Merge by colour', 'One mesh per colour. One undo.'],
         ['Decimate', 'By percentage or triangle count. Normals, UVs and vertex colours stay.'],
         ['Sharp edges stay sharp', 'Rims, steps and corners hold their shape when triangles go.'],
-        ['Align to floor', 'Stands a model that arrived on its side, with a preview first.'],
+        ['Align to floor', 'A model that arrived on its side, stood up, with a preview first.'],
         ['Delete small parts', 'Removes parts too small to see, plus empty, duplicate and broken ones.'],
-        ['Repair mesh', 'Joins doubled vertices, drops empty triangles, fixes flipped faces.'],
+        ['Repair mesh', 'Doubled points, empty triangles, flipped faces: fixed.'],
         ['Merge by material or group', 'One mesh per material, or one per group.'],
-        ['Select by rule', 'Pick parts by name, material, group, triangles, size or state, with a live count.'],
+        ['Select by rule', 'Name, material, size, triangles: pick by rule, with a live count.'],
         ['What it saved', 'Every action shows what it removed. Every part remembers its original count.'],
       ] },
       { title: 'Edit mesh', note: 'Points, edges, polygons', items: [
-        ['Points, edges, polygons', 'Pick the pieces of a mesh, as in Cinema 4D. Keys 1 to 4 switch the mode.', 'new'],
-        ['Click, Box, Brush', 'Three ways to pick. A double-click takes the whole loop.', 'new'],
-        ['Move what you picked', 'The gizmo moves, turns and scales the pieces. One undo.', 'new'],
-        ['Dissolve', 'Takes points out and closes the surface over them. No hole.', 'new'],
-        ['Weld and Fill', 'Join points into one, or close a hole from its rim.', 'new'],
-        ['Planarize and Straighten', 'Make polygons flat and a line of edges straight.', 'new'],
+        ['Points, edges, polygons', 'Pick the pieces of a mesh, as in Cinema 4D. Keys 1 to 4 switch mode.', 'new'],
+        ['Click, Box, Brush', 'Three ways to pick. Double-click takes the whole loop.'],
+        ['Move what you picked', 'Move, turn and scale pieces with the gizmo. One undo.'],
+        ['Dissolve', 'Points out, surface closed, no hole.'],
+        ['Weld and Fill', 'Join points. Close a hole from its rim.'],
+        ['Planarize and Straighten', 'Flat polygons. Straight lines of edges.'],
       ], more: [
         ['Extract', 'Picked polygons become a part of their own.', 'new'],
         ['Reverse normals', 'Turns round the faces that came in the wrong way.', 'new'],
         ['World, Local or Normal', 'Choose the axes the gizmo works along.', 'new'],
       ] },
       { title: 'The part tree', items: [
-        ['Built for big assemblies', 'Ten thousand rows scroll smoothly.'],
-        ['Search and filters', 'Find parts by name, and tint the small ones.'],
-        ['Batch rename (F2)', 'Templates, find and replace with regular expressions, a live preview, and presets.'],
+        ['Built for big assemblies', 'Ten thousand rows, still smooth.'],
+        ['Search and filters', 'Find parts by name, with the small ones tinted.'],
+        ['Batch rename (F2)', 'Templates, regex, live preview, presets.'],
       ], more: [
         ['Flatten, dissolve, ungroup', 'Collapse chains of single groups, dissolve a group, or ungroup a branch.'],
         ['Collapse the way you want', 'The whole tree, the selection, or from the selection down.'],
@@ -633,39 +669,39 @@ window.labApps = [
         ['Right-click menu', 'Hide, isolate, recolour, rename or frame a part from one menu.'],
       ] },
       { title: 'Draw and sweep', note: 'Lines are parts', items: [
-        ['A Draw tool (L)', 'Pen, rectangle, circle, arc, polygon and freehand, on any plane or on a part’s face.'],
+        ['A Draw tool (L)', 'Pen, rectangle, circle, arc, polygon, freehand: on any plane or on a part’s face.'],
         ['Dots you can snap to', 'Grid dots appear near the pointer. Clicks and handles snap to them.'],
-        ['Edit any line', 'Drag points and handles, click to add a point, double-click for smooth or sharp.'],
+        ['Edit any line', 'Drag points and handles. Smooth or sharp with a double-click.'],
         ['Round or cut the corners', 'Drag one corner ring and every corner follows. Round or bevel.'],
         ['A line is a row in the tree', 'Rename, hide, group or move it like any part.'],
-        ['Sweep', 'Carry a profile along a path, with scale, twist and closed ends. The result is a normal part.'],
+        ['Sweep', 'Carry a profile along a path. Scale, twist, closed ends. The result is a normal part.'],
       ] },
       { title: 'Build', items: [
-        ['A library of 86 parts', 'Bolts, nuts, pipe fittings, profiles and gears. Set the size, drag it in.'],
-        ['Exploded view', 'One slider pulls the parts apart. Three pills choose the axes.'],
-        ['Dynamic place (D)', 'Drag a part over other surfaces. It rests on them and turns to face them.'],
+        ['A library of 86 parts', 'Bolts, nuts, pipe fittings, profiles, gears. Set the size, drag it in.'],
+        ['Exploded view', 'One slider pulls it apart, along the axes you choose.'],
+        ['Dynamic place (D)', 'Drag a part over a surface: it rests on it and turns to face it.'],
       ], more: [
         ['A bolt with its own nut', 'The nut is part of the bolt, so it moves and undoes with it.'],
         ['Pull it apart your way', 'Explode along the scene’s axes, or send each part along its own direction.'],
         ['Measure', 'Click two points. Measurements stay in a list.'],
       ] },
       { title: 'Export', items: [
-        ['GLB and glTF', 'Draco or Meshopt compression, textures embedded if you want.'],
-        ['FBX, USDZ, OBJ, STL, PLY', 'Common 3D and AR formats, with scale presets for mm, cm, m and inches.'],
-        ['Check against where it’s going', 'Check the scene against the limits for a web page, Shopify, AR Quick Look or a phone app.'],
+        ['GLB and glTF', 'Draco or Meshopt compression. Textures embedded if you want.'],
+        ['FBX, USDZ, OBJ, STL, PLY', 'The common 3D and AR formats, with mm, cm, m and inch presets.'],
+        ['Check against where it’s going', 'Test the scene against web, Shopify, AR Quick Look or phone-app limits.'],
       ], more: [
-        ['Lighter, or just faster to draw', 'Meshopt cuts a GLB to about a quarter. Or keep the size and make it faster to draw.'],
+        ['Lighter, or just faster to draw', 'Meshopt cuts a GLB to about a quarter. Or keep the size and draw faster.'],
         ['Parts list', 'A CSV bill of materials: every part and its size.'],
         ['Name the file', 'File names built from pills: date, triangle count, version. A summary before you write.'],
         ['Save scene', 'Keeps the view, the selection and the recolouring in a small file next to the model.'],
       ] },
       { title: 'Work with Claude', note: 'MCP', items: [
-        ['Just ask', 'Say “find the bolts and hide them” or “get this under 5 MB”. Claude uses the app’s own 65 tools.'],
-        ['You decide', 'It asks before any change. Deleting always asks. Every change is one undo.'],
+        ['Just ask', 'Say “find the bolts and hide them” or “get this under 5 MB”. Claude does it with the app’s 65 tools.'],
+        ['You decide', 'It asks before it changes anything. Deleting always asks. Every change is one undo.'],
         ['Try it first', 'Sixteen steps can be tried first: done, shown, taken back.'],
-        ['One request, a whole job', 'Get a model under 5 MB, or ready for the web, Shopify, AR or a phone, with a before and after picture.'],
+        ['One request, a whole job', 'Under 5 MB, or ready for web, Shopify, AR or phone, with a before and after picture.'],
         ['A whole folder', 'Every model in a folder: opened, optimised, exported, closed. Stop it any time.'],
-        ['Pictures for a client', 'Clean renders up to 8192 pixels, from several angles, on a plain or transparent background, plus a turntable film.'],
+        ['Pictures for a client', 'Clean renders up to 8192 px, several angles, a plain or transparent background, plus a turntable film.'],
         ['It knows the app', 'Six playbooks, about fifty help articles and six ready-made jobs.'],
       ] },
       { title: 'The app', items: [
@@ -674,7 +710,7 @@ window.labApps = [
         ['A look of your own', 'Accent colour, tones, font, text size, corners and density.'],
         ['Your own keys', 'The shortcuts window is a keyboard. Change any key, and keep your set in a profile.', 'new'],
         ['Numbers you drag', 'Drag any number sideways to change it, or click to type. Right-click to reset, step, double or halve it.'],
-        ['Search (Shift + C)', 'Every command, setting, part and library part. A typo or initials still find it, and a switch flips right in the results.'],
+        ['Search (Shift + C)', 'Commands, settings, parts, library: one box. Typos and initials still find it.'],
         ['Floating Materials and Library', 'Pop either out as a window, move it, resize it. Both open side by side.'],
         ['Drag a material onto the model', 'Drop it on the view to assign it. Shift and a drop on another material merges the two.'],
         ['Find your selection', 'Out of view? A faint arrow at the edge points to it. Click to frame it.'],
@@ -689,10 +725,106 @@ window.labApps = [
         ['Updates itself', 'A new version installs in one click. The old one is kept.'],
         ['New scenes start your way', 'Choose the unit and the up direction every new scene begins with.'],
         ['Every job in one place', 'A chip in the status bar shows what each tab is doing, and lets you cancel it.'],
-        ['Point to find', 'Point at a row and its part lights up in the view. Point at a part and its row lights up.'],
+        ['Point to find', 'Point at a row and its part lights up. Point at a part and its row does.'],
         ['Open a folder', 'Drop a folder and the model inside opens.'],
         ['Non-destructive', 'The original geometry isn’t touched until you export.'],
         ['No build step', 'Plain JavaScript and CSS. Edit a file, refresh, done.'],
+      ] },
+    ],
+    // allFeatures: every feature of the released app, by name only, under headings (the accordion at the end of the features page).
+    // [{ title, items: ['Short name', …] }, …]. Names are 2 to 5 words, unique across the whole list; only released behaviour (v0.24.0).
+    allFeatures: [
+      { title: 'Open and import', items: [
+        'STEP files', 'IGES files', 'BREP files', 'GLB and glTF files', 'FBX files', 'OBJ files', '3MF files', 'STL files',
+        'Stored conversions reused', 'Copies found in other formats',
+      ] },
+      { title: 'CAD conversion', items: [
+        'Colours and hierarchy', 'Geometry only mode', 'Instance overrides', 'Smooth shading from CAD surfaces',
+        'Drop small parts on import', 'Share identical shapes', 'Background conversion jobs', 'Tessellation control',
+        'CAD data kept',
+      ] },
+      { title: 'Command-line converter', items: [
+        'step2glb command line', 'Batch convert a folder', 'Batch report as CSV', 'Level-of-detail files',
+        'Parallel mesh building', 'Meshopt through gltfpack', 'Simplify while converting', 'Quality and size targets',
+      ] },
+      { title: 'Clean up and optimise', items: [
+        'Smart optimise', 'Optimise recipes', 'Fit to budget', 'Remove holes', 'Remove floating pieces',
+        'Remove hidden faces', 'Select hidden parts', 'Fasteners finder', 'Stacked copies', 'Delete small parts',
+        'Small by diagonal, side or volume', 'Fix degenerate parts', 'Deduplicate geometry', 'Recompute smooth normals',
+        'Repair mesh', 'Optimisation report', 'Merge parts',
+      ] },
+      { title: 'Reduce triangles', items: [
+        'Decimate', 'Smart fit', 'Remesh', 'Quick remesh',
+      ] },
+      { title: 'Edit mesh', items: [
+        'Move picked pieces', 'Extract polygons', 'Reverse normals', 'Quads and n-gons remembered',
+        'Pick points, edges and polygons', 'Planarize and straighten', 'Weld and fill',
+      ] },
+      { title: 'Selection and visibility', items: [
+        'Select similar', 'Select by colour', 'Select by name', 'Select by rule', 'Arrow to a selection out of view',
+      ] },
+      { title: 'Parts tree', items: [
+        'Highlight small parts', 'Batch rename', 'Flatten', 'Lock a part', 'Point to find', 'Tidy the tree',
+      ] },
+      { title: 'Transform and place', items: [
+        'Exact position, rotation, size', 'Dynamic place', 'Align to floor', 'Recentre on origin', 'Bake gizmo transforms',
+        'Snapping',
+      ] },
+      { title: 'View and camera', items: [
+        'Orbit around selection', 'Exploded view', 'Sun direction gizmo', 'HDRI environments',
+      ] },
+      { title: 'Looks and shading', items: [
+        'Heatmap view', 'Clay view', 'CAD view', 'Edge outlines', 'Studio lighting', 'Material looks',
+      ] },
+      { title: 'Materials', items: [
+        'Roughness, metalness, opacity', 'Material presets', 'Merge materials', 'Drag a material onto the model',
+        'Shift-drag to merge', 'Share materials by colour',
+      ] },
+      { title: 'Draw and sweep', items: [
+        'Draw tool', 'Edit a line', 'Bezier, Cubic, B-spline, Linear', 'Round or bevel corners', 'Mirrored copy', 'Sweep',
+        'Lines in GLB and glTF',
+      ] },
+      { title: 'Library and build', items: [
+        'Library of 86 parts', 'Parametric parts', 'A bolt with its own nut',
+      ] },
+      { title: 'Measure and inspect', items: [
+        'Measure two points', 'Triangle share bar', 'Rank by weight',
+      ] },
+      { title: 'Export', items: [
+        'USDZ export', 'Parts list as CSV', 'Draco compression', 'Meshopt compression', 'Merge into one mesh',
+        'File name pills', 'Check against a target', 'Export size estimate',
+      ] },
+      { title: 'Scenes and history', items: [
+        'Scene tabs', 'Separate undo per tab', 'Save scene', 'Non-destructive editing',
+      ] },
+      { title: 'Pictures and film', items: [
+        'Custom size to 16,384', 'Turntable video',
+      ] },
+      { title: 'Search and commands', items: [
+        'Command search', 'Typo-tolerant search', 'Calculator in the search', 'Quick wand', 'Numbers you can drag',
+      ] },
+      { title: 'Keyboard', items: [
+        'Picture of the keyboard', 'Change any key', 'Key profiles',
+      ] },
+      { title: 'Work with Claude', items: [
+        'Let Claude connect', 'MCP over local HTTP', '65 tools', 'Four permission switches', 'One undo per change',
+        'Dry run', 'Optimise to a target', 'Before and after picture', 'Folder batch optimise', 'Clean renders to 8192 px',
+        'Turntable by Claude', 'Model health check', 'Run saved recipes', 'Search the app’s help', 'Six playbooks',
+        'Ready-made jobs',
+      ] },
+      { title: 'Updates and recovery', items: [
+        'Updates inside the app', 'Go back one version', 'Automatic rollback', 'Recovery copies', 'Safe mode',
+      ] },
+      { title: 'Under the hood', items: [
+        'WebGPU renderer', 'WebGL2 fallback', 'OpenCascade CAD kernel', 'Assembly tree from XCAF',
+        'Pose-independent instancing', 'Adaptive tessellation', 'meshoptimizer simplifier', 'Background mesh workers',
+        'BVH-accelerated picking', 'GPU-drawn outlines', 'Virtual scrolling tree', 'Lower resolution while moving',
+        'Auto quality', 'Reads compressed GLBs', 'Assimp in WebAssembly', 'glTF Transform on demand',
+        'Visibility from many directions', 'Fastener recognition by shape', 'Hole versus boss detection',
+        'Coplanar face joining', 'Regression self-tests', 'Open source, MIT',
+      ] },
+      { title: 'Privacy and offline', items: [
+        'Runs on your computer', 'Nothing uploaded', 'No account', 'Works offline', 'Original file never changed',
       ] },
     ],
     start: {

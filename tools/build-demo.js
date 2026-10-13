@@ -9,7 +9,7 @@
    (or the MESHOPT_APP environment variable). What is copied: index.html
    and the scripts it loads, vendor/ and assets/. What is not: the server,
    the converter, the tests, the docs and any *.bak-* file. inbox/ is kept as
-   it is (it holds the sample model, GearboxAssy.glb from Khronos's
+   it is (it holds the sample models: GearboxAssy.glb, 2CylinderEngine.glb and ReciprocatingSaw.glb, all from Khronos's
    glTF-Sample-Models, credited on the site).
 
    index.html is patched in two places: demo-shim.js (from tools/demo/) is
