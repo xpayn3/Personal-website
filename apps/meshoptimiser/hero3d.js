@@ -25,7 +25,7 @@ export async function start(pop, base) {
   pin.appendChild(canvas);
 
   const coarse = window.matchMedia('(pointer: coarse)').matches;
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'low-power' });
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !coarse, alpha: true, powerPreference: 'low-power' });   // (no edge smoothing on a phone: it costs battery, and the pixels are small)
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.NeutralToneMapping || THREE.ACESFilmicToneMapping;   // as the app draws
@@ -98,10 +98,11 @@ export async function start(pop, base) {
   let p = 0, queued = false, ready = false, cw = 0, ch = 0;
   const draw = () => {
     queued = false;
+    if (document.hidden) return;                               // (nothing is drawn for a tab nobody is looking at)
     const b = canvas.getBoundingClientRect();                  // (on a phone the canvas is a band of the pinned screen, set in the CSS)
     const w = Math.round(b.width), h = Math.round(b.height);
     if (!w || !h) return;
-    if (w !== cw || h !== ch) { cw = w; ch = h; renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, coarse ? 1.75 : 2)); renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+    if (w !== cw || h !== ch) { cw = w; ch = h; renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, coarse ? 1.5 : 2)); renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
     const e = MAX_EXPLODE * p;
     box.makeEmpty();
     for (const { part, rest, off, pts } of parts) {
@@ -114,13 +115,13 @@ export async function start(pop, base) {
     const radius = box.min.distanceTo(box.max) / 2;
     const vf = THREE.MathUtils.degToRad(FOV) / 2, hf = Math.atan(Math.tan(vf) * camera.aspect);
     const narrow = camera.aspect < 0.85;
-    const dist = (radius * (narrow ? 0.95 : 0.66)) / Math.sin(Math.min(vf, hf));
+    const dist = (radius * (narrow ? 0.62 : 0.66)) / Math.sin(narrow ? hf : Math.min(vf, hf));        // (on a phone it is wider than the screen on purpose)
     const az = THREE.MathUtils.degToRad(mix(52, 70, p)), el = THREE.MathUtils.degToRad(mix(24, 20, p));
     dir.set(Math.cos(el) * Math.sin(az), Math.sin(el), Math.cos(el) * Math.cos(az));
     camera.position.copy(tgt).addScaledVector(dir, dist);
     camera.near = dist / 100; camera.far = dist * 40;
     camera.lookAt(tgt);
-    camera.setViewOffset(w, h, 0, narrow ? -h * 0.2 : h * 0.02, w, h);
+    camera.setViewOffset(w, h, 0, narrow ? h * 0.05 : h * 0.02, w, h);
     camera.updateMatrixWorld(true);
     // the headlight: just above and beside the eye, looking where the camera looks
     const right = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0), up = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 1);
