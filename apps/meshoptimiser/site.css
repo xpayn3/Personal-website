@@ -1548,11 +1548,11 @@ main { overflow-x: clip; }
 .pop.is-axle .pop-3d { z-index: 0; }
 .pop.is-axle .pop-copy { z-index: 1; left: var(--gutter); bottom: clamp(64px, 8vw, 104px); width: min(32ch, 36%); opacity: 1; transform: none; }
 /* the corner at the top right: how far the model is pulled apart, a small graph of what was saved, and the small print */
-.pop-info { position: absolute; z-index: 1; top: clamp(20px, 3.4vw, 48px); right: var(--gutter); width: min(300px, 38%); display: grid; gap: 14px; justify-items: end; pointer-events: none; text-align: right; }
-.pop-info-top { display: grid; gap: 14px; justify-items: end; width: 100%; }
+.pop-info { position: absolute; z-index: 1; top: clamp(20px, 3.4vw, 48px); right: var(--gutter); width: min(300px, 38%); display: grid; gap: 8px; justify-items: end; pointer-events: none; text-align: right; }
+.pop-info-top { display: grid; gap: 8px; justify-items: end; width: 100%; }
 .pop-read { margin: 0; color: var(--tx-3); font: 400 12px/1.7 var(--mono); letter-spacing: 0.04em; font-variant-numeric: tabular-nums; }
 .pop-read b { color: var(--tx-2); font-weight: 400; }
-.pop-bars { display: grid; gap: 5px; width: 100%; }
+.pop-bars { display: grid; gap: 4px; width: 100%; }
 .pop-bars small { color: var(--tx-3); font: 400 11px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; text-align: right; }
 .pb { display: grid; grid-template-columns: 52px minmax(0, 1fr) 54px; align-items: center; gap: 8px; color: var(--tx-3); font-size: 11px; line-height: 1; }
 .pb i { font-style: normal; text-align: left; }
