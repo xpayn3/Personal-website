@@ -323,8 +323,8 @@ window.labApps = [
       quickRemesh: {
         kicker: 'Quick remesh',
         title: 'Press B. Slide. Let go.',
-        line: 'A column of levels opens under the pointer, and the part changes as you move down it. This bracket goes from 3,604 triangles to 1,802 at 50%.',
-        clip: 'Images/apps/meshoptimiser-quick-remesh.webm',
+        line: 'A column of levels opens under the pointer, and the part changes as you move down it. This bracket goes from 1,802 triangles to 900 at 50%.',
+        clip: 'Images/apps/meshoptimiser-quick-remesh-b.webm',
         more: 'docs/remesh.html',
       },
       wand: {
@@ -601,7 +601,7 @@ window.labApps = [
     },
     spotlights: [
       ['One button, half the triangles', 'Smart optimise runs every clean-up in order, then reduces to your target. This truck axle went from 540,007 triangles to 270,248. One Ctrl+Z puts it all back.', 'Images/apps/meshoptimiser-optimise-axle.webp', 'cube'],
-      ['Quick remesh', 'Press B and a column of levels opens under the pointer. Move down it and the part changes as you go; let go to keep it. This bracket goes from 3,604 triangles to 1,802 at 50%.', 'Images/apps/meshoptimiser-quick-remesh.webm', 'cube'],
+      ['Quick remesh', 'Press B and a column of levels opens under the pointer. Move down it and the part changes as you go; let go to keep it. This bracket goes from 1,802 triangles to 900 at 50%.', 'Images/apps/meshoptimiser-quick-remesh-b.webm', 'cube'],
       ['Bolts, found by their shape', 'CAD names rarely say what a part is. Fasteners reads each part’s outline and finds bolts, screws, nuts and washers, and leaves bushings and bearings alone. Eighty-eight here, 45,498 triangles.', 'Images/apps/meshoptimiser-fasteners-axle-wide.webp', 'cube'],
       ['9,572 triangles down to 96', 'Smart fit swaps a heavy part for a box, a cylinder or a few blocks that keep its outline. This axle part went from 9,572 triangles to 96, same size and place.', 'Images/apps/meshoptimiser-smart-fit-axle-2.webp', 'cube'],
       ['Pull it apart', 'One slider, and a pill for each axis, so an assembly can open along one direction only. Drag it and an axle comes apart. One click puts it back.', 'Images/apps/meshoptimiser-exploded.webm', 'cube'],
