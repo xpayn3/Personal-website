@@ -35,9 +35,9 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 196;
+const CSS_V = 261;
 const RP_V = 2;           // report.js
-const JS_V = 40;
+const JS_V = 43;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -155,17 +155,59 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
   </header>
   <main id="main">`;
 
+  // the last band of the site, white, in the manner of a model comparison: the online version beside the installed app
+  const cmpIcon = (d) => `<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+  const CMP = {
+    window: '<rect x="4" y="6" width="24" height="20" rx="3"/><path d="M4 12h24"/><circle cx="8.5" cy="9" r=".6"/><circle cx="11.5" cy="9" r=".6"/>',
+    lock: '<rect x="7" y="14" width="18" height="12" rx="3"/><path d="M11 14v-3a5 5 0 0 1 10 0v3"/>',
+    cube: '<path d="M16 4l11 6v12l-11 6-11-6V10z"/><path d="M5 10l11 6 11-6M16 16v12"/>',
+    step: '<path d="M8 4h11l6 6v18H8z"/><path d="M19 4v6h6"/><path d="M12 18h9M12 22h6"/>',
+    free: '<circle cx="16" cy="16" r="11"/><path d="M11 16.5l3.5 3.5L21 12"/>',
+    folder: '<path d="M4 9a2 2 0 0 1 2-2h6l3 3h11a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/>',
+    spark: '<path d="M16 4v6M16 22v6M4 16h6M22 16h6M8 8l4 4M20 20l4 4M24 8l-4 4M12 20l-4 4"/>',
+    update: '<path d="M26 16a10 10 0 1 1-3-7.1"/><path d="M26 5v6h-6"/>',
+    pc: '<rect x="4" y="6" width="24" height="16" rx="2"/><path d="M12 27h8M16 22v5"/>',
+  };
+  const CHECK = '<svg class="cmp-yes" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.4l3.4 3.4L17 8.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  // each row is one question, answered for both versions side by side: true is a tick, false a dash, a string its own words
+  const cmpCell = (v, label) => v === true ? `<span class="cmp-on">${CHECK}<span>${label}</span></span>` : v === false ? `<span class="cmp-off"><span class="cmp-no" aria-hidden="true">—</span><span>${label}</span></span>` : `<span class="cmp-on">${CHECK}<span>${v}</span></span>`;
+  const cmpRows = (rows) => rows.map(([, label, a, b]) => `
+          <div class="cmp-row" role="row">
+            <div class="cmp-a">${cmpCell(a, label)}</div>
+            <div class="cmp-a">${cmpCell(b, label)}</div>
+          </div>`).join('');
   const getBand = `
-    <section class="band get">
-      <div class="wrap get-in">
-        <div>
-          <h2>Run it on your own machine.</h2>
-          <p>Free and open source, ${esc(licence)}. ${esc(platform.replace(/\s*·\s*/g, ' and '))}. Your files never leave the computer.</p>
-        </div>
-        <div class="actions">
-          <a class="btn is-primary is-large" href="download.html">Download ${version ? 'v' + esc(version) : ''}</a>
-          ${DEMO_BTN}
-          <a class="btn is-large" href="${repo}" rel="noopener">View on GitHub</a>
+    <section class="band get compare">
+      <div class="wrap">
+        <h2>Pick how you run it.</h2>
+        <div class="cmp">
+          <div class="cmp-head">
+            <div class="cmp-col">
+              <p class="cmp-tag">In your browser</p>
+              <h3>${esc(app.title)} Lite</h3>
+              <p class="cmp-sub">Try the app in a tab. Nothing to install.</p>
+              <div class="cmp-act"><a class="cmp-btn btn-demo" href="demo/index.html" target="_blank" rel="noopener">Open online</a><a class="cmp-link" href="${docLink(/what-it-is/)}">What is it</a></div>
+            </div>
+            <div class="cmp-col">
+              <p class="cmp-tag">On your machine</p>
+              <h3>${esc(app.title)}</h3>
+              <p class="cmp-sub">The full app. ${esc(platform.replace(/\s*·\s*/g, ' and '))}.</p>
+              <div class="cmp-act"><a class="cmp-btn" href="download.html">Download ${version ? 'v' + esc(version) : ''}</a><a class="cmp-link" href="changelog.html">What is new</a></div>
+            </div>
+          </div>
+          <div class="cmp-table" role="table">${cmpRows([
+            ['pc', 'Price', 'Free', 'Free'],
+            ['window', 'Where it runs', 'Browser tab', 'Your computer'],
+            ['lock', 'Files stay local', true, true],
+            ['step', 'STEP to GLB', false, true],
+            ['cube', 'Clean-up tools', true, true],
+            ['cube', 'Part library', true, true],
+            ['folder', 'Folders and CLI', false, true],
+            ['spark', 'Claude', false, true],
+            ['pc', 'Works offline', false, true],
+          ])}
+          </div>
+          <p class="cmp-note">Lite opens a sample gearbox first and needs a window 960 px wide.</p>
         </div>
       </div>
     </section>`;
@@ -401,7 +443,7 @@ ${pick.map(([key, label]) => `            <li><img src="library/${esc(key)}.webp
           </div>`).join('');
     const cols = [['Plain GLB', first[1], 'is-original'], ['Meshopt', first[2], ''], ['Draco', first[3], 'is-draco']].map(([n, v, cls], i) => `
             <div class="sv-col ${cls}" style="--h:${(v / first[1] * 100).toFixed(1)}%;--i:${i}">
-              <b>${mb(v)}</b><i></i><span>${esc(n)}</span>${i ? '<em>−' + (100 - left(first[1], v)) + '%</em>' : ''}
+              <b>${mb(v)}</b><i>${i ? '<em>−' + (100 - left(first[1], v)) + '%</em>' : ''}</i><span>${esc(n)}</span>
             </div>`).join('');
     return `
     <section class="band savings" id="compression">
@@ -437,9 +479,9 @@ ${c.points.map(([t, d]) => `          <div><dt>${esc(t)}</dt><dd>${esc(d)}</dd><
 
   // a drawing for each star, from the same set as the cards on the home page: Remove holes, Select hidden parts, Fasteners, Smart fit, Split, Smart optimise
   const starArt = (i, name) => {
-    const at = [5, 7, 8, 9, 6, 10][i], art = tileArt[at];
+    const at = [5, 7, 8, 9, 6, 10, 11, 12, 13, 14, 15, 16][i], art = tileArt[at];
     if (!art) return '';
-    return art.replace('<svg ', `<svg role="img" aria-label="${esc(app.title + ': ' + name)}" style="--tile-c:${['#35c9c0', '#a78bfa', '#f472b6', '#fbbf24', '#fb923c', '#0d99ff'][i]}" `).replace(' aria-hidden="true"', '');
+    return art.replace('<svg ', `<svg role="img" aria-label="${esc(app.title + ': ' + name)}" style="--tile-c:${['#35c9c0', '#a78bfa', '#f472b6', '#fbbf24', '#fb923c', '#0d99ff', '#2fd180', '#a78bfa', '#fbbf24', '#f472b6', '#35c9c0', '#fb923c'][i]}" `).replace(' aria-hidden="true"', '');
   };
 
   // The clean-up tools, as the stars of the page (site.cleanup)
@@ -458,15 +500,15 @@ ${c.points.map(([t, d]) => `          <div><dt>${esc(t)}</dt><dd>${esc(d)}</dd><
           <h2>${esc(c.title)}</h2>
         </div>
         <p class="lead sv-lead">${esc(c.line)}</p>
-        <div class="stars">${c.stars.map(([name, line, src, doc], i) => `
+        <div class="fcar fcar-stars" data-fcar>
+        <div class="stars fcar-track">${c.stars.concat(c.more.map(([n, l, d]) => [n, l, '', d])).map(([name, line, src, doc], i) => `
           <figure class="star">
             ${starArt(i, name)}
             <figcaption><i>${pad2(i + 1)}</i><strong>${esc(name)}</strong><span>${esc(line)}</span>${link(doc, name)}</figcaption>
           </figure>`).join('')}
         </div>
-        <ul class="star-more">${c.more.map(([name, line, doc]) => `
-          <li><strong>${esc(name)}</strong><span>${esc(line)}</span>${link(doc, name)}</li>`).join('')}
-        </ul>
+        <div class="fcar-nav"><button type="button" data-dir="-1" aria-label="Previous"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" data-dir="1" aria-label="Next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></div>
+        </div>
       </div>
     </section>`;
   };
@@ -486,7 +528,7 @@ ${c.points.map(([t, d]) => `          <div><dt>${esc(t)}</dt><dd>${esc(d)}</dd><
     const top = Math.max(t0, ...s.levels.map(l => l[1]));
     const cols = [['Original', t0, 'is-original']].concat(s.levels.map(([n, v]) => [n, v, ''])).map(([n, v, cls], i) => `
             <div class="sv-col ${cls}" style="--h:${(v / top * 100).toFixed(1)}%;--i:${i}">
-              <b>${fmtN(v)}</b><i></i><span>${esc(n)}</span>${cls ? '' : '<em>−' + pct(t0, v) + '%</em>'}
+              <b>${fmtN(v)}</b><i>${cls ? '' : '<em>−' + pct(t0, v) + '%</em>'}</i><span>${esc(n)}</span>
             </div>`).join('');
     return `
     <section class="band savings" id="savings">
@@ -526,21 +568,21 @@ ${c.points.map(([t, d]) => `          <div><dt>${esc(t)}</dt><dd>${esc(d)}</dd><
     const [src, caption] = c.control.shots[0];
     return `
     <section class="band cl-band" id="claude">
-      <div class="wrap cl-band-in">
-        <div class="cl-band-copy">
+      <div class="cl-hero">
+        <div class="wrap cl-hero-in">
           <p class="kicker">${esc(c.band.kicker)}${SOON(c, true)}</p>
           <h2>${esc(c.band.title)}</h2>
-          <p class="lead">${esc(c.band.line)}</p>
+          <div class="cl-hero-side">
+            <p class="lead">${esc(c.band.line)}</p>
+            <div class="actions"><a class="btn is-large" href="claude.html">See how it works</a></div>
+          </div>
+        </div>
+        <div class="cl-shot">
+          <img src="${asset(src)}" alt="${esc(app.title + ': ' + caption)}" width="2400" height="1350" loading="lazy" decoding="async" />
           <ul class="cl-say">
 ${c.band.prompts.map(p => `            <li>${esc(p)}</li>`).join('\n')}
           </ul>
-          <div class="actions"><a class="btn is-large" href="claude.html">See how it works</a></div>
         </div>
-        <figure class="cl-band-art">
-          <a class="zoom" href="${asset(src)}" data-group="claude" data-caption="${esc(caption)}"><img src="${asset(src)}" alt="${esc(app.title + ': ' + caption)}" width="2400" height="1350" loading="lazy" decoding="async" /></a>
-${c.badge ? `          <span class="soon-ribbon">${esc(c.badge)}</span>
-` : ''}          <figcaption>${esc(caption)}</figcaption>
-        </figure>
       </div>
     </section>`;
   };
@@ -725,7 +767,9 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
   // line drawings for the tiles: bolts, nuts and gears in thin strokes, one scene per claim (they move only while their tile is on screen)
   const tileArt = (() => {
     const f = n => Math.round(n * 10) / 10;
-    const wrap = (cls, inner) => `<svg class="tile-art ${cls}" viewBox="0 0 360 200" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${inner}</svg>`;
+    // every drawing is drawn to fill about the same part of the card: those drawn small are scaled up about the centre (strokes keep their width)
+    const FILL = { 'art-stack': 1.25, 'art-small': 1 };
+    const wrap = (cls, inner) => { const k = FILL[(cls.match(/art-\w+$/) || [])[0]]; return `<svg class="tile-art ${cls}" viewBox="0 0 360 200" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${k ? `<g class="art-scaled" transform="translate(180 100) scale(${k}) translate(-180 -100)">${inner}</g>` : inner}</svg>`; };
     // an isometric box: the outline, and the three edges that meet in front
     const cube = (cx, cy, s) => {
       const w = 0.866 * s, h = s / 2;
@@ -789,6 +833,22 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
     const isoBox = (cx, cy, a, b, h) => {
       const P = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([s, t]) => isoPt(cx, cy, a, b, s, t));
       return `M${P.map(p => p.join(' ')).join(' L')} Z M${P[1][0]} ${P[1][1]} V${f(P[1][1] + h)} M${P[2][0]} ${P[2][1]} V${f(P[2][1] + h)} M${P[3][0]} ${P[3][1]} V${f(P[3][1] + h)} M${P[1][0]} ${f(P[1][1] + h)} L${P[2][0]} ${f(P[2][1] + h)} L${P[3][0]} ${f(P[3][1] + h)}`;
+    };
+    // a torus drawn as a wire mesh, seen from a little above: nu lines around the ring, nv lines around the tube
+    const torus = (cx, cy, R, r, nu, nv) => {
+      const el = 38 * Math.PI / 180, S = Math.sin(el), C = Math.cos(el);
+      const pt = (u, v) => { const x = (R + r * Math.cos(v)) * Math.cos(u), y = (R + r * Math.cos(v)) * Math.sin(u), z = r * Math.sin(v); return `${f(cx + x)} ${f(cy + y * S - z * C)}`; };
+      const line = (fn, n) => `M${Array.from({ length: n + 1 }, (_, k) => fn(k / n * 2 * Math.PI)).join(' L')}`;
+      let d = '';
+      for (let i = 0; i < nu; i++) d += ' ' + line(v => pt(i / nu * 2 * Math.PI, v), 24);
+      for (let j = 0; j < nv; j++) d += ' ' + line(u => pt(u, j / nv * 2 * Math.PI), 48);
+      return d;
+    };
+    // a long beam lying along the floor: top face, the long side and the end
+    const beam = (cx, cy) => {
+      const P = (s, tt, z) => lPt(cx, cy, 80, s, tt, z), W = 15, H = 20;
+      const A = P(-1, -W, H), B = P(1, -W, H), C = P(1, W, H), D = P(-1, W, H), C0 = P(1, W, 0), D0 = P(-1, W, 0), B0 = P(1, -W, 0);
+      return `M${A.join(' ')} L${B.join(' ')} L${C.join(' ')} L${D.join(' ')} Z M${D.join(' ')} V${D0[1]} L${C0.join(' ')} V${C[1]} M${C0.join(' ')} L${B0.join(' ')} V${B[1]}`;
     };
     // an angle bracket: an L-shaped section pulled out along the floor; points on it are found from (along, across, up)
     const lPt = (cx, cy, a, s, t, z) => [f(cx + s * a * 0.866 - t * 0.866), f(cy + s * a * 0.5 + t * 0.5 - z)];
@@ -962,10 +1022,52 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
         </g>`),
       // Smart optimise: one press, and a heavy part gets lighter: the same gear with half the detail
       wrap('clip-art art-optimise', `
-        <g transform="matrix(0.866 0.5 -0.866 0.5 180 104)">
-          <g class="art-fine art-dim"><path d="${gear(0, 0, 46, 58, 24)}"/>${[12, 24, 36].map(r => `<circle r="${r}"/>`).join('')}<path d="${Array.from({ length: 24 }, (_, k) => { const a = k * Math.PI / 12; return `M${f(10 * Math.cos(a))} ${f(10 * Math.sin(a))} L${f(46 * Math.cos(a))} ${f(46 * Math.sin(a))}`; }).join(' ')}"/></g>
-          <g class="art-low art-hot"><path d="${gear(0, 0, 46, 58, 12)}"/><circle r="14"/><path d="${Array.from({ length: 6 }, (_, k) => { const a = k * Math.PI / 3; return `M${f(14 * Math.cos(a))} ${f(14 * Math.sin(a))} L${f(46 * Math.cos(a))} ${f(46 * Math.sin(a))}`; }).join(' ')}"/></g>
-        </g>`),
+        <g class="art-fine art-dim"><path d="${torus(180, 104, 66, 29, 36, 14)}"/></g>
+        <g class="art-low art-hot"><path d="${torus(180, 104, 66, 29, 12, 6)}"/></g>`),
+      // Remove floating pieces: stray bits around a body drift away, the body stays
+      wrap('clip-art art-floating', `
+        <path d="${lBracket(180, 124, 70)}"/>
+        ${[[76, 56, 9, 0, 6, -9], [290, 66, 8, 1, -7, -6], [92, 150, 7, 2, 8, 7], [280, 150, 10, 3, -6, 9], [236, 34, 6, 4, 7, 6]].map(([x, y, r, i, bx, by]) => `<g class="art-m-away art-hot" style="--i:${i}"><g class="art-m-bob" style="--bx:${bx}px;--by:${by}px;--bd:${-i * 0.7}s"><path d="${nut(x, y, r)}"/></g></g>`).join('')}`),
+      // Remove hidden faces: the faces inside a housing light up, then they are gone
+      wrap('clip-art art-faces', `
+        <path class="art-solid" d="${isoSil(180, 124, 64, 40, 18)}"/>
+        <path d="${isoBox(180, 124, 64, 40, 18)}"/>
+        <path class="art-solid" d="${isoSil(180, 88, 64, 40, 18)}"/>
+        <path d="${isoBox(180, 88, 64, 40, 18)}"/>
+        <g class="art-m-flash art-hot">${[124, 106].map(y => `<path d="M${[[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([s, tt]) => isoPt(180, y, 64, 40, s, tt).join(' ')).join(' L')} Z"/>`).join('')}</g>`),
+      // Remesh: a flat face drawn with a crowd of triangles is rebuilt with a few
+      wrap('clip-art art-remesh', `
+        <g class="art-fine art-dim"><path d="${sphereFine(180, 100, 58)}"/></g>
+        <path d="${ell(180, 100, 58, 58)}"/>
+        <path class="art-m-draw art-hot" pathLength="1" d="${(() => {
+          const R = 58, hex = Array.from({ length: 6 }, (_, k) => [180 + R * Math.cos(k * Math.PI / 3), 100 + R * Math.sin(k * Math.PI / 3)]);
+          const inner = [90, 210, 330].map(d => [180 + R * 0.46 * Math.cos(d * Math.PI / 180), 100 + R * 0.46 * Math.sin(d * Math.PI / 180)]);
+          const P = ([x, y]) => `${f(x)} ${f(y)}`;
+          const links = [[0, 1, 2], [1, 3, 4], [2, 5, 0]].map(([i, p, q]) => ({ i, p, q }));
+          return `M${P(hex[0])} ` + hex.slice(1).map(p => `L${P(p)}`).join(' ') + ' Z' +
+            ' M' + inner.map(P).join(' L') + ' Z' +
+            [[0, 1, 2], [1, 3, 4], [2, 5, 0]].map(([i, p, q]) => ` M${P(inner[i])} L${P(hex[p])} M${P(inner[i])} L${P(hex[q])}`).join('');
+        })()}"/>`),
+      // Delete small parts: big parts stay, the tiny ones vanish one by one
+      wrap('clip-art art-small', `
+        <path class="art-solid" d="${isoSil(180, 84, 78, 48, 46)}"/>
+        <path d="${isoBox(180, 84, 78, 48, 46)}"/>
+        <path class="art-solid" d="M154 84 V66 A26 13 0 0 1 206 66 V84 A26 13 0 0 1 154 84 Z"/>
+        <path d="M154 84 V66 M206 84 V66 M154 84 A26 13 0 0 0 206 84"/>
+        <path d="${ell(180, 66, 26, 13)} ${ell(180, 66, 15, 7.5)}"/>
+        <path d="${ell(180, 66, 7, 3.5)}"/>
+        ${[[-0.82, -0.8], [0.82, -0.8], [-0.82, 0.8], [0.82, 0.8], [0, -0.82], [0, 0.82], [-0.82, 0], [0.82, 0]].map(([s, tt], i) => { const [x, y] = isoPt(180, 84, 78, 48, s, tt); return `<g class="art-m-small art-hot" style="--i:${i};fill: var(--card-bg, var(--surface))"><path d="${nut(x, y, 4.2)}"/></g>`; }).join('')}
+        ${[[-0.7, 1], [-0.2, 1], [0.3, 1], [0.7, 1]].map(([s, tt], i) => { const [x, y] = isoPt(180, 84, 78, 48, s, tt); return `<g class="art-m-small art-hot" style="--i:${i + 8};fill: var(--card-bg, var(--surface))"><path d="${ell(x, y + 22, 3.2, 3.2)} M${f(x - 5)} ${f(y + 22)} H${f(x + 5)}"/></g>`; }).join('')}`),
+      // Repair mesh: a patch with a torn edge and a gap is healed
+      wrap('clip-art art-repair', `
+        <path d="M92 100 L180 56 L268 100 L180 144 Z"/>
+        <g class="art-dim"><path d="${[1, 2, 3, 4, 5, 6, 7].map(k => `M${f(92 + k * 11)} ${f(100 - k * 5.5)} L${f(180 + k * 11)} ${f(144 - k * 5.5)} M${f(92 + k * 11)} ${f(100 + k * 5.5)} L${f(180 + k * 11)} ${f(56 + k * 5.5)}`).join(' ')}"/></g>
+        <g class="art-fine"><path d="M158 80 L190 98 L170 112 L150 100 Z" style="fill: var(--card-bg, var(--surface))"/></g>
+        <g class="art-low art-hot"><path d="M158 80 L190 98 L170 112 L150 100 Z"/></g>`),
+      // Stacked copies: a second copy sits on the first; it slides in and is removed
+      wrap('clip-art art-stack', `
+        <path d="${beam(180, 104)}"/>
+        <g class="art-m-stack art-hot"><path d="${beam(180, 104)}"/></g>`),
     ];
   })();
 
@@ -1024,7 +1126,10 @@ ${site.why.paragraphs.map(p => `          <p>${esc(p)}</p>`).join('\n')}
           <h2>Advanced STEP clean-up tools, free in your browser.</h2>
           <a class="more" href="features.html">All features</a>
         </div>
-        <div class="clips">${clipCards()}
+        <div class="fcar fcar-clips" data-fcar>
+        <div class="clips fcar-track">${clipCards()}
+        </div>
+        <div class="fcar-nav"><button type="button" data-dir="-1" aria-label="Previous"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" data-dir="1" aria-label="Next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></div>
         </div>
       </div>
     </section>

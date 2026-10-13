@@ -43,6 +43,56 @@
     const middle = fig.offsetLeft - strip.offsetLeft + fig.offsetWidth / 2 - strip.clientWidth / 2;
     return Math.max(0, Math.min(max, middle));
   };
+  // the feature cards: the arrows move one card; an arrow is off at its end
+  $$('[data-fcar]').forEach((car) => {
+    const track = car.querySelector('.fcar-track'), prev = car.querySelector('[data-dir="-1"]'), next = car.querySelector('[data-dir="1"]');
+    const sync = () => { prev.disabled = track.scrollLeft < 4; next.disabled = track.scrollLeft > track.scrollWidth - track.clientWidth - 4; };
+    car.querySelectorAll('[data-dir]').forEach(b => b.addEventListener('click', () => {
+      const card = track.firstElementChild;
+      track.scrollBy({ left: Number(b.dataset.dir) * (card.offsetWidth + 16), behavior: 'smooth' });
+    }));
+    // a mouse can grab the row and drag it. Snapping is off for the whole gesture; on release the row glides, with the speed of the throw, to the nearest card, and snapping comes back only when it has landed
+    let down = false, moved = false, startX = 0, startLeft = 0, lastX = 0, lastT = 0, speed = 0, glide = 0;
+    const stop = () => { cancelAnimationFrame(glide); glide = 0; };
+    track.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      stop(); down = true; moved = false; startX = lastX = e.clientX; startLeft = track.scrollLeft; lastT = performance.now(); speed = 0;
+      track.classList.add('is-drag');
+    });
+    window.addEventListener('pointermove', (e) => {
+      if (!down) return;
+      const now = performance.now(), dx = e.clientX - startX;
+      if (!moved && Math.abs(dx) > 4) moved = true;
+      if (!moved) return;
+      const dt = Math.max(1, now - lastT);
+      speed = speed * 0.6 + ((lastX - e.clientX) / dt) * 0.4;
+      lastX = e.clientX; lastT = now;
+      track.scrollLeft = startLeft - dx;
+    });
+    const release = () => {
+      if (!down) return;
+      down = false;
+      if (!moved) { track.classList.remove('is-drag'); return; }
+      const step = track.firstElementChild.offsetWidth + 16, max = track.scrollWidth - track.clientWidth;
+      const from = track.scrollLeft, throwTo = from + (performance.now() - lastT < 80 ? speed * 220 : 0);
+      const to = Math.max(0, Math.min(max, Math.round(throwTo / step) * step)), t0 = performance.now(), dur = 380 + Math.min(260, Math.abs(to - from) * 0.25);
+      const tick = (now) => {
+        const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+        track.scrollLeft = from + (to - from) * e;
+        if (k < 1) glide = requestAnimationFrame(tick);
+        else { glide = 0; track.classList.remove('is-drag'); }
+      };
+      glide = requestAnimationFrame(tick);
+    };
+    window.addEventListener('pointerup', release);
+    window.addEventListener('pointercancel', release);
+    track.addEventListener('wheel', stop, { passive: true });
+    track.addEventListener('click', (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+    track.addEventListener('dragstart', (e) => e.preventDefault());
+    track.addEventListener('scroll', sync, { passive: true });
+    window.addEventListener('resize', sync);
+    sync();
+  });
   $$('[data-strip]').forEach((strip) => {
     const figs = [...strip.children];
     const rests = () => figs.map(fig => restOf(strip, fig));

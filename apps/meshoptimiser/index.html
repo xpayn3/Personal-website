@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=196" />
+  <link rel="stylesheet" href="site.css?v=261" />
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/"}}</script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
@@ -181,7 +181,8 @@
           <h2>Advanced STEP clean-up tools, free in your browser.</h2>
           <a class="more" href="features.html">All features</a>
         </div>
-        <div class="clips">
+        <div class="fcar fcar-clips" data-fcar>
+        <div class="clips fcar-track">
         <figure class="clip" style="--tile-c:#35c9c0">
           <svg role="img" aria-label="MeshOptimiser: Remove holes" class="tile-art clip-art art-holes" viewBox="0 0 360 200" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" focusable="false">
         <path class="art-dim" d="M129.8 75 L91.7 97 M129.8 31 L129.8 75 M129.8 75 L268.3 155 M123.7 71.5 L97.7 86.5 M97.7 86.5 L97.7 56.5 M97.7 56.5 L123.7 41.5 M123.7 41.5 L123.7 71.5 M262.3 151.5 L123.7 71.5 M236.3 166.5 L97.7 86.5 M236.3 136.5 L97.7 56.5 M262.3 121.5 L123.7 41.5"/><path d="M268.3 155 L230.2 177 M230.2 177 L230.2 133 M230.2 133 L268.3 111 M268.3 111 L268.3 155 M91.7 97 L91.7 53 M91.7 53 L129.8 31 M230.2 177 L91.7 97 M230.2 133 L91.7 53 M268.3 111 L129.8 31 M262.3 151.5 L236.3 166.5 M236.3 166.5 L236.3 136.5 M236.3 136.5 L262.3 121.5 M262.3 121.5 L262.3 151.5"/>
@@ -224,6 +225,8 @@
         </g></svg>
           <figcaption><i>05</i><strong>Smart fit</strong><span>A dense part becomes a box, a cylinder or blocks that keep its outline.</span><a class="clip-more" href="docs/smart-fit.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about Smart fit</span></a></figcaption>
         </figure>
+        </div>
+        <div class="fcar-nav"><button type="button" data-dir="-1" aria-label="Previous"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" data-dir="1" aria-label="Next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></div>
         </div>
       </div>
     </section>
@@ -268,10 +271,10 @@
               <b>646,064</b><i></i><span>Original</span>
             </div>
             <div class="sv-col " style="--h:50.0%;--i:1">
-              <b>322,988</b><i></i><span>Light, Balanced</span><em>−50%</em>
+              <b>322,988</b><i><em>−50%</em></i><span>Light, Balanced</span>
             </div>
             <div class="sv-col " style="--h:25.1%;--i:2">
-              <b>161,980</b><i></i><span>Strong</span><em>−75%</em>
+              <b>161,980</b><i><em>−75%</em></i><span>Strong</span>
             </div>
             </div>
           </div>
@@ -375,22 +378,23 @@
     </section>
 
     <section class="band cl-band" id="claude">
-      <div class="wrap cl-band-in">
-        <div class="cl-band-copy">
+      <div class="cl-hero">
+        <div class="wrap cl-hero-in">
           <p class="kicker">Claude<b>·</b><span class="tag-new is-large">New</span></p>
           <h2>Ask Claude. It does the clean-up.</h2>
-          <p class="lead">Describe the job. Claude does the clean-up with the same tools you click, asks before it changes anything, and every change is one undo.</p>
+          <div class="cl-hero-side">
+            <p class="lead">Describe the job. Claude does the clean-up with the same tools you click, asks before it changes anything, and every change is one undo.</p>
+            <div class="actions"><a class="btn is-large" href="claude.html">See how it works</a></div>
+          </div>
+        </div>
+        <div class="cl-shot">
+          <img src="../../Images/apps/meshoptimiser-claude-allow.webp" alt="MeshOptimiser: The prompt that comes before every change to the model." width="2400" height="1350" loading="lazy" decoding="async" />
           <ul class="cl-say">
             <li>Find all the bolts and hide them.</li>
             <li>Get this under 5 MB for the web.</li>
             <li>Show me before and after.</li>
           </ul>
-          <div class="actions"><a class="btn is-large" href="claude.html">See how it works</a></div>
         </div>
-        <figure class="cl-band-art">
-          <a class="zoom" href="../../Images/apps/meshoptimiser-claude-allow.webp" data-group="claude" data-caption="The prompt that comes before every change to the model."><img src="../../Images/apps/meshoptimiser-claude-allow.webp" alt="MeshOptimiser: The prompt that comes before every change to the model." width="2400" height="1350" loading="lazy" decoding="async" /></a>
-          <figcaption>The prompt that comes before every change to the model.</figcaption>
-        </figure>
       </div>
     </section>
     <section class="band">
@@ -428,16 +432,63 @@
         </div>
       </div>
     </section>
-    <section class="band get">
-      <div class="wrap get-in">
-        <div>
-          <h2>Run it on your own machine.</h2>
-          <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
-        </div>
-        <div class="actions">
-          <a class="btn is-primary is-large" href="download.html">Download v0.25.0</a>
-          <a class="btn is-large btn-demo" href="demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Open online</a>
-          <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
+    <section class="band get compare">
+      <div class="wrap">
+        <h2>Pick how you run it.</h2>
+        <div class="cmp">
+          <div class="cmp-head">
+            <div class="cmp-col">
+              <p class="cmp-tag">In your browser</p>
+              <h3>MeshOptimiser Lite</h3>
+              <p class="cmp-sub">Try the app in a tab. Nothing to install.</p>
+              <div class="cmp-act"><a class="cmp-btn btn-demo" href="demo/index.html" target="_blank" rel="noopener">Open online</a><a class="cmp-link" href="docs/what-it-is.html">What is it</a></div>
+            </div>
+            <div class="cmp-col">
+              <p class="cmp-tag">On your machine</p>
+              <h3>MeshOptimiser</h3>
+              <p class="cmp-sub">The full app. Windows and macOS.</p>
+              <div class="cmp-act"><a class="cmp-btn" href="download.html">Download v0.25.0</a><a class="cmp-link" href="changelog.html">What is new</a></div>
+            </div>
+          </div>
+          <div class="cmp-table" role="table">
+          <div class="cmp-row" role="row">
+            <div class="cmp-a"><span class="cmp-on"><svg class="cmp-yes" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.4l3.4 3.4L17 8.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Free</span></span></div>
+            <div class="cmp-a"><span class="cmp-on"><svg class="cmp-yes" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.4l3.4 3.4L17 8.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Free</span></span></div>
+          </div>
+          <div class="cmp-row" role="row">
+            <div class="cmp-a"><span class="cmp-on"><svg class="cmp-yes" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.4l3.4 3.4L17 8.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Browser tab</span></span></div>
+            <div class="cmp-a"><span class="cmp-on"><svg class="cmp-yes" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.4l3.4 3.4L17 8.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Your computer</span></span></div>
+          </div>
+          <div class="cmp-row" role="row">
+            <div class="cmp-a"><span class="cmp-on"><svg class="cmp-yes" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.4l3.4 3.4L17 8.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Files stay local</span></span></div>
+            <div class="cmp-a"><span class="cmp-on"><svg class="cmp-yes" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.4l3.4 3.4L17 8.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Files stay local</span></span></div>
+          </div>
+          <div class="cmp-row" role="row">
+            <div class="cmp-a"><span class="cmp-off"><span class="cmp-no" aria-hidden="true">—</span><span>STEP to GLB</span></span></div>
+            <div class="cmp-a"><span class="cmp-on"><svg class="cmp-yes" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.4l3.4 3.4L17 8.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>STEP to GLB</span></span></div>
+          </div>
+          <div class="cmp-row" role="row">
+            <div class="cmp-a"><span class="cmp-on"><svg class="cmp-yes" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.4l3.4 3.4L17 8.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Clean-up tools</span></span></div>
+            <div class="cmp-a"><span class="cmp-on"><svg class="cmp-yes" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.4l3.4 3.4L17 8.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Clean-up tools</span></span></div>
+          </div>
+          <div class="cmp-row" role="row">
+            <div class="cmp-a"><span class="cmp-on"><svg class="cmp-yes" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.4l3.4 3.4L17 8.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Part library</span></span></div>
+            <div class="cmp-a"><span class="cmp-on"><svg class="cmp-yes" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.4l3.4 3.4L17 8.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Part library</span></span></div>
+          </div>
+          <div class="cmp-row" role="row">
+            <div class="cmp-a"><span class="cmp-off"><span class="cmp-no" aria-hidden="true">—</span><span>Folders and CLI</span></span></div>
+            <div class="cmp-a"><span class="cmp-on"><svg class="cmp-yes" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.4l3.4 3.4L17 8.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Folders and CLI</span></span></div>
+          </div>
+          <div class="cmp-row" role="row">
+            <div class="cmp-a"><span class="cmp-off"><span class="cmp-no" aria-hidden="true">—</span><span>Claude</span></span></div>
+            <div class="cmp-a"><span class="cmp-on"><svg class="cmp-yes" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.4l3.4 3.4L17 8.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Claude</span></span></div>
+          </div>
+          <div class="cmp-row" role="row">
+            <div class="cmp-a"><span class="cmp-off"><span class="cmp-no" aria-hidden="true">—</span><span>Works offline</span></span></div>
+            <div class="cmp-a"><span class="cmp-on"><svg class="cmp-yes" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.4l3.4 3.4L17 8.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Works offline</span></span></div>
+          </div>
+          </div>
+          <p class="cmp-note">Lite opens a sample gearbox first and needs a window 960 px wide.</p>
         </div>
       </div>
     </section>
@@ -475,6 +526,6 @@
       <span><a href="../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="site.js?v=40"></script>
+  <script defer src="site.js?v=43"></script>
 </body>
 </html>
