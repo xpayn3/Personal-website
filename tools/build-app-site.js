@@ -31,11 +31,11 @@ const SHOWCASE = [
   { title: 'Repair and tidy', note: 'Make it right', names: ['Remove holes', 'Remove floating pieces', 'Repair mesh', 'Split', 'Stacked copies', 'Align to floor'] },
   { title: 'Edit mesh', note: 'Go inside', names: ['Points, edges, polygons', 'Click, Box, Brush', 'Move what you picked', 'Dissolve', 'Weld and Fill', 'Planarize and Straighten'] },
   { title: 'Find and organise', note: 'Big assemblies', names: ['Built for big assemblies', 'Search and filters', 'Search (Shift + C)', 'Batch rename (F2)', 'Select by rule', 'Point to find'] },
-  { title: 'Draw and build', note: 'Make new parts', names: ['A Draw tool (L)', 'Edit any line', 'Sweep', 'A library of 86 parts', 'Exploded view', 'Dynamic place (D)'] },
+  { title: 'Build and arrange', note: 'Make new parts', names: ['A Draw tool (L)', 'Edit any line', 'Sweep', 'A library of 86 parts', 'Exploded view', 'Dynamic place (D)'] },
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 88;
+const CSS_V = 89;
 const RP_V = 2;           // report.js
 const JS_V = 28;
 
@@ -903,6 +903,7 @@ ${group.items.map(([name, line, flag]) => `          <li><i class="ico">${svgIco
         <div class="split-head">
           <p class="kicker">${app.allFeatures ? 'The whole list' : 'And more'}</p>
           <h2>${app.allFeatures ? 'Every feature, by name.' : 'Everything else, by name.'}</h2>
+          <p class="split-note">Every capability of the app, grouped. The best of it is above.</p>
         </div>
         <details class="allfeat">
           <summary>${app.allFeatures ? `All ${app.allFeatures.reduce((n, g) => n + g.items.length, 0)} features` : `${app.featureGroups.reduce((n, g) => n + g.items.length + (g.more || []).length, 0)} features`}<i aria-hidden="true"></i></summary>

@@ -573,7 +573,7 @@ window.labApps = [
         ['Rebuilds the surfaces', 'Set the detail in millimetres or as a share of the model.'],
         ['You set the tessellation', 'Sag, angle and smallest edge when a CAD file opens. By part size: big parts fine, screws light.'],
         ['Smooth from the CAD surfaces', 'Fillets blend in, cylinders show no seam, sharp edges stay sharp.'],
-        ['Compresses', 'Meshopt makes GLBs about ten times smaller.'],
+        ['Compresses', 'Meshopt compression makes the converted GLBs much smaller.'],
       ], more: [
         ['Reads IGES and BREP too', 'IGES and BREP open like STEP. IGES keeps names, colours and layers.'],
         ['A whole folder at once', '--batch converts every CAD file in a folder and reports each one.'],
@@ -611,11 +611,11 @@ window.labApps = [
       ] },
       { title: 'Edit mesh', note: 'Points, edges, polygons', items: [
         ['Points, edges, polygons', 'Pick the pieces of a mesh, as in Cinema 4D. Keys 1 to 4 switch the mode.', 'new'],
-        ['Click, Box, Brush', 'Three ways to pick. A double-click takes the whole loop.', 'new'],
-        ['Move what you picked', 'The gizmo moves, turns and scales the pieces. One undo.', 'new'],
-        ['Dissolve', 'Takes points out and closes the surface over them. No hole.', 'new'],
-        ['Weld and Fill', 'Join points into one, or close a hole from its rim.', 'new'],
-        ['Planarize and Straighten', 'Make polygons flat and a line of edges straight.', 'new'],
+        ['Click, Box, Brush', 'Three ways to pick. A double-click takes the whole loop.'],
+        ['Move what you picked', 'The gizmo moves, turns and scales the pieces. One undo.'],
+        ['Dissolve', 'Takes points out and closes the surface over them. No hole.'],
+        ['Weld and Fill', 'Join points into one, or close a hole from its rim.'],
+        ['Planarize and Straighten', 'Make polygons flat and a line of edges straight.'],
       ], more: [
         ['Extract', 'Picked polygons become a part of their own.', 'new'],
         ['Reverse normals', 'Turns round the faces that came in the wrong way.', 'new'],
@@ -724,24 +724,22 @@ window.labApps = [
       ] },
       { title: 'Reduce triangles', items: [
         'Decimate', 'Decimate within a distance', 'Keep sharp edges', 'Normals, UVs and colours kept',
-        'Background decimation workers', 'Smart fit', 'Box stand-ins', 'Turned box stand-ins', 'Cylinder stand-ins',
-        'A few boxes', 'Blocks that keep the outline', 'Auto shape choice', 'Smart fit all parts', 'Remesh', 'Untriangulate',
-        'Triangulate', 'Points on straight lines', 'Dissolve nearly flat faces', 'Even triangles', 'Quick remesh',
+        'Background decimation workers', 'Smart fit', 'Box stand-ins', 'Cylinder stand-ins', 'Blocks that keep the outline',
+        'Remesh', 'Untriangulate', 'Triangulate', 'Points on straight lines', 'Dissolve nearly flat faces', 'Quick remesh',
       ] },
       { title: 'Edit mesh', items: [
-        'Brush picking', 'Loop picking', 'Move picked pieces', 'Normal gizmo axes', 'Dissolve pieces', 'Planarize',
-        'Straighten', 'Weld points', 'Weld within a distance', 'Fill a hole from its rim', 'Extract polygons',
-        'Reverse normals', 'Quads and n-gons remembered',
+        'Brush picking', 'Loop picking', 'Move picked pieces', 'Normal gizmo axes', 'Planarize', 'Straighten', 'Weld points',
+        'Weld within a distance', 'Fill a hole from its rim', 'Extract polygons', 'Reverse normals',
+        'Quads and n-gons remembered',
       ] },
       { title: 'Selection and visibility', items: [
         'Select similar', 'Similarity strictness', 'Select by colour', 'Select by name', 'Select by rule',
         'Arrow to a selection out of view',
       ] },
       { title: 'Parts tree', items: [
-        'Parts tree for big assemblies', 'Highlight small parts', 'Batch rename', 'Find and replace with regex',
-        'Rename patterns', 'Rename presets', 'Rename preview', 'Remove group, keep contents', 'Flatten', 'Total flatten',
-        'Keep top levels', 'Collapse single-child chains', 'Flatten this group', 'Collapse from here on',
-        'Pick groups and parts together', 'Lock a part', 'Point to find',
+        'Highlight small parts', 'Batch rename', 'Find and replace with regex', 'Rename patterns', 'Rename presets',
+        'Rename preview', 'Remove group, keep contents', 'Flatten', 'Keep top levels', 'Collapse single-child chains',
+        'Collapse from here on', 'Pick groups and parts together', 'Lock a part', 'Point to find',
       ] },
       { title: 'Transform and place', items: [
         'Snap to round steps', 'Exact position, rotation, size', 'Snap gizmo to grid', 'Dynamic place', 'Align to surface',
