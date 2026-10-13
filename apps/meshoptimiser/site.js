@@ -751,6 +751,9 @@
     const start = (v) => { if (!v.src) v.src = v.dataset.src; v.muted = true; v.setAttribute('playsinline', ''); const p = v.play(); if (p && p.catch) p.catch(() => {}); };
     const toggle = (v) => { if (v.paused) { v.dataset.held = ''; start(v); } else { v.dataset.held = '1'; v.pause(); } };
     clips.forEach((v) => {
+      // a phone drops the poster the moment a source is set and shows an empty box until the first frame is ready (the blink): the same
+      // picture stays under the video as its background, so the first frame lands on it without a gap
+      if (v.poster) v.style.background = 'var(--surface) url("' + v.poster + '") center / cover no-repeat';
       v.tabIndex = 0;
       v.setAttribute('role', 'button');
       v.addEventListener('click', () => toggle(v));
@@ -762,6 +765,12 @@
         if (entry.isIntersecting) { if (!v.dataset.held) start(v); } else v.pause();
       }), { threshold: 0.35 });
       clips.forEach(v => watch.observe(v));
+      // a clip starts loading a little before it scrolls into view, so it is ready when it arrives
+      const near = new IntersectionObserver(entries => entries.forEach((entry) => {
+        const v = entry.target;
+        if (entry.isIntersecting) { if (!v.src) { v.preload = 'auto'; v.src = v.dataset.src; } near.unobserve(v); }
+      }), { rootMargin: '400px 0px' });
+      clips.forEach(v => near.observe(v));
     } else {
       clips.forEach(v => v.parentElement.classList.add('is-tap'));
     }

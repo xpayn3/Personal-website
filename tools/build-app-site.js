@@ -37,7 +37,7 @@ const SHOWCASE = [
 ];
 const CSS_V = 95;
 const RP_V = 2;           // report.js
-const JS_V = 28;
+const JS_V = 29;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
