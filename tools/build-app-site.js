@@ -22,7 +22,12 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
-const ORIGIN = 'https://lukagrcar.com/';
+const PORTFOLIO = 'https://lukagrcar.com/';
+// Standalone: SITE_OUT=<folder> SITE_ORIGIN=<https://…/> writes the site at the root of that folder (with Images/apps/ beside it)
+// for hosting on its own address, instead of into apps/<id>/ of this repository.
+const STANDALONE = process.env.SITE_OUT ? path.resolve(process.env.SITE_OUT) : '';
+if (STANDALONE && !process.env.SITE_ORIGIN) throw new Error('SITE_ORIGIN is needed with SITE_OUT (the address the site will have, e.g. https://xpayn3.github.io/MeshOptimiser/)');
+const ORIGIN = STANDALONE ? process.env.SITE_ORIGIN.replace(/\/?$/, '/') : PORTFOLIO;
 // bump when site.css / site.js change, then re-run
 // the features page shows these categories, up to six features each with an icon; the accordion lists every feature by name
 const SHOWCASE = [
@@ -35,9 +40,9 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 297;
+const CSS_V = 306;
 const RP_V = 2;           // report.js
-const JS_V = 61;
+const JS_V = 74;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -49,6 +54,7 @@ const PAGES = [
   { key: 'changelog', file: 'changelog.html', label: 'Changelog' },
   { key: 'download', file: 'download.html', label: 'Download', nav: false },
   { key: 'report', file: 'report.html', label: 'Report a problem', nav: false },
+  { key: 'credits', file: 'credits.html', label: 'Credits', nav: false },
 ];
 
 const GH_ICON = '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>';
@@ -60,11 +66,11 @@ const pad2 = n => String(n).padStart(2, '0');
 
 function siteFor(app, docs) {
   const site = app.site;
-  const depth = site.path.replace(/\/+$/, '').split('/').length;
+  const depth = STANDALONE ? 0 : site.path.replace(/\/+$/, '').split('/').length;
   const up = '../'.repeat(depth);                       // from a page of the site to the repository root
   const asset = file => up + encodeURI(file);
   const absolute = file => ORIGIN + encodeURI(file);
-  const home = ORIGIN + site.path;
+  const home = STANDALONE ? ORIGIN : ORIGIN + site.path;
   const version = (app.stats.find(([label]) => label === 'Version') || [])[1] || '';
   const platform = (app.stats.find(([label]) => label === 'Platform') || [])[1] || '';
   const licence = (app.info.find(([label]) => label === 'Licence') || [])[1] || '';
@@ -103,7 +109,7 @@ ${JSON.stringify({
     downloadUrl: zip,
     license: 'https://opensource.org/licenses/MIT',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
-    author: { '@type': 'Person', '@id': ORIGIN + '#person', name: 'Luka Grčar', url: ORIGIN },
+    author: { '@type': 'Person', '@id': PORTFOLIO + '#person', name: 'Luka Grčar', url: PORTFOLIO },
   }, null, 2)}
   </script>`;
     return `<!DOCTYPE html>
@@ -129,7 +135,7 @@ ${JSON.stringify({
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=${CSS_V}" />${(page.key === 'home' && site.pop) || (page.key === 'claude' && site.claude && site.claude.view) ? `
+  <link rel="stylesheet" href="site.css?v=${CSS_V}" />${(page.key === 'home' && site.pop) || (page.key === 'claude' && site.claude && site.claude.view) || (page.key === 'features' && site.interact) ? `
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/"}}</script>` : ''}
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>${structured}
@@ -238,12 +244,13 @@ ${site.claude ? '        <a href="claude.html">Work with Claude</a>\n' : ''}    
         <a href="${repo}" rel="noopener">Source on GitHub</a>
         <a href="report.html">Report a problem</a>
         <a href="${repo}/issues" rel="noopener">Issues on GitHub</a>
+        <a href="credits.html">Credits</a>
         <a href="${repo}/blob/main/LICENSE" rel="noopener">${esc(licence)} licence</a>
       </nav>
     </div>
     <div class="wrap foot-end">
-      <span>Made by <a href="${up}index.html">Luka Grčar</a> · <a href="${up}lab.html">More from the Lab</a></span>
-      <span><a href="${up}privacy.html">Privacy</a></span>
+      <span>Made by <a href="${STANDALONE ? PORTFOLIO : up}index.html">Luka Grčar</a> · <a href="${STANDALONE ? PORTFOLIO : up}lab.html">More from the Lab</a></span>
+      <span><a href="${STANDALONE ? PORTFOLIO : up}privacy.html">Privacy</a></span>
     </div>
   </footer>
   <script defer src="site.js?v=${JS_V}"></script>
@@ -332,22 +339,20 @@ ${(pop.graph || []).map(([group, rows]) => { const top = Math.max(...rows.map(r 
   const searchDemo = () => {
     const d = site.demo;
     if (!d) return '';
+    // What the page's search lists: the commands, icons and colours of the app's own search (tools/extract-palette.mjs reads them out of the app),
+    // every part of the library, and the sample parts. Without that file the typed lists of the entry in apps.js are used.
+    const pal = (() => { try { return JSON.parse(fs.readFileSync(path.join(ROOT, site.path, 'palette-data.json'), 'utf8')); } catch (e) { return null; } })();
+    const lib = site.library ? [].concat(...site.library.shelves.map(([shelf, items]) => items.map(([, name]) => [name, '', shelf]))) : d.library;
+    const payload = pal ? { parts: d.parts, library: lib, commands: pal.commands, icons: pal.icons, colours: pal.colours, suggest: d.suggest || [] } : { parts: d.parts, library: d.library, commands: d.commands };
     return `
-    <section class="band" id="try-search">
+    <section class="band wand-band demo-band" id="try-search">
       <div class="wrap">
         <div class="band-head">
           <p class="kicker">${esc(d.kicker)}</p>
           <h2>${esc(d.title)}</h2>
         </div>
-        <div class="demo-row">
-          <div class="demo-copy">
-            <p>${esc(d.line)}</p>
-            <ul>
-${d.tips.map(([key, line]) => `              <li><kbd>${esc(key)}</kbd><span>${esc(line)}</span></li>`).join('\n')}
-            </ul>
-          </div>
+        <p class="lead wand-lead">${esc(d.line)}</p>
           <div class="demo" data-demo>
-            <div class="demo-stage" aria-hidden="true"><i></i></div>
             <div class="pal" role="search">
               <label class="pal-in">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -357,9 +362,11 @@ ${d.tips.map(([key, line]) => `              <li><kbd>${esc(key)}</kbd><span>${e
               <div class="pal-foot"><span><kbd>↑</kbd><kbd>↓</kbd> choose</span><span><kbd>↵</kbd> run</span><span><kbd>Esc</kbd> clear</span><em>${esc(d.hint)}</em></div>
             </div>
             <p class="demo-out" aria-live="polite"></p>
-            <script type="application/json" data-demo-data>${JSON.stringify({ parts: d.parts, library: d.library, commands: d.commands })}</script>
+            <script type="application/json" data-demo-data>${JSON.stringify(payload)}</script>
           </div>
-        </div>
+        <ul class="wand-tips">
+${d.tips.map(([key, line]) => `          <li><kbd>${esc(key)}</kbd><span>${esc(line)}</span></li>`).join('\n')}
+        </ul>
       </div>
     </section>`;
   };
@@ -482,6 +489,26 @@ ${c.points.map(([t, d]) => `          <div><dt>${esc(t)}</dt><dd>${esc(d)}</dd><
   };
 
   // The clean-up tools, as the stars of the page (site.cleanup)
+  // A live 3D model on the features page (features3d.js): `kind` is 'wipe' (before and after) or 'fast' (the fasteners). The picture is what
+  // shows until the model is drawn, and what stays where it cannot be; site.js loads the module near the screen on a wide screen with a mouse.
+  const liveBand = (kind) => {
+    const d = site.interact && site.interact[kind];
+    if (!d) return '';
+    return `
+    <section class="band live" id="${d.id}" data-live="${kind}">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">${esc(d.kicker)}</p>
+          <h2>${esc(d.title)}</h2>
+        </div>
+        <p class="lead sv-lead">${esc(d.line)}</p>
+        <div class="live-stage" data-stage>
+          <img class="live-poster" src="${asset(d.poster)}" alt="${esc(d.posterAlt)}" width="${d.posterSize[0]}" height="${d.posterSize[1]}" loading="lazy" decoding="async" />
+        </div>
+        <p class="live-note">${esc(d.note)}</p>
+      </div>
+    </section>`;
+  };
   const cleanupBand = () => {
     const c = site.cleanup;
     if (!c) return '';
@@ -1150,10 +1177,9 @@ ${site.why.paragraphs.map(p => `          <p>${esc(p)}</p>`).join('\n')}
 
 ${savingsBand()}
 ${/* designBand() is switched off: the band is not shown on the home page */ ''}
-${libraryBand()}
 ${searchDemo()}
-${wandDemo()}
 ${quickRemeshBand()}
+${wandDemo()}
 ${claudeBand()}
     <section class="band">
       <div class="strip" data-strip>
@@ -1295,8 +1321,11 @@ ${app.spotlights.map(([name, line, image], i) => `        <figure>${/\.webm$/.te
       </div>
       <div class="dots" aria-hidden="true"></div>
     </section>
+${liveBand('wipe')}
+${liveBand('fast')}
 ${cleanupBand()}
 ${compressionBand()}
+${libraryBand()}
 ${showcase().map((group, gi) => `
     <section class="band" id="${slug(group.title)}" style="--ico: ${GROUP_COLOURS[gi % GROUP_COLOURS.length]}">
       <div class="wrap tools-wrap">
@@ -1427,6 +1456,23 @@ ${docs.articles.filter(a => a.group === group.id).map(a => `          <li data-w
     // the page was written as if it stood beside the others; it stands one folder down
     return html.replace(/\b(href|src|poster|data-src)="(?!https?:|#|mailto:|data:)([^"]*)"/g, (_, attr, to) => `${attr}="../${to === './' ? '' : to}"`);
   };
+
+  // Credits: everything the app and the site are built on (site.credits in apps.js), as a plain visible list.
+  pages.credits = (page) => head(page, `Credits — ${app.title}`, `The open source libraries, fonts and pictures ${app.title} is built on, who made them and under which licence.`) + header(page) +
+    pageHead('Credits', 'Built on other people’s work.', `${app.title} stands on open source. Here is every library, font and picture it uses, who made it, and the licence it comes under. Thank you to all of them.`) + `
+    <section class="wrap credits">${(site.credits || []).map(group => `
+      <div class="credit-group">
+        <h2>${esc(group.title)}</h2>
+        <ul>${group.items.map(([name, by, lic, url, what]) => `
+          <li>
+            <div class="credit-name"><a href="${url}" rel="noopener">${esc(name)}</a><span>${esc(by)}</span></div>
+            <p>${esc(what)}</p>
+            <em>${esc(lic)}</em>
+          </li>`).join('')}
+        </ul>
+      </div>`).join('')}
+      <p class="credit-note">${esc(app.title)} itself is ${esc(licence)} licensed. The licence files of the bundled libraries are in the <a href="${repo}/tree/main/vendor" rel="noopener">vendor folder</a> of the source. Missing a credit, or one is wrong? <a href="report.html">Tell me</a>.</p>
+    </section>` + footer(page);
 
   pages.changelog = (page) => head(page, `Changelog — ${app.title}`, `What changed in each version of ${app.title}, newest first. Latest: v${latest.version}.`) + header(page) +
     pageHead('Changelog', 'What changed.', 'Every release, with the fixes that went into it. The app’s own change log on GitHub has 150 fixes in it, and the ones that mattered most are here.') + `
@@ -1695,12 +1741,34 @@ function urlsFor(app) {
     .concat(docsFor(app).articles.map(article => app.site.path + 'docs/' + article.slug));
 }
 
+// Standalone: the files the pages use that are not generated (styles, scripts, mesh, library, demo, ui) and the app's pictures.
+// latest.json is left out on purpose: the app's updater reads it from lukagrcar.com, so it has one home.
+function copyStandalone(app, dir) {
+  const src = path.join(ROOT, app.site.path);
+  fs.mkdirSync(dir, { recursive: true });
+  // folders the site once had and has no longer would linger from an earlier build: those the site owns are made again
+  for (const sub of ['demo', 'lite', 'docs', 'library', 'ui', 'wipe', 'Images']) fs.rmSync(path.join(dir, sub), { recursive: true, force: true });
+  fs.cpSync(src, dir, { recursive: true, filter: (from) => !['latest.json', 'palette-data.json'].includes(path.basename(from)) });
+  const imgs = path.join(ROOT, 'Images', 'apps'), out = path.join(dir, 'Images', 'apps');
+  fs.mkdirSync(out, { recursive: true });
+  fs.readdirSync(imgs).filter(n => n.startsWith(app.id + '-')).forEach(n => fs.copyFileSync(path.join(imgs, n), path.join(out, n)));
+}
+function writeStandaloneExtras(app, dir, docs) {
+  const today = new Date().toISOString().slice(0, 10);
+  const urls = PAGES.map(p => p.file === 'index.html' ? '' : p.file.replace(/\.html$/, '')).concat(docs.articles.map(a => 'docs/' + a.slug));
+  const entries = urls.map(u => `  <url><loc>${ORIGIN}${u}</loc><lastmod>${today}</lastmod></url>`).join('\n');
+  fs.writeFileSync(path.join(dir, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`);
+  fs.writeFileSync(path.join(dir, 'robots.txt'), `User-agent: *\nAllow: /\nDisallow: /demo/\n\nSitemap: ${ORIGIN}sitemap.xml\n`);
+  fs.writeFileSync(path.join(dir, '.nojekyll'), '');
+}
+
 function build() {
   if (!global.window) global.window = {};
   require(path.join(ROOT, 'apps.js'));
   const apps = (global.window.labApps || []).filter(app => app.site);
   apps.forEach((app) => {
-    const dir = path.join(ROOT, app.site.path);
+    const dir = STANDALONE || path.join(ROOT, app.site.path);
+    if (STANDALONE) copyStandalone(app, dir);
     fs.mkdirSync(dir, { recursive: true });
     const docs = docsFor(app);
     const { pages, forward, articlePage } = siteFor(app, docs);
@@ -1719,7 +1787,7 @@ function build() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Docs — ${esc(app.title)}</title>
   <meta name="robots" content="noindex" />
-  <link rel="canonical" href="${ORIGIN}${app.site.path}docs" />
+  <link rel="canonical" href="${STANDALONE ? ORIGIN : ORIGIN + app.site.path}docs" />
   <meta http-equiv="refresh" content="0; url=../docs.html" />
   <script>location.replace('../docs.html' + location.hash);</script>
 </head>
@@ -1728,7 +1796,8 @@ function build() {
 </body>
 </html>
 `);
-    fs.writeFileSync(path.join(ROOT, 'apps', app.id + '.html'), forward);
+    if (STANDALONE) writeStandaloneExtras(app, dir, docs);
+    else fs.writeFileSync(path.join(ROOT, 'apps', app.id + '.html'), forward);
     console.log(`Wrote ${PAGES.length} pages and ${docs.articles.length} docs articles to ${app.site.path}`);
   });
   return apps;

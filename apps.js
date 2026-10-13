@@ -59,6 +59,54 @@ window.labApps = [
     ],
     site: {
       path: 'apps/meshoptimiser/',
+      // Credits (the Credits page, and the same list in the app's Settings, About and the README): everything the app and this
+      // site are built on. [name, by, licence, link, what it does here]. Add a line when a library is added; keep licence files in vendor/.
+      credits: [
+        { title: 'Viewing and picking', items: [
+          ['three.js', 'The three.js authors', 'MIT', 'https://threejs.org', 'The 3D view, on WebGPU or WebGL2.'],
+          ['three-mesh-bvh', 'Garrett Johnson', 'MIT', 'https://github.com/gkjohnson/three-mesh-bvh', 'Fast picking and ray tests on very large meshes.'],
+        ] },
+        { title: 'Mesh processing', items: [
+          ['meshoptimizer', 'Arseny Kapoulkine', 'MIT', 'https://github.com/zeux/meshoptimizer', 'The simplifier behind Decimate and Smart Fit, and Meshopt compression on export (gltfpack too, when it is installed).'],
+          ['Draco', 'Google', 'Apache 2.0', 'https://github.com/google/draco', 'Reads and writes Draco-compressed GLB files.'],
+          ['Open Asset Import Library (assimp), as assimpjs', 'The assimp team; assimpjs by Viktor Kovacs', 'BSD 3-Clause; MIT', 'https://github.com/assimp/assimp', 'Opens other 3D formats in the browser.'],
+        ] },
+        { title: 'Reading CAD', items: [
+          ['CadQuery OCP', 'The CadQuery contributors', 'Apache 2.0', 'https://github.com/CadQuery/OCP', 'The Python bindings that read STEP files.'],
+          ['Open CASCADE Technology', 'Open Cascade SAS', 'LGPL 2.1 with exception', 'https://dev.opencascade.org', 'The geometry kernel under OCP: it reads and tessellates the CAD surfaces.'],
+          ['trimesh', 'Michael Dawson-Haggerty', 'MIT', 'https://github.com/mikedh/trimesh', 'Meshes and GLB writing in the converter.'],
+          ['NumPy', 'The NumPy developers', 'BSD 3-Clause', 'https://numpy.org', 'The numbers underneath it.'],
+        ] },
+        { title: 'Look and feel', items: [
+          ['Inter', 'Rasmus Andersson and the Inter Project Authors', 'SIL Open Font License 1.1', 'https://rsms.me/inter/', 'The typeface of the app and of this site.'],
+          ['Lucide', 'Lucide Contributors', 'ISC', 'https://lucide.dev', 'The icons.'],
+        ] },
+        { title: 'The pictures', items: [
+          ['Gearbox Assy', 'Khronos glTF-Sample-Models', 'See the repository', 'https://github.com/KhronosGroup/glTF-Sample-Models/tree/main/2.0/GearboxAssy', 'The assembly in the screenshots and the online version: a JT CAD sample, converted by Okino Computer Graphics.'],
+        ] },
+      ],
+      // Two live models on the features page (see liveBand in tools/build-app-site.js, features3d.js): `poster` is the picture in the page
+      // until the model is drawn, and what stays on a phone, without WebGL, with Data Saver or with reduced motion.
+      interact: {
+        wipe: {
+          id: 'before-after',
+          kicker: 'Before and after',
+          title: 'Drag the line. Same gearbox, far fewer triangles.',
+          line: 'On the left is the Gearbox Assy as it came, 646,064 triangles. On the right is what the app’s own simplifier makes of it. Pick how far to go and drag the line to compare.',
+          note: 'Gearbox Assy: Khronos glTF-Sample-Models, a JT CAD sample converted by Okino. The right side is a real run of the simplifier the app’s Decimate uses; the numbers are counted, not typed.',
+          poster: 'Images/apps/meshoptimiser-smart-optimise.webp', posterSize: [2400, 1350],
+          posterAlt: 'Smart optimise on the gearbox: every clean-up in order, aiming at half the triangles.',
+        },
+        fast: {
+          id: 'find-fasteners',
+          kicker: 'Fasteners',
+          title: 'Find every screw. Take it out.',
+          line: 'This axle is 295 parts, and 30 of them are socket screws. Find them, take them out, and watch what that does to the triangle count. Drag to turn the model.',
+          note: 'Model: Mercedes-Benz Arocs 8×8 front axle. Trademarks belong to their owners; not affiliated. Here the screws are picked out by part name; the app finds them by their shape, in one click.',
+          poster: 'Images/apps/meshoptimiser-fasteners-axle.webp', posterSize: [1920, 1031],
+          posterAlt: 'The Fasteners tool on the truck axle: the screws found by shape and listed.',
+        },
+      },
       // Claude (see claudeBand and pages.claude in tools/build-app-site.js): the app talks to Claude through MCP.
       // Released in 0.22.0: `tag` puts a small "New" pill where the amber `badge` (Coming soon) was; drop `tag` when it is no longer new.
       // The numbers in `chat` are what the app returned on the Gearbox Assy.
@@ -387,14 +435,14 @@ window.labApps = [
         kicker: 'Try it',
         title: 'Search is how you get around.',
         line: 'The app’s own search. Type a part, a library item, a command or a sum.',
-        start: 'bolt',
+        start: 'fasteners',
         placeholder: 'Search parts, the library, commands, or type a sum',
         hint: '12*25.4 · 2 in · a part’s name',
         tips: [
-          ['bolt', 'Scene parts and library parts, in one list.'],
-          ['12*25.4', 'Sums as you type. Enter copies the answer.'],
-          ['2 in', 'Inches come back as millimetres.'],
-          ['fill', 'Commands, with their shortcuts.'],
+          ['fasteners', 'Finds every bolt, nut and washer by its shape and selects them.'],
+          ['hidden parts', 'Picks the parts you cannot see from outside.'],
+          ['smart optimise', 'Runs every clean-up in one go.'],
+          ['remove holes', 'Closes holes in flat faces. The shortcut is P.'],
         ],
         parts: [
           ['Pivot bolt M5', '', '4,812 triangles'],
@@ -438,6 +486,8 @@ window.labApps = [
           ['Flange', '', 'DN50'],
           ['Pipe elbow', '', 'DN50, 90°'],
         ],
+        // what the app suggests with a model open and nothing typed (its _suggest): command ids of palette-data.json
+        suggest: ['split', 'fillHoles', 'smartFitAll', 'fit', 'selAll', 'showAll', 'export', 'savescene', 'settings'],
         commands: [
           ['Select fasteners…', '', 'Finds bolts, nuts and washers by their shape'],
           ['Select hidden parts…', '', 'Picks what can’t be seen from outside'],
