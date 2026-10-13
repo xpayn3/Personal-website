@@ -197,13 +197,18 @@
       try { const gl = document.createElement('canvas').getContext('webgl2') || document.createElement('canvas').getContext('webgl'); if (!gl) return; } catch (e) { return; }
       import('./hero3d.js?v=6').then(m => m.start(pop, '')).then((h) => { hero3d = h; h.setP(Math.max(0, last)); }).catch(() => {});
     };
+    const cards = $$('.pop-parts li', pop); let lit = -2;
     const place = () => {
       queued = false;
       const rect = pop.getBoundingClientRect();
       const room = rect.height - ($('.pop-pin', pop).offsetHeight || window.innerHeight);
       const p = Math.max(0, Math.min(1, room > 0 ? -rect.top / room : 0));
       const eased = p * p * (3 - 2 * p);
-      if (Math.abs(eased - last) > 0.0005) { last = eased; pop.style.setProperty('--p', eased.toFixed(4)); if (hero3d) hero3d.setP(eased); }
+      if (Math.abs(eased - last) > 0.0005) {
+        last = eased; pop.style.setProperty('--p', eased.toFixed(4)); if (hero3d) hero3d.setP(eased);
+        // the part card the scroll is on lights up, and moves down the list as the model pulls apart
+        if (cards.length) { const cur = Math.max(-1, Math.min(cards.length - 1, Math.floor((eased - 0.16) / 0.075))); if (cur !== lit) { lit = cur; cards.forEach((c, k) => c.classList.toggle('is-cur', k === cur && k > 0)); } }
+      }
     };
     const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(place); } };
     new IntersectionObserver(([entry]) => {
@@ -780,7 +785,7 @@
   }
 
   // ---- tile drawings move only while their tile is on screen ----
-  const tiles = $$('.tile, .clip');
+  const tiles = $$('.tile, .clip, .star');
   if (tiles.length && 'IntersectionObserver' in window) {
     const live = new IntersectionObserver(entries => entries.forEach(e => e.target.classList.toggle('is-live', e.isIntersecting)), { threshold: 0.2 });
     tiles.forEach(t => live.observe(t));

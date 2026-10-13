@@ -35,9 +35,9 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 152;
+const CSS_V = 195;
 const RP_V = 2;           // report.js
-const JS_V = 36;
+const JS_V = 40;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -277,6 +277,7 @@ ${rows.map(([label, command]) => `          <div><dt>${esc(label)}</dt><dd><code
             </a>
             <img class="pop-model" src="${asset(pop.model)}?v=${pop.v || 1}" alt="" width="${pop.modelSize[0]}" height="${pop.modelSize[1]}" decoding="async" style="left:${left}%;top:${top}%;width:${width}%" />
           </div>
+          <ul class="pop-parts" aria-hidden="true">${(() => { const pl = pop.panels || [], top = Math.max(...pl.slice(1).map(x => x[1])), n = (v) => Number(v).toLocaleString('en-US'); return pl.map(([name, tris, verts, parts], i) => `<li${i === 0 ? ' class="is-count"' : ''} style="--k:${i}"><div class="pp-h"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></svg><b>${esc(name)}</b></div><div class="pp-n"><strong>${n(tris)}</strong><small>tris</small></div><div class="pp-bar"><s style="--w:${i === 0 ? 100 : Math.max(4, Math.round(tris / top * 100))}%"></s></div><div class="pp-r"><span>${i === 0 ? 'Parts' : 'Vertices'}</span><em>${n(i === 0 ? parts : verts)}</em></div>${i === 0 ? `<div class="pp-r"><span>Vertices</span><em>${n(verts)}</em></div>` : ''}</li>`).join(''); })()}</ul>
           <div class="pop-copy" aria-hidden="false">
             <p class="kicker">${esc(pop.kicker)}</p>
             <h2>${esc(pop.title)}</h2>
@@ -434,6 +435,13 @@ ${c.points.map(([t, d]) => `          <div><dt>${esc(t)}</dt><dd>${esc(d)}</dd><
     </section>`;
   };
 
+  // a drawing for each star, from the same set as the cards on the home page: Remove holes, Select hidden parts, Fasteners, Smart fit, Split, Smart optimise
+  const starArt = (i, name) => {
+    const at = [5, 7, 8, 9, 6, 10][i], art = tileArt[at];
+    if (!art) return '';
+    return art.replace('<svg ', `<svg role="img" aria-label="${esc(app.title + ': ' + name)}" style="--tile-c:${['#35c9c0', '#a78bfa', '#f472b6', '#fbbf24', '#fb923c', '#0d99ff'][i]}" `).replace(' aria-hidden="true"', '');
+  };
+
   // The clean-up tools, as the stars of the page (site.cleanup)
   const cleanupBand = () => {
     const c = site.cleanup;
@@ -452,7 +460,7 @@ ${c.points.map(([t, d]) => `          <div><dt>${esc(t)}</dt><dd>${esc(d)}</dd><
         <p class="lead sv-lead">${esc(c.line)}</p>
         <div class="stars">${c.stars.map(([name, line, src, doc], i) => `
           <figure class="star">
-            ${media(src, name)}
+            ${starArt(i, name)}
             <figcaption><i>${pad2(i + 1)}</i><strong>${esc(name)}</strong><span>${esc(line)}</span>${link(doc, name)}</figcaption>
           </figure>`).join('')}
         </div>
@@ -782,6 +790,62 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
       const P = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([s, t]) => isoPt(cx, cy, a, b, s, t));
       return `M${P.map(p => p.join(' ')).join(' L')} Z M${P[1][0]} ${P[1][1]} V${f(P[1][1] + h)} M${P[2][0]} ${P[2][1]} V${f(P[2][1] + h)} M${P[3][0]} ${P[3][1]} V${f(P[3][1] + h)} M${P[1][0]} ${f(P[1][1] + h)} L${P[2][0]} ${f(P[2][1] + h)} L${P[3][0]} ${f(P[3][1] + h)}`;
     };
+    // an angle bracket: an L-shaped section pulled out along the floor; points on it are found from (along, across, up)
+    const lPt = (cx, cy, a, s, t, z) => [f(cx + s * a * 0.866 - t * 0.866), f(cy + s * a * 0.5 + t * 0.5 - z)];
+    const lSection = [[-44, 0], [44, 0], [44, 10], [-36, 10], [-36, 42], [-44, 42]];
+    // the edges of the bracket that are behind it, for the darker grey
+    const lBracketBack = (cx, cy, a) => {
+      const A = lSection[0], B = lSection[1], seg = (p, q) => `M${p.join(' ')} L${q.join(' ')}`;
+      return [seg(lPt(cx, cy, a, -1, ...A), lPt(cx, cy, a, 1, ...A)), seg(lPt(cx, cy, a, -1, ...A), lPt(cx, cy, a, -1, ...B)), seg(lPt(cx, cy, a, -1, ...A), lPt(cx, cy, a, -1, lSection[5][0], lSection[5][1]))].join(' ');
+    };
+    const lBracket = (cx, cy, a) => {
+      // only the edges that can be seen: the whole near end, the far end's edges that border a face we see, and the edges along the length
+      const near = lSection.map(([t, z]) => lPt(cx, cy, a, 1, t, z)), far = lSection.map(([t, z]) => lPt(cx, cy, a, -1, t, z));
+      const seg = (p, q) => `M${p.join(' ')} L${q.join(' ')}`;
+      let d = `M${near.map(p => p.join(' ')).join(' L')} Z`;
+      for (const [x, y] of [[1, 2], [2, 3], [3, 4], [4, 5]]) d += ' ' + seg(far[x], far[y]);
+      for (const k of [1, 2, 3, 4, 5]) d += ' ' + seg(near[k], far[k]);
+      return d;
+    };
+    // the outline of a box as one closed shape (to paint it solid, so the lines of what is behind it do not show through)
+    const isoSil = (cx, cy, a, b, h) => {
+      const P = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([s, t]) => isoPt(cx, cy, a, b, s, t));
+      return `M${P[0].join(' ')} L${P[1].join(' ')} L${P[1][0]} ${f(P[1][1] + h)} L${P[2][0]} ${f(P[2][1] + h)} L${P[3][0]} ${f(P[3][1] + h)} L${P[3].join(' ')} Z`;
+    };
+    // real fasteners standing on a plate, each with a solid shape (sil) that hides what is behind it, and its lines
+    const hexV = (x, y, r, k) => [f(x + r * Math.cos(k * Math.PI / 3)), f(y + 0.5 * r * Math.sin(k * Math.PI / 3))];
+    const hexPrism = (x, y, r, h) => {
+      const T = [0, 1, 2, 3, 4, 5].map(k => hexV(x, y - h, r, k)), B = [0, 1, 2, 3].map(k => hexV(x, y, r, k));
+      return {
+        sil: `M${T.map(p => p.join(' ')).join(' L')} Z M${T.slice(0, 4).map(p => p.join(' ')).join(' L')} L${B.slice().reverse().map(p => p.join(' ')).join(' L')} Z`,
+        line: `M${T.map(p => p.join(' ')).join(' L')} Z ${[0, 1, 2, 3].map(k => `M${T[k].join(' ')} L${B[k].join(' ')}`).join(' ')} M${B.map(p => p.join(' ')).join(' L')}`,
+      };
+    };
+    const fBolt = (x, y) => {
+      const r = 11, hh = 8, sr = 6, sh = 24, head = hexPrism(x, y, r, hh), yT = y - hh - sh, yH = y - hh;
+      let thread = '';
+      for (let i = 0; i < 6; i++) thread += ` M${f(x - sr)} ${f(yT + 5 + i * 3.4)} L${f(x + sr)} ${f(yT + 5 + i * 3.4 + 2.6)}`;
+      return {
+        sil: `${head.sil} ${ell(x, yT, sr, sr * 0.5)} M${f(x - sr)} ${f(yT)} V${f(yH)} H${f(x + sr)} V${f(yT)} Z`,
+        line: `${head.line} ${ell(x, yT, sr, sr * 0.5)} ${ell(x, yT, sr * 0.55, sr * 0.28)} M${f(x - sr)} ${f(yT)} V${f(yH)} M${f(x + sr)} ${f(yT)} V${f(yH)}${thread}`,
+      };
+    };
+    const fNut = (x, y) => {
+      const r = 11, h = 9, p = hexPrism(x, y, r, h);
+      return { sil: p.sil, line: `${p.line} ${ell(x, y - h, r * 0.48, r * 0.24)}` };
+    };
+    const fWasher = (x, y) => {
+      const R = 14, h = 3;
+      return {
+        sil: `${ell(x, y - h, R, R * 0.5)} M${f(x - R)} ${f(y - h)} V${f(y)} A${R} ${f(R * 0.5)} 0 0 0 ${f(x + R)} ${f(y)} V${f(y - h)} Z`,
+        line: `${ell(x, y - h, R, R * 0.5)} ${ell(x, y - h, R * 0.5, R * 0.25)} M${f(x - R)} ${f(y - h)} V${f(y)} A${R} ${f(R * 0.5)} 0 0 0 ${f(x + R)} ${f(y)} V${f(y - h)}`,
+      };
+    };
+    const fasteners = [['bolt', -0.55, -6], ['nut', 0.5, -6], ['washer', -0.5, 26], ['bolt', 0.55, 26], ['nut', 0.02, 10]]
+      .map(([kind, s, t]) => { const [x, y] = lPt(180, 124, 70, s, t, 10); return { kind, x, y }; })
+      .sort((a, b) => a.y - b.y)
+      .map(({ kind, x, y }, i) => { const o = kind === 'bolt' ? fBolt(x, y) : kind === 'nut' ? fNut(x, y) : fWasher(x, y); return `<g class="art-fnd art-hot" style="--i:${i}"><path class="art-sil" d="${o.sil}"/><path d="${o.line}"/></g>`; })
+      .join('\n        ');
     // a bolt standing on a box: a head with its flats, as a short drum
     const isoBolt = (x, y, r, h) => `${ell(x, y - h, r, r * 0.5)} ${ell(x, y - h, r * 0.45, r * 0.22)} M${f(x - r)} ${f(y - h)} V${f(y)} A${f(r)} ${f(r * 0.5)} 0 0 0 ${f(x + r)} ${f(y)} V${f(y - h)}`;
     // a hex bolt seen from the side, pointing right: head, shank and thread
@@ -805,8 +869,11 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
     return [
       // Convert: a STEP sheet streams out as data and is turned into a mesh, ring by ring
       wrap('art-convert', `
+        <path class="art-dim" d="M34 28 V20 H108 L134 46 V164 H124"/>
         <path d="M24 28 H98 L124 54 V172 H24 Z M98 28 V54 H124"/>
-        <path class="art-dim" d="M36 82 H100 M36 98 H86 M36 114 H104 M36 130 H78 M36 146 H96"/>
+        <path d="${cube(48, 70, 13)}"/>
+        <path class="art-dim" d="M72 66 H104 M72 78 H92 M36 98 H100 M36 112 H86 M36 126 H60"/>
+        <path d="${bolt(42, 152, 44, 9)}"/>
         <path class="art-dots art-hot" d="M138 100 C170 100 176 100 214 100"/>
         ${ringPaths()}
         <path class="art-mesh art-hot" pathLength="1" d="${meshPath()}"/>`),
@@ -858,37 +925,47 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
         </g>`),
       // Remove holes: a plate seen from above at an angle, with holes of every size, none touching, and each one closes
       wrap('clip-art art-holes', `
-        <path d="${isoBox(180, 86, 70, 44, 14)}"/>
-        <g>
-          <g class="art-hole" style="--i:0"><path d="${ell(...isoPt(180, 86, 70, 44, -0.6, -0.5), 13, 6.8)}"/></g>
-          <g class="art-hole" style="--i:3"><path d="${ell(...isoPt(180, 86, 70, 44, 0, -0.5), 8, 4.2)}"/></g>
-          <g class="art-hole" style="--i:1"><path d="${ell(...isoPt(180, 86, 70, 44, 0.6, -0.5), 11, 5.8)}"/></g>
-          <g class="art-hole" style="--i:4"><path d="${ell(...isoPt(180, 86, 70, 44, -0.6, 0.5), 7, 3.7)}"/></g>
-          <g class="art-hole" style="--i:2"><path d="${ell(...isoPt(180, 86, 70, 44, 0, 0.5), 19, 10)}"/><path d="${ell(...isoPt(180, 86, 70, 44, 0, 0.5), 10, 5.3)}"/></g>
-          <g class="art-hole" style="--i:5"><path d="${ell(...isoPt(180, 86, 70, 44, 0.6, 0.5), 12, 6.3)}"/></g>
-        </g>`),
+        ${(() => {
+          // the edges behind (far end underneath and behind, the inside of the tube) are drawn in the darker grey, under the ones in front
+          const P = (s, t, z) => lPt(180, 126, 80, s, t, z).join(' '), seg = (a, b) => `M${a} L${b}`;
+          const O = [[-22, 0], [22, 0], [22, 44], [-22, 44]], I = [[-15, 7], [15, 7], [15, 37], [-15, 37]];
+          const ring = (s, q, ids) => ids.map(([a, b]) => seg(P(s, ...q[a]), P(s, ...q[b]))).join(' ');
+          const all = [[0, 1], [1, 2], [2, 3], [3, 0]];
+          const back = [ring(-1, O, [[0, 1], [3, 0]]), seg(P(-1, ...O[0]), P(1, ...O[0])), ring(-1, I, all), I.map(([t, z]) => seg(P(1, t, z), P(-1, t, z))).join(' ')].join(' ');
+          const front = [ring(1, O, all), ring(-1, O, [[1, 2], [2, 3]]), [1, 2, 3].map(k => seg(P(1, ...O[k]), P(-1, ...O[k]))).join(' '), ring(1, I, all)].join(' ');
+          return `<path class="art-dim" d="${back}"/><path d="${front}"/>`;
+        })()}
+        <g>${[[-0.66, 0], [-0.33, 1], [0, 2], [0.33, 3], [0.66, 4]].map(([sv, i]) => { const [x, y] = lPt(180, 126, 80, sv, 0, 44); return `<g class="art-hole" style="--i:${i}"><g transform="matrix(0.866 0.5 -0.866 0.5 ${x} ${y})"><circle r="8.5"/></g></g>`; }).join('')}</g>`),
       // Split: a block held together by bolts is two parts fused; the bolts come out, a cutting plane passes through, and the parts slide apart
       wrap('clip-art art-split', `
-        <g class="art-sa"><path class="art-face" d="M${isoPt(180, 86, 64, 40, 0, -1).join(' ')} L${isoPt(180, 86, 64, 40, 0, 1).join(' ')} V${f(isoPt(180, 86, 64, 40, 0, 1)[1] + 34)} L${isoPt(180, 86, 64, 40, 0, -1)[0]} ${f(isoPt(180, 86, 64, 40, 0, -1)[1] + 34)} Z"/><path d="${isoBox(...isoPt(180, 86, 64, 40, -0.5, 0), 32, 40, 34)}"/><g class="art-bolt"><path d="${isoBolt(...isoPt(180, 86, 64, 40, -0.5, -0.3), 8, 7)}"/><path d="${isoBolt(...isoPt(180, 86, 64, 40, -0.5, 0.35), 8, 7)}"/></g></g>
-        <g class="art-sb"><path class="art-face" d="M${isoPt(180, 86, 64, 40, 0, -1).join(' ')} L${isoPt(180, 86, 64, 40, 0, 1).join(' ')} V${f(isoPt(180, 86, 64, 40, 0, 1)[1] + 34)} L${isoPt(180, 86, 64, 40, 0, -1)[0]} ${f(isoPt(180, 86, 64, 40, 0, -1)[1] + 34)} Z"/><path d="${isoBox(...isoPt(180, 86, 64, 40, 0.5, 0), 32, 40, 34)}"/><g class="art-bolt"><path d="${isoBolt(...isoPt(180, 86, 64, 40, 0.5, -0.3), 8, 7)}"/><path d="${isoBolt(...isoPt(180, 86, 64, 40, 0.5, 0.35), 8, 7)}"/></g></g>
+        <g class="art-sa"><path class="art-solid" d="${isoSil(...isoPt(180, 86, 64, 40, -0.5, 0), 32, 40, 34)}"/><path d="${isoBox(...isoPt(180, 86, 64, 40, -0.5, 0), 32, 40, 34)}"/><g class="art-bolt"><path d="${isoBolt(...isoPt(180, 86, 64, 40, -0.5, -0.3), 8, 7)}"/><path d="${isoBolt(...isoPt(180, 86, 64, 40, -0.5, 0.35), 8, 7)}"/></g><path class="art-face" d="M${isoPt(180, 86, 64, 40, 0, -1).join(' ')} L${isoPt(180, 86, 64, 40, 0, 1).join(' ')} V${f(isoPt(180, 86, 64, 40, 0, 1)[1] + 34)} L${isoPt(180, 86, 64, 40, 0, -1)[0]} ${f(isoPt(180, 86, 64, 40, 0, -1)[1] + 34)} Z"/></g>
+        <g class="art-sb"><path class="art-face" d="M${isoPt(180, 86, 64, 40, 0, -1).join(' ')} L${isoPt(180, 86, 64, 40, 0, 1).join(' ')} V${f(isoPt(180, 86, 64, 40, 0, 1)[1] + 34)} L${isoPt(180, 86, 64, 40, 0, -1)[0]} ${f(isoPt(180, 86, 64, 40, 0, -1)[1] + 34)} Z"/><path class="art-solid" d="${isoSil(...isoPt(180, 86, 64, 40, 0.5, 0), 32, 40, 34)}"/><path d="${isoBox(...isoPt(180, 86, 64, 40, 0.5, 0), 32, 40, 34)}"/><g class="art-bolt"><path d="${isoBolt(...isoPt(180, 86, 64, 40, 0.5, -0.3), 8, 7)}"/><path d="${isoBolt(...isoPt(180, 86, 64, 40, 0.5, 0.35), 8, 7)}"/></g></g>
         <path class="art-plane art-hot" pathLength="1" d="M${isoPt(180, 86, 64, 40, 0, -1.12)[0]} ${f(isoPt(180, 86, 64, 40, 0, -1.12)[1] - 9)} L${isoPt(180, 86, 64, 40, 0, 1.12)[0]} ${f(isoPt(180, 86, 64, 40, 0, 1.12)[1] - 9)} V${f(isoPt(180, 86, 64, 40, 0, 1.12)[1] + 43)} L${isoPt(180, 86, 64, 40, 0, -1.12)[0]} ${f(isoPt(180, 86, 64, 40, 0, -1.12)[1] + 43)} Z"/>`),
       // Select hidden parts: the shell goes see-through and what was inside is picked
       wrap('clip-art art-hidden', `
-        <g class="art-shell"><path d="${cube(180, 100, 72)}"/></g>
-        <g class="art-found art-hot"><path d="${cube(160, 108, 15)}"/><path d="${cube(204, 98, 13)}"/><path d="${nut(182, 80, 9)}"/></g>
-        <path class="art-brk art-hot" pathLength="1" d="M128 64 h14 M128 64 v14 M232 64 h-14 M232 64 v14 M128 142 h14 M128 142 v-14 M232 142 h-14 M232 142 v-14"/>`),
+        <g class="art-shell"><g class="art-shell-solid"><path d="${isoBox(180, 78, 70, 44, 38)} ${ell(...isoPt(180, 78, 70, 44, -0.82, -0.78), 4, 2.1)} ${ell(...isoPt(180, 78, 70, 44, 0.82, -0.78), 4, 2.1)} ${ell(...isoPt(180, 78, 70, 44, -0.82, 0.78), 4, 2.1)} ${ell(...isoPt(180, 78, 70, 44, 0.82, 0.78), 4, 2.1)}"/></g><g class="art-shell-dash"><path d="${isoBox(180, 78, 70, 44, 38)} ${ell(...isoPt(180, 78, 70, 44, -0.82, -0.78), 4, 2.1)} ${ell(...isoPt(180, 78, 70, 44, 0.82, -0.78), 4, 2.1)} ${ell(...isoPt(180, 78, 70, 44, -0.82, 0.78), 4, 2.1)} ${ell(...isoPt(180, 78, 70, 44, 0.82, 0.78), 4, 2.1)}"/></g></g>
+        <g class="art-found art-hot" transform="matrix(0.866 0.5 -0.866 0.5 180 97)">
+          <g transform="translate(-25 0)"><g class="art-spin"><path d="${gear(0, 0, 21, 28, 12)}"/><circle r="9"/><circle r="4"/></g></g>
+          <g transform="translate(25 0)"><g class="art-spinr"><path d="${gear(0, 0, 21, 28, 12)}"/><circle r="9"/><circle r="4"/></g></g>
+        </g>
+        <path class="art-brk art-hot" pathLength="1" d="M74 14 h16 M74 14 v16 M286 14 h-16 M286 14 v16 M74 186 h16 M74 186 v-16 M286 186 h-16 M286 186 v-16"/>`),
       // Fasteners: a plate with bolts standing on it, each found by its shape
       wrap('clip-art art-fast', `
-        <path d="${isoBox(180, 96, 70, 44, 14)}"/>
-        <g class="art-fnd art-hot" style="--i:0"><path d="${isoBolt(...isoPt(180, 96, 70, 44, -0.55, -0.4), 11, 18)}"/></g>
-        <g class="art-fnd art-hot" style="--i:1"><path d="${isoBolt(...isoPt(180, 96, 70, 44, 0.5, -0.4), 11, 18)}"/></g>
-        <g class="art-fnd art-hot" style="--i:2"><path d="${isoBolt(...isoPt(180, 96, 70, 44, -0.5, 0.45), 11, 18)}"/></g>
-        <g class="art-fnd art-hot" style="--i:3"><path d="${isoBolt(...isoPt(180, 96, 70, 44, 0.55, 0.45), 11, 18)}"/></g>
-        <g class="art-fnd art-hot" style="--i:4"><path d="${isoBolt(...isoPt(180, 96, 70, 44, 0.02, 0.02), 9, 12)}"/></g>`),
+        <path class="art-dim" d="${lBracketBack(180, 124, 70)}"/>
+        <path d="${lBracket(180, 124, 70)}"/>
+        ${fasteners}`),
       // Smart fit: a detailed part becomes a plain cylinder, in place, and keeps its outline
       wrap('clip-art art-smart', `
-        <g class="art-dense2"><path d="${knurl}"/></g>
-        <path class="art-fit art-hot" pathLength="1" d="${cylBody(180, 100, 46, 14, 140)}"/>`),
+        <g transform="rotate(-60 180 100)">
+          <g class="art-dense2"><path d="${knurl}"/></g>
+          <path class="art-fit art-hot" pathLength="1" d="${cylBody(180, 100, 46, 14, 140)}"/>
+        </g>`),
+      // Smart optimise: one press, and a heavy part gets lighter: the same gear with half the detail
+      wrap('clip-art art-optimise', `
+        <g transform="matrix(0.866 0.5 -0.866 0.5 180 104)">
+          <g class="art-fine art-dim"><path d="${gear(0, 0, 46, 58, 24)}"/>${[12, 24, 36].map(r => `<circle r="${r}"/>`).join('')}<path d="${Array.from({ length: 24 }, (_, k) => { const a = k * Math.PI / 12; return `M${f(10 * Math.cos(a))} ${f(10 * Math.sin(a))} L${f(46 * Math.cos(a))} ${f(46 * Math.sin(a))}`; }).join(' ')}"/></g>
+          <g class="art-low art-hot"><path d="${gear(0, 0, 46, 58, 12)}"/><circle r="14"/><path d="${Array.from({ length: 6 }, (_, k) => { const a = k * Math.PI / 3; return `M${f(14 * Math.cos(a))} ${f(14 * Math.sin(a))} L${f(46 * Math.cos(a))} ${f(46 * Math.sin(a))}`; }).join(' ')}"/></g>
+        </g>`),
     ];
   })();
 
@@ -928,18 +1005,14 @@ ${strengthsBand()}
 
 ${popHero()}
 
-    <section class="band">
+    <section class="band why">
       <div class="wrap split">
         <div class="split-head">
-          <p class="kicker">Why</p>
-          <h2>${esc(app.about[0])}</h2>
+          <p class="kicker">${esc(site.why.kicker)}</p>
+          <h2>${esc(site.why.title)}</h2>
         </div>
         <div class="split-body">
-${app.about.slice(1).map(p => `          <p>${esc(p)}</p>`).join('\n')}
-          <table class="collapse">
-            <caption>What the pipeline collapses</caption>
-${site.collapse.map(([from, to], i, all) => `            <tr${i === all.length - 1 ? ' class="is-total"' : ''}><th scope="row">${esc(from)}</th><td aria-hidden="true">→</td><td>${esc(to)}</td></tr>`).join('\n')}
-          </table>
+${site.why.paragraphs.map(p => `          <p>${esc(p)}</p>`).join('\n')}
         </div>
       </div>
     </section>
@@ -963,12 +1036,6 @@ ${searchDemo()}
 ${wandDemo()}
 ${claudeBand()}
     <section class="band">
-      <div class="wrap">
-        <div class="band-head">
-          <p class="kicker">Screenshots</p>
-          <h2>The whole app, one screen at a time.</h2>
-        </div>
-      </div>
       <div class="strip" data-strip>
         ${app.shots.map(s => shot(s, 'strip')).join('\n        ')}
       </div>
@@ -1108,7 +1175,6 @@ ${app.spotlights.map(([name, line, image], i) => `        <figure><a class="zoom
       </div>
       <div class="dots" aria-hidden="true"></div>
     </section>
-${savingsBand()}
 ${cleanupBand()}
 ${compressionBand()}
 ${showcase().map((group, gi) => `

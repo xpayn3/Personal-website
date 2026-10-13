@@ -337,7 +337,7 @@ window.labApps = [
       savings: {
         kicker: 'What it saves',
         title: 'Half the triangles, the same gearbox.',
-        line: 'One press of Optimise on a real CAD assembly, read off the app’s own Properties card.',
+        line: 'One press of Smart optimise on a real gearbox assembly. Here is what it did, before and after.',
         metrics: [['Triangles', 646064, 322988, ''], ['Vertices', 360958, 197772, ''], ['Memory', 4.7, 2.8, 'MB']],
         levels: [['Light, Balanced', 322988], ['Strong', 161980]],
         note: 'MeshOptimiser v0.15.0, Gearbox Assy (95 parts, 646,064 triangles), Smart optimise on Balanced with Reduce triangles on. Strong ends at 161,980 triangles and 1.6 MB.',
@@ -505,14 +505,16 @@ window.labApps = [
       pop: {
         ui: 'Images/apps/meshoptimiser-hero-ui.webp',
         model: 'Images/apps/meshoptimiser-hero-model.webp',
-        v: 4,
-        size: [2400, 1551],
+        v: 5,
+        size: [1228, 799],
         modelSize: [1074, 1231],
-        box: [34.46, 18.13, 31.08],
+        box: [34.33, 17.52, 31.53],
         label: 'A rear derailleur comes out of the MeshOptimiser window and pulls itself apart',
         kicker: 'Exploded view',
         title: 'Take it apart. Inspect every part.',
         line: 'Scroll to pull this 43-part derailleur apart. One slider does it in the app, and every part has its own row and triangle count.',
+        // the cards that slot in on the right while it pulls apart, laid out like the app's Properties card: [name, triangles, vertices, parts]; the first is the whole model, the others are parts as the app lists them
+        panels: [['rd-fine', 1103373, 668150, 43], ['0_1_1_33_000033__geom', 10966, 8734], ['0_1_1_16_000016__geom_000', 7913, 7093], ['0_1_1_12_000012__geom_000', 4122, 3750], ['0_1_1_5_000005__geom_001', 2898, 2710], ['0_1_1_20_000020__geom', 1907, 2052]],
       },
       // the first screen: headline (the subtitle above stays as the line under it), the lead, the page title and the meta description
       headline: 'Make a CAD assembly light enough for the web, on your own computer. Free.',
@@ -566,6 +568,15 @@ window.labApps = [
           ['Shrink', '320 MB to 11 MB.', 'Half the triangles.', 'One press of Smart optimise.', '#fbbf24'],
           ['Trust', 'Every step undoes.', 'Nothing uploaded.', 'Runs on your computer. Free.', '#10b981'],
           ['Claude', 'Just tell Claude.', 'It runs the tools.', 'Say what it is for. Claude does the job.', '#e879f9'],
+        ],
+      },
+      // the "why" band on the home page: a heading and plain words about the app
+      why: {
+        kicker: 'Why MeshOptimiser',
+        title: 'Heavy CAD in. A fast page out.',
+        paragraphs: [
+          'MeshOptimiser takes the STEP assembly that is too heavy for a web page and makes it light enough to load. Repeated parts are kept once, broken geometry is rebuilt, and what nobody can see is dropped.',
+          'Every part has a row, and every action has an undo, so you can see what changed and take it back. It runs on your computer, and your files stay yours.',
         ],
       },
       // what the pipeline collapses (the README's example)
