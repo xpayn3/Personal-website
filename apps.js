@@ -51,13 +51,10 @@ window.labApps = [
     icon: 'Images/apps/meshoptimiser-icon.svg',
     cover: 'Images/apps/meshoptimiser-hero.webp',
     shots: [
-      ['Images/apps/meshoptimiser-windows.webp', 'Library, materials and the material editor, open together over the model.'],
       ['Images/apps/meshoptimiser-quick-remesh.webp', 'Quick remesh: a percentage picker right on the part. 25% here: 2,038 triangles, −75%.'],
       ['Images/apps/meshoptimiser-wand.webp', 'Quick wand: a ring of commands under the cursor. Here, Remove empty parts.'],
       ['Images/apps/meshoptimiser-small-parts.webp', 'Delete small parts: 102 parts under 2% of the model’s size, highlighted before they go.'],
       ['Images/apps/meshoptimiser-heatmap-axle.webp', 'Heatmap: parts coloured by triangle count.'],
-      ['Images/apps/meshoptimiser-keyboard.webp', 'Keyboard shortcuts: press any keys to see what they do. Click a shortcut to change it.'],
-      ['Images/apps/meshoptimiser-appearance.webp', 'Appearance: accent colour, surfaces, font and text size.'],
       ['Images/apps/meshoptimiser-fasteners-axle.webp', 'Fasteners: 88 found by shape, 45,498 triangles.'],
       ['Images/apps/meshoptimiser-library.webp', 'The library drawer: pick a part, set its size, drop it in.'],
     ],
@@ -600,6 +597,9 @@ window.labApps = [
       ['72,666 triangles down to 212', 'Blocks rebuilds a part from a coarse grid, so its steps, arms and openings stay. Two heavy gearbox parts went from 72,666 triangles to 212.', 'Images/apps/meshoptimiser-blocks.webp', 'cube'],
       ['A bolt that brings its own nut', 'Tick it on and set how far from the head it sits. The nut is part of the bolt: one row in the tree, one undo.', 'Images/apps/meshoptimiser-bolt-nut.webp', 'cube'],
       ['Pull it apart', 'One slider, and a pill for each axis, so a gearbox can open along one direction only. One click puts it back.', 'Images/apps/meshoptimiser-exploded.webp', 'cube'],
+      ['Library and materials, side by side', 'The library drawer, the materials dock and the material editor, open together over the model.', 'Images/apps/meshoptimiser-windows.webp', 'cube'],
+      ['Keyboard shortcuts', 'Press any keys to see what they do. Click a shortcut to change it.', 'Images/apps/meshoptimiser-keyboard.webp', 'cube'],
+      ['Appearance', 'Accent colour, surfaces, font and text size.', 'Images/apps/meshoptimiser-appearance.webp', 'cube'],
     ],
     clips: [
       ['Remove holes', 'Bolt holes, slots and pockets closed. Nothing else changes.', 'Images/apps/meshoptimiser-clip-fill-holes.webm', 'fill-holes'],
