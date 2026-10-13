@@ -35,7 +35,7 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 96;
+const CSS_V = 97;
 const RP_V = 2;           // report.js
 const JS_V = 30;
 
@@ -713,52 +713,67 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
   // ---- the pages ----
   const pages = {};
 
-  // line drawings for the tiles: STEP-file and CAD motifs in thin strokes, one per claim (they move only while their tile is on screen)
+  // line drawings for the tiles: bolts, nuts and gears in thin strokes, one scene per claim (they move only while their tile is on screen)
   const tileArt = (() => {
     const f = n => Math.round(n * 10) / 10;
-    // an isometric box: the outline, and the three edges that meet in front
-    const cube = (cx, cy, s) => {
-      const w = 0.866 * s, h = s / 2;
-      const P = [[0, -s], [w, -h], [w, h], [0, s], [-w, h], [-w, -h]].map(([x, y]) => [f(cx + x), f(cy + y)]);
-      return `M${P.map(p => p.join(' ')).join(' L')} Z M${P[5].join(' ')} L${cx} ${cy} L${P[1].join(' ')} M${cx} ${cy} L${P[3].join(' ')}`;
-    };
     const wrap = (cls, inner) => `<svg class="tile-art ${cls}" viewBox="0 0 360 200" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${inner}</svg>`;
-    const facet = i => { const t = (i * 9.8 - 58) / 72, y = 18 * Math.sqrt(Math.max(0, 1 - t * t)); return `<path d="M${f(122 + i * 9.8)} ${f(54 + y)} V${f(148 + y)}"/>`; };
+    // a hex bolt seen from the side, pointing right: head, shank and thread
+    const bolt = (x, y, len, d) => {
+      const hw = d * 0.9, hh = d * 1.7, sx = x + hw, ex = sx + len;
+      let t = '';
+      for (let tx = sx + len * 0.35; tx < ex - d * 0.25; tx += d * 0.4) t += ` M${f(tx)} ${f(y - d / 2)} L${f(tx + d * 0.25)} ${f(y + d / 2)}`;
+      return `M${f(x)} ${f(y - hh / 2)} H${f(sx)} V${f(y + hh / 2)} H${f(x)} Z M${f(x + hw * 0.3)} ${f(y - hh / 2)} V${f(y + hh / 2)} M${f(sx)} ${f(y - d / 2)} H${f(ex)} V${f(y + d / 2)} H${f(sx)}${t}`;
+    };
+    // a hex nut seen from above: the hexagon and its hole
+    const nut = (cx, cy, r) => `M${[0, 1, 2, 3, 4, 5].map(i => `${f(cx + r * Math.cos(i * Math.PI / 3 + Math.PI / 6))} ${f(cy + r * Math.sin(i * Math.PI / 3 + Math.PI / 6))}`).join(' L')} Z M${f(cx + r * 0.45)} ${f(cy)} A${f(r * 0.45)} ${f(r * 0.45)} 0 1 0 ${f(cx - r * 0.45)} ${f(cy)} A${f(r * 0.45)} ${f(r * 0.45)} 0 1 0 ${f(cx + r * 0.45)} ${f(cy)} Z`;
+    // a gear: n teeth between the radii r and R, and a hub
+    const gear = (cx, cy, r, R, n) => {
+      const pts = [];
+      for (let i = 0; i < n; i++) {
+        const a = i * 2 * Math.PI / n, w1 = Math.PI / n * 0.62, w2 = Math.PI / n * 0.34;
+        for (const [rad, da] of [[r, -w1], [R, -w2], [R, w2], [r, w1]]) pts.push(`${f(cx + rad * Math.cos(a + da))} ${f(cy + rad * Math.sin(a + da))}`);
+      }
+      return `M${pts.join(' L')} Z M${f(cx + r * 0.35)} ${f(cy)} A${f(r * 0.35)} ${f(r * 0.35)} 0 1 0 ${f(cx - r * 0.35)} ${f(cy)} A${f(r * 0.35)} ${f(r * 0.35)} 0 1 0 ${f(cx + r * 0.35)} ${f(cy)} Z`;
+    };
     return [
-      // Convert: a STEP sheet, an arrow, a triangulated box
+      // Convert: a STEP sheet, an arrow, a bolt that is built from triangles
       wrap('art-convert', `
         <path d="M24 28 H98 L124 54 V172 H24 Z M98 28 V54 H124"/>
         <text x="34" y="50" class="art-t">STEP</text>
         <path class="art-dim" d="M36 82 H100 M36 98 H86 M36 114 H104 M36 130 H78 M36 146 H96"/>
-        <path class="art-flow art-hot" d="M140 100 H196"/><path class="art-hot" d="M188 92 L198 100 L188 108"/>
-        <path d="${cube(264, 100, 52)}"/>
-        <path class="art-tri art-hot" d="M264 48 V100 M219 126 L264 100 M309 126 L264 100 M219 74 L264 126 M309 74 L264 126"/>
-        <text x="244" y="176" class="art-t">GLB</text>`),
-      // Clean: a housing, the parts hidden inside it, a scan line that finds them
+        <path class="art-flow art-hot" d="M140 100 H190"/><path class="art-hot" d="M182 92 L192 100 L182 108"/>
+        <path d="${bolt(208, 100, 112, 24)}"/>
+        <path class="art-tri art-hot" d="M208 80 L230 120 M208 120 L230 80 M230 88 L262 112 L294 88 L326 112 M230 112 L262 88 L294 112 L326 88"/>
+        <text x="262" y="156" class="art-t">GLB</text>`),
+      // Clean: a housing, the fasteners hidden in it, a scan that finds them
       wrap('art-clean', `
-        <path d="${cube(180, 100, 74)}"/>
-        <g class="art-hid art-hot"><circle cx="160" cy="96" r="9"/><circle cx="160" cy="96" r="3.5"/><circle cx="204" cy="106" r="9"/><circle cx="204" cy="106" r="3.5"/><path d="M178 128 h18 M178 138 h18"/></g>
-        <path class="art-scan art-hot" d="M92 30 H268"/>`),
-      // Shrink: one cylinder, many facets becoming few
+        <rect x="56" y="36" width="248" height="128" rx="6"/>
+        <g class="art-hida art-hot"><path d="${bolt(84, 82, 82, 16)}"/></g>
+        <g class="art-hidb art-hot"><path d="${bolt(204, 126, 66, 16)}"/><path d="M262 108 V144 M270 108 V144"/></g>
+        <path class="art-scan art-hot" d="M56 28 V172"/>`),
+      // Shrink: the same nut over and over, stored once
       wrap('art-shrink', `
-        <ellipse cx="180" cy="54" rx="72" ry="18"/>
-        <path d="M108 54 V148 A72 18 0 0 0 252 148 V54"/>
-        <g class="art-dense art-dim">${[...Array(13)].map((_, i) => facet(i)).join('')}<path d="M108 82 A72 18 0 0 0 252 82 M108 110 A72 18 0 0 0 252 110 M108 134 A72 18 0 0 0 252 134"/></g>
-        <g class="art-sparse art-hot"><path d="M180 72 V166 M144 70 V162 M216 70 V162"/><path d="M108 100 A72 18 0 0 0 252 100"/></g>`),
-      // Trust: a screen with a lock, the cloud crossed out, a step back
+        <path d="${nut(60, 96, 26)}" class="art-hot"/>
+        <g class="art-rep" style="--dx:-60px"><path d="${nut(120, 96, 26)}"/></g>
+        <g class="art-rep" style="--dx:-120px"><path d="${nut(180, 96, 26)}"/></g>
+        <g class="art-rep" style="--dx:-180px"><path d="${nut(240, 96, 26)}"/></g>
+        <g class="art-rep" style="--dx:-240px"><path d="${nut(300, 96, 26)}"/></g>
+        <path class="art-dim" d="M34 148 H326"/>
+        <text x="46" y="174" class="art-t art-once">x 400, stored once</text>`),
+      // Trust: a nut goes on, and comes off again with one step back
       wrap('art-trust', `
-        <rect x="108" y="36" width="144" height="98" rx="7"/><path d="M152 134 L144 162 H216 L208 134"/>
-        <rect x="168" y="84" width="24" height="20" rx="3"/><path d="M173 84 V76 a7 7 0 0 1 14 0 V84"/>
-        <path d="M266 112 h40 a13 13 0 0 0 1-26 a19 19 0 0 0-36-4 a15 15 0 0 0-5 30z"/>
-        <path class="art-strike art-hot" d="M262 128 L322 66"/>
-        <path class="art-back art-hot" d="M56 72 a26 26 0 1 0 12 20"/><path class="art-hot" d="M56 56 V72 H72"/>`),
-      // Claude: a prompt, three tools it reaches for
+        <path d="${bolt(56, 110, 220, 26)}"/>
+        <g class="art-nut"><path d="M196 86 H220 V134 H196 Z M203 86 V134 M213 86 V134"/></g>
+        <path class="art-back art-hot" d="M252 64 Q196 14 140 64"/><path class="art-hot" d="M148 50 L139 65 L156 69"/>`),
+      // Claude: a prompt, and the parts it puts to work
       wrap('art-claude', `
         <path d="M30 56 H136 a12 12 0 0 1 12 12 V104 a12 12 0 0 1-12 12 H66 L44 136 V116 H42 a12 12 0 0 1-12-12 V68 a12 12 0 0 1 12-12 Z"/>
         <path class="art-dim" d="M46 78 H118 M46 94 H92"/><path class="art-cursor art-hot" d="M100 90 V100"/>
-        <path class="art-flow art-hot" d="M148 86 C192 86 196 50 238 50 M148 86 H238 M148 86 C192 86 196 122 238 122"/>
-        <path d="${cube(262, 50, 18)}"/><path d="${cube(262, 86, 18)}"/><path d="${cube(262, 122, 18)}"/>
-        <path class="art-dim" d="M296 50 H334 M296 86 H326 M296 122 H340"/>`),
+        <path class="art-flow art-hot" d="M148 86 C186 86 192 52 232 52 M148 86 H232 M148 86 C186 86 192 124 232 124"/>
+        <g class="art-gear"><path d="${gear(262, 52, 15, 21, 8)}"/></g>
+        <path d="${nut(262, 86, 17)}"/>
+        <path d="${bolt(246, 124, 30, 10)}"/>
+        <path class="art-dim" d="M300 52 H336 M300 86 H328 M300 124 H340"/>`),
     ];
   })();
 
