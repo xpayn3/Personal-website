@@ -596,7 +596,7 @@ window.labApps = [
       ['Bolts, found by their shape', 'CAD names rarely say what a part is. Fasteners reads each part’s outline and finds bolts, screws, nuts and washers, and leaves bushings and bearings alone. Forty-eight here, 22,760 triangles.', 'Images/apps/meshoptimiser-fasteners.webp', 'cube'],
       ['72,666 triangles down to 212', 'Blocks rebuilds a part from a coarse grid, so its steps, arms and openings stay. Two heavy gearbox parts went from 72,666 triangles to 212.', 'Images/apps/meshoptimiser-blocks.webp', 'cube'],
       ['A bolt that brings its own nut', 'Tick it on and set how far from the head it sits. The nut is part of the bolt: one row in the tree, one undo.', 'Images/apps/meshoptimiser-bolt-nut.webp', 'cube'],
-      ['Pull it apart', 'One slider, and a pill for each axis, so a gearbox can open along one direction only. One click puts it back.', 'Images/apps/meshoptimiser-exploded.webp', 'cube'],
+      ['Pull it apart', 'One slider, and a pill for each axis, so a gearbox can open along one direction only. One click puts it back.', 'Images/apps/meshoptimiser-exploded-axle.webp', 'cube'],
       ['Library and materials, side by side', 'The library drawer, the materials dock and the material editor, open together over the model.', 'Images/apps/meshoptimiser-windows.webp', 'cube'],
       ['Keyboard shortcuts', 'Press any keys to see what they do. Click a shortcut to change it.', 'Images/apps/meshoptimiser-keyboard.webp', 'cube'],
       ['Appearance', 'Accent colour, surfaces, font and text size.', 'Images/apps/meshoptimiser-appearance.webp', 'cube'],
