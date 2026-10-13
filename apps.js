@@ -592,7 +592,7 @@ window.labApps = [
       ],
     },
     spotlights: [
-      ['One button, half the triangles', 'Smart optimise runs every clean-up in order, then reduces to your target. Here Auto looked at a truck axle of 270,248 triangles in 239 parts, picked the steps and set a target of 135,000. One Ctrl+Z puts it all back.', 'Images/apps/meshoptimiser-optimise-axle.webp', 'cube'],
+      ['One button, half the triangles', 'Smart optimise runs every clean-up in order, then reduces to your target. This truck axle went from 540,007 triangles to 270,248. One Ctrl+Z puts it all back.', 'Images/apps/meshoptimiser-optimise-axle.webp', 'cube'],
       ['Bolts, found by their shape', 'CAD names rarely say what a part is. Fasteners reads each part’s outline and finds bolts, screws, nuts and washers, and leaves bushings and bearings alone. Forty-eight here, 22,760 triangles.', 'Images/apps/meshoptimiser-fasteners.webp', 'cube'],
       ['72,666 triangles down to 212', 'Blocks rebuilds a part from a coarse grid, so its steps, arms and openings stay. Two heavy gearbox parts went from 72,666 triangles to 212.', 'Images/apps/meshoptimiser-blocks.webp', 'cube'],
       ['A bolt that brings its own nut', 'Tick it on and set how far from the head it sits. The nut is part of the bolt: one row in the tree, one undo.', 'Images/apps/meshoptimiser-bolt-nut.webp', 'cube'],
