@@ -196,4 +196,37 @@
     tag.addEventListener('click', showWelcome);
     btn.parentNode.insertBefore(tag, btn.nextSibling);
   });
+
+  // what the online version leaves out stays visible in Settings, greyed out
+  var GREYED = [['Claude', 'sparkles'], ['Updates', 'refresh-cw']];
+  function greyOut() {
+    var nav = document.getElementById('set-nav');
+    if (!nav || nav.querySelector('[data-lite-off]')) return;
+    var before = nav.querySelector('[data-pane="data"]');
+    if (!before) return;
+    GREYED.forEach(function (g) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'set-nav-item';
+      b.setAttribute('data-lite-off', '');
+      b.setAttribute('aria-disabled', 'true');
+      b.title = 'In the full app, which runs on your computer.';
+      b.style.cssText = 'opacity:.38;cursor:not-allowed';
+      b.innerHTML = '<i data-lucide="' + g[1] + '"></i><span>' + g[0] + '</span><span class="set-nav-state" style="font-size:10px;letter-spacing:.06em;text-transform:uppercase">Full app</span>';
+      b.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); });
+      nav.insertBefore(b, before);
+    });
+    try { if (window.lucide && lucide.createIcons) lucide.createIcons(); } catch (_) {}
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    new MutationObserver(greyOut).observe(document.body, { childList: true, subtree: true });
+  });
+
+  // the start screen's list of formats: the CAD ones belong to the full app
+  document.addEventListener('DOMContentLoaded', function () {
+    var el = Array.prototype.find.call(document.querySelectorAll('span'), function (n) { return /^Opens STEP · IGES · BREP · /.test(n.textContent); });
+    if (!el) return;
+    var rest = el.textContent.replace('Opens STEP · IGES · BREP · ', '');
+    el.innerHTML = 'Opens <span style="opacity:.38;cursor:not-allowed" title="CAD files are read by the full app, which runs on your computer.">STEP · IGES · BREP</span> · ' + rest;
+  });
 })();
