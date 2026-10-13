@@ -35,7 +35,7 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 274;
+const CSS_V = 275;
 const RP_V = 2;           // report.js
 const JS_V = 44;
 
@@ -1090,6 +1090,26 @@ ${st.tiles.map(([label, claim, rest, line, colour], i) => `          <article cl
     </section>`;
   };
 
+  // A clip of Quick remesh with a title and a line, between the Quick wand and Claude on the home page. The clip is played by site.js while it is on screen.
+  const quickRemeshBand = () => {
+    const q = site.quickRemesh;
+    if (!q) return '';
+    return `    <section class="band" id="quick-remesh">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">${esc(q.kicker)}</p>
+          <h2>${esc(q.title)}</h2>
+          ${q.more ? `<a class="more" href="${esc(q.more)}">Read more</a>` : ''}
+        </div>
+        <figure class="rm-shot">
+          <video muted loop playsinline preload="none" disablepictureinpicture poster="${asset(q.clip.replace(/\.webm$/, '_thumb.webp'))}" data-src="${asset(q.clip)}" aria-label="${esc(app.title + ': ' + q.kicker)}" width="1600" height="900"></video>
+          <figcaption>${esc(q.line)}</figcaption>
+        </figure>
+      </div>
+    </section>
+`;
+  };
+
   pages.home = (page) => head(page, `${app.title} — ${app.subtitle}`, site.lead) + header(page) + `
     <section class="wrap hero">
       <p class="kicker">${[version && 'v' + version, app.stage, licence, platform.replace(/\s*·\s*/g, ' and ')].filter(Boolean).map(esc).join('<b>·</b>')}</p>
@@ -1137,6 +1157,7 @@ ${/* designBand() is switched off: the band is not shown on the home page */ ''}
 ${libraryBand()}
 ${searchDemo()}
 ${wandDemo()}
+${quickRemeshBand()}
 ${claudeBand()}
     <section class="band">
       <div class="strip" data-strip>

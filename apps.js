@@ -319,6 +319,14 @@ window.labApps = [
         ],
       },
       // the Quick wand on the page (see wandDemo in tools/build-app-site.js): the app's own ring on three parts
+      // The home page's Quick remesh band (tools/build-app-site.js, quickRemeshBand): a clip of the real app, a title and a line under it.
+      quickRemesh: {
+        kicker: 'Quick remesh',
+        title: 'Press B. Slide. Let go.',
+        line: 'A column of levels opens under the pointer, and the part changes as you move down it. This bracket goes from 3,604 triangles to 1,802 at 50%.',
+        clip: 'Images/apps/meshoptimiser-quick-remesh.webm',
+        more: 'docs/remesh.html',
+      },
       wand: {
         kicker: 'Try it',
         title: 'The commands come to you.',
