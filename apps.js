@@ -595,7 +595,7 @@ window.labApps = [
       ],
       requirements: [
         ['Python', '3.10, 3.11 or 3.12. Not 3.13 yet.'],
-        ['Browser', 'A recent Chrome, Edge, Firefox or Safari, with WebGPU.'],
+        ['Browser', 'Chrome is best. Edge and Firefox work too. Safari on a Mac can lag.'],
         ['Disk', 'About 2 GB for the first install.'],
         ['Network', 'Not needed to run. A few rarely used converters download on demand.'],
       ],

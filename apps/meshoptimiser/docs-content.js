@@ -143,7 +143,7 @@ module.exports = {
         ['terms', [
           ['Computer', 'Windows or macOS.'],
           ['Python', 'Version 3.10, 3.11 or 3.12. Version 3.13 is not supported yet, because one of the add-ons the converter needs (cadquery-ocp) is not available for it.'],
-          ['Browser', 'One with WebGPU: a recent Chrome, Edge, Firefox or Safari. For the app to open in a window of its own, the launcher looks for Chrome, Edge or Brave.'],
+          ['Browser', 'Chrome is the best choice: a recent Chrome, Edge or Firefox with WebGPU all work, and Safari on a Mac can lag. For the app to open in a window of its own, the launcher looks for Chrome, Edge or Brave.'],
           ['Disk space', 'About 2 GB free for the Python environment that is created on the first run.'],
           ['Internet', 'Needed once, on the first run, to download the Python add-ons. After that the app runs without a connection.'],
         ]],
@@ -3760,7 +3760,7 @@ module.exports = {
         ['h', 'Do I need an internet connection?'],
         ['p', 'Only for the first start, which downloads the Python add-ons. After that the app runs offline, and so does the help window ([[F1]]). A few rarely used converters are fetched the first time they are needed.'],
         ['h', 'Which browsers work?'],
-        ['p', 'A recent Chrome, Edge, Firefox or Safari. The viewer uses WebGPU and falls back to WebGL2. For the app to open in a window of its own, the launcher needs Chrome, Edge or Brave. Installing it as an app is offered by Chrome and Edge.'],
+        ['p', 'Chrome is the best choice. A recent Edge or Firefox works too, and Safari on a Mac can lag. The viewer uses WebGPU and falls back to WebGL2. For the app to open in a window of its own, the launcher needs Chrome, Edge or Brave. Installing it as an app is offered by Chrome and Edge.'],
         ['h', 'Which systems does it run on?'],
         ['p', 'Windows and macOS.'],
         ['h', 'Can I use it without Python?'],
