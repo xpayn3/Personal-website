@@ -596,7 +596,7 @@ window.labApps = [
       ['Bolts, found by their shape', 'CAD names rarely say what a part is. Fasteners reads each part’s outline and finds bolts, screws, nuts and washers, and leaves bushings and bearings alone. Eighty-eight here, 45,498 triangles.', 'Images/apps/meshoptimiser-fasteners-axle-wide.webp', 'cube'],
       ['9,572 triangles down to 96', 'Smart fit swaps a heavy part for a box, a cylinder or a few blocks that keep its outline. This axle part went from 9,572 triangles to 96, same size and place.', 'Images/apps/meshoptimiser-smart-fit-axle.webp', 'cube'],
       ['A bolt that brings its own nut', 'Tick it on and set how far from the head it sits. The nut is part of the bolt: one row in the tree, one undo.', 'Images/apps/meshoptimiser-bolt-nut.webp', 'cube'],
-      ['Pull it apart', 'One slider, and a pill for each axis, so a gearbox can open along one direction only. One click puts it back.', 'Images/apps/meshoptimiser-exploded-axle.webp', 'cube'],
+      ['Pull it apart', 'One slider, and a pill for each axis, so an assembly can open along one direction only. Here an axle is pulled to 300% along X. One click puts it back.', 'Images/apps/meshoptimiser-exploded-300.webp', 'cube'],
       ['Library and materials, side by side', 'The library drawer, the materials dock and the material editor, open together over the model.', 'Images/apps/meshoptimiser-windows.webp', 'cube'],
       ['Keyboard shortcuts', 'Press any keys to see what they do. Click a shortcut to change it.', 'Images/apps/meshoptimiser-keyboard.webp', 'cube'],
       ['Appearance', 'Accent colour, surfaces, font and text size.', 'Images/apps/meshoptimiser-appearance.webp', 'cube'],
