@@ -1089,9 +1089,9 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 @media (min-width: 761px) and (max-width: 1060px) { .tools, .tools-more { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 /* the demo needs a window of at least 960 px, so phones do not get the button */
-.btn-demo { gap: 8px; }
-.btn-demo svg { width: 14px; height: 14px; }
-@media (max-width: 760px) { .btn-demo { display: none; } }
+.btn-lite { gap: 8px; }
+.btn-lite svg { width: 14px; height: 14px; }
+@media (max-width: 760px) { .btn-lite { display: none; } }
 
 /* ========== CLAUDE ==========
    The strip on the home page (.cl-band), and claude.html: the example session (.cx), the tool groups (.cl-groups), what stays
@@ -1331,7 +1331,7 @@ main:has(.compare) + .foot { margin-top: 0; }
 .cmp-rows { width: 100%; margin-top: 40px; padding-top: 40px; border-top: 1px solid #d2d2d7; list-style: none; display: grid; gap: 34px; }
 .cmp-rows li { display: grid; justify-items: center; gap: 4px; min-height: 96px; align-content: start; color: #1d1d1f; font-size: 14px; line-height: 1.4; }
 .cmp-rows svg { width: 34px; height: 34px; margin-bottom: 12px; }
-@media (max-width: 760px) { .cmp { grid-template-columns: 1fr; gap: 64px; } .compare .btn-demo, .cmp-btn.btn-demo { display: none; } }
+@media (max-width: 760px) { .cmp { grid-template-columns: 1fr; gap: 64px; } .compare .btn-lite, .cmp-btn.btn-lite { display: none; } }
 
 .compare .cmp-col p { max-width: none; margin-top: 0; }
 .compare .cmp-tag { color: #bf4800; }

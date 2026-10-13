@@ -1,11 +1,11 @@
 /* ===================================================================
-   demo-shim.js — loaded first by the hosted demo (apps/meshoptimiser/demo/).
+   lite-shim.js — loaded first by the hosted demo (apps/meshoptimiser/lite/).
 
    The app is a web page that talks to a small local server for three
    things: a heartbeat, STEP conversion, and the inbox/ folder. On the site
    there is no server, so this file answers those requests itself:
      - /api/alive         404, so the app leaves the heartbeat alone
-     - /api/convert       501 with a plain explanation of what the demo opens
+     - /api/convert       501 with a plain explanation of what Lite opens
      - /api/job, cancel   404
    and adds the sample models (Khronos's glTF-Sample-Models, inbox/) as tiles on the
    app's own start screen, which is what opens first. The Lite mark beside the logo opens
@@ -39,7 +39,7 @@
 
   if (!top) return;
 
-  // the welcome: what the demo is, what it leaves out, what the installed app adds. It opens from the Lite mark beside the logo, top left.
+  // the welcome: what the Lite version is, what it leaves out, what the installed app adds. It opens from the Lite mark beside the logo, top left.
   var W_ICON = {
     try: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 16l.7 1.8L21.5 18.5l-1.8.7L19 21l-.7-1.8-1.8-.7 1.8-.7z"/></svg>',
     out: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>',
