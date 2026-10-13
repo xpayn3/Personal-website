@@ -919,7 +919,7 @@ ${c.faq.map(([q, a]) => `            <div><dt>${esc(q)}</dt><dd>${esc(a)}</dd></
     return SHOWCASE.map(g => ({ ...g, items: g.names.map(n => { if (!all.has(n)) throw new Error('SHOWCASE: no feature named ' + n); return all.get(n); }) }));
   };
   pages.features = (page) => head(page, `Features — ${app.title}`, `Everything ${app.title} does: the STEP to GLB pipeline, the WebGPU viewer, mesh tools, hierarchy editing and export.`) + header(page) +
-    pageHead('Features', 'A free, private viewer and optimiser for complex CAD and 3D files.', '') + `
+    pageHead('Features', 'Make heavy CAD models light. Free, private, on your own machine.', '') + `
     <section class="band is-first">
       <div class="strip" data-strip>
 ${app.spotlights.map(([name, line, image], i) => `        <figure><a class="zoom" href="${asset(image)}" data-group="spots" data-caption="${esc(name)}"><img src="${asset(image)}" alt="${esc(app.title + ': ' + name)}" width="2400" height="1350"${i < 2 ? '' : ' loading="lazy"'} decoding="async" /></a><figcaption><i>${pad2(i + 1)}</i><strong>${esc(name)}</strong><span>${esc(line)}</span></figcaption></figure>`).join('\n')}
