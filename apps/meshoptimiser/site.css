@@ -406,7 +406,7 @@ figcaption { margin-top: 12px; color: var(--tx-3); font-size: 13px; line-height:
 }
 .strip::-webkit-scrollbar { display: none; }
 .strip.is-free { scroll-snap-type: none; }
-.strip figure { flex: none; width: min(72%, 900px); scroll-snap-align: center; scroll-snap-stop: always; }
+.strip figure { flex: none; width: min(86%, 1240px); scroll-snap-align: center; scroll-snap-stop: always; }
 .strip img { width: 100%; border-radius: var(--r); background: var(--surface); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 30px 70px -20px rgba(0, 0, 0, 0.55); }
 .strip .zoom { cursor: inherit; }
 .rm-shot { margin: 0; }
