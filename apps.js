@@ -558,17 +558,15 @@ window.labApps = [
           'You want to use it in a browser tab with nothing to install. It needs Python 3.10 to 3.12 on your computer.',
         ]],
       },
-      // the strengths band at the top of the home page: [label, from, to, line, share left after (0 to 1; the bar), unit of the figures]
+      // the band at the top of the home page, a bento of claims: [small label, the claim, the second half of it (greyed), a line under it]
       strengths: {
-        kicker: 'What you get',
-        title: 'Light files. Clean models. Nothing leaves your machine.',
-        cards: [
-          ['Size', '320 MB', '11 MB', 'A STEP assembly, now a compressed GLB.', 0.034],
-          ['Triangles', '100%', '50%', 'One press of Smart optimise. One undo brings it back.', 0.5],
-          ['Parts', '400', '1', 'Repeats are stored once and drawn many times.', 0.012],
-          ['Privacy', '0', 'uploads', 'It runs on your computer. Free, open source, MIT.', 0],
+        tiles: [
+          ['Convert', 'STEP in.', 'Light GLB out.', 'Names, colours and the whole part tree come through. IGES, BREP, FBX and OBJ open too.'],
+          ['Clean', 'Finds what nobody sees.', 'Gone in one click.', 'Hidden parts, bolts, tiny pieces and holes, found by shape.'],
+          ['Shrink', '320 MB becomes 11.', 'Repeats stored once.', 'Smart optimise halves the triangles on top of it.'],
+          ['Trust', 'Every step undoes.', 'Nothing is uploaded.', 'It runs on your computer. Free and open source.'],
+          ['Claude', 'Just tell Claude.', 'It runs the tools.', 'Say what the model is for. Claude does the job and checks the result.'],
         ],
-        chips: ['Hidden parts found', 'Holes filled', 'Fused solids split', 'Fasteners found by shape', 'Exploded view', 'Works with Claude'],
       },
       // what the pipeline collapses (the README's example)
       collapse: [

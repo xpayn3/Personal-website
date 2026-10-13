@@ -35,7 +35,7 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 92;
+const CSS_V = 95;
 const RP_V = 2;           // report.js
 const JS_V = 28;
 
@@ -713,7 +713,7 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
   // ---- the pages ----
   const pages = {};
 
-  // the strengths at the top of the home page: four before-and-after cards with a bar that shows how much is left, and a row of what else it does
+  // the claims at the top of the home page, as tiles
   const strengthsBand = () => {
     const st = site.strengths;
     if (!st) return `    <section class="band">
@@ -723,23 +723,11 @@ ${app.highlights.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt>
         </dl>
       </div>
     </section>`;
-    return `    <section class="band">
+    return `    <section class="band is-first">
       <div class="wrap">
-        <div class="band-head">
-          <p class="kicker">${esc(st.kicker)}</p>
-          <h2>${esc(st.title)}</h2>
+        <div class="bento">
+${st.tiles.map(([label, claim, rest, line]) => `          <article class="tile"><p class="tile-label">${esc(label)}</p><h2>${esc(claim)} <span>${esc(rest)}</span></h2><p class="tile-line">${esc(line)}</p></article>`).join('\n')}
         </div>
-        <div class="strengths">
-${st.cards.map(([label, from, to, line, left], i) => `          <article class="strength${left === 0 ? ' is-zero' : ''}">
-            <p class="strength-tag"><span>${String(i + 1).padStart(2, '0')}</span>${esc(label)}</p>
-            <p class="strength-fig">${left === 0 ? `<b>${esc(from)}</b><s>${esc(to)}</s>` : `<s>${esc(from)}</s><i aria-hidden="true">→</i><b>${esc(to)}</b>`}</p>
-            <div class="strength-bar" role="img" aria-label="${esc(from)} to ${esc(to)}"><span style="--left:${Math.max(left, 0.012) * 100}%"></span></div>
-            <p class="strength-line">${esc(line)}</p>
-          </article>`).join('\n')}
-        </div>
-        <ul class="chips">
-${st.chips.map(c => `          <li>${esc(c)}</li>`).join('\n')}
-        </ul>
       </div>
     </section>`;
   };
