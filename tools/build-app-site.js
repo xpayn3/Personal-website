@@ -35,7 +35,7 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 273;
+const CSS_V = 274;
 const RP_V = 2;           // report.js
 const JS_V = 44;
 
@@ -1274,7 +1274,7 @@ ${c.faq.map(([q, a]) => `            <div><dt>${esc(q)}</dt><dd>${esc(a)}</dd></
     pageHead('Features', 'Make heavy CAD models light. Free, private, on your own machine.', '') + `
     <section class="band is-first">
       <div class="strip" data-strip>
-${app.spotlights.map(([name, line, image], i) => `        <figure><a class="zoom" href="${asset(image)}" data-group="spots" data-caption="${esc(name)}"><img src="${asset(image)}" alt="${esc(app.title + ': ' + name)}" width="2400" height="1350"${i < 2 ? '' : ' loading="lazy"'} decoding="async" /></a><figcaption><i>${pad2(i + 1)}</i><strong>${esc(name)}</strong><span>${esc(line)}</span></figcaption></figure>`).join('\n')}
+${app.spotlights.map(([name, line, image], i) => `        <figure>${/\.webm$/.test(image) ? `<video muted loop playsinline preload="none" disablepictureinpicture poster="${asset(image.replace(/\.webm$/, '_thumb.webp'))}" data-src="${asset(image)}" aria-label="${esc(app.title + ': ' + name)}" width="1600" height="900"></video>` : `<a class="zoom" href="${asset(image)}" data-group="spots" data-caption="${esc(name)}"><img src="${asset(image)}" alt="${esc(app.title + ': ' + name)}" width="2400" height="1350"${i < 2 ? '' : ' loading="lazy"'} decoding="async" /></a>`}<figcaption><i>${pad2(i + 1)}</i><strong>${esc(name)}</strong><span>${esc(line)}</span></figcaption></figure>`).join('\n')}
       </div>
       <div class="dots" aria-hidden="true"></div>
     </section>
