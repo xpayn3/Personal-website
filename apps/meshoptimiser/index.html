@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=95" />
+  <link rel="stylesheet" href="site.css?v=96" />
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/"}}</script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
@@ -87,11 +87,35 @@
     <section class="band is-first">
       <div class="wrap">
         <div class="bento">
-          <article class="tile"><p class="tile-label">Convert</p><h2>STEP in. <span>Light GLB out.</span></h2><p class="tile-line">Names, colours and the whole part tree come through. IGES, BREP, FBX and OBJ open too.</p></article>
-          <article class="tile"><p class="tile-label">Clean</p><h2>Finds what nobody sees. <span>Gone in one click.</span></h2><p class="tile-line">Hidden parts, bolts, tiny pieces and holes, found by shape.</p></article>
-          <article class="tile"><p class="tile-label">Shrink</p><h2>320 MB becomes 11. <span>Repeats stored once.</span></h2><p class="tile-line">Smart optimise halves the triangles on top of it.</p></article>
-          <article class="tile"><p class="tile-label">Trust</p><h2>Every step undoes. <span>Nothing is uploaded.</span></h2><p class="tile-line">It runs on your computer. Free and open source.</p></article>
-          <article class="tile"><p class="tile-label">Claude</p><h2>Just tell Claude. <span>It runs the tools.</span></h2><p class="tile-line">Say what the model is for. Claude does the job and checks the result.</p></article>
+          <article class="tile"><p class="tile-label">Convert</p><svg class="tile-art art-convert" viewBox="0 0 360 200" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+        <path d="M24 28 H98 L124 54 V172 H24 Z M98 28 V54 H124"/>
+        <text x="34" y="50" class="art-t">STEP</text>
+        <path class="art-dim" d="M36 82 H100 M36 98 H86 M36 114 H104 M36 130 H78 M36 146 H96"/>
+        <path class="art-flow art-hot" d="M140 100 H196"/><path class="art-hot" d="M188 92 L198 100 L188 108"/>
+        <path d="M264 48 L309 74 L309 126 L264 152 L219 126 L219 74 Z M219 74 L264 100 L309 74 M264 100 L264 152"/>
+        <path class="art-tri art-hot" d="M264 48 V100 M219 126 L264 100 M309 126 L264 100 M219 74 L264 126 M309 74 L264 126"/>
+        <text x="244" y="176" class="art-t">GLB</text></svg><h2>STEP in. <span>Light GLB out.</span></h2><p class="tile-line">Names, colours and the whole part tree come through. IGES, BREP, FBX and OBJ open too.</p></article>
+          <article class="tile"><p class="tile-label">Clean</p><svg class="tile-art art-clean" viewBox="0 0 360 200" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+        <path d="M180 26 L244.1 63 L244.1 137 L180 174 L115.9 137 L115.9 63 Z M115.9 63 L180 100 L244.1 63 M180 100 L180 174"/>
+        <g class="art-hid art-hot"><circle cx="160" cy="96" r="9"/><circle cx="160" cy="96" r="3.5"/><circle cx="204" cy="106" r="9"/><circle cx="204" cy="106" r="3.5"/><path d="M178 128 h18 M178 138 h18"/></g>
+        <path class="art-scan art-hot" d="M92 30 H268"/></svg><h2>Finds what nobody sees. <span>Gone in one click.</span></h2><p class="tile-line">Hidden parts, bolts, tiny pieces and holes, found by shape.</p></article>
+          <article class="tile"><p class="tile-label">Shrink</p><svg class="tile-art art-shrink" viewBox="0 0 360 200" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+        <ellipse cx="180" cy="54" rx="72" ry="18"/>
+        <path d="M108 54 V148 A72 18 0 0 0 252 148 V54"/>
+        <g class="art-dense art-dim"><path d="M122 64.7 V158.7"/><path d="M131.8 67.4 V161.4"/><path d="M141.6 69.2 V163.2"/><path d="M151.4 70.5 V164.5"/><path d="M161.2 71.4 V165.4"/><path d="M171 71.9 V165.9"/><path d="M180.8 72 V166"/><path d="M190.6 71.8 V165.8"/><path d="M200.4 71.3 V165.3"/><path d="M210.2 70.3 V164.3"/><path d="M220 69 V163"/><path d="M229.8 67 V161"/><path d="M239.6 64.1 V158.1"/><path d="M108 82 A72 18 0 0 0 252 82 M108 110 A72 18 0 0 0 252 110 M108 134 A72 18 0 0 0 252 134"/></g>
+        <g class="art-sparse art-hot"><path d="M180 72 V166 M144 70 V162 M216 70 V162"/><path d="M108 100 A72 18 0 0 0 252 100"/></g></svg><h2>320 MB becomes 11. <span>Repeats stored once.</span></h2><p class="tile-line">Smart optimise halves the triangles on top of it.</p></article>
+          <article class="tile"><p class="tile-label">Trust</p><svg class="tile-art art-trust" viewBox="0 0 360 200" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+        <rect x="108" y="36" width="144" height="98" rx="7"/><path d="M152 134 L144 162 H216 L208 134"/>
+        <rect x="168" y="84" width="24" height="20" rx="3"/><path d="M173 84 V76 a7 7 0 0 1 14 0 V84"/>
+        <path d="M266 112 h40 a13 13 0 0 0 1-26 a19 19 0 0 0-36-4 a15 15 0 0 0-5 30z"/>
+        <path class="art-strike art-hot" d="M262 128 L322 66"/>
+        <path class="art-back art-hot" d="M56 72 a26 26 0 1 0 12 20"/><path class="art-hot" d="M56 56 V72 H72"/></svg><h2>Every step undoes. <span>Nothing is uploaded.</span></h2><p class="tile-line">It runs on your computer. Free and open source.</p></article>
+          <article class="tile"><p class="tile-label">Claude</p><svg class="tile-art art-claude" viewBox="0 0 360 200" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+        <path d="M30 56 H136 a12 12 0 0 1 12 12 V104 a12 12 0 0 1-12 12 H66 L44 136 V116 H42 a12 12 0 0 1-12-12 V68 a12 12 0 0 1 12-12 Z"/>
+        <path class="art-dim" d="M46 78 H118 M46 94 H92"/><path class="art-cursor art-hot" d="M100 90 V100"/>
+        <path class="art-flow art-hot" d="M148 86 C192 86 196 50 238 50 M148 86 H238 M148 86 C192 86 196 122 238 122"/>
+        <path d="M262 32 L277.6 41 L277.6 59 L262 68 L246.4 59 L246.4 41 Z M246.4 41 L262 50 L277.6 41 M262 50 L262 68"/><path d="M262 68 L277.6 77 L277.6 95 L262 104 L246.4 95 L246.4 77 Z M246.4 77 L262 86 L277.6 77 M262 86 L262 104"/><path d="M262 104 L277.6 113 L277.6 131 L262 140 L246.4 131 L246.4 113 Z M246.4 113 L262 122 L277.6 113 M262 122 L262 140"/>
+        <path class="art-dim" d="M296 50 H334 M296 86 H326 M296 122 H340"/></svg><h2>Just tell Claude. <span>It runs the tools.</span></h2><p class="tile-line">Say what the model is for. Claude does the job and checks the result.</p></article>
         </div>
       </div>
     </section>
@@ -453,6 +477,6 @@
       <span><a href="../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="site.js?v=29"></script>
+  <script defer src="site.js?v=30"></script>
 </body>
 </html>

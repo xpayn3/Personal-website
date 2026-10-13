@@ -35,9 +35,9 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 95;
+const CSS_V = 96;
 const RP_V = 2;           // report.js
-const JS_V = 29;
+const JS_V = 30;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -713,6 +713,55 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
   // ---- the pages ----
   const pages = {};
 
+  // line drawings for the tiles: STEP-file and CAD motifs in thin strokes, one per claim (they move only while their tile is on screen)
+  const tileArt = (() => {
+    const f = n => Math.round(n * 10) / 10;
+    // an isometric box: the outline, and the three edges that meet in front
+    const cube = (cx, cy, s) => {
+      const w = 0.866 * s, h = s / 2;
+      const P = [[0, -s], [w, -h], [w, h], [0, s], [-w, h], [-w, -h]].map(([x, y]) => [f(cx + x), f(cy + y)]);
+      return `M${P.map(p => p.join(' ')).join(' L')} Z M${P[5].join(' ')} L${cx} ${cy} L${P[1].join(' ')} M${cx} ${cy} L${P[3].join(' ')}`;
+    };
+    const wrap = (cls, inner) => `<svg class="tile-art ${cls}" viewBox="0 0 360 200" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${inner}</svg>`;
+    const facet = i => { const t = (i * 9.8 - 58) / 72, y = 18 * Math.sqrt(Math.max(0, 1 - t * t)); return `<path d="M${f(122 + i * 9.8)} ${f(54 + y)} V${f(148 + y)}"/>`; };
+    return [
+      // Convert: a STEP sheet, an arrow, a triangulated box
+      wrap('art-convert', `
+        <path d="M24 28 H98 L124 54 V172 H24 Z M98 28 V54 H124"/>
+        <text x="34" y="50" class="art-t">STEP</text>
+        <path class="art-dim" d="M36 82 H100 M36 98 H86 M36 114 H104 M36 130 H78 M36 146 H96"/>
+        <path class="art-flow art-hot" d="M140 100 H196"/><path class="art-hot" d="M188 92 L198 100 L188 108"/>
+        <path d="${cube(264, 100, 52)}"/>
+        <path class="art-tri art-hot" d="M264 48 V100 M219 126 L264 100 M309 126 L264 100 M219 74 L264 126 M309 74 L264 126"/>
+        <text x="244" y="176" class="art-t">GLB</text>`),
+      // Clean: a housing, the parts hidden inside it, a scan line that finds them
+      wrap('art-clean', `
+        <path d="${cube(180, 100, 74)}"/>
+        <g class="art-hid art-hot"><circle cx="160" cy="96" r="9"/><circle cx="160" cy="96" r="3.5"/><circle cx="204" cy="106" r="9"/><circle cx="204" cy="106" r="3.5"/><path d="M178 128 h18 M178 138 h18"/></g>
+        <path class="art-scan art-hot" d="M92 30 H268"/>`),
+      // Shrink: one cylinder, many facets becoming few
+      wrap('art-shrink', `
+        <ellipse cx="180" cy="54" rx="72" ry="18"/>
+        <path d="M108 54 V148 A72 18 0 0 0 252 148 V54"/>
+        <g class="art-dense art-dim">${[...Array(13)].map((_, i) => facet(i)).join('')}<path d="M108 82 A72 18 0 0 0 252 82 M108 110 A72 18 0 0 0 252 110 M108 134 A72 18 0 0 0 252 134"/></g>
+        <g class="art-sparse art-hot"><path d="M180 72 V166 M144 70 V162 M216 70 V162"/><path d="M108 100 A72 18 0 0 0 252 100"/></g>`),
+      // Trust: a screen with a lock, the cloud crossed out, a step back
+      wrap('art-trust', `
+        <rect x="108" y="36" width="144" height="98" rx="7"/><path d="M152 134 L144 162 H216 L208 134"/>
+        <rect x="168" y="84" width="24" height="20" rx="3"/><path d="M173 84 V76 a7 7 0 0 1 14 0 V84"/>
+        <path d="M266 112 h40 a13 13 0 0 0 1-26 a19 19 0 0 0-36-4 a15 15 0 0 0-5 30z"/>
+        <path class="art-strike art-hot" d="M262 128 L322 66"/>
+        <path class="art-back art-hot" d="M56 72 a26 26 0 1 0 12 20"/><path class="art-hot" d="M56 56 V72 H72"/>`),
+      // Claude: a prompt, three tools it reaches for
+      wrap('art-claude', `
+        <path d="M30 56 H136 a12 12 0 0 1 12 12 V104 a12 12 0 0 1-12 12 H66 L44 136 V116 H42 a12 12 0 0 1-12-12 V68 a12 12 0 0 1 12-12 Z"/>
+        <path class="art-dim" d="M46 78 H118 M46 94 H92"/><path class="art-cursor art-hot" d="M100 90 V100"/>
+        <path class="art-flow art-hot" d="M148 86 C192 86 196 50 238 50 M148 86 H238 M148 86 C192 86 196 122 238 122"/>
+        <path d="${cube(262, 50, 18)}"/><path d="${cube(262, 86, 18)}"/><path d="${cube(262, 122, 18)}"/>
+        <path class="art-dim" d="M296 50 H334 M296 86 H326 M296 122 H340"/>`),
+    ];
+  })();
+
   // the claims at the top of the home page, as tiles
   const strengthsBand = () => {
     const st = site.strengths;
@@ -726,7 +775,7 @@ ${app.highlights.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt>
     return `    <section class="band is-first">
       <div class="wrap">
         <div class="bento">
-${st.tiles.map(([label, claim, rest, line]) => `          <article class="tile"><p class="tile-label">${esc(label)}</p><h2>${esc(claim)} <span>${esc(rest)}</span></h2><p class="tile-line">${esc(line)}</p></article>`).join('\n')}
+${st.tiles.map(([label, claim, rest, line], i) => `          <article class="tile"><p class="tile-label">${esc(label)}</p>${tileArt[i] || ''}<h2>${esc(claim)} <span>${esc(rest)}</span></h2><p class="tile-line">${esc(line)}</p></article>`).join('\n')}
         </div>
       </div>
     </section>`;

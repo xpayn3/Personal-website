@@ -155,6 +155,42 @@ figcaption { margin-top: 12px; color: var(--tx-3); font-size: 13px; line-height:
 .tile:first-child h2 { max-width: 12ch; font-size: clamp(48px, 8.4vw, 120px); line-height: 0.98; letter-spacing: -0.055em; }
 .tile h2 span { color: var(--tx-3); }
 .tile-line { max-width: 40ch; color: var(--tx-2); font-size: clamp(15px, 1.3vw, 19px); line-height: 1.45; }
+/* tile drawings: thin strokes, grey with a little blue; they move only while the tile is on screen */
+.tile-art { flex: 1 1 auto; align-self: stretch; width: 100%; min-height: 150px; max-height: 300px; margin: 4px 0 -8px; color: var(--tx-3); overflow: visible; }
+.tile:first-child .tile-art { max-height: 380px; }
+.tile-art .art-hot { stroke: var(--accent); }
+.tile-art .art-dim { opacity: 0.55; }
+.tile-art text.art-t { fill: var(--tx-3); stroke: none; font: 400 11px var(--mono); letter-spacing: 0.08em; }
+.tile-art .art-flow { stroke-dasharray: 4 7; }
+.tile-art .art-tri { stroke-dasharray: 70; stroke-dashoffset: 70; }
+.tile-art .art-scan { transform-box: fill-box; }
+.tile-art .art-hid { opacity: 0.25; }
+.tile-art .art-sparse { opacity: 0; }
+.tile-art .art-strike { stroke-dasharray: 90; stroke-dashoffset: 90; }
+.tile-art .art-back { stroke-dasharray: 130; stroke-dashoffset: 0; }
+.tile-art, .tile-art * { animation-play-state: paused; }
+.tile.is-live .tile-art, .tile.is-live .tile-art * { animation-play-state: running; }
+@media (prefers-reduced-motion: no-preference) {
+  .tile-art .art-flow { animation: art-flow 1.2s linear infinite; }
+  .tile-art .art-tri { animation: art-draw 4.2s ease-in-out infinite; }
+  .tile-art .art-scan { animation: art-scan 4.4s ease-in-out infinite; }
+  .tile-art .art-hid { animation: art-hid 4.4s ease-in-out infinite; }
+  .tile-art .art-dense { animation: art-dense 6s ease-in-out infinite; }
+  .tile-art .art-sparse { animation: art-sparse 6s ease-in-out infinite; }
+  .tile-art .art-strike { animation: art-strike 4.4s ease-in-out infinite; }
+  .tile-art .art-back { animation: art-back 4.4s ease-in-out infinite; }
+  .tile-art .art-cursor { animation: art-blink 1.1s steps(2, jump-none) infinite; }
+}
+@media (prefers-reduced-motion: reduce) { .tile-art .art-tri, .tile-art .art-strike { stroke-dashoffset: 0; } .tile-art .art-hid { opacity: 1; } .tile-art .art-sparse { opacity: 1; } }
+@keyframes art-flow { to { stroke-dashoffset: -22; } }
+@keyframes art-draw { 0%, 12% { stroke-dashoffset: 70; } 45%, 85% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -70; } }
+@keyframes art-scan { 0% { transform: translateY(0); opacity: 0; } 8% { opacity: 1; } 92% { opacity: 1; } 100% { transform: translateY(140px); opacity: 0; } }
+@keyframes art-hid { 0%, 30% { opacity: 0.25; } 50%, 85% { opacity: 1; } 100% { opacity: 0.25; } }
+@keyframes art-dense { 0%, 25% { opacity: 0.55; } 50%, 80% { opacity: 0; } 100% { opacity: 0.55; } }
+@keyframes art-sparse { 0%, 25% { opacity: 0; } 50%, 80% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes art-strike { 0%, 15% { stroke-dashoffset: 90; } 45%, 85% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -90; } }
+@keyframes art-back { 0% { stroke-dashoffset: 130; } 50%, 85% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -130; } }
+@keyframes art-blink { 50% { opacity: 0; } }
 @media (max-width: 760px) { .bento { grid-template-columns: minmax(0, 1fr); } .tile { min-height: 0; gap: 40px; } }
 /* headline figures */
 .figures { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: clamp(20px, 3vw, 48px); row-gap: clamp(28px, 4vw, 48px); counter-reset: fig; }

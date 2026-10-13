@@ -776,6 +776,13 @@
     }
   }
 
+  // ---- tile drawings move only while their tile is on screen ----
+  const tiles = $$('.tile');
+  if (tiles.length && 'IntersectionObserver' in window) {
+    const live = new IntersectionObserver(entries => entries.forEach(e => e.target.classList.toggle('is-live', e.isIntersecting)), { threshold: 0.2 });
+    tiles.forEach(t => live.observe(t));
+  }
+
   // ---- commands that copy ----
   $$('.copy').forEach(button => button.addEventListener('click', () => {
     if (!navigator.clipboard) return;
