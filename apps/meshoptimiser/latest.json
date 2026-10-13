@@ -1,25 +1,26 @@
 {
   "schema": 1,
   "stable": {
-    "version": "0.24.0",
-    "date": "2026-10-12",
-    "headline": "Edit mesh with points, edges and polygons, a keyboard in the shortcuts window with keys you can change, and a faster start.",
+    "version": "0.25.0",
+    "date": "2026-10-13",
+    "headline": "26 new library parts, Align parts, Transform on several parts at once, and a search you can move.",
     "notes": [
-      "Edit mesh: points, edges and polygons, picked with Click, Box or Brush.",
-      "Move, delete, dissolve, weld, fill and extract what you picked.",
-      "The shortcuts window shows the keyboard, and every key can be changed.",
-      "Quick remesh on B, and Untriangulate clears points on straight lines.",
-      "A Scale switch in the Transform panel, and groups can be scaled.",
-      "A faster start."
+      "26 new library parts on two new shelves: 112 parts in all.",
+      "Align parts: line parts up or spread them evenly.",
+      "The Transform panel works on several parts at once.",
+      "Move the search by its icon. It remembers where you put it.",
+      "A part search that forgives a typo.",
+      "Bake geo turns a library shape into an ordinary mesh.",
+      "The Edit mesh tools are a bar at the right of the view, and Box pick is live."
     ],
     "more": "https://lukagrcar.com/apps/meshoptimiser/changelog.html",
     "archive": {
-      "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.24.0/meshoptimiser-app-0.24.0.zip",
-      "sha256": "f64840044f69ab1a5ffb5ac1d1a8d93bc4ea570fc31eff967243bfadec7b4eea",
-      "size": 5020939
+      "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.25.0/meshoptimiser-app-0.25.0.zip",
+      "sha256": "f9d2771ebf8a57a1c5fba28e986a08a4c62685d20b96852894dab644be5bc2a5",
+      "size": 5122908
     },
     "requirements_sha256": "f1a93ffe65235c3537c454bcad32277ba82c666c35ece65e2fe598556d0f2f7d",
-    "requirements_changed": true,
+    "requirements_changed": false,
     "launcher": 1,
     "min_from": ""
   }

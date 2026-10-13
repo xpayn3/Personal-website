@@ -33,7 +33,7 @@
   "description": "Open a CAD assembly, strip what nobody sees, export a light GLB. Free, and it never leaves your computer.",
   "applicationCategory": "DesignApplication",
   "operatingSystem": "Windows, macOS",
-  "softwareVersion": "0.24.0",
+  "softwareVersion": "0.25.0",
   "url": "https://lukagrcar.com/apps/meshoptimiser/",
   "image": "https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp",
   "downloadUrl": "https://github.com/xpayn3/MeshOptimiser/archive/HEAD.zip",
@@ -73,7 +73,7 @@
   </header>
   <main id="main">
     <section class="wrap hero">
-      <p class="kicker">v0.24.0<b>·</b>Beta<b>·</b>MIT<b>·</b>Windows and macOS</p>
+      <p class="kicker">v0.25.0<b>·</b>Beta<b>·</b>MIT<b>·</b>Windows and macOS</p>
       <h1>Heavy CAD, made light enough for a browser.</h1>
       <p class="lead">Open a CAD assembly, strip what nobody sees, export a light GLB. Free, and it never leaves your computer.</p>
       <div class="actions">
@@ -256,9 +256,9 @@
       <div class="wrap">
         <div class="band-head">
           <p class="kicker">The library</p>
-          <h2>Eighty-six parts, ready to use.</h2>
+          <h2>112 parts, ready to use.</h2>
         </div>
-        <p class="lead lib-lead">Bolts, nuts, pipe fittings, profiles, gears, a stepper motor. Set the size, then drag it in.</p>
+        <p class="lead lib-lead">Bolts, nuts, pipe fittings, bearings, brackets, gears, a servo, a circuit board. Set the size, then drag it in.</p>
         <div class="lib-show">
           <ul class="lib-tiles">
             <li><img src="library/cube.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Cube</span></li>
@@ -267,20 +267,20 @@
             <li><img src="library/tube.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Tube</span></li>
             <li><img src="library/plate.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Plate</span></li>
             <li><img src="library/gear.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Spur gear</span></li>
+            <li><img src="library/fan.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Axial fan</span></li>
+            <li><img src="library/anglebracket.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Angle bracket</span></li>
             <li><img src="library/sphere.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Sphere</span></li>
             <li><img src="library/allen.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Socket head screw</span></li>
             <li><img src="library/jamnut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Thin nut</span></li>
             <li><img src="library/elbow.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Pipe elbow</span></li>
             <li><img src="library/flatbar.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Flat bar</span></li>
             <li><img src="library/rack.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Gear rack</span></li>
+            <li><img src="library/heatsink.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Heatsink</span></li>
+            <li><img src="library/tslotangle.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>T-slot bracket</span></li>
             <li><img src="library/cylinder.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Cylinder</span></li>
             <li><img src="library/countersunk.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Countersunk screw</span></li>
             <li><img src="library/locknut.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Lock nut</span></li>
             <li><img src="library/tee.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Pipe tee</span></li>
-            <li><img src="library/angle.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Angle profile</span></li>
-            <li><img src="library/sprocket.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Sprocket</span></li>
-            <li><img src="library/cone.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Cone</span></li>
-            <li><img src="library/buttonhead.webp" alt="" width="192" height="192" loading="lazy" decoding="async" /><span>Button head screw</span></li>
           </ul>
         </div>
       </div>
@@ -391,16 +391,16 @@
       <div class="wrap split">
         <div class="split-head">
           <p class="kicker">Latest release</p>
-          <h2>v0.24.0<b class="rel-code">Soča</b></h2>
+          <h2>v0.25.0<b class="rel-code">Bled</b></h2>
           <a class="more" href="changelog.html">Full changelog</a>
         </div>
         <div class="split-body">
-          <p>Into the mesh. Pick points, edges and polygons and move, weld, fill or dissolve them. The shortcuts window is a keyboard now, and every key is yours to change.</p>
+          <p>More to build with, and a better way to line it all up. Twenty-six new library parts, an Align parts panel, a Transform panel that works on several parts, and a search you can move.</p>
           <ul class="changes">
-            <li><b class="is-new">New</b><span>Edit mesh. Points, Edges, Polygons and Model, as in Cinema 4D. Keys 1, 2, 3 and 4 switch between them, and the selected parts show their polygons, not their triangles.</span></li>
-            <li><b class="is-new">New</b><span>Three ways to pick: Click, Box and Brush. Shift adds, Ctrl takes away, a double-click takes the whole loop. Ctrl+A takes everything.</span></li>
-            <li><b class="is-new">New</b><span>Move what you picked. The gizmo moves, turns and scales the pieces, Del takes them out, Reverse normals turns faces round. Each is one undo.</span></li>
-            <li><b class="is-new">New</b><span>Six tools for the pieces: Dissolve, Planarize, Straighten, Weld, Fill and Extract. Take points out without a hole, flatten polygons, straighten a line, join points, close a hole, lift polygons into a part of their own.</span></li>
+            <li><b class="is-new">New</b><span>26 new library parts on two new shelves. The library has 112 parts on eight shelves now. Bearings, a timing pulley, a rail carriage, fans, a circuit board, a servo, and nine brackets and connectors.</span></li>
+            <li><b class="is-new">New</b><span>Align parts. Line parts up or spread them evenly along X, Y and Z, to the selection, the last part you picked or the origin. Set a gap if you want one. Each press is one undo.</span></li>
+            <li><b class="is-new">New</b><span>Transform several parts at once. A field shows the number the parts share, or mixed. Type one and it goes to each part on its own, about its own origin.</span></li>
+            <li><b class="is-new">New</b><span>Move the search. Drag its icon and it goes where you want it, drag its edge to change the width. It remembers, and a double-click puts it back.</span></li>
           </ul>
         </div>
       </div>
@@ -412,7 +412,7 @@
           <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="download.html">Download v0.24.0</a>
+          <a class="btn is-primary is-large" href="download.html">Download v0.25.0</a>
           <a class="btn is-large btn-demo" href="demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Try the demo</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>

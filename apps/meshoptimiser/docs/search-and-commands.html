@@ -107,6 +107,7 @@
         <a href="../docs/move-rotate-scale.html">Move, rotate, scale and measure</a>
         <a href="../docs/edit-mesh.html">Edit mesh: points, edges and polygons</a>
         <a href="../docs/align-to-floor.html">Align to floor</a>
+        <a href="../docs/align-parts.html">Align parts</a>
         <a href="../docs/exploded-view.html">Exploded view</a>
         <a href="../docs/library.html">The parts library and shapes</a>
         <a href="../docs/draw-lines.html">Draw lines and shapes</a>
@@ -176,6 +177,9 @@
             <div><dt><code>+</code></dt><dd>Library parts.</dd></div>
             <div><dt><code>#</code></dt><dd>Settings.</dd></div>
           </dl>
+          <h2 id="move-the-search">Move the search</h2>
+          <p>The search does not have to stay in the middle of the window. Press and hold the magnifying glass at its left and drag, and the whole card follows. Drag its right edge to make it wider or narrower. It cannot be narrower than 320 pixels.</p>
+          <p>The place and the width are remembered, also after you close the search and the next time you open the app. Double-click the magnifying glass to put it back in the middle at its own width.</p>
           <h2 id="commands-that-cannot-run-right-now">Commands that cannot run right now</h2>
           <p>A command that cannot run right now is greyed out, and says why: “Select a part first”, “Open a model first” or “Nothing to undo”. A command that works on the selection, or on every part when nothing is selected, needs only an open model.</p>
           <p>What the search looks through, and how loosely it reads what you type, can be changed under <span class="ui">Settings</span>, <span class="ui">Search</span>. See <a href="../docs/settings.html">Settings</a>.</p>
@@ -187,6 +191,7 @@
             <div><dt>Find stacked copies…</dt><dd>Finds parts that sit on an identical copy of themselves. See <a href="../docs/stacked-copies.html">Stacked copies</a>.</dd></div>
             <div><dt>Select hidden parts…</dt><dd>Finds the parts that cannot be seen from outside. See <a href="../docs/select-hidden-parts.html">Select hidden parts</a>.</dd></div>
             <div><dt>Align model to the floor…</dt><dd>Opens the card that stands the model on the floor. <span class="ui">Align model to the floor (with the last choices)</span> does it at once, without opening the card. See <a href="../docs/align-to-floor.html">Align to floor</a>.</dd></div>
+            <div><dt>Align and spread parts…</dt><dd>Opens the Align parts card, which lines the selected parts up or spaces them evenly. See <a href="../docs/align-parts.html">Align parts</a>.</dd></div>
             <div><dt>Dynamic place</dt><dd>Turns on dragging the selected part over other surfaces (<kbd>D</kbd>). See <a href="../docs/move-rotate-scale.html">Move, rotate and scale</a>.</dd></div>
             <div><dt>Remove floating pieces…</dt><dd>Deletes the small loose pieces of a part. See <a href="../docs/remove-floating-pieces.html">Remove floating pieces</a>.</dd></div>
             <div><dt>Sweep…</dt><dd>Opens the Sweep card, which has no button on the toolbar. See <a href="../docs/sweep.html">Sweep</a>.</dd></div>
@@ -209,7 +214,7 @@
           <h2 id="the-list-of-all-commands">The list of all commands</h2>
           <p>The <code>…</code> button at the right end of the bottom toolbar opens every command that acts on the model in one list, with its shortcut. A command that cannot run right now is dimmed. Hover over it to see why, for example because nothing is selected.</p>
           <h2 id="command-cards">Command cards</h2>
-          <p>Some commands have settings: Split, Remove holes, Remove floating pieces, Remesh, Smart fit, Select hidden parts, Fasteners, Stacked copies, Align to floor and Dynamic place. They open as a card over the bottom left of the viewport.</p>
+          <p>Some commands have settings: Split, Remove holes, Remove floating pieces, Remesh, Smart fit, Select hidden parts, Fasteners, Stacked copies, Align to floor, Align parts and Dynamic place. They open as a card over the bottom left of the viewport.</p>
           <dl class="kb-keys">
             <div><dt><kbd>Enter</kbd></dt><dd>Run the open card</dd></div>
             <div><dt><kbd>Esc</kbd></dt><dd>Put the card away. A second press clears the selection.</dd></div>
@@ -221,6 +226,7 @@
           <div class="kb-see"><h2>Related</h2><ul>
             <li><a href="../docs/shortcuts.html">Keyboard shortcuts</a></li>
             <li><a href="../docs/library.html">The parts library and shapes</a></li>
+            <li><a href="../docs/align-parts.html">Align parts</a></li>
             <li><a href="../docs/the-window.html">The window</a></li>
           </ul></div>
         </div>
@@ -249,7 +255,7 @@
           <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.24.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.25.0</a>
           <a class="btn is-large btn-demo" href="../demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Try the demo</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>

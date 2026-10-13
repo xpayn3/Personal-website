@@ -107,6 +107,7 @@
         <a href="../docs/move-rotate-scale.html">Move, rotate, scale and measure</a>
         <a href="../docs/edit-mesh.html">Edit mesh: points, edges and polygons</a>
         <a href="../docs/align-to-floor.html">Align to floor</a>
+        <a href="../docs/align-parts.html">Align parts</a>
         <a href="../docs/exploded-view.html">Exploded view</a>
         <a href="../docs/library.html">The parts library and shapes</a>
         <a href="../docs/draw-lines.html">Draw lines and shapes</a>
@@ -152,16 +153,16 @@
             <div><dt>Camera button</dt><dd>Next to Export. Saves a picture of the view. See <a href="../docs/screenshots.html">Screenshots</a>.</dd></div>
           </dl>
           <h2 id="left-sidebar">Left sidebar</h2>
-          <p>It shows the parts tree: every part of the model, arranged in groups, with a search field and three buttons above it (<span class="ui">Collapse</span>, <span class="ui">Rename</span>, <span class="ui">Flatten</span>). A <span class="ui">Transform</span> card with position, rotation and size can be shown at its foot. It floats over the bottom of the sidebar and takes its own room under the tree. The library of parts you can add is not in this sidebar any more. It is a drawer under the viewport (see below).</p>
+          <p>It shows the parts tree: every part of the model, arranged in groups, with a search field and three buttons above it (<span class="ui">Collapse</span>, <span class="ui">Rename</span>, <span class="ui">Flatten</span>). A <span class="ui">Transform</span> card with position, rotation and size can be shown at its foot. It works on several selected parts at once (see <a href="../docs/move-rotate-scale.html">Move, rotate, scale</a>). It floats over the bottom of the sidebar and takes its own room under the tree. The library of parts you can add is not in this sidebar any more. It is a drawer under the viewport (see below).</p>
           <h2 id="viewport">Viewport</h2>
           <dl class="table">
             <div><dt>Tool strip, left edge</dt><dd>At the top, the mode button: Model, or the points, edges and polygons of <a href="../docs/edit-mesh.html">Edit mesh</a>. Then the move, rotate and scale tools, <span class="ui">Dynamic place</span> (<kbd>D</kbd>), a button for the transform card, four view modes (solid, wireframe, X-ray, heatmap) and a button that highlights small parts. The Clay and CAD looks are in the <span class="ui">Shading</span> card on the right.</dd></div>
             <div><dt>View name, top centre</dt><dd>Says which camera view is active, <span class="ui">Cam</span> to begin with. Click it to switch to Top, Front or Side. Small pills to its right show a mode that is on: <span class="ui">Isolated</span>, <span class="ui">Exploded</span>, <span class="ui">Measure</span> and <span class="ui">Snap</span>. Click a pill to leave that mode.</dd></div>
             <div><dt>View cube, top right</dt><dd>A small cube that turns with the model. Click a face or an axis dot and the view turns there.</dd></div>
             <div><dt>Toolbar, bottom centre</dt><dd>Search, add a shape, <span class="ui">Split</span>, <span class="ui">Remove holes</span>, <span class="ui">Draw lines</span>, <span class="ui">Smart fit</span>, <span class="ui">Remesh</span>, <span class="ui">Select hidden parts</span>, <span class="ui">Fasteners</span>, <span class="ui">Measure</span>, <span class="ui">Library</span>, <span class="ui">Materials</span>, and <code>…</code> for the list of all commands.</dd></div>
-            <div><dt>Edit mesh bar, right edge</dt><dd>Appears under the view cube while Edit mesh is on: how a click picks (Click, Box, Brush), the gizmo’s axes, and the buttons that change the picked pieces. See <a href="../docs/edit-mesh.html">Edit mesh</a>.</dd></div>
+            <div><dt>Edit mesh bar, right edge</dt><dd>A vertical bar that appears under the view cube while Edit mesh is on: how a click picks (Click, Box, Brush), the gizmo’s axes, Loops, and the buttons that change the picked pieces. The tool strip shows Points, Edges and Polygons as three buttons then. See <a href="../docs/edit-mesh.html">Edit mesh</a>.</dd></div>
             <div><dt>Shortcut tips, bottom right</dt><dd>A faint list of what the mouse and keys do right now. It changes when you select something.</dd></div>
-            <div><dt>Command cards, bottom left</dt><dd>A tool with settings, such as Remove holes, Align to floor or Dynamic place, opens as a card over the viewport. <kbd>Enter</kbd> runs it and <kbd>Esc</kbd> puts it away.</dd></div>
+            <div><dt>Command cards, bottom left</dt><dd>A tool with settings, such as Remove holes, Align to floor, Align parts or Dynamic place, opens as a card over the viewport. <kbd>Enter</kbd> runs it and <kbd>Esc</kbd> puts it away.</dd></div>
           </dl>
           <h2 id="right-sidebar">Right sidebar</h2>
           <p>At the top is <span class="ui">Properties</span>. With nothing selected it describes the whole scene. With a selection it describes that: the name, the material, the triangle count with a bar that shows its share of the scene, and the number of vertices, the size and the mesh data. Under it are cards you open and close by clicking their title. A card slides open and shut. Every card starts folded except <span class="ui">Properties</span> and <span class="ui">Shading</span>, and the ones you open or close are remembered.</p>
@@ -228,7 +229,7 @@
           <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.24.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.25.0</a>
           <a class="btn is-large btn-demo" href="../demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Try the demo</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>

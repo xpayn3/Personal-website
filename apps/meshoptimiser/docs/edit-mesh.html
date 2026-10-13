@@ -8,12 +8,12 @@
   <meta name="color-scheme" content="dark" />
   <meta name="robots" content="noai, noimageai" />
   <title>Edit mesh: points, edges and polygons — MeshOptimiser Docs</title>
-  <meta name="description" content="Pick and change the pieces a part is made of: its points, edges and polygons. Move, delete, dissolve, planarize, straighten, weld, fill and extract them." />
+  <meta name="description" content="Pick and change the pieces a part is made of: its points, edges and polygons. Move, delete, dissolve, planarize, straighten, weld, fill and extract them, from…" />
   <link rel="icon" type="image/svg+xml" href="../../../Images/apps/meshoptimiser-icon.svg" />
   <link rel="canonical" href="https://lukagrcar.com/apps/meshoptimiser/docs/edit-mesh" />
   <meta property="og:site_name" content="MeshOptimiser" />
   <meta property="og:title" content="Edit mesh: points, edges and polygons — MeshOptimiser Docs" />
-  <meta property="og:description" content="Pick and change the pieces a part is made of: its points, edges and polygons. Move, delete, dissolve, planarize, straighten, weld, fill and extract them." />
+  <meta property="og:description" content="Pick and change the pieces a part is made of: its points, edges and polygons. Move, delete, dissolve, planarize, straighten, weld, fill and extract them, from…" />
   <meta property="og:image" content="https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp" />
   <meta property="og:url" content="https://lukagrcar.com/apps/meshoptimiser/docs/edit-mesh" />
   <meta property="og:type" content="website" />
@@ -107,6 +107,7 @@
         <a href="../docs/move-rotate-scale.html">Move, rotate, scale and measure</a>
         <a href="../docs/edit-mesh.html" aria-current="page">Edit mesh: points, edges and polygons</a>
         <a href="../docs/align-to-floor.html">Align to floor</a>
+        <a href="../docs/align-parts.html">Align parts</a>
         <a href="../docs/exploded-view.html">Exploded view</a>
         <a href="../docs/library.html">The parts library and shapes</a>
         <a href="../docs/draw-lines.html">Draw lines and shapes</a>
@@ -137,7 +138,7 @@
       <article class="kb-article">
         <p class="kicker"><a href="../docs.html">Docs</a><b>·</b><a href="../docs.html#look">Look and arrange</a></p>
         <h1>Edit mesh: points, edges and polygons</h1>
-        <p class="lead">Pick and change the pieces a part is made of: its points, edges and polygons. Move, delete, dissolve, planarize, straighten, weld, fill and extract them.</p>
+        <p class="lead">Pick and change the pieces a part is made of: its points, edges and polygons. Move, delete, dissolve, planarize, straighten, weld, fill and extract them, from a bar at the right of the view.</p>
         <div class="kb-body">
           <p>Until now a click in the 3D view picked a whole part. Edit mesh lets you into the part. You pick its points, its edges or its polygons, and you can move them, take them out, join them or close a hole. If you have used Cinema 4D, it works the same way.</p>
           <p>A mesh is made of three kinds of piece. A <span class="ui">point</span> is a corner (the glossary calls it a vertex). An <span class="ui">edge</span> is the line between two points. A <span class="ui">polygon</span> is a flat face. Two triangles that together make a four-sided shape count as one polygon, as a cell of a grid or a strip of a tube wall does. A triangle with no such partner is a polygon of its own. See <a href="../docs/glossary.html">Words you will meet</a>.</p>
@@ -152,9 +153,11 @@
           <ul class="kb-points">
             <li>Click the button once to go into the last piece mode you used, or back out again.</li>
             <li>Hold the button to see the list of all four.</li>
+            <li>While Edit mesh is on, three more buttons appear under the mode button: <span class="ui">Points</span>, <span class="ui">Edges</span> and <span class="ui">Polygons</span>. The lit one is the kind of piece you are picking, and a click on another switches to it. The mode button itself shows the Model icon then, and a click on it goes back to Model.</li>
             <li>The view modes (solid, wireframe, X-ray, heatmap) that these keys used to switch are now on <kbd>Alt</kbd><kbd>1</kbd> to <kbd>Alt</kbd><kbd>4</kbd>. See <a href="../docs/view-modes.html">View modes</a>.</li>
           </ul>
           <aside class="kb-note"><p>Select the part or parts first. In a piece mode only the selected parts show their mesh lines, and only they can be picked.</p></aside>
+          <aside class="kb-note"><p>A shape from the <a href="../docs/library.html">library</a> that still has <span class="ui">Shape parameters</span> is not edited in place, because its parameters would build it again. When you go into a piece mode with one selected, the app says <span class="ui">Bake geo first</span>. Press <span class="ui">Bake geo</span> under the shape’s parameters in <span class="ui">Properties</span> to turn it into an ordinary mesh, then pick its pieces.</p></aside>
           <h2 id="what-you-see">What you see</h2>
           <ul class="kb-points">
             <li>The selected parts show their mesh lines in blue, as polygons rather than triangles.</li>
@@ -162,10 +165,10 @@
             <li>In Points mode every point of the part is shown.</li>
           </ul>
           <h2 id="pick-pieces">Pick pieces</h2>
-          <p>Three tools, in the bar at the right edge of the view, decide how the left mouse button picks. With all three, <kbd>Shift</kbd> adds to what is picked and <kbd>Ctrl</kbd> takes away from it.</p>
+          <p>The Edit mesh tools are a bar at the right edge of the view, under the view cube. It replaces the card that earlier versions had. At the top of the bar are three tools that decide how the left mouse button picks. With all three, <kbd>Shift</kbd> adds to what is picked and <kbd>Ctrl</kbd> takes away from it.</p>
           <dl class="table">
             <div><dt>Click</dt><dd>One piece at a time. A click beside the model clears the pick. A double-click picks a loop. With Click, a point is taken only when the pointer is within 16 pixels of it, and an edge within 12 pixels.</dd></div>
-            <div><dt>Box</dt><dd>Drag a rectangle. What lies in it whole, and can be seen, is picked.</dd></div>
+            <div><dt>Box</dt><dd>Drag a rectangle. What lies in it whole, and can be seen, is picked. The pick is live: it follows the box while you drag, and pieces the box lets go of are let go. The gizmo is put away during the drag. The history gets one entry when you let go. If you change tool, or the pointer is lost, in the middle of a drag, the box is cancelled and what you had picked comes back.</dd></div>
             <div><dt>Brush</dt><dd>Paint over the model. What the brush passes over is picked. Hold the middle button and drag to change the size of the brush, or type it in the bar.</dd></div>
           </dl>
           <p>With Box and Brush, <kbd>Alt</kbd> and drag turns the view. <span class="ui">Loops</span> in the bar does what a double-click does for every click, and lights the loop under the pointer before you click.</p>
@@ -184,16 +187,18 @@
             <li><span class="ui">Reverse normals</span> turns the picked polygons round, so their front becomes their back. Use it for faces that came in the wrong way, which look dark or see-through from one side.</li>
           </ul>
           <h2 id="the-tools-that-change-the-mesh">The tools that change the mesh</h2>
-          <p>Each one is a button in the bar, and each is one undo step. A button works on one kind of piece and is dimmed when something else is picked.</p>
+          <p>Each one is a button in the bar, below the gizmo’s axes, and each is one undo step. A button works on one kind of piece and is dimmed when something else is picked.</p>
           <dl class="table">
             <div><dt>Dissolve</dt><dd>With <kbd>Ctrl</kbd><kbd>Backspace</kbd>. Picked points are taken out and the surface closes over them. For picked edges and polygons the polygons become one, and the points left inside them, or on a straight line of their outline, go. The shape does not change there.</dd></div>
             <div><dt>Planarize</dt><dd>For polygons. Moves the points of each picked polygon onto its best-fit plane. A polygon that would have to bend a long way, such as a curved face, is left as it is.</dd></div>
             <div><dt>Straighten</dt><dd>For edges. Moves the points along a picked line of edges onto the straight line between its two ends.</dd></div>
-            <div><dt>Weld</dt><dd>For points and edges. Opens a small card. Picked points become one, at their middle. With a distance in <span class="ui">Join within</span>, the points that are that close to each other become one each. With 0, all the picked points become one. Picked edges collapse to a point. Triangles that are left with two corners in one place go.</dd></div>
+            <div><dt>Weld</dt><dd>For points and edges. Opens a small card of its own, with <span class="ui">Join within</span> and a <span class="ui">Weld</span> button. Picked points become one, at their middle. With a distance in <span class="ui">Join within</span>, the points that are that close to each other become one each. With 0, all the picked points become one. Picked edges collapse to a point. Triangles that are left with two corners in one place go.</dd></div>
             <div><dt>Fill</dt><dd>For edges. Closes a hole whose whole rim is picked. A double-click on an open edge picks the whole loop. The cap has points of its own, so it shades on its own.</dd></div>
             <div><dt>Extract</dt><dd>For polygons. Takes the picked polygons out into a part of their own, in the same place and with the same material.</dd></div>
             <div><dt>Reverse normals</dt><dd>For polygons. Described above.</dd></div>
           </dl>
+          <h2 id="key-tips">Key tips</h2>
+          <p>While Edit mesh is on, the faint list of tips at the bottom right of the view shows what the mouse and keys do right now. It follows the tool you hold and what is picked. With nothing picked it tells you how to pick, and that <kbd>Ctrl</kbd><kbd>A</kbd> picks all and <kbd>Esc</kbd> goes back to Model. With something picked it adds <kbd>Del</kbd> to delete, <kbd>Ctrl</kbd><kbd>Backspace</kbd> to dissolve and <kbd>Esc</kbd> to let go.</p>
           <h2 id="good-to-know">Good to know</h2>
           <ul class="kb-points">
             <li>The quads and n-gons of an OBJ or FBX file are remembered after the file is read, so the polygons of the file are known afterwards.</li>
@@ -206,6 +211,7 @@
             <li><a href="../docs/view-modes.html">View modes</a></li>
             <li><a href="../docs/remesh.html">Remesh: Untriangulate and Triangulate</a></li>
             <li><a href="../docs/fill-holes.html">Remove holes</a></li>
+            <li><a href="../docs/library.html">The parts library and shapes</a></li>
             <li><a href="../docs/undo-redo.html">Undo and redo</a></li>
             <li><a href="../docs/shortcuts.html">Keyboard shortcuts</a></li>
           </ul></div>
@@ -235,7 +241,7 @@
           <p>Free and open source, MIT. Windows and macOS. Your files never leave the computer.</p>
         </div>
         <div class="actions">
-          <a class="btn is-primary is-large" href="../download.html">Download v0.24.0</a>
+          <a class="btn is-primary is-large" href="../download.html">Download v0.25.0</a>
           <a class="btn is-large btn-demo" href="../demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Try the demo</a>
           <a class="btn is-large" href="https://github.com/xpayn3/MeshOptimiser" rel="noopener">View on GitHub</a>
         </div>
