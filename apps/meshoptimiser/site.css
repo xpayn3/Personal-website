@@ -145,6 +145,26 @@ figcaption { margin-top: 12px; color: var(--tx-3); font-size: 13px; line-height:
 .split-head { display: grid; gap: 14px; justify-items: start; position: sticky; top: calc(var(--bar-h) + 32px); }
 .split-body { display: grid; gap: 18px; color: var(--tx-2); font-size: 17px; }
 
+/* strengths: before and after, with a bar for what is left */
+.strengths { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 20px); }
+.strength { display: grid; align-content: start; padding: clamp(22px, 2.6vw, 34px); background: var(--surface); border: 1px solid var(--line); border-radius: calc(var(--r) + 4px); transition: border-color 0.2s ease, background 0.2s ease; }
+.strength:hover { border-color: var(--line-strong); background: var(--surface-2); }
+.strength-tag { display: flex; align-items: center; gap: 12px; color: var(--tx-3); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
+.strength-tag span { font: 400 12px/1 var(--mono); letter-spacing: 0.06em; }
+.strength-fig { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 clamp(10px, 1.4vw, 18px); margin-top: clamp(22px, 3vw, 36px); font-size: clamp(34px, 4.6vw, 64px); line-height: 1; letter-spacing: -0.035em; font-weight: 300; font-variant-numeric: tabular-nums; }
+.strength-fig s { color: var(--tx-3); text-decoration: none; }
+.strength-fig i { color: var(--tx-3); font-style: normal; font-size: 0.7em; }
+.strength-fig b { color: var(--tx); font-weight: 300; }
+.strength-bar { position: relative; height: 6px; margin-top: clamp(20px, 2.4vw, 28px); border-radius: 3px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+.strength-bar span { position: absolute; inset: 0 auto 0 0; width: var(--left); border-radius: 3px; background: var(--accent); transform-origin: left; animation: strength-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.strength.is-zero .strength-bar { background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.14) 0 6px, transparent 6px 12px); }
+.strength.is-zero .strength-bar span { display: none; }
+.strength-line { margin-top: 16px; max-width: 34ch; color: var(--tx-2); font-size: 15px; line-height: 1.5; }
+@keyframes strength-in { from { transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce) { .strength-bar span { animation: none; } }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: clamp(20px, 2.4vw, 32px); list-style: none; }
+.chips li { padding: 8px 14px; border: 1px solid var(--line-strong); border-radius: 999px; color: var(--tx-2); font-size: 14px; line-height: 1; white-space: nowrap; }
+@media (max-width: 760px) { .strengths { grid-template-columns: minmax(0, 1fr); } .strength-fig { font-size: clamp(36px, 11vw, 52px); } }
 /* headline figures */
 .figures { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: clamp(20px, 3vw, 48px); row-gap: clamp(28px, 4vw, 48px); counter-reset: fig; }
 .figures > div { display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: 0; padding-top: 18px; border-top: 1px solid var(--line-strong); counter-increment: fig; }
