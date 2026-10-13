@@ -1475,3 +1475,6 @@ main { overflow-x: clip; }
 /* a full picture of the app under the derailleur */
 .shot-under { margin-top: clamp(40px, 6vw, 96px); }
 .shot-under img { width: 100%; height: auto; aspect-ratio: 1920 / 1031; border-radius: clamp(18px, 2.4vw, 32px); box-shadow: 0 0 0 1px var(--line); background: var(--surface); }
+/* no focus frame around a picture in the strip */
+.strip, .strip figure, .strip .zoom, .strip img { outline: none; }
+.strip .zoom:focus, .strip .zoom:focus-visible, .strip figure:focus, .strip figure:focus-visible, .strip:focus, .strip:focus-visible { outline: none; box-shadow: none; }

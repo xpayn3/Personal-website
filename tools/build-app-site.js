@@ -35,7 +35,7 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 269;
+const CSS_V = 273;
 const RP_V = 2;           // report.js
 const JS_V = 44;
 
@@ -1144,7 +1144,7 @@ ${claudeBand()}
       </div>
       <div class="dots" aria-hidden="true"></div>
       <div class="wrap">
-        <p class="credit">The assembly in these pictures is Gearbox Assy from Khronos’s <a href="https://github.com/KhronosGroup/glTF-Sample-Models/tree/main/2.0/GearboxAssy" rel="noopener">glTF-Sample-Models</a>, a JT CAD sample converted by Okino Computer Graphics. The bolts, nuts, washers and gears come from the app’s own library.</p>
+        <p class="credit">The gearbox in these pictures is Gearbox Assy from Khronos’s <a href="https://github.com/KhronosGroup/glTF-Sample-Models/tree/main/2.0/GearboxAssy" rel="noopener">glTF-Sample-Models</a>, a JT CAD sample converted by Okino Computer Graphics. The bolts, nuts, washers and gears come from the app’s own library.</p>
       </div>
     </section>
 

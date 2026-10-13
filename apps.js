@@ -52,14 +52,13 @@ window.labApps = [
     cover: 'Images/apps/meshoptimiser-hero.webp',
     shots: [
       ['Images/apps/meshoptimiser-hero.webp', 'A gearbox assembly: 95 parts, 646,064 triangles.'],
-      ['Images/apps/meshoptimiser-smart-optimise.webp', 'Smart optimise: every clean-up in order, aiming at half the triangles.'],
       ['Images/apps/meshoptimiser-windows.webp', 'Library, materials and the material editor, open together over the model.'],
       ['Images/apps/meshoptimiser-quick-remesh.webp', 'Quick remesh: a percentage picker right on the part. 25% here: 2,038 triangles, −75%.'],
-      ['Images/apps/meshoptimiser-fasteners.webp', 'Fasteners: 48 found by shape, 22,760 triangles.'],
+      ['Images/apps/meshoptimiser-wand.webp', 'Quick wand: a ring of commands under the cursor. Here, Remove empty parts.'],
+      ['Images/apps/meshoptimiser-keyboard.webp', 'Keyboard shortcuts: press any keys to see what they do. Click a shortcut to change it.'],
+      ['Images/apps/meshoptimiser-appearance.webp', 'Appearance: accent colour, surfaces, font and text size.'],
+      ['Images/apps/meshoptimiser-fasteners-axle.webp', 'Fasteners: 88 found by shape, 45,498 triangles.'],
       ['Images/apps/meshoptimiser-blocks.webp', 'Blocks: 72,666 triangles down to 212, outline intact.'],
-      ['Images/apps/meshoptimiser-heatmap.webp', 'Heatmap: parts coloured by triangle count.'],
-      ['Images/apps/meshoptimiser-exploded.webp', 'Exploded view at 50%, a slider per axis.'],
-      ['Images/apps/meshoptimiser-inspect.webp', 'One part selected: its triangles, its share and its rank.'],
       ['Images/apps/meshoptimiser-library.webp', 'The library drawer: pick a part, set its size, drop it in.'],
     ],
     site: {
@@ -609,7 +608,7 @@ window.labApps = [
       ['Fasteners', 'Every bolt, nut and washer, found by shape. Whatever the CAD file called them.', 'Images/apps/meshoptimiser-clip-fasteners.webm', 'fasteners'],
       ['Smart fit', 'A dense part becomes a box, a cylinder or blocks that keep its outline.', 'Images/apps/meshoptimiser-clip-smart-fit.webm', 'smart-fit'],
     ],
-    stats: [['Version', '0.25.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
+    stats: [['Version', '0.26.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
     about: [
       'For the STEP assembly that has to go on a web page.',
       '400 identical bolts, 80 duplicate brackets, half a million broken triangles. MeshOptimiser keeps each repeat once, rebuilds the bad geometry and drops what you can’t see.',
@@ -634,6 +633,7 @@ window.labApps = [
         ['You set the tessellation', 'Big parts fine, screws light. You choose the detail by part size.'],
         ['Smooth from the CAD surfaces', 'Fillets blend, cylinders have no seam, sharp edges stay sharp.'],
         ['Compresses', 'Meshopt turns your GLBs into a fraction of the size.'],
+        ['Opens the same STEP instantly', 'The converted model is kept. Open the file again and it is there at once.', 'new'],
       ], more: [
         ['Reads IGES and BREP too', 'IGES and BREP open like STEP. IGES keeps names, colours and layers.'],
         ['A whole folder at once', '--batch converts every CAD file in a folder and reports each one.'],
@@ -664,6 +664,7 @@ window.labApps = [
         ['Sharp edges stay sharp', 'Rims, steps and corners hold their shape when triangles go.'],
         ['Align to floor', 'A model that arrived on its side, stood up, with a preview first.'],
         ['Delete small parts', 'Removes parts too small to see, plus empty, duplicate and broken ones.'],
+        ['Gives memory back', 'What Undo can no longer reach, and the parts you deleted, are freed. Big files open without freezing the page.', 'new'],
         ['Repair mesh', 'Doubled points, empty triangles, flipped faces: fixed.'],
         ['Merge by material or group', 'One mesh per material, or one per group.'],
         ['Select by rule', 'Name, material, size, triangles: pick by rule, with a live count.'],
@@ -685,7 +686,8 @@ window.labApps = [
         ['Built for big assemblies', 'Ten thousand rows, still smooth.'],
         ['Search and filters', 'Find parts by name, with the small ones tinted.'],
         ['Batch rename (F2)', 'Templates, regex, live preview, presets.'],
-        ['Typo-proof part search', 'Words in any order, quotes, or, minus, >5000 triangles. A typo still finds it.', 'new'],
+        ['Typo-proof part search', 'Words in any order, quotes, or, minus, >5000 triangles. A typo still finds it.'],
+        ['Box and Brush pick parts', 'Draw a box or paint with a brush over whole parts. Shift adds, Alt turns the camera.', 'new'],
       ], more: [
         ['Flatten, dissolve, ungroup', 'Collapse chains of single groups, dissolve a group, or ungroup a branch.'],
         ['Collapse the way you want', 'The whole tree, the selection, or from the selection down.'],
@@ -706,7 +708,7 @@ window.labApps = [
         ['A library of 112 parts', 'Bolts, nuts, pipe fittings, bearings, brackets, gears, a servo. Set the size, drag it in.'],
         ['Exploded view', 'One slider pulls it apart, along the axes you choose.'],
         ['Dynamic place (D)', 'Drag a part over a surface: it rests on it and turns to face it.'],
-        ['Align parts', 'Align or spread parts along X, Y and Z, with a gap if you want one. One undo.', 'new'],
+        ['Align parts', 'Align or spread parts along X, Y and Z, with a gap if you want one. One undo.'],
       ], more: [
         ['A bolt with its own nut', 'The nut is part of the bolt, so it moves and undoes with it.'],
         ['Pull it apart your way', 'Explode along the scene’s axes, or send each part along its own direction.'],
@@ -875,7 +877,7 @@ window.labApps = [
     changelog: {
       link: 'https://github.com/xpayn3/MeshOptimiser/blob/main/CHANGELOG.md',
       versions: [
-        { version: '0.26.0', fixes: 6, date: 'In the repository, not tagged yet', next: true,
+        { version: '0.26.0', name: 'Bovec', fixes: 5, date: '13 Oct 2026 · 16:10', latest: true,
           summary: 'Faster, lighter and easier to pick with. Box and Brush now select whole parts, big files open without freezing the page, opening the same STEP again is instant, and the app gives memory back.',
           items: [
             ['New', 'Box and Brush pick whole parts. In Model mode the selection tool has the same Click, Box and Brush as Edit mesh. Shift adds, Alt turns the camera, and the middle button sets the brush size.'],
@@ -893,7 +895,7 @@ window.labApps = [
             ['Fix', 'The start screen no longer hides a newly opened tab, and a frame that failed to draw is tried again.'],
             ['Fix', 'Remove holes now handles meshes of up to twelve million triangles.'],
           ] },
-        { version: '0.25.0', name: 'Bled', fixes: 6, date: '13 Oct 2026 · 10:39', latest: true,
+        { version: '0.25.0', name: 'Bled', fixes: 6, date: '13 Oct 2026 · 10:39',
           summary: 'More to build with, and a better way to line it all up. Twenty-six new library parts, an Align parts panel, a Transform panel that works on several parts, and a search you can move.',
           items: [
             ['New', '26 new library parts on two new shelves. The library has 112 parts on eight shelves now. Bearings, a timing pulley, a rail carriage, fans, a circuit board, a servo, and nine brackets and connectors.'],
