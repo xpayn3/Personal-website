@@ -7,7 +7,8 @@
      - /api/alive         404, so the app leaves the heartbeat alone
      - /api/convert       501 with a plain explanation of what the demo opens
      - /api/job, cancel   404
-   and opens the sample model (inbox/GearboxAssy.glb) the first time the
+   and opens a sample model (inbox/GearboxAssy.glb by default; the note has a picker
+   for the others, all from Khronos's glTF-Sample-Models) the first time the
    demo is opened in a tab. A small note at the top says where it is running
    and links to the download. Nothing is uploaded: the files stay in the page.
    =================================================================== */
@@ -17,6 +18,12 @@
 
   var STEP_NOTE = 'STEP files are read by the full app, which runs on your computer. This demo opens GLB, glTF, FBX, OBJ, 3MF and STL files, and the sample model.';
   var json = function (status, body) { return new Response(JSON.stringify(body), { status: status, headers: { 'Content-Type': 'application/json' } }); };
+
+  var SAMPLES = [
+    ['GearboxAssy', 'Gearbox assembly'],
+    ['2CylinderEngine', 'Two-cylinder engine'],
+    ['ReciprocatingSaw', 'Reciprocating saw']
+  ];
 
   var realFetch = window.fetch.bind(window);
   window.fetch = function (input, init) {
@@ -53,8 +60,15 @@
       '<span style="display:inline-flex;align-items:center;gap:8px;color:#e9e9e9;letter-spacing:.09em;font:400 10.5px/1 ui-monospace,Menlo,Consolas,monospace;text-transform:uppercase">Demo</span>' +
       '<span style="width:1px;height:14px;background:rgba(255,255,255,.12)"></span>' +
       '<span style="overflow:hidden;text-overflow:ellipsis">Runs in your browser. Nothing is uploaded.</span>' +
+      '<select aria-label="Open a sample model" style="height:24px;max-width:170px;padding:0 6px;border-radius:6px;border:0;background:#262626;color:#e9e9e9;font:400 12px/1 Inter,system-ui,sans-serif;box-shadow:inset 0 0 0 1px rgba(255,255,255,.09)"><option value="">Samples</option>' + SAMPLES.map(function (m) { return '<option value="' + m[0] + '">' + m[1] + '</option>'; }).join('') + '</select>' +
       '<a href="../download.html" style="display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:6px;background:#0d99ff;color:#fff;font-weight:500;text-decoration:none">Get the full app</a>' +
       '<button type="button" aria-label="Hide this note" style="all:unset;cursor:pointer;display:grid;place-items:center;width:24px;height:24px;border-radius:6px;color:#7d7d7d;"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true" style="display:block"><path d="M1.5 1.5l7 7M8.5 1.5l-7 7"/></svg></button>';
+    bar.querySelector('select').addEventListener('change', function (e) {
+      if (!e.target.value) return;
+      var p = new URLSearchParams(location.search);
+      p.set('file', 'inbox/' + e.target.value + '.glb');
+      location.search = p.toString();
+    });
     bar.querySelector('button').addEventListener('click', function () { bar.remove(); try { sessionStorage.setItem('meshopt-demo-note', 'gone'); } catch (_) {} });
     document.body.appendChild(bar);
     // it drifts down into place a moment after the app has drawn its first frame
