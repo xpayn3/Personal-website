@@ -52,7 +52,7 @@ const PAGES = [
 ];
 
 const GH_ICON = '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>';
-const DEMO_BTN = '<a class="btn is-large btn-demo" href="demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Try the demo</a>';
+const DEMO_BTN = '<a class="btn is-large btn-demo" href="demo/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Open online</a>';
 const esc = text => String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const clamp = (text, max) => (text.length > max ? text.slice(0, max - 1).trim() + '…' : text);
 const slug = text => String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -1093,6 +1093,23 @@ ${docs.articles.filter(a => a.group === group.id).map(a => `          <li data-w
           <li><i>03</i><h3>Drop a file</h3><p>${esc(app.steps[0][1])}</p></li>
         </ol>${commands(app.start.commands)}
         <p class="steps-note">From 0.22.0 the app updates itself in Settings › Updates, and keeps the old version. Older versions need one manual update first. <a href="${docLink(/stop-restart/)}">How updating works</a></p>
+      </div>
+    </section>
+
+    <section class="band" id="online">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">Online or full app</p>
+          <h2>Try it online. Download it for the rest.</h2>
+        </div>
+        <p class="steps-note">The online version is the same app running in your browser, with nothing uploaded. It opens GLB, glTF, FBX, OBJ, 3MF and STL and has the same tools. The full app adds what a browser cannot do.</p>
+        <dl class="tokens">
+          <div><dt>CAD files</dt><dd>STEP import, with parts, colours and CAD data.</dd></div>
+          <div><dt>Claude</dt><dd>The connection that lets Claude work with the open scene.</dd></div>
+          <div><dt>Folders</dt><dd>Open a folder, optimise many files in one go.</dd></div>
+          <div><dt>Big models</dt><dd>Large assemblies, without the browser running out of memory.</dd></div>
+          <div><dt>Your computer</dt><dd>Saved scenes, crash recovery, updates and offline use.</dd></div>
+        </dl>
       </div>
     </section>
 

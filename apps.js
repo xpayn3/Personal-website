@@ -308,7 +308,7 @@ window.labApps = [
           ['Could I do this with Blender and its MCP?', 'Largely, yes. Blender can reduce, remove and render, and Claude can drive it. MeshOptimiser opens STEP and IGES directly, finds bolts and hidden parts itself, takes a model or a folder to a size in one call, and runs in a browser tab. If you work in Blender and your models are meshes, that is a fair choice.'],
           ['What do I need?', 'MeshOptimiser open in a browser tab, and Claude Code or any client that can add an HTTP MCP server.'],
           ['Is it on by default?', 'No. It listens only after you switch on Let Claude connect.'],
-          ['Does it work in the demo?', 'No. Run the app on your own computer.'],
+          ['Does it work in the online version?', 'No. Run the app on your own computer.'],
           ['What if I want it to ask less, or not at all?', 'Switch off Ask before Claude edits. Deleting still asks unless you switch that off too. Or turn a whole kind of edit off.'],
           ['Does Claude know how to use the app?', 'It is told how: six short playbooks and about fifty help articles. It reads the playbook first and searches the articles when it needs one.'],
           ['How does Claude know how far to go?', 'Against the app’s own limits, the ones in the Export dialog: about 5 MB and 100,000 triangles for a web page, 15 MB for Shopify, 10 MB and 100,000 triangles for AR Quick Look, 25 MB and 200,000 triangles for a phone app. If you give it a number, yours wins.'],
