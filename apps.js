@@ -606,6 +606,7 @@ window.labApps = [
       ['9,572 triangles down to 96', 'Smart fit swaps a heavy part for a box, a cylinder or a few blocks that keep its outline. This axle part went from 9,572 triangles to 96, same size and place.', 'Images/apps/meshoptimiser-smart-fit-axle.webp', 'cube'],
       ['Pull it apart', 'One slider, and a pill for each axis, so an assembly can open along one direction only. Here an axle is pulled to 300% along X. One click puts it back.', 'Images/apps/meshoptimiser-exploded-300.webp', 'cube'],
       ['Library and materials, side by side', 'The library drawer, the materials dock and the material editor, open together over the model.', 'Images/apps/meshoptimiser-windows.webp', 'cube'],
+      ['Materials', 'Every material in the scene, with how many parts use it. Open one to set its colour, metalness, roughness and more, and the parts that use it change together. Here a yellow material shared by five parts.', 'Images/apps/meshoptimiser-materials-axle.webp', 'cube'],
       ['Keyboard shortcuts', 'Press any keys to see what they do. Click a shortcut to change it.', 'Images/apps/meshoptimiser-keyboard.webp', 'cube'],
       ['Appearance', 'Accent colour, surfaces, font and text size.', 'Images/apps/meshoptimiser-appearance.webp', 'cube'],
     ],
