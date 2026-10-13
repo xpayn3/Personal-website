@@ -51,14 +51,14 @@ window.labApps = [
     icon: 'Images/apps/meshoptimiser-icon.svg',
     cover: 'Images/apps/meshoptimiser-hero.webp',
     shots: [
-      ['Images/apps/meshoptimiser-hero.webp', 'A gearbox assembly: 95 parts, 646,064 triangles.'],
       ['Images/apps/meshoptimiser-windows.webp', 'Library, materials and the material editor, open together over the model.'],
       ['Images/apps/meshoptimiser-quick-remesh.webp', 'Quick remesh: a percentage picker right on the part. 25% here: 2,038 triangles, −75%.'],
       ['Images/apps/meshoptimiser-wand.webp', 'Quick wand: a ring of commands under the cursor. Here, Remove empty parts.'],
+      ['Images/apps/meshoptimiser-small-parts.webp', 'Delete small parts: 102 parts under 2% of the model’s size, highlighted before they go.'],
+      ['Images/apps/meshoptimiser-heatmap-axle.webp', 'Heatmap: parts coloured by triangle count.'],
       ['Images/apps/meshoptimiser-keyboard.webp', 'Keyboard shortcuts: press any keys to see what they do. Click a shortcut to change it.'],
       ['Images/apps/meshoptimiser-appearance.webp', 'Appearance: accent colour, surfaces, font and text size.'],
       ['Images/apps/meshoptimiser-fasteners-axle.webp', 'Fasteners: 88 found by shape, 45,498 triangles.'],
-      ['Images/apps/meshoptimiser-blocks.webp', 'Blocks: 72,666 triangles down to 212, outline intact.'],
       ['Images/apps/meshoptimiser-library.webp', 'The library drawer: pick a part, set its size, drop it in.'],
     ],
     site: {
