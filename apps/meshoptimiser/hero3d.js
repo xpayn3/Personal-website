@@ -121,7 +121,7 @@ export async function start(pop, base) {
     camera.position.copy(tgt).addScaledVector(dir, dist);
     camera.near = dist / 100; camera.far = dist * 40;
     camera.lookAt(tgt);
-    camera.setViewOffset(w, h, 0, narrow ? h * 0.05 : h * 0.02, w, h);
+    camera.setViewOffset(w, h, 0, narrow ? h * 0.05 : h * 0.07, w, h);
     camera.updateMatrixWorld(true);
     // the headlight: just above and beside the eye, looking where the camera looks
     const right = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0), up = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 1);
