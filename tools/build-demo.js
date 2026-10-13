@@ -45,7 +45,7 @@ for (const dir of ['vendor', 'assets']) {
 }
 fs.copyFileSync(path.join(__dirname, 'demo', 'demo-shim.js'), path.join(OUT, 'demo-shim.js'));
 
-let patched = html.replace('<meta charset="UTF-8">', '<meta charset="UTF-8">\n<meta name="robots" content="noindex">\n<script src="demo-shim.js"></script>');
+let patched = html.replace('<meta charset="UTF-8">', '<meta charset="UTF-8">\n<meta name="robots" content="noindex">\n<script src="demo-shim.js?v=2"></script>');
 if (patched === html) throw new Error('index.html: the charset line was not found');
 const noManifest = patched.replace(/<link rel="manifest"[^>]*>\n?/, '');
 if (noManifest === patched) throw new Error('index.html: the manifest line was not found');
