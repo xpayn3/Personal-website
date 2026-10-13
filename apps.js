@@ -53,6 +53,8 @@ window.labApps = [
     shots: [
       ['Images/apps/meshoptimiser-hero.webp', 'A gearbox assembly: 95 parts, 646,064 triangles.'],
       ['Images/apps/meshoptimiser-smart-optimise.webp', 'Smart optimise: every clean-up in order, aiming at half the triangles.'],
+      ['Images/apps/meshoptimiser-windows.webp', 'Library, materials and the material editor, open together over the model.'],
+      ['Images/apps/meshoptimiser-quick-remesh.webp', 'Quick remesh: a percentage picker right on the part. 25% here: 2,038 triangles, −75%.'],
       ['Images/apps/meshoptimiser-fasteners.webp', 'Fasteners: 48 found by shape, 22,760 triangles.'],
       ['Images/apps/meshoptimiser-blocks.webp', 'Blocks: 72,666 triangles down to 212, outline intact.'],
       ['Images/apps/meshoptimiser-heatmap.webp', 'Heatmap: parts coloured by triangle count.'],
@@ -505,10 +507,10 @@ window.labApps = [
       pop: {
         ui: 'Images/apps/meshoptimiser-hero-ui.webp',
         model: 'Images/apps/meshoptimiser-hero-model.webp',
-        v: 5,
-        size: [1228, 799],
+        v: 6,
+        size: [1920, 1031],
         modelSize: [1074, 1231],
-        box: [34.33, 17.52, 31.53],
+        box: [40, 26.3, 21.35],
         label: 'A rear derailleur comes out of the MeshOptimiser window and pulls itself apart',
         kicker: 'Exploded view',
         title: 'Take it apart. Inspect every part.',
@@ -873,6 +875,24 @@ window.labApps = [
     changelog: {
       link: 'https://github.com/xpayn3/MeshOptimiser/blob/main/CHANGELOG.md',
       versions: [
+        { version: '0.26.0', fixes: 6, date: 'In the repository, not tagged yet', next: true,
+          summary: 'Faster, lighter and easier to pick with. Box and Brush now select whole parts, big files open without freezing the page, opening the same STEP again is instant, and the app gives memory back.',
+          items: [
+            ['New', 'Box and Brush pick whole parts. In Model mode the selection tool has the same Click, Box and Brush as Edit mesh. Shift adds, Alt turns the camera, and the middle button sets the brush size.'],
+            ['New', 'One selection-tool button in the left toolbar. Let go over a row of its list and that tool is picked.'],
+            ['New', 'Point at a row of the part list and the part lights up in the view. Switch it off in Settings › Viewport.'],
+            ['New', 'Opening the same STEP file again takes no time. The converted model is kept, and a new release or a different import setting never gets an old answer.'],
+            ['Polish', 'Delete small parts: Isolate is a switch that shows only the parts that would go, so you can check them first. Highlight sits on the card.'],
+            ['Polish', 'One look for sliders, scrollbars, number fields and menus. Sliders have a white thumb with a soft halo while you hold them.'],
+            ['Polish', 'A selection draws at once. The outline of a heavy part is worked out in the background and appears when it is ready.'],
+            ['Polish', 'Big GLB, glTF, OBJ and FBX files no longer freeze the page while they open, and Repair mesh works in the background.'],
+            ['Polish', 'The app gives memory back: geometry that Undo can no longer reach is freed, and so is the geometry of parts you deleted.'],
+            ['Polish', 'Two conversions run at a time and the rest wait their turn. The upload folder cleans itself every hour.'],
+            ['Fix', 'A spring or a coarse curve is no longer drawn as a bundle of lines. Its smooth facets are not edges.'],
+            ['Fix', 'Repair mesh welds a model that is far from the origin correctly.'],
+            ['Fix', 'The start screen no longer hides a newly opened tab, and a frame that failed to draw is tried again.'],
+            ['Fix', 'Remove holes now handles meshes of up to twelve million triangles.'],
+          ] },
         { version: '0.25.0', name: 'Bled', fixes: 6, date: '13 Oct 2026 · 10:39', latest: true,
           summary: 'More to build with, and a better way to line it all up. Twenty-six new library parts, an Align parts panel, a Transform panel that works on several parts, and a search you can move.',
           items: [

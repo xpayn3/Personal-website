@@ -1462,3 +1462,16 @@ main { overflow-x: clip; }
 .cmp-off .cmp-no { font-size: 18px; }
 .cmp-on, .cmp-off { width: 180px; justify-content: flex-start; }
 .cmp-off .cmp-no { display: inline-grid; place-items: center; width: 26px; flex: none; }
+.cl-shot > video { display: block; width: 100%; height: auto; aspect-ratio: 1600 / 940; object-fit: cover; border-radius: clamp(18px, 2.4vw, 32px); box-shadow: 0 0 0 1px var(--line); background: var(--surface); cursor: pointer; }
+/* the prompts on the video are white pills */
+.cl-shot .cl-say li { background: rgba(255, 255, 255, 0.94); color: #1d1d1f; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.cl-shot .cl-say li::before, .cl-shot .cl-say li::after { color: #86868b; }
+/* the prompts sit under the video, not on it */
+.cl-shot .cl-say { position: static; left: auto; right: auto; bottom: auto; margin: 22px 0 0; padding: 0; max-width: none; justify-content: flex-start; }
+.cl-shot .cl-say li { box-shadow: none; }
+/* the prompts under the video are dark pills again */
+.cl-shot .cl-say li { background: var(--surface); color: var(--tx); box-shadow: inset 0 0 0 1px var(--line-strong); }
+.cl-shot .cl-say li::before, .cl-shot .cl-say li::after { color: var(--tx-3); }
+/* a full picture of the app under the derailleur */
+.shot-under { margin-top: clamp(40px, 6vw, 96px); }
+.shot-under img { width: 100%; height: auto; aspect-ratio: 1920 / 1031; border-radius: clamp(18px, 2.4vw, 32px); box-shadow: 0 0 0 1px var(--line); background: var(--surface); }

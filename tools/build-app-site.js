@@ -35,9 +35,9 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 263;
+const CSS_V = 269;
 const RP_V = 2;           // report.js
-const JS_V = 43;
+const JS_V = 44;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -578,7 +578,7 @@ ${c.points.map(([t, d]) => `          <div><dt>${esc(t)}</dt><dd>${esc(d)}</dd><
           </div>
         </div>
         <div class="cl-shot">
-          <img src="${asset(src)}" alt="${esc(app.title + ': ' + caption)}" width="2400" height="1350" loading="lazy" decoding="async" />
+          <video muted loop playsinline preload="none" disablepictureinpicture poster="${asset('Images/apps/meshoptimiser-claude-clip_thumb.webp')}" data-src="${asset('Images/apps/meshoptimiser-claude-clip.webm')}" aria-label="${esc(app.title + ': turning Claude on in Settings, then the Claude pill in the top bar')}" width="1600" height="940"></video>
           <ul class="cl-say">
 ${c.band.prompts.map(p => `            <li>${esc(p)}</li>`).join('\n')}
           </ul>

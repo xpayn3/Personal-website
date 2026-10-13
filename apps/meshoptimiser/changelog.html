@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=263" />
+  <link rel="stylesheet" href="site.css?v=269" />
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
 </head>
@@ -52,6 +52,30 @@
     </section>
     <section class="wrap">
       <ol class="log">
+        <li id="v0.26.0">
+          <div class="log-head">
+            <strong>v0.26.0</strong><em>Next</em><span>In the repository, not tagged yet</span><span>6 fixes</span>
+          </div>
+          <div class="log-body">
+            <p>Faster, lighter and easier to pick with. Box and Brush now select whole parts, big files open without freezing the page, opening the same STEP again is instant, and the app gives memory back.</p>
+            <ul>
+              <li><b class="is-new">New</b><span>Box and Brush pick whole parts. In Model mode the selection tool has the same Click, Box and Brush as Edit mesh. Shift adds, Alt turns the camera, and the middle button sets the brush size.</span></li>
+              <li><b class="is-new">New</b><span>One selection-tool button in the left toolbar. Let go over a row of its list and that tool is picked.</span></li>
+              <li><b class="is-new">New</b><span>Point at a row of the part list and the part lights up in the view. Switch it off in Settings › Viewport.</span></li>
+              <li><b class="is-new">New</b><span>Opening the same STEP file again takes no time. The converted model is kept, and a new release or a different import setting never gets an old answer.</span></li>
+              <li><b class="is-polish">Polish</b><span>Delete small parts: Isolate is a switch that shows only the parts that would go, so you can check them first. Highlight sits on the card.</span></li>
+              <li><b class="is-polish">Polish</b><span>One look for sliders, scrollbars, number fields and menus. Sliders have a white thumb with a soft halo while you hold them.</span></li>
+              <li><b class="is-polish">Polish</b><span>A selection draws at once. The outline of a heavy part is worked out in the background and appears when it is ready.</span></li>
+              <li><b class="is-polish">Polish</b><span>Big GLB, glTF, OBJ and FBX files no longer freeze the page while they open, and Repair mesh works in the background.</span></li>
+              <li><b class="is-polish">Polish</b><span>The app gives memory back: geometry that Undo can no longer reach is freed, and so is the geometry of parts you deleted.</span></li>
+              <li><b class="is-polish">Polish</b><span>Two conversions run at a time and the rest wait their turn. The upload folder cleans itself every hour.</span></li>
+              <li><b class="is-fix">Fix</b><span>A spring or a coarse curve is no longer drawn as a bundle of lines. Its smooth facets are not edges.</span></li>
+              <li><b class="is-fix">Fix</b><span>Repair mesh welds a model that is far from the origin correctly.</span></li>
+              <li><b class="is-fix">Fix</b><span>The start screen no longer hides a newly opened tab, and a frame that failed to draw is tried again.</span></li>
+              <li><b class="is-fix">Fix</b><span>Remove holes now handles meshes of up to twelve million triangles.</span></li>
+            </ul>
+          </div>
+        </li>
         <li id="v0.25.0">
           <div class="log-head">
             <strong>v0.25.0<b class="rel-code">Bled</b></strong><em>Latest</em><span>13 Oct 2026 · 10:39</span><span>6 fixes</span>
@@ -572,6 +596,6 @@
       <span><a href="../../privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="site.js?v=43"></script>
+  <script defer src="site.js?v=44"></script>
 </body>
 </html>
