@@ -1540,3 +1540,50 @@ main { overflow-x: clip; }
   .tile h2 { max-width: none; margin: 0; font-size: 26px; line-height: 1.08; }
   .tile-line { margin: 2px 0 0; font-size: 14px; }
 }
+
+/* ---- the opening: the axle on the page's own background, pulled apart by the scroll ----
+   Only the model (hero3d.js draws it into .pop-3d, full width of the pinned screen); the poster stands in until it is drawn, on a phone, and
+   without WebGL or with reduced motion. Small print under it says what the page shows and where the model comes from. */
+.pop.is-axle { height: 250vh; margin-top: clamp(8px, 2vw, 24px); }
+.pop.is-axle .pop-stage { position: relative; display: block; height: 100%; max-width: calc(var(--max) + var(--gutter) * 2); }
+.pop.is-axle .pop-poster { position: absolute; left: 0; right: 0; top: 0; bottom: 56px; width: 100%; height: calc(100% - 56px); object-fit: contain; pointer-events: none; }
+.pop.is-axle.is-3d .pop-poster { visibility: hidden; }
+.pop.is-axle .pop-3d { z-index: 0; }
+.pop.is-axle .pop-copy { z-index: 1; left: var(--gutter); bottom: clamp(64px, 8vw, 104px); width: min(32ch, 36%); opacity: 1; transform: none; }
+/* the corner at the top right: how far the model is pulled apart, a small graph of what was saved, and the small print */
+.pop-info { position: absolute; z-index: 1; top: clamp(20px, 3.4vw, 48px); right: var(--gutter); width: min(300px, 38%); display: grid; gap: 14px; justify-items: end; pointer-events: none; text-align: right; }
+.pop-read { margin: 0; color: var(--tx-3); font: 400 12px/1.7 var(--mono); letter-spacing: 0.04em; font-variant-numeric: tabular-nums; }
+.pop-read b { color: var(--tx-2); font-weight: 400; }
+.pop-bars { display: grid; gap: 5px; width: 100%; }
+.pop-bars small { color: var(--tx-3); font: 400 11px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; text-align: right; }
+.pb { display: grid; grid-template-columns: 52px minmax(0, 1fr) 54px; align-items: center; gap: 8px; color: var(--tx-3); font-size: 11px; line-height: 1; }
+.pb i { font-style: normal; text-align: left; }
+.pb s { display: block; width: var(--w); height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.22); justify-self: start; transform-origin: left; }
+.pop.is-armed .pb s { transform: scaleX(0); }
+.pop.is-armed.is-in .pb s { transform: scaleX(1); transition: transform 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) calc(0.25s + var(--i, 0) * 0.14s); }
+.pop.is-armed .pb em { opacity: 0; }
+.pop.is-armed.is-in .pb em { opacity: 1; transition: opacity 0.6s ease calc(0.6s + var(--i, 0) * 0.14s); }
+.pb.is-last s { background: var(--accent); }
+.pb em { font-style: normal; color: var(--tx-2); font-variant-numeric: tabular-nums; text-align: right; }
+.pop-note { margin: 0; max-width: 34ch; color: var(--tx-3); font-size: 11px; line-height: 1.55; }
+@media (max-width: 860px) {
+  .pop.is-axle { height: 230vh; }
+  .pop.is-axle .pop-pin { position: sticky; top: var(--bar-h); height: max(calc(100svh - var(--bar-h)), 520px); display: block; }
+  .pop.is-axle .pop-stage { position: relative; height: 100%; }
+  .pop.is-axle .pop-poster { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: calc(100% - 40px); object-fit: contain; }
+  .pop.is-axle .pop-copy { display: block; width: auto; right: var(--gutter); bottom: 22px; }
+  .pop.is-axle .pop-3d { inset: auto 0 auto 0; top: 36%; height: 33%; }
+  .pop.is-axle .pop-copy h2 { font-size: clamp(24px, 7vw, 32px); }
+  .pop-info { width: min(210px, 56%); gap: 10px; top: 14px; }
+  .pb { grid-template-columns: 50px minmax(0, 1fr) 44px; font-size: 10px; }
+  .pb i { white-space: nowrap; }
+  .pop-note { font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pop.is-axle { height: auto; margin-top: 0; }
+  .pop.is-axle .pop-pin { position: static; height: auto; display: block; }
+  .pop.is-axle .pop-stage { height: auto; }
+  .pop.is-axle .pop-poster { position: static; width: 100%; height: auto; }
+  .pop.is-axle .pop-copy { position: static; display: block; width: auto; margin-top: 24px; }
+  .pop-info { position: static; width: auto; margin-top: 16px; justify-items: start; text-align: left; }
+}

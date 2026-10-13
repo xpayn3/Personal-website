@@ -507,19 +507,21 @@ window.labApps = [
       },
       // the opening picture as two layers (see popHero in tools/build-app-site.js):
       // the window without its model, and the model cut out, placed at box = [left, top, width] in % of the window
+      // The opening: a truck front axle (295 parts) pulls itself apart as the page scrolls (hero3d.js; axle-mesh.json + axle-mesh.bin, baked from the app).
+      // Without WebGL, on a phone or with reduced motion `poster` stands in. `note` is the small line under it, `credit` where the model comes from.
       pop: {
-        ui: 'Images/apps/meshoptimiser-hero-ui.webp',
-        model: 'Images/apps/meshoptimiser-hero-model.webp',
-        v: 6,
-        size: [1920, 1031],
-        modelSize: [1074, 1231],
-        box: [40, 26.3, 21.35],
-        label: 'A rear derailleur comes out of the MeshOptimiser window and pulls itself apart',
+        v: 2,
+        poster: 'Images/apps/meshoptimiser-axle-exploded.webp',
+        posterSize: [2000, 1131],
+        label: 'A truck front axle pulls itself apart as you scroll',
         kicker: 'Exploded view',
         title: 'Take it apart. Inspect every part.',
-        line: 'Scroll to pull this 43-part derailleur apart. One slider does it in the app, and every part has its own row and triangle count.',
-        // the cards that slot in on the right while it pulls apart, laid out like the app's Properties card: [name, triangles, vertices, parts]; the first is the whole model, the others are parts as the app lists them
-        panels: [['rd-fine', 1103373, 668150, 43], ['0_1_1_33_000033__geom', 10966, 8734], ['0_1_1_16_000016__geom_000', 7913, 7093], ['0_1_1_12_000012__geom_000', 4122, 3750], ['0_1_1_5_000005__geom_001', 2898, 2710], ['0_1_1_20_000020__geom', 1907, 2052]],
+        line: 'Scroll to pull this 295-part axle apart. One slider does it in the app, and every part has its own row and triangle count.',
+        readout: '295 parts · 250,075 triangles',
+        // the small graph: [group, [[label, value, text]...]]: the bars are drawn against the largest value of their group
+        graph: [['Triangles', [['Before', 540007, '540,007'], ['After', 250075, '250,075']]], ['File size', [['STEP', 33.4, '33.4 MB'], ['GLB', 11.4, '11.4 MB'], ['Web GLB', 1.32, '1.3 MB']]]],
+        note: 'Optimised for the web with MeshOptimiser: 54% fewer triangles, and the GLB 9 times smaller.',
+        credit: 'Model: Mercedes-Benz Arocs 8x8, front axle. Mercedes-Benz and Arocs are trademarks of their owners; this site is not affiliated with them.',
       },
       // the first screen: headline (the subtitle above stays as the line under it), the lead, the page title and the meta description
       headline: 'Make a CAD assembly light enough for the web, on your own computer. Free.',

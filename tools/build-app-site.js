@@ -35,9 +35,9 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 282;
+const CSS_V = 289;
 const RP_V = 2;           // report.js
-const JS_V = 44;
+const JS_V = 55;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -298,32 +298,28 @@ ${entry.items.map(([tag, line]) => `              <li><b class="is-${tag.toLower
 ${rows.map(([label, command]) => `          <div><dt>${esc(label)}</dt><dd><code>${esc(command)}</code><button type="button" class="copy" data-copy="${esc(command)}">Copy</button></dd></div>`).join('\n')}
         </dl>`;
 
-  // The opening picture. With `site.pop` it is two layers that come apart as
-  // the page scrolls (site.js sets --p, 0 to 1): the app without its model,
-  // and the model on its own, cut out and placed exactly where it was, so at
-  // rest it is the app as it is and a little further down the part steps out
-  // of the window. `pop.box` = [left, top, width] of the cut-out, in % of the frame.
+  // The opening. With `site.pop`: a pinned section in which a real 3D model (hero3d.js, on a wide screen) pulls itself apart as the page scrolls
+  // (site.js sets --p, 0 to 1). Only the model, on the page's own dark background: no picture of the app behind it. `pop.poster` is what stands in
+  // until the mesh is drawn, and on a phone, without WebGL or with reduced motion.
   const popHero = () => {
     const pop = site.pop;
     const cover = app.shots.find(([src]) => src === app.cover) || app.shots[0];
     if (!pop) return `    <section class="wrap hero-shot">
       ${shot(cover, 'hero', true)}
     </section>`;
-    const [left, top, width] = pop.box;
-    return `    <section class="pop" data-pop aria-label="${esc(pop.label)}">
+    return `    <section class="pop is-axle" data-pop aria-label="${esc(pop.label)}">
       <div class="pop-pin">
         <div class="wrap pop-stage">
-          <div class="pop-art">
-            <a class="zoom pop-frame" href="${asset(cover[0])}" data-group="hero" data-caption="${esc(cover[1])}">
-              <img class="pop-ui" src="${asset(pop.ui)}?v=${pop.v || 1}" alt="${esc(app.title + ': ' + cover[1])}" width="${pop.size[0]}" height="${pop.size[1]}" decoding="async" fetchpriority="high" />
-            </a>
-            <img class="pop-model" src="${asset(pop.model)}?v=${pop.v || 1}" alt="" width="${pop.modelSize[0]}" height="${pop.modelSize[1]}" decoding="async" style="left:${left}%;top:${top}%;width:${width}%" />
-          </div>
-          <ul class="pop-parts" aria-hidden="true">${(() => { const pl = pop.panels || [], top = Math.max(...pl.slice(1).map(x => x[1])), n = (v) => Number(v).toLocaleString('en-US'); return pl.map(([name, tris, verts, parts], i) => `<li${i === 0 ? ' class="is-count"' : ''} style="--k:${i}"><div class="pp-h"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></svg><b>${esc(name)}</b></div><div class="pp-n"><strong>${n(tris)}</strong><small>tris</small></div><div class="pp-bar"><s style="--w:${i === 0 ? 100 : Math.max(4, Math.round(tris / top * 100))}%"></s></div><div class="pp-r"><span>${i === 0 ? 'Parts' : 'Vertices'}</span><em>${n(i === 0 ? parts : verts)}</em></div>${i === 0 ? `<div class="pp-r"><span>Vertices</span><em>${n(verts)}</em></div>` : ''}</li>`).join(''); })()}</ul>
+          <img class="pop-poster" src="${asset(pop.poster)}?v=${pop.v || 1}" alt="${esc(pop.label)}" width="${pop.posterSize[0]}" height="${pop.posterSize[1]}" decoding="async" fetchpriority="high" />
           <div class="pop-copy" aria-hidden="false">
             <p class="kicker">${esc(pop.kicker)}</p>
             <h2>${esc(pop.title)}</h2>
             <p>${esc(pop.line)}</p>
+          </div>
+          <div class="pop-info">
+            <p class="pop-read" aria-hidden="true"><b>Exploded view · <span data-pop-pct>0</span>%</b><br />${esc(pop.readout || '')}</p>
+${(pop.graph || []).map(([group, rows]) => { const top = Math.max(...rows.map(r => r[1])); return `            <div class="pop-bars" role="img" aria-label="${esc(group + ': ' + rows.map(r => r[0] + ' ' + r[2]).join(', '))}"><small>${esc(group)}</small>${rows.map(([label, value, text], i) => `<span class="pb${i === rows.length - 1 ? ' is-last' : ''}"><i>${esc(label)}</i><s style="--w:${Math.max(1.5, value / top * 100).toFixed(1)}%;--i:${i}"></s><em>${esc(text)}</em></span>`).join('')}</div>`; }).join('')}
+            <p class="pop-note">${esc(pop.note)}${pop.credit ? `<br />${esc(pop.credit)}` : ''}</p>
           </div>
         </div>
       </div>

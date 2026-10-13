@@ -238,16 +238,18 @@
   }
 
   const pop = $('[data-pop]');
-  if (pop && !calm && 'IntersectionObserver' in window && window.matchMedia('(min-width: 861px)').matches) {
+  if (pop && !calm && 'IntersectionObserver' in window) {
     let queued = false, last = -1, hero3d = null, asked = false;
     // the real mesh (hero3d.js): fetched once the section is near, and only where WebGL works
     const wakeMesh = () => {
       if (asked) return;
       asked = true;
       try { const gl = document.createElement('canvas').getContext('webgl2') || document.createElement('canvas').getContext('webgl'); if (!gl) return; } catch (e) { return; }
-      import('./hero3d.js?v=6').then(m => m.start(pop, '')).then((h) => { hero3d = h; h.setP(Math.max(0, last)); }).catch(() => {});
+      import('./hero3d.js?v=17').then(m => m.start(pop, '')).then((h) => { hero3d = h; h.setP(Math.max(0, last)); }).catch(() => {});
     };
+    pop.classList.add('is-armed');                       // (the graph's bars start empty and grow in when the section comes into view)
     const cards = $$('.pop-parts li', pop); let lit = -2;
+    const pct = $('[data-pop-pct]', pop);
     const place = () => {
       queued = false;
       const rect = pop.getBoundingClientRect();
@@ -256,13 +258,14 @@
       const eased = p * p * (3 - 2 * p);
       if (Math.abs(eased - last) > 0.0005) {
         last = eased; pop.style.setProperty('--p', eased.toFixed(4)); if (hero3d) hero3d.setP(eased);
+        if (pct) pct.textContent = String(Math.round(eased * 165));
         // the part card the scroll is on lights up, and moves down the list as the model pulls apart
         if (cards.length) { const cur = Math.max(-1, Math.min(cards.length - 1, Math.floor((eased - 0.16) / 0.075))); if (cur !== lit) { lit = cur; cards.forEach((c, k) => c.classList.toggle('is-cur', k === cur && k > 0)); } }
       }
     };
     const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(place); } };
     new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { wakeMesh(); window.addEventListener('scroll', onScroll, { passive: true }); window.addEventListener('resize', onScroll); onScroll(); }
+      if (entry.isIntersecting) { pop.classList.add('is-in'); wakeMesh(); window.addEventListener('scroll', onScroll, { passive: true }); window.addEventListener('resize', onScroll); onScroll(); }
       else { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); }
     }, { rootMargin: '200px 0px' }).observe(pop);
   }
