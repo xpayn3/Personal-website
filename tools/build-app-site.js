@@ -35,7 +35,7 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 277;
+const CSS_V = 279;
 const RP_V = 2;           // report.js
 const JS_V = 44;
 
@@ -168,7 +168,7 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
     update: '<path d="M26 16a10 10 0 1 1-3-7.1"/><path d="M26 5v6h-6"/>',
     pc: '<rect x="4" y="6" width="24" height="16" rx="2"/><path d="M12 27h8M16 22v5"/>',
   };
-  const CHECK = '<svg class="cmp-yes" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.4l3.4 3.4L17 8.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const CHECK = '<svg class="cmp-yes" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   // each row is one question, answered for both versions side by side: true is a tick, false a dash, a string its own words
   const cmpCell = (v, label) => v === true ? `<span class="cmp-on">${CHECK}<span>${label}</span></span>` : v === false ? `<span class="cmp-off"><span class="cmp-no" aria-hidden="true">—</span><span>${label}</span></span>` : `<span class="cmp-on">${CHECK}<span>${v}</span></span>`;
   const cmpRows = (rows) => rows.map(([, label, a, b]) => `

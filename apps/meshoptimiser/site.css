@@ -1483,3 +1483,33 @@ main { overflow-x: clip; }
 /* no focus frame around a picture in the strip */
 .strip, .strip figure, .strip .zoom, .strip img { outline: none; }
 .strip .zoom:focus, .strip .zoom:focus-visible, .strip figure:focus, .strip figure:focus-visible, .strip:focus, .strip:focus-visible { outline: none; box-shadow: none; }
+
+/* Pick how you run it: in the site's own dark look. It used to be a white band in the style of Apple's comparison pages
+   (pill buttons, circled ticks, orange tags, "›" links). */
+.band.compare { background: transparent; color: var(--tx); border-top: 1px solid var(--line); padding-block: clamp(64px, 8vw, 112px); }
+.compare h2 { max-width: 22ch; margin-inline: 0; text-align: left; font-size: clamp(26px, 3.2vw, 42px); letter-spacing: -0.03em; line-height: 1.1; color: var(--tx); }
+.cmp { max-width: none; margin-top: clamp(32px, 4vw, 56px); }
+.cmp-col { align-items: flex-start; text-align: left; }
+.cmp-tag, .compare .cmp-tag { color: var(--tx-3); font-size: 12px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; }
+.cmp-col h3 { color: var(--tx); font-size: clamp(20px, 2.2vw, 26px); font-weight: 500; letter-spacing: -0.02em; }
+.cmp-sub, .compare .cmp-sub { max-width: 34ch; margin-top: 8px; color: var(--tx-2); font-size: 15px; font-weight: 400; line-height: 1.5; }
+.cmp-act { grid-auto-flow: column; justify-content: start; justify-items: start; align-items: center; gap: 18px; margin-top: 20px; }
+.cmp-btn { min-height: 0; height: 36px; padding: 0 16px; border-radius: var(--r-s); background: var(--accent); color: #fff; font: 500 14px/1 var(--font); }
+.cmp-btn:hover { background: var(--accent-hover); }
+.cmp-btn.btn-lite { background: var(--surface-2); color: var(--tx); }
+.cmp-btn.btn-lite:hover { background: #28282b; }
+.cmp-link { color: var(--tx-2); font-size: 14px; }
+.cmp-link::after { content: ' →'; }
+.cmp-link:hover { color: var(--tx); text-decoration: none; }
+.cmp-table { margin-top: clamp(32px, 4vw, 48px); border-top: 1px solid var(--line); }
+.cmp-row { min-height: 56px; border-bottom: 1px solid var(--line); }
+.cmp-a, .compare .cmp-q { color: var(--tx); font-size: 15px; }
+.cmp-a { justify-content: flex-start; }
+.cmp-on, .cmp-off { width: auto; }
+.cmp-yes { width: 18px; height: 18px; color: var(--accent); }
+.cmp-off, .cmp-no { color: var(--tx-3); }
+.cmp-off .cmp-no { width: 18px; font-size: 16px; }
+.cmp-note { margin-top: 18px; color: var(--tx-3); font-size: 13px; text-align: left; }
+@media (max-width: 760px) { .cmp-act { grid-auto-flow: row; } }
+/* no thin lines between the sections of the home page */
+.page-home .band, .page-home .band.compare, .page-home .foot { border-top: 0; }
