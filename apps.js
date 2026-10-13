@@ -51,7 +51,6 @@ window.labApps = [
     icon: 'Images/apps/meshoptimiser-icon.svg',
     cover: 'Images/apps/meshoptimiser-hero.webp',
     shots: [
-      ['Images/apps/meshoptimiser-quick-remesh.webp', 'Quick remesh: a percentage picker right on the part. 25% here: 2,038 triangles, −75%.'],
       ['Images/apps/meshoptimiser-wand.webp', 'Quick wand: a ring of commands under the cursor. Here, Remove empty parts.'],
       ['Images/apps/meshoptimiser-small-parts.webp', 'Delete small parts: 102 parts under 2% of the model’s size, highlighted before they go.'],
       ['Images/apps/meshoptimiser-heatmap-axle.webp', 'Heatmap: parts coloured by triangle count.'],
