@@ -1513,3 +1513,20 @@ main { overflow-x: clip; }
 @media (max-width: 760px) { .cmp-act { grid-auto-flow: row; } }
 /* no thin lines between the sections of the home page */
 .page-home .band, .page-home .band.compare, .page-home .foot { border-top: 0; }
+/* Quick wand band: the title, the line and the ring sit closer together */
+.wand-band .band-head { margin-bottom: 14px; gap: 8px; }
+.wand-band .lead.wand-lead { margin-top: 0; }
+.wand-demo { margin-top: clamp(0px, 1vw, 12px); }
+/* Titles and the lines under them sit closer together everywhere */
+.band-head { gap: 8px 32px; margin-bottom: clamp(20px, 2.4vw, 32px); }
+.split-head { gap: 10px; }
+.hero h1 { margin-top: 16px; }
+.hero .lead { margin-top: clamp(14px, 1.6vw, 20px); }
+.hero .actions { margin-top: clamp(20px, 2vw, 28px); }
+.page-head h1 { margin-top: 14px; }
+.page-head .lead { margin-top: 14px; }
+.page-head .actions { margin-top: 24px; }
+.cl-hero-in h2 { margin-top: 12px; }
+.cl-hero-in .lead { margin-top: 14px; }
+.cl-hero-in .actions { margin-top: 22px; }
+.cl-band-copy .lead { margin-top: 12px; }
