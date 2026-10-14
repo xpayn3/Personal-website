@@ -90,10 +90,11 @@ window.labApps = [
       interact: {
         wipe: {
           id: 'before-after',
+          model: 'axle',
           kicker: 'Before and after',
-          title: 'Drag the line. Same gearbox, far fewer triangles.',
-          line: 'On the left is the Gearbox Assy as it came, 646,064 triangles. On the right is what the app’s own simplifier makes of it. Pick how far to go and drag the line to compare.',
-          note: 'Gearbox Assy: Khronos glTF-Sample-Models, a JT CAD sample converted by Okino. The right side is a real run of the simplifier the app’s Decimate uses; the numbers are counted, not typed.',
+          title: 'Drag the line. Same axle, far fewer triangles.',
+          line: 'On the left is the front axle as it came, 250,075 triangles. On the right is what the app’s own simplifier makes of it. Pick how far to go and drag the line to compare.',
+          note: 'Model: Mercedes-Benz Arocs 8×8 front axle. Trademarks belong to their owners; not affiliated. The right side is a real run of the simplifier the app’s Decimate uses; the numbers are counted, not typed.',
           poster: 'Images/apps/meshoptimiser-smart-optimise.webp', posterSize: [2400, 1350],
           posterAlt: 'Smart optimise on the gearbox: every clean-up in order, aiming at half the triangles.',
         },

@@ -40,9 +40,9 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 365;
+const CSS_V = 388;
 const RP_V = 2;           // report.js
-const JS_V = 79;
+const JS_V = 87;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -468,7 +468,7 @@ ${c.points.map(([t, d]) => `          <div><dt>${esc(t)}</dt><dd>${esc(d)}</dd><
     const d = site.interact && site.interact[kind];
     if (!d) return '';
     return `
-    <section class="band live" id="${d.id}" data-live="${kind}">
+    <section class="band live" id="${d.id}" data-live="${kind}"${d.model ? ` data-model="${esc(d.model)}"` : ''}>
       <div class="wrap">
         <div class="band-head">
           <p class="kicker">${esc(d.kicker)}</p>
@@ -1134,7 +1134,7 @@ ${st.tiles.map(([label, claim, rest, line, colour], i) => `          <article cl
           ${q.more ? `<a class="more" href="${esc(q.more)}">Read more</a>` : ''}
         </div>
         <figure class="rm-shot">
-          <video muted loop playsinline preload="none" disablepictureinpicture poster="${asset(q.clip.replace(/\.webm$/, '_thumb.webp'))}" data-src="${asset(q.clip)}" aria-label="${esc(app.title + ': ' + q.kicker)}" width="1600" height="900"></video>
+          <div class="rm-lean"><video muted loop playsinline preload="none" disablepictureinpicture poster="${asset(q.clip.replace(/\.webm$/, '_thumb.webp'))}" data-src="${asset(q.clip)}" aria-label="${esc(app.title + ': ' + q.kicker)}" width="1600" height="900"></video></div>
           <figcaption>${esc(q.line)}</figcaption>
         </figure>
       </div>
@@ -1227,7 +1227,7 @@ ${c.badge ? `    <div class="soon-banner" role="note"><div class="wrap soon-bann
       <h1>${esc(c.headline)}</h1>
       <p class="lead">${esc(c.lead)}</p>
       <div class="actions">
-        <a class="btn is-primary is-large" href="#how">How it works</a>
+        <a class="btn is-primary is-large live-step" href="#how"><span>How it works</span><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4"/></svg></a>
         <a class="btn is-large" href="${docsLink}">Read the docs</a>
       </div>
     </section>
