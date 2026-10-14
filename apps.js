@@ -566,12 +566,12 @@ window.labApps = [
         label: 'A truck front axle pulls itself apart as you scroll',
         kicker: 'Exploded view',
         title: 'Take it apart. Inspect every part.',
-        line: 'Scroll to pull this 295-part axle apart. One slider does it in the app, and every part has its own row and triangle count.',
+        line: 'Scroll to pull the axle apart. One slider does it in the app.',
         readout: '295 parts · 250,075 tris',
         // the small graph: [group, [[label, value, text]...]]: the bars are drawn against the largest value of their group
         graph: [['Triangles', [['Before', 540007, '540,007'], ['After', 250075, '250,075']]], ['File size', [['STEP', 33.4, '33.4 MB'], ['GLB', 11.4, '11.4 MB'], ['Web GLB', 1.32, '1.3 MB']]]],
-        note: 'Optimised with MeshOptimiser: 54% fewer triangles, GLB 9× smaller.',
-        credit: 'Model: Mercedes-Benz Arocs 8×8 front axle. Trademarks belong to their owners; not affiliated.',
+        note: '54% fewer triangles, GLB 9× smaller.',
+        credit: 'Mercedes-Benz Arocs 8×8 axle. Not affiliated.',
       },
       // the first screen: headline (the subtitle above stays as the line under it), the lead, the page title and the meta description
       headline: 'Make a CAD assembly light enough for the web, on your own computer. Free.',
