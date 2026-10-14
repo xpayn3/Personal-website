@@ -42,7 +42,7 @@ const SHOWCASE = [
 ];
 const CSS_V = 308;
 const RP_V = 2;           // report.js
-const JS_V = 76;
+const JS_V = 77;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -253,7 +253,7 @@ ${site.claude ? '        <a href="claude.html">Work with Claude</a>\n' : ''}    
       <span><a href="${STANDALONE ? PORTFOLIO : up}privacy.html">Privacy</a></span>
     </div>
   </footer>
-  <script defer src="site.js?v=${JS_V}"></script>
+  <script defer src="site.js?v=${JS_V}"${STANDALONE ? ' data-viewer="viewer/"' : ''}></script>
 </body>
 </html>
 `;
@@ -1752,6 +1752,9 @@ function copyStandalone(app, dir) {
   const imgs = path.join(ROOT, 'Images', 'apps'), out = path.join(dir, 'Images', 'apps');
   fs.mkdirSync(out, { recursive: true });
   fs.readdirSync(imgs).filter(n => n.startsWith(app.id + '-')).forEach(n => fs.copyFileSync(path.join(imgs, n), path.join(out, n)));
+  // the full-size viewer is the portfolio's own (overlay.js / overlay.css / project-template.js); site.js loads it from viewer/ here
+  fs.mkdirSync(path.join(dir, 'viewer'), { recursive: true });
+  for (const n of ['overlay.js', 'overlay.css', 'project-template.js']) fs.copyFileSync(path.join(ROOT, n), path.join(dir, 'viewer', n));
 }
 function writeStandaloneExtras(app, dir, docs) {
   const today = new Date().toISOString().slice(0, 10);

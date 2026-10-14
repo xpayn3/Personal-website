@@ -168,7 +168,9 @@
   const zooms = $$('a.zoom');
   if (zooms.length) {
     // (the same files and versions as lab.html: the viewer needs the project template before it starts, one after the other)
-    const VIEWER = { css: '/overlay.css?v=38', js: ['/project-template.js?v=4', '/overlay.js?v=48'] };
+    // (on lukagrcar.com they are at the root; the standalone copy carries its own in viewer/, named by data-viewer on this script)
+    const base = (document.currentScript && document.currentScript.dataset.viewer) || '/';
+    const VIEWER = { css: base + 'overlay.css?v=38', js: [base + 'project-template.js?v=4', base + 'overlay.js?v=48'] };
     let viewer = null;
     const loadScript = (src) => new Promise((resolve, reject) => {
       const el = document.createElement('script');
