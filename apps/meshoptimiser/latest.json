@@ -1,26 +1,28 @@
 {
- "schema": 1,
- "stable": {
-  "version": "0.26.0",
-  "date": "2026-10-13",
-  "headline": "Box and Brush select whole parts, the same STEP opens instantly, big files open without freezing, and the app gives memory back.",
-  "notes": [
-   "Box and Brush select whole parts, behind one toolbar button.",
-   "Opening the same STEP again is instant.",
-   "Big files open without freezing the page.",
-   "The app gives memory back after Undo and Delete.",
-   "A selection draws at once, and curves are no longer a bundle of lines.",
-   "One look for sliders, scrollbars and menus."
-  ],
-  "more": "https://lukagrcar.com/apps/meshoptimiser/changelog.html",
-  "archive": {
-   "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.26.0/meshoptimiser-app-0.26.0.zip",
-   "sha256": "9c264f48872b670b6c643667c45c36d2dbfe4dfb4c638f9f08764f7144caf665",
-   "size": 5132833
-  },
-  "requirements_sha256": "f1a93ffe65235c3537c454bcad32277ba82c666c35ece65e2fe598556d0f2f7d",
-  "requirements_changed": false,
-  "launcher": 1,
-  "min_from": ""
- }
+  "schema": 1,
+  "stable": {
+    "version": "0.27.0",
+    "date": "2026-10-14",
+    "headline": "Shadows, better car paint, a smarter Quick remesh, and scenes that come back as saved",
+    "notes": [
+      "Shadows: the sun casts shadows on the parts and a soft one on the floor (Scene > Shadows).",
+      "Quick remesh reduces like Blender: flat faces joined, every second line of a ring grid dissolved, then cut evenly again. It works on OBJ files too.",
+      "A saved scene leads Recent and comes back as it was: materials, paint colour, units, grid, lights, locks and the explode amount.",
+      "Change pivot orientation, Hide and Isolate as switches, and pasting a folder of the tree as one group.",
+      "Car paint presets with a faint flake shimmer, and a Keep texture coordinates switch on import.",
+      "Ctrl+C copies selected text again.",
+      "Remove holes with Ctrl+Z in a loop no longer runs out of memory; Undo waits for a running step; closing Quick remesh mid-way no longer freezes the page.",
+      "A slimmer loading card with a time estimate for STEP files, and Settings > Performance > Memory."
+    ],
+    "more": "https://lukagrcar.com/apps/meshoptimiser/changelog.html",
+    "archive": {
+      "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.27.0/meshoptimiser-app-0.27.0.zip",
+      "sha256": "d2bc3b43329c8d9ae0d1966e02c6a870deb16b7533ecd790f844c50119965ea8",
+      "size": 37996314
+    },
+    "requirements_sha256": "f1a93ffe65235c3537c454bcad32277ba82c666c35ece65e2fe598556d0f2f7d",
+    "requirements_changed": false,
+    "launcher": 1,
+    "min_from": ""
+  }
 }
