@@ -976,6 +976,36 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/model-inspector</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/fix-normals</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/uv-layout</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/cad-edges</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://lukagrcar.com/apps/meshoptimiser/docs/quick-colour-wheel</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://lukagrcar.com/apps/meshoptimiser/docs/workflow</loc>
     <lastmod>2026-10-14</lastmod>
     <changefreq>monthly</changefreq>

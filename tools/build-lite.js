@@ -45,7 +45,7 @@ for (const dir of ['vendor', 'assets']) {
 }
 fs.copyFileSync(path.join(__dirname, 'lite', 'lite-shim.js'), path.join(OUT, 'lite-shim.js'));
 
-let patched = html.replace('<meta charset="UTF-8">', '<meta charset="UTF-8">\n<meta name="robots" content="noindex">\n<script src="lite-shim.js?v=3"></script>');
+let patched = html.replace('<meta charset="UTF-8">', '<meta charset="UTF-8">\n<meta name="robots" content="noindex">\n<script src="lite-shim.js?v=6"></script>');
 if (patched === html) throw new Error('index.html: the charset line was not found');
 const noManifest = patched.replace(/<link rel="manifest"[^>]*>\n?/, '');
 if (noManifest === patched) throw new Error('index.html: the manifest line was not found');
@@ -53,4 +53,4 @@ patched = noManifest.replace('<title>MeshOptimiser</title>', '<title>MeshOptimis
 fs.writeFileSync(path.join(OUT, 'index.html'), patched);
 
 const size = (dir) => fs.readdirSync(dir, { withFileTypes: true }).reduce((n, e) => n + (e.isDirectory() ? size(path.join(dir, e.name)) : fs.statSync(path.join(dir, e.name)).size), 0);
-console.log('Wrote the Lite version to apps/meshoptimiser/lite/ (' + (size(OUT) / 1048576).toFixed(1) + ' MB, ' + scripts.length + ' scripts)');
+console.log('Wrote the Web version to apps/meshoptimiser/lite/ (' + (size(OUT) / 1048576).toFixed(1) + ' MB, ' + scripts.length + ' scripts)');

@@ -40,7 +40,7 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 359;
+const CSS_V = 365;
 const RP_V = 2;           // report.js
 const JS_V = 79;
 
@@ -58,7 +58,10 @@ const PAGES = [
 ];
 
 const GH_ICON = '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>';
-const LITE_BTN = '<a class="btn is-large btn-lite" href="lite/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Open Lite</a>';
+// The Chrome mark (flat, six colours: it stands for the browser the app opens in; the link goes to google.com/chrome)
+const CHROME_SVG = '<svg class="chrome-ico" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#fff"/><path d="M24 2a22 22 0 0 1 19.05 11H24a11 11 0 0 0-9.53 5.5L7.1 8.3A22 22 0 0 1 24 2z" fill="#ea4335"/><path d="M43.05 13A22 22 0 0 1 24 46l9.5-16.5a11 11 0 0 0 0-11z" fill="#fbbc05"/><path d="M24 46A22 22 0 0 1 4.95 13l9.52 16.5A11 11 0 0 0 24 35z" fill="#34a853"/><circle cx="24" cy="24" r="8.6" fill="#4285f4" stroke="#fff" stroke-width="2.4"/></svg>';
+const INSTALLER = STANDALONE ? 'https://lukagrcar.com/apps/meshoptimiser/Install-MeshOptimiser.bat' : 'Install-MeshOptimiser.bat';
+const LITE_BTN = '<a class="btn is-large btn-lite" href="lite/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Open Web</a>';
 const esc = text => String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const clamp = (text, max) => (text.length > max ? text.slice(0, max - 1).trim() + '…' : text);
 const slug = text => String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -162,18 +165,6 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
   <main id="main">`;
 
   // the last band of the site, white, in the manner of a model comparison: the online version beside the installed app
-  const cmpIcon = (d) => `<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
-  const CMP = {
-    window: '<rect x="4" y="6" width="24" height="20" rx="3"/><path d="M4 12h24"/><circle cx="8.5" cy="9" r=".6"/><circle cx="11.5" cy="9" r=".6"/>',
-    lock: '<rect x="7" y="14" width="18" height="12" rx="3"/><path d="M11 14v-3a5 5 0 0 1 10 0v3"/>',
-    cube: '<path d="M16 4l11 6v12l-11 6-11-6V10z"/><path d="M5 10l11 6 11-6M16 16v12"/>',
-    step: '<path d="M8 4h11l6 6v18H8z"/><path d="M19 4v6h6"/><path d="M12 18h9M12 22h6"/>',
-    free: '<circle cx="16" cy="16" r="11"/><path d="M11 16.5l3.5 3.5L21 12"/>',
-    folder: '<path d="M4 9a2 2 0 0 1 2-2h6l3 3h11a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/>',
-    spark: '<path d="M16 4v6M16 22v6M4 16h6M22 16h6M8 8l4 4M20 20l4 4M24 8l-4 4M12 20l-4 4"/>',
-    update: '<path d="M26 16a10 10 0 1 1-3-7.1"/><path d="M26 5v6h-6"/>',
-    pc: '<rect x="4" y="6" width="24" height="16" rx="2"/><path d="M12 27h8M16 22v5"/>',
-  };
   const CHECK = '<svg class="cmp-yes" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   // each row is one question, answered for both versions side by side: true is a tick, false a dash, a string its own words
   const cmpCell = (v, label) => v === true ? `<span class="cmp-on">${CHECK}<span>${label}</span></span>` : v === false ? `<span class="cmp-off"><span class="cmp-no" aria-hidden="true">—</span><span>${label}</span></span>` : `<span class="cmp-on">${CHECK}<span>${v}</span></span>`;
@@ -190,9 +181,9 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
           <div class="cmp-head">
             <div class="cmp-col">
               <p class="cmp-tag">In your browser</p>
-              <h3>${esc(app.title)} Lite</h3>
+              <h3>${esc(app.title)} Web</h3>
               <p class="cmp-sub">Try the app in a tab. Nothing to install.</p>
-              <div class="cmp-act"><a class="cmp-btn btn-lite" href="lite/index.html" target="_blank" rel="noopener">Open Lite</a><a class="cmp-link" href="${docLink(/what-it-is/)}">What is it</a></div>
+              <div class="cmp-act"><a class="cmp-btn btn-lite" href="lite/index.html" target="_blank" rel="noopener">Open Web</a><a class="cmp-link" href="${docLink(/what-it-is/)}">What is it</a></div>
             </div>
             <div class="cmp-col">
               <p class="cmp-tag">On your machine</p>
@@ -213,7 +204,7 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
             ['pc', 'Works offline', false, true],
           ])}
           </div>
-          <p class="cmp-note">Lite opens a sample gearbox first and needs a window 960 px wide. Best in Chrome: Safari on a Mac can lag.</p>
+          <p class="cmp-note">Web opens a sample gearbox first and needs a window 960 px wide. Best in Chrome: Safari on a Mac can lag.</p>
         </div>
       </div>
     </section>`;
@@ -269,23 +260,6 @@ ${site.claude ? '        <a href="claude.html">Work with Claude</a>\n' : ''}    
   // a picture that opens in the lightbox; `group` ties the pictures of one set together
   const shot = ([src, caption], group, eager) =>
     `<figure><a class="zoom" href="${asset(src)}" data-group="${group}" data-caption="${esc(caption)}"><img src="${asset(src)}" alt="${esc(app.title + ': ' + caption)}" width="2400" height="1350"${eager ? '' : ' loading="lazy"'} decoding="async" /></a><figcaption>${esc(caption)}</figcaption></figure>`;
-
-  const clipColours = ['#35c9c0', '#fb923c', '#a78bfa', '#f472b6', '#fbbf24'];
-  const clipCards = () => (app.clips || []).map(([name, line, src, doc], i) => `
-        <figure class="clip" style="--tile-c:${clipColours[i % clipColours.length]}">
-          ${tileArt[5 + i] ? tileArt[5 + i].replace('<svg ', `<svg role="img" aria-label="${esc(app.title + ': ' + name)}" `).replace(' aria-hidden="true"', '') : ''}
-          <figcaption><i>${pad2(i + 1)}</i><strong>${esc(name)}</strong><span>${esc(line)}</span>${doc ? `<a class="clip-more" href="docs/${esc(doc)}.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about ${esc(name)}</span></a>` : ''}</figcaption>
-        </figure>`).join('');
-
-  const spotRows = (list, group) => list.map(([name, line, image], i) => `
-        <article class="spot${i % 2 ? ' is-flipped' : ''}">
-          <a class="zoom" href="${asset(image)}" data-group="${group}" data-caption="${esc(name)}"><img src="${asset(image)}" alt="${esc(app.title + ': ' + name)}" width="2400" height="1350" loading="lazy" decoding="async" /></a>
-          <div>
-            <i>${pad2(i + 1)}</i>
-            <h3>${esc(name)}</h3>
-            <p>${esc(line)}</p>
-          </div>
-        </article>`).join('');
 
   const logEntry = (entry, open) => `
         <li id="v${esc(entry.version)}">
@@ -377,7 +351,6 @@ ${d.tips.map(([key, line]) => `          <li><kbd>${esc(key)}</kbd><span>${esc(l
   const wandDemo = () => {
     const d = site.wand;
     if (!d) return '';
-    const shapes = ['plate', 'pulley', 'bolt'];
     return `
     <section class="band wand-band" id="try-wand">
       <div class="wrap">
@@ -523,9 +496,6 @@ ${c.points.map(([t, d]) => `          <div><dt>${esc(t)}</dt><dd>${esc(d)}</dd><
   const cleanupBand = () => {
     const c = site.cleanup;
     if (!c) return '';
-    const media = (src, name) => /\.(webm|mp4)$/.test(src)
-      ? `<video muted loop playsinline preload="none" disablepictureinpicture poster="${asset(src.replace(/\.(webm|mp4)$/, '_thumb.webp'))}" data-src="${asset(src)}" aria-label="${esc(app.title + ': ' + name)}" width="592" height="370"></video>`
-      : `<img src="${asset(src)}" alt="${esc(app.title + ': ' + name)}" width="2400" height="1350" loading="lazy" decoding="async" />`;
     const link = (doc, name) => doc ? `<a class="clip-more" href="docs/${esc(doc)}.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about ${esc(name)}</span></a>` : '';
     return `
     <section class="band" id="clean-up-tools">
@@ -1178,8 +1148,8 @@ ${st.tiles.map(([label, claim, rest, line, colour], i) => `          <article cl
       <h1>${esc(app.subtitle)}</h1>
       <p class="lead">${esc(site.lead)}</p>
       <div class="actions">
-        <a class="btn is-primary is-large" href="download.html">Download</a>
         ${LITE_BTN}
+        <a class="btn is-large btn-gh" href="${repo}" rel="noopener">${GH_ICON}GitHub</a>
       </div>
     </section>
 
@@ -1526,9 +1496,10 @@ ${docs.articles.filter(a => a.group === group.id).map(a => `          <li data-w
     <section class="wrap page-head is-get">
       <p class="kicker">Download</p>
       <h1>${esc(app.title)}${version ? ` <span>v${esc(version)}</span>` : ''}</h1>
-      <p class="lead">A zip straight from GitHub. Free, open source, ${esc(licence)}. ${esc(platform.replace(/\s*·\s*/g, ' and '))}.</p>
+      <p class="lead">One double-click installs it on Windows. Free, open source, ${esc(licence)}. ${esc(platform.replace(/\s*·\s*/g, ' and '))}.</p>
       <div class="actions">
-        <a class="btn is-primary is-large" href="${zip}" download rel="noopener">Download .zip</a>
+        <a class="btn is-primary is-large" href="${INSTALLER}" download rel="noopener">Install for Windows</a>
+        <a class="btn is-large" href="${zip}" download rel="noopener">Download .zip (macOS)</a>
         ${LITE_BTN}
         <a class="btn is-large" href="${repo}" rel="noopener">View on GitHub</a>
         <a class="more" href="changelog.html">What is new in v${esc(latest.version)}</a>
@@ -1539,13 +1510,15 @@ ${docs.articles.filter(a => a.group === group.id).map(a => `          <li data-w
       <div class="wrap">
         <div class="band-head">
           <p class="kicker">Get started</p>
-          <h2>Unzip, start, drop a file.</h2>
+          <h2>Double-click, wait, drop a file.</h2>
         </div>
         <ol class="steps">
-          <li><i>01</i><h3>Download and unzip</h3><p>Unpack it anywhere. No installer: everything lives in that folder.</p></li>
-          <li><i>02</i><h3>Start it</h3><p>${esc(app.start.text)}</p></li>
+          <li><i>01</i><h3>Double-click the installer</h3><p>It downloads the app, adds MeshOptimiser to your Desktop and Start menu, and shows its progress as it goes. Run it again any time to update.</p></li>
+          <li><i>02</i><h3>Let it set itself up</h3><p>${esc(app.start.text)}</p></li>
           <li><i>03</i><h3>Drop a file</h3><p>${esc(app.steps[0][1])}</p></li>
-        </ol>${commands(app.start.commands)}
+        </ol>
+        <p class="chrome-note">${CHROME_SVG}<span>MeshOptimiser opens in its own window through <b>Chrome</b>, the browser its graphics are made for (Edge and Brave work too). No Chrome on your computer? The installer offers to get it for you, or <a href="https://www.google.com/chrome/" rel="noopener">download Chrome</a> yourself.</span></p>
+        <p class="steps-note">On macOS, or to do it by hand: unzip the download anywhere and start it with one of these.</p>${commands(app.start.commands)}
         <p class="steps-note">From 0.22.0 the app updates itself in Settings › Updates, and keeps the old version. Older versions need one manual update first. <a href="${docLink(/stop-restart/)}">How updating works</a></p>
       </div>
     </section>
