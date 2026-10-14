@@ -1,24 +1,17 @@
 {
   "schema": 1,
   "stable": {
-    "version": "0.27.0",
+    "version": "0.28.0",
     "date": "2026-10-14",
-    "headline": "Shadows, better car paint, a smarter Quick remesh, and scenes that come back as saved",
+    "headline": "Pictures with a transparent background are really transparent now.",
     "notes": [
-      "Shadows: the sun casts shadows on the parts and a soft one on the floor (Scene > Shadows).",
-      "Quick remesh reduces like Blender: flat faces joined, every second line of a ring grid dissolved, then cut evenly again. It works on OBJ files too.",
-      "A saved scene leads Recent and comes back as it was: materials, paint colour, units, grid, lights, locks and the explode amount.",
-      "Change pivot orientation, Hide and Isolate as switches, and pasting a folder of the tree as one group.",
-      "Car paint presets with a faint flake shimmer, and a Keep texture coordinates switch on import.",
-      "Ctrl+C copies selected text again.",
-      "Remove holes with Ctrl+Z in a loop no longer runs out of memory; Undo waits for a running step; closing Quick remesh mid-way no longer freezes the page.",
-      "A slimmer loading card with a time estimate for STEP files, and Settings > Performance > Memory."
+      "Pictures with a transparent background came out black. They are now really see-through, and white, grey and black backgrounds show their own colour."
     ],
     "more": "https://lukagrcar.com/apps/meshoptimiser/changelog.html",
     "archive": {
-      "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.27.0/meshoptimiser-app-0.27.0.zip",
-      "sha256": "d2bc3b43329c8d9ae0d1966e02c6a870deb16b7533ecd790f844c50119965ea8",
-      "size": 37996314
+      "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.28.0/meshoptimiser-app-0.28.0.zip",
+      "sha256": "998c375141457d114ad20c6dbd53152de85c4babe331529352f54b9647ae1795",
+      "size": 32119936
     },
     "requirements_sha256": "f1a93ffe65235c3537c454bcad32277ba82c666c35ece65e2fe598556d0f2f7d",
     "requirements_changed": false,
