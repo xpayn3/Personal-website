@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "stable": {
-    "version": "0.28.0",
+    "version": "0.27.1",
     "date": "2026-10-14",
     "headline": "Pictures with a transparent background are really transparent now.",
     "notes": [
@@ -9,9 +9,9 @@
     ],
     "more": "https://lukagrcar.com/apps/meshoptimiser/changelog.html",
     "archive": {
-      "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.28.0/meshoptimiser-app-0.28.0.zip",
-      "sha256": "998c375141457d114ad20c6dbd53152de85c4babe331529352f54b9647ae1795",
-      "size": 32119936
+      "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.27.1/meshoptimiser-app-0.27.1.zip",
+      "sha256": "07995e3401f71f90fca1018a896100411e1e49830e33219297f5676b26c5b955",
+      "size": 32120490
     },
     "requirements_sha256": "f1a93ffe65235c3537c454bcad32277ba82c666c35ece65e2fe598556d0f2f7d",
     "requirements_changed": false,

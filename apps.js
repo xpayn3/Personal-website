@@ -668,7 +668,7 @@ window.labApps = [
       ['Fasteners', 'Every bolt, nut and washer, found by shape. Whatever the CAD file called them.', 'Images/apps/meshoptimiser-clip-fasteners.webm', 'fasteners'],
       ['Smart fit', 'A dense part becomes a box, a cylinder or blocks that keep its outline.', 'Images/apps/meshoptimiser-clip-smart-fit.webm', 'smart-fit'],
     ],
-    stats: [['Version', '0.28.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
+    stats: [['Version', '0.27.1'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
     about: [
       'For the STEP assembly that has to go on a web page.',
       '400 identical bolts, 80 duplicate brackets, half a million broken triangles. MeshOptimiser keeps each repeat once, rebuilds the bad geometry and drops what you can’t see.',
@@ -712,7 +712,7 @@ window.labApps = [
         ['Remove floating pieces', 'Plugs, shavings and stray dots, gone.'],
         ['Split', 'One fused lump, back to the solids it was.'],
         ['Smart fit', 'Swaps a part for a box, a cylinder or blocks that keep the outline.'],
-        ['Quick remesh (B)', 'Slide down a column of levels and watch the part change.'],
+        ['Quick remesh (B)', 'Slide down a column of levels and watch the part change.', 'new'],
         ['Fit to budget', 'Name a triangle count. The heaviest meshes go first.'],
         ['Remove hidden faces', 'Faces that never show, gone: inside housings, where parts meet.'],
         ['Remesh', 'Untriangulate re-cuts flat faces with the fewest triangles: a 200-triangle plate becomes 38. Triangulate is the way back.'],
@@ -723,8 +723,8 @@ window.labApps = [
         ['Decimate', 'By percentage or triangle count. Normals, UVs and vertex colours stay.'],
         ['Sharp edges stay sharp', 'Rims, steps and corners hold their shape when triangles go.'],
         ['Align to floor', 'A model that arrived on its side, stood up, with a preview first.'],
-        ['Change pivot orientation', 'Turn a part’s pivot to World, View, the last part picked or your own angles, and the part looks just as it did.'],
-        ['Shadows', 'The sun casts shadows on the parts and a soft one on the floor. Saved with the scene.'],
+        ['Change pivot orientation', 'Turn a part’s pivot to World, View, the last part picked or your own angles, and the part looks just as it did.', 'new'],
+        ['Shadows', 'The sun casts shadows on the parts and a soft one on the floor. Saved with the scene.', 'new'],
         ['Delete small parts', 'Removes parts too small to see, plus empty, duplicate and broken ones.'],
         ['Gives memory back', 'What Undo can no longer reach, and the parts you deleted, are freed. Big files open without freezing the page.'],
         ['Repair mesh', 'Doubled points, empty triangles, flipped faces: fixed.'],
@@ -939,8 +939,8 @@ window.labApps = [
     changelog: {
       link: 'https://github.com/xpayn3/MeshOptimiser/blob/main/CHANGELOG.md',
       versions: [
-        { version: '0.28.0', name: 'Bohinj', fixes: 1, date: '14 Oct 2026 · 10:27', latest: true,
-          summary: 'A small one, about the pictures you take: a transparent background is really transparent now.',
+        { version: '0.27.1', fixes: 1, date: '14 Oct 2026 Â· 10:43', latest: true,
+          summary: 'A small fix, about the pictures you take: a transparent background is really transparent now.',
           items: [
             ['Fix', 'A picture with a transparent background came out black. Render image now gives a see-through PNG, and a white, light, grey, dark or black background shows its own colour.'],
           ] },
