@@ -563,10 +563,10 @@ window.labApps = [
         v: 2,
         poster: 'Images/apps/meshoptimiser-axle-exploded.webp',
         posterSize: [2000, 1131],
-        label: 'A truck front axle pulls itself apart as you scroll',
-        kicker: 'Exploded view',
-        title: 'Take it apart. Inspect every part.',
-        line: 'Scroll to pull the axle apart. One slider does it in the app.',
+        label: 'A truck front axle, light enough to pull apart live as you scroll',
+        kicker: 'Live in your browser',
+        title: 'So light, it comes apart live.',
+        line: '33 MB of CAD, now 1.3 MB. All 295 parts move as you scroll.',
         readout: '295 parts · 250,075 tris',
         // the small graph: [group, [[label, value, text]...]]: the bars are drawn against the largest value of their group
         graph: [['Triangles', [['Before', 540007, '540,007'], ['After', 250075, '250,075']]], ['File size', [['STEP', 33.4, '33.4 MB'], ['GLB', 11.4, '11.4 MB'], ['Web GLB', 1.32, '1.3 MB']]]],
@@ -631,9 +631,12 @@ window.labApps = [
       why: {
         kicker: 'Why MeshOptimiser',
         title: 'Heavy CAD in. A fast page out.',
-        paragraphs: [
-          'MeshOptimiser takes the STEP assembly that is too heavy for a web page and makes it light enough to load. Repeated parts are kept once, broken geometry is rebuilt, and what nobody can see is dropped.',
-          'Every part has a row, and every action has an undo, so you can see what changed and take it back. It runs on your computer, and your files stay yours.',
+        // [label, line]: the reasons, each one something the app does that a plain converter does not
+        points: [
+          ['Made for CAD', 'STEP comes in with its names, colours and the whole part tree. Nothing is flattened.'],
+          ['Finds by shape', 'Repeats, hidden screws and tiny parts are found by what they are, not by what the file called them.'],
+          ['Nothing is final', 'Every step previews first and has an undo, so you can try anything.'],
+          ['Stays with you', 'It runs on your computer and nothing is uploaded. Free and open source.'],
         ],
       },
       // what the pipeline collapses (the README's example)

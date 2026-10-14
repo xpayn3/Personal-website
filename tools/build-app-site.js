@@ -40,7 +40,7 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 308;
+const CSS_V = 359;
 const RP_V = 2;           // report.js
 const JS_V = 79;
 
@@ -509,6 +509,17 @@ ${c.points.map(([t, d]) => `          <div><dt>${esc(t)}</dt><dd>${esc(d)}</dd><
       </div>
     </section>`;
   };
+  // the cards of the clean-up carousel (the stars, then the others): the same on the features page and on the home page
+  const starCards = () => {
+    const c = site.cleanup;
+    if (!c) return '';
+    const link = (doc, name) => doc ? `<a class="clip-more" href="docs/${esc(doc)}.html">Read more<span aria-hidden="true"> →</span><span class="sr"> about ${esc(name)}</span></a>` : '';
+    return c.stars.concat(c.more.map(([n, l, d]) => [n, l, '', d])).map(([name, line, src, doc], i) => `
+          <figure class="star">
+            ${starArt(i, name)}
+            <figcaption><i>${pad2(i + 1)}</i><strong>${esc(name)}</strong><span>${esc(line)}</span>${link(doc, name)}</figcaption>
+          </figure>`).join('');
+  };
   const cleanupBand = () => {
     const c = site.cleanup;
     if (!c) return '';
@@ -525,11 +536,7 @@ ${c.points.map(([t, d]) => `          <div><dt>${esc(t)}</dt><dd>${esc(d)}</dd><
         </div>
         <p class="lead sv-lead">${esc(c.line)}</p>
         <div class="fcar fcar-stars" data-fcar>
-        <div class="stars fcar-track">${c.stars.concat(c.more.map(([n, l, d]) => [n, l, '', d])).map(([name, line, src, doc], i) => `
-          <figure class="star">
-            ${starArt(i, name)}
-            <figcaption><i>${pad2(i + 1)}</i><strong>${esc(name)}</strong><span>${esc(line)}</span>${link(doc, name)}</figcaption>
-          </figure>`).join('')}
+        <div class="stars fcar-track">${starCards()}
         </div>
         <div class="fcar-nav"><button type="button" data-dir="-1" aria-label="Previous"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" data-dir="1" aria-label="Next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></div>
         </div>
@@ -791,7 +798,7 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
   const tileArt = (() => {
     const f = n => Math.round(n * 10) / 10;
     // every drawing is drawn to fill about the same part of the card: those drawn small are scaled up about the centre (strokes keep their width)
-    const FILL = { 'art-stack': 1.25, 'art-small': 1 };
+    const FILL = { 'art-stack': 1.3, 'art-small': 0.88, 'art-remesh': 0.92, 'art-repair': 1.2 };   // (measured: each drawing's box, so they all fill about 215 x 150 of the 360 x 200)
     const wrap = (cls, inner) => { const k = FILL[(cls.match(/art-\w+$/) || [])[0]]; return `<svg class="tile-art ${cls}" viewBox="0 0 360 200" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${k ? `<g class="art-scaled" transform="translate(180 100) scale(${k}) translate(-180 -100)">${inner}</g>` : inner}</svg>`; };
     // an isometric box: the outline, and the three edges that meet in front
     const cube = (cx, cy, s) => {
@@ -927,7 +934,7 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
     const fasteners = [['bolt', -0.55, -6], ['nut', 0.5, -6], ['washer', -0.5, 26], ['bolt', 0.55, 26], ['nut', 0.02, 10]]
       .map(([kind, s, t]) => { const [x, y] = lPt(180, 124, 70, s, t, 10); return { kind, x, y }; })
       .sort((a, b) => a.y - b.y)
-      .map(({ kind, x, y }, i) => { const o = kind === 'bolt' ? fBolt(x, y) : kind === 'nut' ? fNut(x, y) : fWasher(x, y); return `<g class="art-fnd art-hot" style="--i:${i}"><path class="art-sil" d="${o.sil}"/><path d="${o.line}"/></g>`; })
+      .map(({ kind, x, y }, i) => { const o = kind === 'bolt' ? fBolt(x, y) : kind === 'nut' ? fNut(x, y) : fWasher(x, y); return `<g class="art-fnd art-f${i} art-hot" style="--i:${i}"><path class="art-sil" d="${o.sil}"/><path d="${o.line}"/></g>`; })
       .join('\n        ');
     // a bolt standing on a box: a head with its flats, as a short drum
     const isoBolt = (x, y, r, h) => `${ell(x, y - h, r, r * 0.5)} ${ell(x, y - h, r * 0.45, r * 0.22)} M${f(x - r)} ${f(y - h)} V${f(y)} A${f(r)} ${f(r * 0.5)} 0 0 0 ${f(x + r)} ${f(y)} V${f(y - h)}`;
@@ -957,7 +964,7 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
         <path d="${cube(48, 70, 13)}"/>
         <path class="art-dim" d="M72 66 H104 M72 78 H92 M36 98 H100 M36 112 H86 M36 126 H60"/>
         <path d="${bolt(42, 152, 44, 9)}"/>
-        <path class="art-dots art-hot" d="M138 100 C170 100 176 100 214 100"/>
+        <path class="art-dots art-hot" d="M154 100 H224.7"/>
         ${ringPaths()}
         <path class="art-mesh art-hot" pathLength="1" d="${meshPath()}"/>`),
       // Clean: a boxy casing with detailed parts inside; the scan line wipes them away as it passes
@@ -998,13 +1005,13 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
         </g>`),
       // Claude: a prompt, and the parts it puts to work
       wrap('art-claude', `
-        <g transform="translate(-27 -15) scale(1.15)" stroke-width="1.3">
-          <path d="M42 56 H136 a12 12 0 0 1 12 12 V104 a12 12 0 0 1-12 12 H66 L44 136 V116 H42 a12 12 0 0 1-12-12 V68 a12 12 0 0 1 12-12 Z"/>
-          <path class="art-dim" d="M46 78 H118 M46 94 H92"/><path class="art-cursor art-hot" d="M100 90 V100"/>
-          <path class="art-flow art-hot" d="M148 86 C190 86 192 38 232 38 M148 86 C190 86 192 92 232 92 M148 86 C190 86 192 148 232 148"/>
-          <g class="art-gear"><path d="${gear(262, 38, 15, 21, 8)}"/></g>
-          <path d="${nut(262, 92, 16)}"/>
-          <path d="${bolt(246, 148, 30, 10)}"/>
+        <g transform="translate(-15 -15) scale(1.15)" stroke-width="1.3">
+          <path d="M46 53 H134 a16 16 0 0 1 16 16 V117 a16 16 0 0 1-16 16 H78 L56 144 V133 H46 a16 16 0 0 1-16-16 V69 a16 16 0 0 1 16-16 Z"/>
+          <path class="art-dim" d="M48 81 H130 M48 99 H102"/><path class="art-cursor art-hot" d="M110 92 V106"/>
+          <path class="art-flow art-hot" d="M154 93 C204 93 212 38 256 38 M154 93 H256 M154 93 C204 93 212 148 256 148"/>
+          <g class="art-gear"><path d="${gear(286, 38, 15, 21, 8)}"/></g>
+          <path d="${nut(286, 93, 16)}"/>
+          <path d="${bolt(270, 148, 30, 10)}"/>
         </g>`),
       // Remove holes: a plate seen from above at an angle, with holes of every size, none touching, and each one closes
       wrap('clip-art art-holes', `
@@ -1018,7 +1025,7 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
           const front = [ring(1, O, all), ring(-1, O, [[1, 2], [2, 3]]), [1, 2, 3].map(k => seg(P(1, ...O[k]), P(-1, ...O[k]))).join(' '), ring(1, I, all)].join(' ');
           return `<path class="art-dim" d="${back}"/><path d="${front}"/>`;
         })()}
-        <g>${[[-0.66, 0], [-0.33, 1], [0, 2], [0.33, 3], [0.66, 4]].map(([sv, i]) => { const [x, y] = lPt(180, 126, 80, sv, 0, 44); return `<g class="art-hole" style="--i:${i}"><g transform="matrix(0.866 0.5 -0.866 0.5 ${x} ${y})"><circle r="8.5"/></g></g>`; }).join('')}</g>`),
+        <g>${[[-0.66, 0], [-0.33, 1], [0, 2], [0.33, 3], [0.66, 4]].map(([sv, i]) => { const [x, y] = lPt(180, 126, 80, sv, 0, 44); return `<g class="art-hole" style="--i:${i}"><g transform="matrix(0.866 0.5 -0.866 0.5 ${x} ${y})"><circle r="8.5"/></g><g opacity="0.5" stroke-width="1"><g transform="matrix(0.866 0.5 -0.866 0.5 ${x} ${f(y + 7)})"><circle r="8.5"/></g><path d="M${f(x - 10.4)} ${y} V${f(y + 7)} M${f(x + 10.4)} ${y} V${f(y + 7)}"/></g></g>`; }).join('')}</g>`),
       // Split: a block held together by bolts is two parts fused; the bolts come out, a cutting plane passes through, and the parts slide apart
       wrap('clip-art art-split', `
         <g class="art-sa"><path class="art-solid" d="${isoSil(...isoPt(180, 86, 64, 40, -0.5, 0), 32, 40, 34)}"/><path d="${isoBox(...isoPt(180, 86, 64, 40, -0.5, 0), 32, 40, 34)}"/><g class="art-bolt"><path d="${isoBolt(...isoPt(180, 86, 64, 40, -0.5, -0.3), 8, 7)}"/><path d="${isoBolt(...isoPt(180, 86, 64, 40, -0.5, 0.35), 8, 7)}"/></g><path class="art-face" d="M${isoPt(180, 86, 64, 40, 0, -1).join(' ')} L${isoPt(180, 86, 64, 40, 0, 1).join(' ')} V${f(isoPt(180, 86, 64, 40, 0, 1)[1] + 34)} L${isoPt(180, 86, 64, 40, 0, -1)[0]} ${f(isoPt(180, 86, 64, 40, 0, -1)[1] + 34)} Z"/></g>
@@ -1050,7 +1057,22 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
       // Remove floating pieces: stray bits around a body drift away, the body stays
       wrap('clip-art art-floating', `
         <path d="${lBracket(180, 124, 70)}"/>
-        ${[[76, 56, 9, 0, 6, -9], [290, 66, 8, 1, -7, -6], [92, 150, 7, 2, 8, 7], [280, 150, 10, 3, -6, 9], [236, 34, 6, 4, 7, 6]].map(([x, y, r, i, bx, by]) => `<g class="art-m-away art-hot" style="--i:${i}"><g class="art-m-bob" style="--bx:${bx}px;--by:${by}px;--bd:${-i * 0.7}s"><path d="${nut(x, y, r)}"/></g></g>`).join('')}`),
+        ${(() => {
+          // stray pieces of every shape (not fasteners: whatever is left floating): a cube, a tetrahedron, a ball, a short cylinder, a diamond
+          const shape = (kind, x, y, r) => ({
+            cube: () => cube(x, y, r * 0.95),
+            tetra: () => `M${f(x)} ${f(y - r)} L${f(x + r)} ${f(y + r * 0.6)} L${f(x + r * 0.1)} ${f(y + r)} L${f(x - r)} ${f(y + r * 0.5)} Z M${f(x)} ${f(y - r)} L${f(x + r * 0.1)} ${f(y + r)}`,
+            ball: () => `${ell(x, y, r, r)} ${ell(x, y, r, r * 0.32)}`,
+            can: () => cylBody(x, y - r * 0.2, r * 0.8, r * 0.3, r * 1.1),
+            gem: () => `M${f(x)} ${f(y - r)} L${f(x + r * 0.85)} ${f(y)} L${f(x)} ${f(y + r)} L${f(x - r * 0.85)} ${f(y)} Z M${f(x - r * 0.85)} ${f(y)} H${f(x + r * 0.85)} M${f(x)} ${f(y - r)} V${f(y + r)}`,
+          })[kind]();
+          return [['cube', 76, 56, 15, 0, 6, -9], ['tetra', 290, 66, 15, 1, -7, -6], ['ball', 92, 150, 13, 2, 8, 7], ['can', 280, 150, 16, 3, -6, 9], ['gem', 236, 34, 13, 4, 7, 6]]
+            .map(([kind, x, y, r, i, bx, by]) => {
+              // the piece fades away; around it a small burst of lines, like a drawn "poof"
+              const ticks = [0, 1, 2, 3, 4, 5].map(k => { const a = (-90 + k * 60) * Math.PI / 180, c = Math.cos(a), sn = Math.sin(a); return `<path class="art-pop" pathLength="1" d="M${f(x + c * r * 1.45)} ${f(y + sn * r * 1.45)} L${f(x + c * r * 2.1)} ${f(y + sn * r * 2.1)}"/>`; }).join('');
+              return `<g class="art-hot" style="--i:${i}"><g class="art-m-bob" style="--bx:${bx}px;--by:${by}px;--bd:${-i * 0.7}s"><path class="art-piece art-m-fade" d="${shape(kind, x, y, r)}"/>${ticks}</g></g>`;
+            }).join('');
+        })()}`),
       // Remove hidden faces: the faces inside a housing light up, then they are gone
       wrap('clip-art art-faces', `
         <path class="art-solid" d="${isoSil(180, 124, 64, 40, 18)}"/>
@@ -1060,17 +1082,24 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
         <g class="art-m-flash art-hot">${[124, 106].map(y => `<path d="M${[[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([s, tt]) => isoPt(180, y, 64, 40, s, tt).join(' ')).join(' L')} Z"/>`).join('')}</g>`),
       // Remesh: a flat face drawn with a crowd of triangles is rebuilt with a few
       wrap('clip-art art-remesh', `
-        <g class="art-fine art-dim"><path d="${sphereFine(180, 100, 58)}"/></g>
-        <path d="${ell(180, 100, 58, 58)}"/>
-        <path class="art-m-draw art-hot" pathLength="1" d="${(() => {
-          const R = 58, hex = Array.from({ length: 6 }, (_, k) => [180 + R * Math.cos(k * Math.PI / 3), 100 + R * Math.sin(k * Math.PI / 3)]);
-          const inner = [90, 210, 330].map(d => [180 + R * 0.46 * Math.cos(d * Math.PI / 180), 100 + R * 0.46 * Math.sin(d * Math.PI / 180)]);
-          const P = ([x, y]) => `${f(x)} ${f(y)}`;
-          const links = [[0, 1, 2], [1, 3, 4], [2, 5, 0]].map(([i, p, q]) => ({ i, p, q }));
-          return `M${P(hex[0])} ` + hex.slice(1).map(p => `L${P(p)}`).join(' ') + ' Z' +
-            ' M' + inner.map(P).join(' L') + ' Z' +
-            [[0, 1, 2], [1, 3, 4], [2, 5, 0]].map(([i, p, q]) => ` M${P(inner[i])} L${P(hex[p])} M${P(inner[i])} L${P(hex[q])}`).join('');
-        })()}"/>`),
+        ${(() => {
+          // a flat slab: its top and two sides are flat faces. Fine: each face cut into many small triangles; then each flat face becomes two triangles.
+          const cx = 180, cy = 86, A = 84, B = 52, H = 22, N = 8, M = 5, P = (s, t, z = 0) => { const [x, y] = isoPt(cx, cy, A, B, s, t); return [x, f(y + z)]; };
+          const L = (p, q) => `M${p.join(' ')} L${q.join(' ')}`;
+          let grid = '';
+          for (let k = 1; k < N; k++) grid += ' ' + L(P(-1 + 2 * k / N, -1), P(-1 + 2 * k / N, 1));
+          for (let k = 1; k < M; k++) grid += ' ' + L(P(-1, -1 + 2 * k / M), P(1, -1 + 2 * k / M));
+          for (let i = 0; i < N; i++) for (let j = 0; j < M; j++) grid += ' ' + L(P(-1 + 2 * i / N, -1 + 2 * j / M), P(-1 + 2 * (i + 1) / N, -1 + 2 * (j + 1) / M));
+          // the two sides in front, cut the same way (a strip of squares each)
+          const side = (p, q) => { let d = ''; for (let k = 1; k < 6; k++) { const u = k / 6, x = p[0] + (q[0] - p[0]) * u, y = p[1] + (q[1] - p[1]) * u; d += ` M${f(x)} ${f(y)} V${f(y + H)}`; } for (let k = 0; k < 6; k++) { const u0 = k / 6, u1 = (k + 1) / 6; d += ` M${f(p[0] + (q[0] - p[0]) * u0)} ${f(p[1] + (q[1] - p[1]) * u0)} L${f(p[0] + (q[0] - p[0]) * u1)} ${f(p[1] + (q[1] - p[1]) * u1 + H)}`; } return d; };
+          const P0 = P(-1, -1), P1 = P(1, -1), P2 = P(1, 1), P3 = P(-1, 1);
+          const finer = grid + side(P1, P2) + side(P2, P3);
+          // the faces rebuilt: one diagonal on the top, one on each side
+          const few = L(P0, P2) + ' ' + L([P1[0], P1[1]], [P2[0], f(P2[1] + H)]) + ' ' + L([P2[0], P2[1]], [P3[0], f(P3[1] + H)]);
+          return `<g class="art-fine art-dim"><path d="${finer}"/></g>
+        <path d="${isoBox(cx, cy, A, B, H)}"/>
+        <path class="art-m-draw art-hot" pathLength="1" d="${few} ${isoBox(cx, cy, A, B, H)}"/>`;
+        })()}`),
       // Delete small parts: big parts stay, the tiny ones vanish one by one
       wrap('clip-art art-small', `
         <path class="art-solid" d="${isoSil(180, 84, 78, 48, 46)}"/>
@@ -1079,14 +1108,24 @@ ${d.tokens.map(([figure, line]) => `          <div><dt>${esc(figure)}</dt><dd>${
         <path d="M154 84 V66 M206 84 V66 M154 84 A26 13 0 0 0 206 84"/>
         <path d="${ell(180, 66, 26, 13)} ${ell(180, 66, 15, 7.5)}"/>
         <path d="${ell(180, 66, 7, 3.5)}"/>
-        ${[[-0.82, -0.8], [0.82, -0.8], [-0.82, 0.8], [0.82, 0.8], [0, -0.82], [0, 0.82], [-0.82, 0], [0.82, 0]].map(([s, tt], i) => { const [x, y] = isoPt(180, 84, 78, 48, s, tt); return `<g class="art-m-small art-hot" style="--i:${i};fill: var(--card-bg, var(--surface))"><path d="${nut(x, y, 4.2)}"/></g>`; }).join('')}
-        ${[[-0.7, 1], [-0.2, 1], [0.3, 1], [0.7, 1]].map(([s, tt], i) => { const [x, y] = isoPt(180, 84, 78, 48, s, tt); return `<g class="art-m-small art-hot" style="--i:${i + 8};fill: var(--card-bg, var(--surface))"><path d="${ell(x, y + 22, 3.2, 3.2)} M${f(x - 5)} ${f(y + 22)} H${f(x + 5)}"/></g>`; }).join('')}`),
-      // Repair mesh: a patch with a torn edge and a gap is healed
+        ${(() => {
+          // small parts standing on the top of the block, in its own isometric view: two hex nuts and two short drums, their feet on the same grid (s, t)
+          // a hex nut standing on the top: a hexagon in the floor plane (drawn in the same isometric view as the block), its three front sides carried down, and the hole
+          const isoNut = (x, y, r, h) => {
+            const P = (k, dy) => [f(x + 0.866 * (r * Math.cos(k * Math.PI / 3) - r * Math.sin(k * Math.PI / 3))), f(y - h + dy + 0.5 * (r * Math.cos(k * Math.PI / 3) + r * Math.sin(k * Math.PI / 3)))];
+            const top = [0, 1, 2, 3, 4, 5].map(k => P(k, 0)), low = [0, 1, 2, 3, 4, 5].map(k => P(k, h));
+            const front = [0, 1, 2, 3].filter(k => top[k][1] >= top[(k + 5) % 6][1] || true);
+            return `M${top.map(p => p.join(' ')).join(' L')} Z M${top[0].join(' ')} V${low[0][1]} L${low[1].join(' ')} M${top[1].join(' ')} V${low[1][1]} L${low[2].join(' ')} M${top[2].join(' ')} V${low[2][1]} L${low[3].join(' ')} M${top[3].join(' ')} V${low[3][1]} ${ell(x, y - h, r * 0.55, r * 0.32)}`;
+          };
+          const at = (s, t) => isoPt(180, 84, 78, 48, s, t);   // the top face of the block (its middle is (180, 84)): the parts stand on it
+          return [['nut', -0.68, -0.52], ['drum', 0.62, -0.62], ['drum', -0.64, 0.58], ['nut', 0.7, 0.5]].map(([kind, s, t], i) => { const [x, y] = at(s, t); return `<g class="art-m-small art-hot" style="--i:${i};fill: var(--card-bg, var(--surface))"><path d="${kind === 'nut' ? isoNut(x, y, 8.5, 6) : cylBody(x, y - 6, 8, 4, 12)}"/></g>`; }).join('');
+        })()}`),
+      // Repair mesh: a patch with a torn edge and a gap is healed: the torn edge glows in the tile colour first, then the hole closes and no line is left
       wrap('clip-art art-repair', `
-        <path d="M92 100 L180 56 L268 100 L180 144 Z"/>
         <g class="art-dim"><path d="${[1, 2, 3, 4, 5, 6, 7].map(k => `M${f(92 + k * 11)} ${f(100 - k * 5.5)} L${f(180 + k * 11)} ${f(144 - k * 5.5)} M${f(92 + k * 11)} ${f(100 + k * 5.5)} L${f(180 + k * 11)} ${f(56 + k * 5.5)}`).join(' ')}"/></g>
+        <path d="M92 100 L180 56 L268 100 L180 144 Z"/>
         <g class="art-fine"><path d="M158 80 L190 98 L170 112 L150 100 Z" style="fill: var(--card-bg, var(--surface))"/></g>
-        <g class="art-low art-hot"><path d="M158 80 L190 98 L170 112 L150 100 Z"/></g>`),
+        <g class="art-edge art-hot"><path d="M158 80 L190 98 L170 112 L150 100 Z"/></g>`),
       // Stacked copies: a second copy sits on the first; it slides in and is removed
       wrap('clip-art art-stack', `
         <path d="${beam(180, 104)}"/>
@@ -1148,15 +1187,17 @@ ${strengthsBand()}
 
 ${popHero()}
 
+${savingsBand()}
+
     <section class="band why">
       <div class="wrap split">
         <div class="split-head">
           <p class="kicker">${esc(site.why.kicker)}</p>
           <h2>${esc(site.why.title)}</h2>
         </div>
-        <div class="split-body">
-${site.why.paragraphs.map(p => `          <p>${esc(p)}</p>`).join('\n')}
-        </div>
+        <ul class="why-points">
+${site.why.points.map(([label, text]) => `          <li><span>${esc(label)}</span><p>${esc(text)}</p></li>`).join('\n')}
+        </ul>
       </div>
     </section>
 
@@ -1167,15 +1208,14 @@ ${site.why.paragraphs.map(p => `          <p>${esc(p)}</p>`).join('\n')}
           <h2>Advanced STEP clean-up tools, free in your browser.</h2>
           <a class="more" href="features.html">All features</a>
         </div>
-        <div class="fcar fcar-clips" data-fcar>
-        <div class="clips fcar-track">${clipCards()}
+        <div class="fcar fcar-stars" data-fcar>
+        <div class="stars fcar-track">${starCards()}
         </div>
         <div class="fcar-nav"><button type="button" data-dir="-1" aria-label="Previous"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" data-dir="1" aria-label="Next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></div>
         </div>
       </div>
     </section>
 
-${savingsBand()}
 ${/* designBand() is switched off: the band is not shown on the home page */ ''}
 ${searchDemo()}
 ${quickRemeshBand()}
