@@ -54,7 +54,7 @@ window.labApps = [
       ['Images/apps/meshoptimiser-wand.webp', 'Quick wand: a ring of commands under the cursor. Here, Remove empty parts.'],
       ['Images/apps/meshoptimiser-small-parts.webp', 'Delete small parts: 102 parts under 2% of the model’s size, highlighted before they go.'],
       ['Images/apps/meshoptimiser-heatmap-axle.webp', 'Heatmap: parts coloured by triangle count.'],
-      ['Images/apps/meshoptimiser-fasteners-axle.webp', 'Fasteners: 88 found by shape, 45,498 triangles.'],
+      ['Images/apps/meshoptimiser-fasteners-engine.webp', 'Fasteners: 376 found by shape, 354,399 triangles, 9.6% of the scene.'],
       ['Images/apps/meshoptimiser-exploded-165.webp', 'Exploded view: the axle pulled apart to 165%, with four parts picked out.'],
     ],
     site: {
@@ -653,11 +653,11 @@ window.labApps = [
     spotlights: [
       ['One button, half the triangles', 'Smart optimise runs every clean-up in order, then reduces to your target. This truck axle went from 540,007 triangles to 270,248. One Ctrl+Z puts it all back.', 'Images/apps/meshoptimiser-optimise-axle.webp', 'cube'],
       ['Quick remesh', 'Press B and a column of levels opens under the pointer. Move down it and the part changes as you go; let go to keep it. This bracket goes from 1,802 triangles to 900 at 50%.', 'Images/apps/meshoptimiser-quick-remesh-b.webm', 'cube'],
-      ['Bolts, found by their shape', 'CAD names rarely say what a part is. Fasteners reads each part’s outline and finds bolts, screws, nuts and washers, and leaves bushings and bearings alone. Eighty-eight here, 45,498 triangles.', 'Images/apps/meshoptimiser-fasteners-axle-wide.webp', 'cube'],
+      ['Bolts, found by their shape', 'CAD names rarely say what a part is. Fasteners reads each part’s outline and finds bolts, screws, nuts and washers, and leaves bushings and bearings alone. 376 here, 354,399 triangles, 9.6% of the scene.', 'Images/apps/meshoptimiser-fasteners-engine-wide.webp', 'cube'],
       ['9,572 triangles down to 96', 'Smart fit swaps a heavy part for a box, a cylinder or a few blocks that keep its outline. This axle part went from 9,572 triangles to 96, same size and place.', 'Images/apps/meshoptimiser-smart-fit-axle-2.webp', 'cube'],
       ['Pull it apart', 'One slider, and a pill for each axis, so an assembly can open along one direction only. Drag it and an axle comes apart. One click puts it back.', 'Images/apps/meshoptimiser-exploded.webm', 'cube'],
       ['Library and materials, side by side', 'The library drawer, the materials dock and the material editor, open together over the model.', 'Images/apps/meshoptimiser-windows.webp', 'cube'],
-      ['Materials', 'Every material in the scene, with how many parts use it. Open one to set its colour, metalness, roughness and more, and the parts that use it change together. Here a yellow material shared by five parts.', 'Images/apps/meshoptimiser-materials-axle.webp', 'cube'],
+      ['Materials', 'Every material in the scene, with how many parts use it. Open one to set its colour, metalness, roughness and more, and the parts that use it change together. Here a grey material shared by 620 parts, open in the editor.', 'Images/apps/meshoptimiser-materials-engine.webp', 'cube'],
       ['Keyboard shortcuts', 'Press any keys to see what they do. Click a shortcut to change it.', 'Images/apps/meshoptimiser-keyboard.webp', 'cube'],
       ['Appearance', 'Accent colour, surfaces, font and text size.', 'Images/apps/meshoptimiser-appearance.webp', 'cube'],
     ],
