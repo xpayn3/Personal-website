@@ -686,8 +686,8 @@ window.labApps = [
       ['Bolts, found by their shape', 'CAD names rarely say what a part is. Fasteners reads each part’s outline and finds bolts, screws, nuts and washers, and leaves bushings and bearings alone. 376 here, 354,399 triangles, 9.6% of the scene.', 'Images/apps/meshoptimiser-fasteners-engine-wide.webp', 'cube'],
       ['9,572 triangles down to 96', 'Smart fit swaps a heavy part for a box, a cylinder or a few blocks that keep its outline. This axle part went from 9,572 triangles to 96, same size and place.', 'Images/apps/meshoptimiser-smart-fit-axle-2.webp', 'cube'],
       ['Pull it apart', 'One slider, and a pill for each axis, so an assembly can open along one direction only. Drag it and an axle comes apart. One click puts it back.', 'Images/apps/meshoptimiser-exploded.webm', 'cube'],
-      ['Library and materials, side by side', 'The library drawer, the materials dock and the material editor, open together over the model.', 'Images/apps/meshoptimiser-windows.webp', 'cube'],
-      ['Materials', 'Every material in the scene, with how many parts use it. Open one to set its colour, metalness, roughness and more, and the parts that use it change together. Here a grey material shared by 620 parts, open in the editor.', 'Images/apps/meshoptimiser-materials-engine.webp', 'cube'],
+      ['Library and materials, side by side', 'The library drawer, the materials dock, the material editor and the colour picker, open together over the model.', 'Images/apps/meshoptimiser-windows-purple.webp', 'cube'],
+      ['Materials', 'Every material in the scene, with how many parts use it. Open one to set its colour, metalness, roughness and more, and the parts that use it change together. Here a pink material used by 2 parts, with its colour picker open and the selected part ready to take it.', 'Images/apps/meshoptimiser-materials-picker.webp', 'cube'],
       ['Keyboard remapper', 'The shortcuts window is a keyboard. Press any keys to see what they do, click a shortcut to change it, and keep your set in a profile.', 'Images/apps/meshoptimiser-keyboard-colour.webp', 'cube'],
       ['Appearance', 'Accent colour, surfaces, font and text size.', 'Images/apps/meshoptimiser-appearance.webp', 'cube'],
     ],
@@ -980,10 +980,13 @@ window.labApps = [
     changelog: {
       link: 'https://github.com/xpayn3/MeshOptimiser/blob/main/CHANGELOG.md',
       versions: [
-        { version: '0.31.1', fixes: 2, date: '15 Oct 2026', next: true,
-          summary: 'A few small touches to the interface.',
+        { version: '0.31.1', fixes: 5, date: '15 Oct 2026', next: true,
+          summary: 'Materials stay level everywhere, the colour picker can be moved, and a few small touches.',
           items: [
-            ['Fix', 'Change the colour of a material and the colour dot of its parts in the part tree changes with it, also for a part made of several meshes. Before, some dots kept the old colour.'],
+            ['New', 'The colour picker can be moved. Drag the strip along its top, or the hint along its bottom, to put it where it does not cover what you are colouring.'],
+            ['Fix', 'Every place that shows a material says the same thing at once: the Materials list, the card in Properties, the inspector and the dots in the part tree. Drop a material on a part, assign it, undo it or change its colour, and they all follow.'],
+            ['Fix', 'The colour dot in the part tree is the colour of the part’s material, not a copy kept on the part, so it can no longer show an old colour.'],
+            ['Fix', 'The log console covers the toolbar at the bottom of the view instead of sitting under it.'],
             ['Fix', 'The buttons at the bottom of the Claude connection menu fit inside it. Claude mode has a row of its own and the other three sit under it.'],
             ['Polish', 'The buttons in the top bar draw their icons at one size, so the sidebar button no longer looks heavier than Menu and Export.'],
             ['Polish', 'The cards on the start screen show their shortcut when you point at them.'],
