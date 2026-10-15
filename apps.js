@@ -980,12 +980,16 @@ window.labApps = [
     changelog: {
       link: 'https://github.com/xpayn3/MeshOptimiser/blob/main/CHANGELOG.md',
       versions: [
-        { version: '0.31.1', fixes: 5, date: '15 Oct 2026', next: true,
-          summary: 'Materials stay level everywhere, the colour picker can be moved, and a few small touches.',
+        { version: '0.31.1', fixes: 9, date: '15 Oct 2026', next: true,
+          summary: 'Enter goes into Edit mesh, Edit mesh and Undo work together, materials stay level everywhere, and the viewport no longer stalls.',
           items: [
+            ['New', 'Enter goes into Edit mesh with a part selected, in the mode you used last, and Enter again goes back out.'],
             ['New', 'The colour picker can be moved. Drag the strip along its top, or the hint along its bottom, to put it where it does not cover what you are colouring.'],
+            ['Fix', 'Edit mesh and Undo / Redo work together. What was picked is picked again after Ctrl+Z and Ctrl+Y of a move, and a delete taken back picks what it deleted.'],
+            ['Fix', 'The viewport no longer stalls after editing. When the graphics card refuses a frame because a mesh has no normals, the app now repairs it and uploads the parts again by itself.'],
             ['Fix', 'Every place that shows a material says the same thing at once: the Materials list, the card in Properties, the inspector and the dots in the part tree. Drop a material on a part, assign it, undo it or change its colour, and they all follow.'],
             ['Fix', 'The colour dot in the part tree is the colour of the part’s material, not a copy kept on the part, so it can no longer show an old colour.'],
+            ['Fix', 'Heavy parts: the bars no longer grow again after every edit, and selecting a part in the view no longer ticks it in the list.'],
             ['Fix', 'The log console covers the toolbar at the bottom of the view instead of sitting under it.'],
             ['Fix', 'The buttons at the bottom of the Claude connection menu fit inside it. Claude mode has a row of its own and the other three sit under it.'],
             ['Polish', 'The buttons in the top bar draw their icons at one size, so the sidebar button no longer looks heavier than Menu and Export.'],
