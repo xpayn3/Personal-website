@@ -200,7 +200,7 @@
   // to the app's page.
   const apps = window.labApps || [];
   // an app's page, or its own site when it has one (apps.js: site)
-  const appHref = app => (app.site ? app.site.path : `apps/${app.id}.html`);
+  const appHref = app => (app.site ? (app.site.url || app.site.path) : `apps/${app.id}.html`);
   // an app's own site opens in a tab of its own: it is not part of this one
   const appTab = (a, app) => { if (app.site) { a.target = '_blank'; a.rel = 'noopener'; } };
   function makeAppEntry(app) {

@@ -62,6 +62,8 @@ window.labApps = [
       // the latest features, newest first, for the Latest list beside the docs: [name, docs slug, 'Alpha' when it is an early version]
       docsLatest: [['Animate', 'animate', 'Alpha'], ['Claude mode', 'claude-mode', 'Alpha'], ['Locked groups', 'select-parts'], ['Pivot points in Export', 'export'], ['Make unique', 'move-rotate-scale']],
       path: 'apps/meshoptimiser/',
+      // the standalone copy of the site (github.io); the Lab links here
+      url: 'https://xpayn3.github.io/MeshOptimiser/',
       // Credits (the Credits page, and the same list in the app's Settings, About and the README): everything the app and this
       // site are built on. [name, by, licence, link, what it does here]. Add a line when a library is added; keep licence files in vendor/.
       credits: [
