@@ -698,7 +698,7 @@ window.labApps = [
       ['Fasteners', 'Every bolt, nut and washer, found by shape. Whatever the CAD file called them.', 'Images/apps/meshoptimiser-clip-fasteners.webm', 'fasteners'],
       ['Smart fit', 'A dense part becomes a box, a cylinder or blocks that keep its outline.', 'Images/apps/meshoptimiser-clip-smart-fit.webm', 'smart-fit'],
     ],
-    stats: [['Version', '0.31.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
+    stats: [['Version', '0.31.1'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
     about: [
       'For the STEP assembly that has to go on a web page.',
       '400 identical bolts, 80 duplicate brackets, half a million broken triangles. MeshOptimiser keeps each repeat once, rebuilds the bad geometry and drops what you can’t see.',
@@ -769,6 +769,7 @@ window.labApps = [
       ] },
       { title: 'Edit mesh', note: 'Points, edges, polygons', items: [
         ['Points, edges, polygons', 'Pick the pieces of a mesh, as in Cinema 4D. Keys 1 to 4 switch mode.'],
+        ['Enter into Edit mesh', 'With a part selected, Enter goes into Edit mesh in the mode you used last, and Enter again comes out.', 'new'],
         ['Click, Box, Brush', 'Three ways to pick. Double-click takes the whole loop.'],
         ['Move what you picked', 'Move, turn and scale pieces with the gizmo. One undo.'],
         ['Dissolve', 'Points out, surface closed, no hole.'],
@@ -805,7 +806,7 @@ window.labApps = [
         ['A library of 112 parts', 'Bolts, nuts, pipe fittings, bearings, brackets, gears, a servo. Set the size, drag it in.'],
         ['Exploded view', 'One slider pulls it apart, along the axes you choose.'],
         ['Animate (alpha)', 'Make parts spin, swing, shake or travel along a path, and play it in the turntable video.'],
-        ['Lock a part or a group', 'Lock one part or a whole group from Properties or the right-click menu. It shows a red lock, and delete skips it.', 'new'],
+        ['Lock a part or a group', 'Lock one part or a whole group from Properties or the right-click menu. It shows a red lock, and delete skips it.'],
         ['Dynamic place (D)', 'Drag a part over a surface: it rests on it and turns to face it.'],
         ['Align parts', 'Align or spread parts and whole groups along X, Y and Z, with a gap if you want one. One undo.'],
         ['Copy groups', 'Copy several groups at once and each comes out as a whole folder next to its original, with its own pivot.'],
@@ -819,7 +820,7 @@ window.labApps = [
       { title: 'Export', items: [
         ['GLB and glTF', 'Draco or Meshopt compression. Textures embedded if you want.'],
         ['FBX, USDZ, OBJ, STL, PLY', 'The common 3D and AR formats, with mm, cm, m and inch presets.'],
-        ['Axes at the parts', 'GLB, glTF, FBX and USDZ put each part’s pivot at its centre, so Cinema 4D, Blender and Maya open it the way you expect.', 'new'],
+        ['Axes at the parts', 'GLB, glTF, FBX and USDZ put each part’s pivot at its centre, so Cinema 4D, Blender and Maya open it the way you expect.'],
         ['Check against where it’s going', 'Test the scene against web, Shopify, AR Quick Look or phone-app limits.'],
       ], more: [
         ['Lighter, or just faster to draw', 'Meshopt cuts a GLB to about a quarter. Or keep the size and draw faster.'],
@@ -980,7 +981,7 @@ window.labApps = [
     changelog: {
       link: 'https://github.com/xpayn3/MeshOptimiser/blob/main/CHANGELOG.md',
       versions: [
-        { version: '0.31.1', fixes: 9, date: '15 Oct 2026', next: true,
+        { version: '0.31.1', fixes: 8, date: '15 Oct 2026 · 17:40', latest: true,
           summary: 'Enter goes into Edit mesh, Edit mesh and Undo work together, materials stay level everywhere, and the viewport no longer stalls.',
           items: [
             ['New', 'Enter goes into Edit mesh with a part selected, in the mode you used last, and Enter again goes back out.'],
@@ -996,7 +997,7 @@ window.labApps = [
             ['Polish', 'The cards on the start screen show their shortcut when you point at them.'],
             ['Polish', 'Search and filter boxes no longer pop up a tooltip. Their placeholder already says what they are.'],
           ] },
-        { version: '0.31.0', name: 'Bled', fixes: 6, date: '15 Oct 2026 · 13:35', latest: true,
+        { version: '0.31.0', name: 'Bled', fixes: 6, date: '15 Oct 2026 · 13:35',
           summary: 'A polish of the interface, and a tidier folder. Icons, menus and dropdowns share one look, groups can be locked, Export keeps the rest under Advanced and puts each part’s axis at the part, and the download is organised like an installed program.',
           items: [
             ['New', 'A polish of the interface. The toolbar icons are sharper, their dividers easy to see, and the + and − of the part tree sit in the middle of their circles. Every menu and dropdown looks the same and opens the same way, and closes at once.'],

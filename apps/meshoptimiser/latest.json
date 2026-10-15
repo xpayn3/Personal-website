@@ -1,25 +1,25 @@
 {
  "schema": 1,
  "stable": {
-  "version": "0.31.0",
+  "version": "0.31.1",
   "date": "2026-10-15",
-  "headline": "A polish of the interface, and a tidier folder",
+  "headline": "Enter goes into Edit mesh, Edit mesh and Undo work together, and the viewport no longer stalls after editing.",
   "notes": [
-   "A polish of the interface: icons, menus and dropdowns now look and open alike.",
-   "The folder is tidier: the program is in one folder, app, and an older install needs the full download once.",
-   "A new launcher window draws the name out of a wire mesh.",
-   "Export keeps the common options up front and the rest under Advanced, with new Pivot points for FBX, GLB and USDZ.",
-   "Lock a whole group; the right-click menus of the part tree are shorter.",
-   "Fixes: right-click menu flicker, tooltips over open menus, the + and - in the tree."
+   "Enter goes into Edit mesh and out of it.",
+   "Edit mesh and Undo / Redo work together.",
+   "The viewport no longer stalls after editing.",
+   "The materials list, the card in Properties and the colour dots in the tree agree at once.",
+   "Heavy parts: no replaying bars, and its ticks are its own.",
+   "The colour picker can be moved."
   ],
   "more": "https://lukagrcar.com/apps/meshoptimiser/changelog.html",
   "archive": {
-   "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.31.0/meshoptimiser-app-0.31.0.zip",
-   "sha256": "0ab44d28d4fa988b52c87d79f34cd35c22ebfa83d5a64bc932fdab4b60448cff",
-   "size": 5503515
+   "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.31.1/meshoptimiser-app-0.31.1.zip",
+   "sha256": "1d53c4e22cf94936891e29a7e26363c0be8efd66e23166b9fd2e247681ab8d58",
+   "size": 5499540
   },
-  "requirements_sha256": "e3af5e22260095931b56d0d0d5c9215cd98b7540739be7eda417276748a7a322",
-  "requirements_changed": true,
+  "requirements_sha256": "f1a93ffe65235c3537c454bcad32277ba82c666c35ece65e2fe598556d0f2f7d",
+  "requirements_changed": false,
   "launcher": 3,
   "min_from": ""
  }
