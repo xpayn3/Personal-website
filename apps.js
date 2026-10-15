@@ -698,7 +698,7 @@ window.labApps = [
       ['Fasteners', 'Every bolt, nut and washer, found by shape. Whatever the CAD file called them.', 'Images/apps/meshoptimiser-clip-fasteners.webm', 'fasteners'],
       ['Smart fit', 'A dense part becomes a box, a cylinder or blocks that keep its outline.', 'Images/apps/meshoptimiser-clip-smart-fit.webm', 'smart-fit'],
     ],
-    stats: [['Version', '0.31.1'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
+    stats: [['Version', '0.32.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
     about: [
       'For the STEP assembly that has to go on a web page.',
       '400 identical bolts, 80 duplicate brackets, half a million broken triangles. MeshOptimiser keeps each repeat once, rebuilds the bad geometry and drops what you can’t see.',
@@ -769,7 +769,7 @@ window.labApps = [
       ] },
       { title: 'Edit mesh', note: 'Points, edges, polygons', items: [
         ['Points, edges, polygons', 'Pick the pieces of a mesh, as in Cinema 4D. Keys 1 to 4 switch mode.'],
-        ['Enter into Edit mesh', 'With a part selected, Enter goes into Edit mesh in the mode you used last, and Enter again comes out.', 'new'],
+        ['Enter into Edit mesh', 'With a part selected, Enter goes into Edit mesh in the mode you used last, and Enter again comes out.'],
         ['Click, Box, Brush', 'Three ways to pick. Double-click takes the whole loop.'],
         ['Move what you picked', 'Move, turn and scale pieces with the gizmo. One undo.'],
         ['Dissolve', 'Points out, surface closed, no hole.'],
@@ -836,6 +836,14 @@ window.labApps = [
         ['A whole folder', 'Every model in a folder: opened, optimised, exported, closed. Stop it any time.'],
         ['Pictures for a client', 'Clean renders up to 8192 px, several angles, a plain or transparent background, plus a turntable film.'],
         ['It knows the app', 'Six playbooks, about fifty help articles and six ready-made jobs.'],
+      ] },
+      { title: 'Notes', note: 'Review', items: [
+        ['Notes on the model', 'Press N, click a spot, write. A numbered pin stays on the part, with a picture of the view it was written from.', 'new'],
+        ['Replies, edits and resolve', 'Anyone can answer, edit or resolve. An edit keeps what it replaced; a delete leaves who deleted it.', 'new'],
+        ['Every change has a name', 'Type your name once. Every note, reply and edit shows who and when, and each note has a history.', 'new'],
+        ['Notes in the scene file', 'Saved with the scene and opened with it. Export never writes notes, so a team comment cannot reach a customer.', 'new'],
+        ['Bring in another copy’s notes', 'Two people each worked on a copy? Bring in the other file and the notes are joined. Nobody’s words are lost.', 'new'],
+        ['A report anyone can open', 'The notes as one HTML page with pictures, who said what and the history. No app needed.', 'new'],
       ] },
       { title: 'The app', items: [
         ['Keyboard remapper', 'The shortcuts window is a keyboard: lit keys carry their command, and holding Ctrl, Shift or Alt shows what those do. Click a shortcut, press new keys, and a key that is taken warns you first. Keep your set in a profile, one per person.'],
@@ -981,7 +989,18 @@ window.labApps = [
     changelog: {
       link: 'https://github.com/xpayn3/MeshOptimiser/blob/main/CHANGELOG.md',
       versions: [
-        { version: '0.31.1', fixes: 8, date: '15 Oct 2026 · 17:40', latest: true,
+        { version: '0.32.0', name: 'Idrija', fixes: 0, date: '15 Oct 2026 · 22:19', latest: true,
+          summary: 'Notes. Leave them on the model, answer, edit and resolve them, and send the scene with everything inside.',
+          items: [
+            ['New', 'Notes on the model. Press N and click a spot: a numbered pin stays on that part, and follows it when the part moves, is hidden or the view is exploded. A small picture of the view is kept with the note. A note can also be about the selected part or the whole scene.'],
+            ['New', 'A conversation, not a label. Each note has a tag (Info, Question, Issue, Idea), can be given to somebody, and anyone can reply, edit or delete any message, resolve the note or open it again.'],
+            ['New', 'Every change carries a name. You type your name once; every message shows who wrote it and when. An edit says who made it and keeps what it replaced, a deleted message says who deleted it and can come back, and each note has a history.'],
+            ['New', 'Saved with the scene. The notes go in the scene file, together with when each person last saved, so New to me shows what somebody else changed. Exports never contain notes, and other programs open the scene as an ordinary GLB.'],
+            ['New', 'The Notes card lists them with filters (Open, All, Resolved, New to me, Mine, Deleted), search and sorting, and a click flies the camera back to the view the note was written from.'],
+            ['New', 'Bring in the notes of another copy. When two people worked on their own copies of one scene, the notes are joined: new notes added, replies, edits and resolutions put together, and nothing anyone wrote is lost.'],
+            ['New', 'A report anyone can open. The notes as one HTML page with the pictures, every message, who edited what and the history. Copy puts them on the clipboard as text.'],
+          ] },
+        { version: '0.31.1', fixes: 8, date: '15 Oct 2026 · 17:40',
           summary: 'Enter goes into Edit mesh, Edit mesh and Undo work together, materials stay level everywhere, and the viewport no longer stalls.',
           items: [
             ['New', 'Enter goes into Edit mesh with a part selected, in the mode you used last, and Enter again goes back out.'],

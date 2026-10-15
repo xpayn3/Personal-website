@@ -1,22 +1,22 @@
 {
  "schema": 1,
  "stable": {
-  "version": "0.31.1",
+  "version": "0.32.0",
   "date": "2026-10-15",
-  "headline": "Enter goes into Edit mesh, Edit mesh and Undo work together, and the viewport no longer stalls after editing.",
+  "headline": "Notes: leave them on the model, answer, edit and resolve them, and send the scene with everything inside.",
   "notes": [
-   "Enter goes into Edit mesh and out of it.",
-   "Edit mesh and Undo / Redo work together.",
-   "The viewport no longer stalls after editing.",
-   "The materials list, the card in Properties and the colour dots in the tree agree at once.",
-   "Heavy parts: no replaying bars, and its ticks are its own.",
-   "The colour picker can be moved."
+   "Notes: press N and click a spot on the model to leave a note.",
+   "Anyone can reply, edit, resolve or delete; every change carries the name of who made it.",
+   "An edit keeps what it replaced, and each note has a history.",
+   "Notes are saved in the scene file; exports never contain them.",
+   "Bring in the notes of another copy of the scene, and save a report page anyone can open.",
+   "The Notes card lists, filters and searches them."
   ],
   "more": "https://lukagrcar.com/apps/meshoptimiser/changelog.html",
   "archive": {
-   "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.31.1/meshoptimiser-app-0.31.1.zip",
-   "sha256": "1d53c4e22cf94936891e29a7e26363c0be8efd66e23166b9fd2e247681ab8d58",
-   "size": 5499540
+   "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.32.0/meshoptimiser-app-0.32.0.zip",
+   "sha256": "259ca5d9760a52b56ef9c4306b55cba3504c48521780f84ebb55475573b54cbe",
+   "size": 5529670
   },
   "requirements_sha256": "f1a93ffe65235c3537c454bcad32277ba82c666c35ece65e2fe598556d0f2f7d",
   "requirements_changed": false,
