@@ -1,27 +1,26 @@
 {
-  "schema": 1,
-  "stable": {
-    "version": "0.30.0",
-    "date": "2026-10-15",
-    "headline": "Claude mode and Animate, two alpha features: follow Claude as a feed, and make parts spin, swing, shake and travel.",
-    "notes": [
-      "Claude mode (alpha): follow Claude as a feed, with your model beside it.",
-      "Animate (alpha): make parts spin, swing, shake and travel along a path.",
-      "Select all instances, Select the original and Make unique.",
-      "Allow, Ask first or Block for each kind of change Claude may make.",
-      "A new Settings window, Advanced flatten with before and after drawings, and a rounder look.",
-      "Lighter dragging of windows, docks and the console.",
-      "STEP files made of faceted breps open, and undo on an exploded view puts it back together."
-    ],
-    "more": "https://lukagrcar.com/apps/meshoptimiser/changelog.html",
-    "archive": {
-      "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.30.0/meshoptimiser-app-0.30.0.zip",
-      "sha256": "f9d3903c6354d6704d12d91a3d4965ec8f368699a2211aaaa43b12f2b2b17242",
-      "size": 5496433
-    },
-    "requirements_sha256": "f1a93ffe65235c3537c454bcad32277ba82c666c35ece65e2fe598556d0f2f7d",
-    "requirements_changed": false,
-    "launcher": 2,
-    "min_from": ""
-  }
+ "schema": 1,
+ "stable": {
+  "version": "0.31.0",
+  "date": "2026-10-15",
+  "headline": "A polish of the interface, and a tidier folder",
+  "notes": [
+   "A polish of the interface: icons, menus and dropdowns now look and open alike.",
+   "The folder is tidier: the program is in one folder, app, and an older install needs the full download once.",
+   "A new launcher window draws the name out of a wire mesh.",
+   "Export keeps the common options up front and the rest under Advanced, with new Pivot points for FBX, GLB and USDZ.",
+   "Lock a whole group; the right-click menus of the part tree are shorter.",
+   "Fixes: right-click menu flicker, tooltips over open menus, the + and - in the tree."
+  ],
+  "more": "https://lukagrcar.com/apps/meshoptimiser/changelog.html",
+  "archive": {
+   "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.31.0/meshoptimiser-app-0.31.0.zip",
+   "sha256": "0ab44d28d4fa988b52c87d79f34cd35c22ebfa83d5a64bc932fdab4b60448cff",
+   "size": 5503515
+  },
+  "requirements_sha256": "e3af5e22260095931b56d0d0d5c9215cd98b7540739be7eda417276748a7a322",
+  "requirements_changed": true,
+  "launcher": 3,
+  "min_from": ""
+ }
 }
