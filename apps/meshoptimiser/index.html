@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="site.css?v=389" />
+  <link rel="stylesheet" href="site.css?v=391" />
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/"}}</script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
@@ -36,7 +36,7 @@
   "softwareVersion": "0.30.0",
   "url": "https://lukagrcar.com/apps/meshoptimiser/",
   "image": "https://lukagrcar.com/Images/apps/meshoptimiser-hero.webp",
-  "downloadUrl": "https://github.com/xpayn3/MeshOptimiser/archive/HEAD.zip",
+  "downloadUrl": "https://github.com/xpayn3/MeshOptimiser/archive/refs/tags/v0.30.0.zip",
   "license": "https://opensource.org/licenses/MIT",
   "offers": {
     "@type": "Offer",
@@ -127,7 +127,7 @@
             <g class="art-lockbody"><rect x="164" y="84" width="32" height="26" rx="4"/><circle cx="180" cy="95" r="3"/><path d="M180 98 V103"/></g>
           </g>
         </g></svg><p class="tile-label">Trust</p><h2>Every step undoes. <span>Nothing uploaded.</span></h2><p class="tile-line">Runs on your computer. Free.</p></article>
-          <article class="tile" style="--tile-c:#e879f9"><svg class="tile-art art-claude" viewBox="0 0 360 200" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <article class="tile" style="--tile-c:#d97757"><svg class="tile-art art-claude" viewBox="0 0 360 200" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
         <g transform="translate(-15 -15) scale(1.15)" stroke-width="1.3">
           <path d="M46 53 H134 a16 16 0 0 1 16 16 V117 a16 16 0 0 1-16 16 H78 L56 144 V133 H46 a16 16 0 0 1-16-16 V69 a16 16 0 0 1 16-16 Z"/>
           <path class="art-dim" d="M48 81 H130 M48 99 H102"/><path class="art-cursor art-hot" d="M110 92 V106"/>
@@ -176,20 +176,20 @@
           </div>
           <div class="sv-rows">
             <p class="sv-sub">Before and after</p>
-          <div class="sv-row">
+          <div class="sv-row" style="--c:var(--fn-edit)">
             <div class="sv-label"><span>Triangles</span><em>−50%</em></div>
             <div class="sv-bar is-before"><i style="--w:100%"></i><b>646,064</b></div>
-            <div class="sv-bar is-after"><i style="--w:50.0%"></i><b>322,988</b></div>
+            <div class="sv-bar is-after" style="--w:50.0%"><i style="--w:50.0%"></i><b data-t="322,988">322,988</b></div>
           </div>
-          <div class="sv-row">
+          <div class="sv-row" style="--c:var(--fn-view)">
             <div class="sv-label"><span>Vertices</span><em>−45%</em></div>
             <div class="sv-bar is-before"><i style="--w:100%"></i><b>360,958</b></div>
-            <div class="sv-bar is-after"><i style="--w:54.8%"></i><b>197,772</b></div>
+            <div class="sv-bar is-after" style="--w:54.8%"><i style="--w:54.8%"></i><b data-t="197,772">197,772</b></div>
           </div>
-          <div class="sv-row">
+          <div class="sv-row" style="--c:var(--fn-selection)">
             <div class="sv-label"><span>Memory</span><em>−40%</em></div>
             <div class="sv-bar is-before"><i style="--w:100%"></i><b>4.7 MB</b></div>
-            <div class="sv-bar is-after"><i style="--w:59.6%"></i><b>2.8 MB</b></div>
+            <div class="sv-bar is-after" style="--w:59.6%"><i style="--w:59.6%"></i><b data-t="2.8 MB">2.8 MB</b></div>
           </div>
           </div>
           <div class="sv-levels" role="img" aria-label="Triangles left after Smart optimise at each level">
@@ -198,10 +198,10 @@
             <div class="sv-col is-original" style="--h:100.0%;--i:0">
               <b>646,064</b><i></i><span>Original</span>
             </div>
-            <div class="sv-col " style="--h:50.0%;--i:1">
+            <div class="sv-col " style="--h:50.0%;--i:1;--c:var(--fn-part)">
               <b>322,988</b><i><em>−50%</em></i><span>Light, Balanced</span>
             </div>
-            <div class="sv-col " style="--h:25.1%;--i:2">
+            <div class="sv-col " style="--h:25.1%;--i:2;--c:var(--fn-library)">
               <b>161,980</b><i><em>−75%</em></i><span>Strong</span>
             </div>
             </div>

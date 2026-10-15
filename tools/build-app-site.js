@@ -40,7 +40,7 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 389;
+const CSS_V = 391;
 const RP_V = 2;           // report.js
 const JS_V = 88;
 
@@ -78,8 +78,12 @@ function siteFor(app, docs) {
   const platform = (app.stats.find(([label]) => label === 'Platform') || [])[1] || '';
   const licence = (app.info.find(([label]) => label === 'Licence') || [])[1] || '';
   const repo = app.repo.replace(/\/+$/, '');
-  const zip = app.download || repo + '/archive/HEAD.zip';
   const latest = app.changelog.versions.find(v => v.latest) || app.changelog.versions[0];
+  // the download is our own release zip, MeshOptimiser-v<version>.zip, with the files at its root: it unpacks into one folder named after the app and the version (GitHub's source zip is named after a commit and unpacks twice)
+  // (only from v0.31.0, the first release that has the asset; earlier ones keep GitHub's zip of their tag, which exists)
+  const hasAsset = v => { const [a, b] = String(v).split('.').map(Number); return a > 0 || b >= 31; };
+  const zipOf = v => hasAsset(v) ? repo + '/releases/download/v' + v + '/MeshOptimiser-v' + v + '.zip' : repo + '/archive/refs/tags/v' + v + '.zip';
+  const zip = app.download || zipOf(latest.version);
   // the last three tagged releases, each as GitHub's zip of that tag
   const releases = app.changelog.versions.filter(v => !v.next).slice(0, 3);
 
@@ -415,8 +419,8 @@ ${pick.map(([key, label]) => `            <li><img src="library/${esc(key)}.webp
           <div class="sv-row">
             <div class="sv-label"><span>${esc(name)}</span><em>−${100 - left(plain, mo)}% · −${100 - left(plain, dr)}%</em></div>
             <div class="sv-bar is-before"><i style="--w:100%"></i><b>Plain GLB ${mb(plain)}</b></div>
-            <div class="sv-bar is-after"><i style="--w:${(mo / plain * 100).toFixed(1)}%"></i><b>Meshopt ${mb(mo)}</b></div>
-            <div class="sv-bar is-draco"><i style="--w:${(dr / plain * 100).toFixed(1)}%"></i><b>Draco ${mb(dr)}</b></div>
+            <div class="sv-bar is-after" style="--w:${(mo / plain * 100).toFixed(1)}%"><i style="--w:${(mo / plain * 100).toFixed(1)}%"></i><b data-t="Meshopt ${mb(mo)}">Meshopt ${mb(mo)}</b></div>
+            <div class="sv-bar is-draco" style="--w:${(dr / plain * 100).toFixed(1)}%"><i style="--w:${(dr / plain * 100).toFixed(1)}%"></i><b data-t="Draco ${mb(dr)}">Draco ${mb(dr)}</b></div>
           </div>`).join('');
     const cols = [['Plain GLB', first[1], 'is-original'], ['Meshopt', first[2], ''], ['Draco', first[3], 'is-draco']].map(([n, v, cls], i) => `
             <div class="sv-col ${cls}" style="--h:${(v / first[1] * 100).toFixed(1)}%;--i:${i}">
@@ -520,15 +524,18 @@ ${c.points.map(([t, d]) => `          <div><dt>${esc(t)}</dt><dd>${esc(d)}</dd><
     const fmtN = (n) => (n >= 100 ? Math.round(n).toLocaleString('en-US') : String(Math.round(n * 10) / 10));
     const pct = (a, b) => Math.round((1 - b / a) * 100);
     const [t0, t1] = [s.metrics[0][1], s.metrics[0][2]];
-    const rows = s.metrics.map(([name, a, b, unit]) => `
-          <div class="sv-row">
+    // each measure and each level wears the colour of a kind of function in the app (site.css, --fn-*)
+    const ROW_C = ['var(--fn-edit)', 'var(--fn-view)', 'var(--fn-selection)', 'var(--fn-file)'];
+    const LEVEL_C = ['var(--fn-part)', 'var(--fn-library)', 'var(--fn-view)', 'var(--fn-selection)'];
+    const rows = s.metrics.map(([name, a, b, unit], ri) => `
+          <div class="sv-row" style="--c:${ROW_C[ri % ROW_C.length]}">
             <div class="sv-label"><span>${esc(name)}</span><em>−${pct(a, b)}%</em></div>
             <div class="sv-bar is-before"><i style="--w:100%"></i><b>${fmtN(a)}${unit ? ' ' + esc(unit) : ''}</b></div>
-            <div class="sv-bar is-after"><i style="--w:${(b / a * 100).toFixed(1)}%"></i><b>${fmtN(b)}${unit ? ' ' + esc(unit) : ''}</b></div>
+            <div class="sv-bar is-after" style="--w:${(b / a * 100).toFixed(1)}%"><i style="--w:${(b / a * 100).toFixed(1)}%"></i><b data-t="${fmtN(b)}${unit ? ' ' + esc(unit) : ''}">${fmtN(b)}${unit ? ' ' + esc(unit) : ''}</b></div>
           </div>`).join('');
     const top = Math.max(t0, ...s.levels.map(l => l[1]));
     const cols = [['Original', t0, 'is-original']].concat(s.levels.map(([n, v]) => [n, v, ''])).map(([n, v, cls], i) => `
-            <div class="sv-col ${cls}" style="--h:${(v / top * 100).toFixed(1)}%;--i:${i}">
+            <div class="sv-col ${cls}" style="--h:${(v / top * 100).toFixed(1)}%;--i:${i}${cls ? '' : ';--c:' + LEVEL_C[(i - 1) % LEVEL_C.length]}">
               <b>${fmtN(v)}</b><i>${cls ? '' : '<em>−' + pct(t0, v) + '%</em>'}</i><span>${esc(n)}</span>
             </div>`).join('');
     return `
@@ -1550,7 +1557,7 @@ ${docs.articles.filter(a => a.group === group.id).map(a => `          <li data-w
         <ol class="releases">
 ${releases.map(r => `          <li>
             <div class="rel-name"><strong>v${esc(r.version)}${relName(r)}</strong>${r.latest ? '<em>Latest</em>' : ''}${r.date ? `<span>${esc(r.date.split(' · ')[0])}</span>` : ''}</div>
-            <div class="rel-actions"><a class="more" href="changelog.html#v${esc(r.version)}">What changed</a><a class="btn" href="${repo}/archive/refs/tags/v${esc(r.version)}.zip" download rel="noopener" aria-label="Download v${esc(r.version)} as a zip">Download .zip</a></div>
+            <div class="rel-actions"><a class="more" href="changelog.html#v${esc(r.version)}">What changed</a><a class="btn" href="${zipOf(r.version)}" download rel="noopener" aria-label="Download v${esc(r.version)} as a zip">Download .zip</a></div>
           </li>`).join('\n')}
         </ol>
       </div>

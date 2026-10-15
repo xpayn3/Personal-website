@@ -628,7 +628,7 @@ window.labApps = [
           ['Clean', 'Finds the hidden.', 'Gone in one click.', 'Bolts, tiny parts and holes.', '#a78bfa'],
           ['Shrink', '320 MB to 11 MB.', 'Half the triangles.', 'One press of Smart optimise.', '#fbbf24'],
           ['Trust', 'Every step undoes.', 'Nothing uploaded.', 'Runs on your computer. Free.', '#10b981'],
-          ['Claude', 'Just tell Claude.', 'It runs the tools.', 'Say what it is for. Claude does the job.', '#e879f9'],
+          ['Claude', 'Just tell Claude.', 'It runs the tools.', 'Say what it is for. Claude does the job.', '#d97757'],
         ],
       },
       // the "why" band on the home page: a heading and plain words about the app
