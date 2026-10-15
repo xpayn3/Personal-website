@@ -1,26 +1,27 @@
 {
- "schema": 1,
- "stable": {
-  "version": "0.29.0",
-  "date": "2026-10-14",
-  "headline": "Groups that align and copy as one piece, a macOS feel and sharp pixels",
-  "notes": [
-   "Align and Spread work on groups, and copying several groups makes a whole folder for each.",
-   "Pivots of copied groups, and of groups moved together, stay where they belong.",
-   "Windows, menus and the quick colour wheel have a macOS feel.",
-   "Edges and icon lines are sharp to the pixel.",
-   "Ctrl+C, Ctrl+D and Ctrl+V copy, duplicate and paste materials.",
-   "Undo no longer leaves a ghost copy of a group."
-  ],
-  "more": "https://lukagrcar.com/apps/meshoptimiser/changelog.html",
-  "archive": {
-   "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.29.0/meshoptimiser-app-0.29.0.zip",
-   "sha256": "18e89e88e54540651dc95942a49e388772972aa299f3c7c073634838efa4b3b7",
-   "size": 5354006
-  },
-  "requirements_sha256": "f1a93ffe65235c3537c454bcad32277ba82c666c35ece65e2fe598556d0f2f7d",
-  "requirements_changed": false,
-  "launcher": 2,
-  "min_from": ""
- }
+  "schema": 1,
+  "stable": {
+    "version": "0.30.0",
+    "date": "2026-10-15",
+    "headline": "Claude mode and Animate, two alpha features: follow Claude as a feed, and make parts spin, swing, shake and travel.",
+    "notes": [
+      "Claude mode (alpha): follow Claude as a feed, with your model beside it.",
+      "Animate (alpha): make parts spin, swing, shake and travel along a path.",
+      "Select all instances, Select the original and Make unique.",
+      "Allow, Ask first or Block for each kind of change Claude may make.",
+      "A new Settings window, Advanced flatten with before and after drawings, and a rounder look.",
+      "Lighter dragging of windows, docks and the console.",
+      "STEP files made of faceted breps open, and undo on an exploded view puts it back together."
+    ],
+    "more": "https://lukagrcar.com/apps/meshoptimiser/changelog.html",
+    "archive": {
+      "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.30.0/meshoptimiser-app-0.30.0.zip",
+      "sha256": "f9d3903c6354d6704d12d91a3d4965ec8f368699a2211aaaa43b12f2b2b17242",
+      "size": 5496433
+    },
+    "requirements_sha256": "f1a93ffe65235c3537c454bcad32277ba82c666c35ece65e2fe598556d0f2f7d",
+    "requirements_changed": false,
+    "launcher": 2,
+    "min_from": ""
+  }
 }

@@ -675,7 +675,7 @@ window.labApps = [
       ['Fasteners', 'Every bolt, nut and washer, found by shape. Whatever the CAD file called them.', 'Images/apps/meshoptimiser-clip-fasteners.webm', 'fasteners'],
       ['Smart fit', 'A dense part becomes a box, a cylinder or blocks that keep its outline.', 'Images/apps/meshoptimiser-clip-smart-fit.webm', 'smart-fit'],
     ],
-    stats: [['Version', '0.29.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
+    stats: [['Version', '0.30.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
     about: [
       'For the STEP assembly that has to go on a web page.',
       '400 identical bolts, 80 duplicate brackets, half a million broken triangles. MeshOptimiser keeps each repeat once, rebuilds the bad geometry and drops what you can’t see.',
@@ -955,7 +955,7 @@ window.labApps = [
     changelog: {
       link: 'https://github.com/xpayn3/MeshOptimiser/blob/main/CHANGELOG.md',
       versions: [
-        { version: '0.30.0', name: 'Kobarid', fixes: 9, date: '15 Oct 2026', next: true,
+        { version: '0.30.0', name: 'Kobarid', fixes: 9, date: '15 Oct 2026 · 03:03', latest: true,
           summary: 'Two alpha features: Claude mode, to follow Claude as a feed with your model beside it, and Animate, to make parts spin, swing, shake and travel. Also instance commands, three-way permissions for Claude, a redesigned Settings and a rounder look.',
           items: [
             ['New', 'Claude mode (alpha). Hide the app and follow Claude as a feed: what it says, every call it makes with what came back, and every picture it takes, with your model beside it as a rounded card you can show or hide. Open it from the start screen, the Claude badge, the command search, or with ?claude on the address. It is an early version, so expect rough edges.'],
@@ -994,7 +994,7 @@ window.labApps = [
             ['Perf', 'Background checks pause while the tab is hidden, and the thumbnails in the Materials list are drawn as they scroll into view.'],
             ['Perf', 'Backdrop blur is gone from the dialogs, pills, the gizmo HUD and tooltips, which makes drawing lighter. Batch rename draws the first 300 rows of its preview and says how many more it renames by the same rule.'],
           ] },
-        { version: '0.29.0', name: 'Bohinj', fixes: 9, date: '14 Oct 2026 · 20:05', latest: true,
+        { version: '0.29.0', name: 'Bohinj', fixes: 9, date: '14 Oct 2026 · 20:05',
           summary: 'Big assemblies got easier to handle. Groups now line up, copy and keep their pivots as one piece, and the whole workspace looks and moves like a finished app: windows, menus and the colour wheel with a macOS feel, and every edge and icon line sharp to the pixel.',
           items: [
             ['New', 'Align and Spread work on groups. A selected group is lined up as one item, measured by the box round all its parts, so its parts keep their places against each other. Mix groups and loose parts if you like; a group with a locked part stays where it is.'],
