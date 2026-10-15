@@ -112,7 +112,7 @@ ${JSON.stringify({
     operatingSystem: platform.replace(/\s*·\s*/g, ', '),
     softwareVersion: version,
     url: home,
-    image: absolute(app.cover),
+    image: absolute((app.share || app.cover)),
     downloadUrl: zip,
     license: 'https://opensource.org/licenses/MIT',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
@@ -135,7 +135,10 @@ ${JSON.stringify({
   <meta property="og:site_name" content="${esc(app.title)}" />
   <meta property="og:title" content="${esc(title)}" />
   <meta property="og:description" content="${esc(clamp(description, 160))}" />
-  <meta property="og:image" content="${absolute(app.cover)}" />
+  <meta property="og:image" content="${absolute(app.share || app.cover)}" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:image" content="${absolute(app.share || app.cover)}" />
   <meta property="og:url" content="${url}" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -1177,7 +1180,7 @@ ${st.tiles.map(([label, claim, rest, line, colour], i) => `          <article cl
 `;
   };
 
-  pages.home = (page) => head(page, `${app.title} — ${app.subtitle}`, site.lead) + header(page) + `
+  pages.home = (page) => head(page, `${app.title} — ${app.subtitle}`, site.shareText || site.lead) + header(page) + `
     <section class="wrap hero">
       <p class="kicker">${[version && 'v' + version, app.stage, licence, platform.replace(/\s*·\s*/g, ' and ')].filter(Boolean).map(esc).join('<b>·</b>')}</p>
       <h1>${esc(app.subtitle)}</h1>
