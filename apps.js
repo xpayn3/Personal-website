@@ -51,6 +51,7 @@ window.labApps = [
     icon: 'Images/apps/meshoptimiser-icon.svg',
     cover: 'Images/apps/meshoptimiser-hero.webp',
     share: 'Images/apps/meshoptimiser-share.jpg',
+    labCover: 'Images/apps/meshoptimiser-lab-cover.webp',   // the picture on the Lab page card
     shots: [
       ['Images/apps/meshoptimiser-wand.webp', 'Quick wand: a ring of commands under the cursor. Here, Remove empty parts.'],
       ['Images/apps/meshoptimiser-small-parts.webp', 'Delete small parts: 102 parts under 2% of the model’s size, highlighted before they go.'],

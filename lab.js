@@ -217,7 +217,7 @@
     if (app.cover) {
       const cover = el('span', 'app-entry-cover');
       const img = el('img');
-      Object.assign(img, { src: app.cover, alt: `${app.title}: the app's interface`, loading: 'lazy', decoding: 'async' });
+      Object.assign(img, { src: app.labCover || app.cover, alt: `${app.title}: the app's interface`, loading: 'lazy', decoding: 'async' });
       cover.append(img);
       page.append(cover);
     }
