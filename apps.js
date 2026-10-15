@@ -688,7 +688,7 @@ window.labApps = [
       ['Pull it apart', 'One slider, and a pill for each axis, so an assembly can open along one direction only. Drag it and an axle comes apart. One click puts it back.', 'Images/apps/meshoptimiser-exploded.webm', 'cube'],
       ['Library and materials, side by side', 'The library drawer, the materials dock and the material editor, open together over the model.', 'Images/apps/meshoptimiser-windows.webp', 'cube'],
       ['Materials', 'Every material in the scene, with how many parts use it. Open one to set its colour, metalness, roughness and more, and the parts that use it change together. Here a grey material shared by 620 parts, open in the editor.', 'Images/apps/meshoptimiser-materials-engine.webp', 'cube'],
-      ['Keyboard shortcuts', 'Press any keys to see what they do. Click a shortcut to change it.', 'Images/apps/meshoptimiser-keyboard.webp', 'cube'],
+      ['Keyboard remapper', 'The shortcuts window is a keyboard. Press any keys to see what they do, click a shortcut to change it, and keep your set in a profile.', 'Images/apps/meshoptimiser-keyboard-colour.webp', 'cube'],
       ['Appearance', 'Accent colour, surfaces, font and text size.', 'Images/apps/meshoptimiser-appearance.webp', 'cube'],
     ],
     clips: [
@@ -980,6 +980,15 @@ window.labApps = [
     changelog: {
       link: 'https://github.com/xpayn3/MeshOptimiser/blob/main/CHANGELOG.md',
       versions: [
+        { version: '0.31.1', fixes: 2, date: '15 Oct 2026', next: true,
+          summary: 'A few small touches to the interface.',
+          items: [
+            ['Fix', 'Change the colour of a material and the colour dot of its parts in the part tree changes with it, also for a part made of several meshes. Before, some dots kept the old colour.'],
+            ['Fix', 'The buttons at the bottom of the Claude connection menu fit inside it. Claude mode has a row of its own and the other three sit under it.'],
+            ['Polish', 'The buttons in the top bar draw their icons at one size, so the sidebar button no longer looks heavier than Menu and Export.'],
+            ['Polish', 'The cards on the start screen show their shortcut when you point at them.'],
+            ['Polish', 'Search and filter boxes no longer pop up a tooltip. Their placeholder already says what they are.'],
+          ] },
         { version: '0.31.0', name: 'Bled', fixes: 6, date: '15 Oct 2026 · 13:35', latest: true,
           summary: 'A polish of the interface, and a tidier folder. Icons, menus and dropdowns share one look, groups can be locked, Export keeps the rest under Advanced and puts each part’s axis at the part, and the download is organised like an installed program.',
           items: [
