@@ -40,9 +40,9 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 419;
+const CSS_V = 425;
 const RP_V = 2;           // report.js
-const JS_V = 95;
+const JS_V = 98;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -265,8 +265,17 @@ ${site.claude ? '        <a href="claude.html">Work with Claude</a>\n' : ''}    
     </section>`;
 
   // a picture that opens in the lightbox; `group` ties the pictures of one set together
-  const shot = ([src, caption], group, eager) =>
-    `<figure><a class="zoom" href="${asset(src)}" data-group="${group}" data-caption="${esc(caption)}"><img src="${asset(src)}" alt="${esc(app.title + ': ' + caption)}" width="2400" height="1350"${eager ? '' : ' loading="lazy"'} decoding="async" /></a><figcaption>${esc(caption)}</figcaption></figure>`;
+  // `n` (the strip on the home page): the caption reads like the spotlights': number, headline on the left, the rest on the right
+  const shot = ([src, caption], group, eager, n) => {
+    let cap = `<figcaption>${esc(caption)}</figcaption>`;
+    if (n !== undefined) {
+      const at = caption.indexOf(': ');
+      const name = at > 0 ? caption.slice(0, at) : caption;
+      const line = at > 0 ? caption.slice(at + 2).replace(/^./, ch => ch.toUpperCase()) : '';
+      cap = `<figcaption><i>${pad2(n + 1)}</i><strong>${esc(name)}</strong>${line ? `<span>${esc(line)}</span>` : ''}</figcaption>`;
+    }
+    return `<figure><a class="zoom" href="${asset(src)}" data-group="${group}" data-caption="${esc(caption)}"><img src="${asset(src)}" alt="${esc(app.title + ': ' + caption)}" width="2400" height="1350"${eager ? '' : ' loading="lazy"'} decoding="async" /></a>${cap}</figure>`;
+  };
 
   const logEntry = (entry, open) => `
         <li id="v${esc(entry.version)}">
@@ -589,7 +598,7 @@ ${c.points.map(([t, d]) => `          <div><dt>${esc(t)}</dt><dd>${esc(d)}</dd><
           </div>
         </div>
         <div class="cl-shot">
-          <ul class="cl-say">
+          <ul class="cl-say" data-pool="${esc(JSON.stringify(c.prompts))}">
 ${c.band.prompts.map(p => `            <li>${esc(p)}</li>`).join('\n')}
           </ul>
         </div>
@@ -1195,6 +1204,16 @@ ${strengthsBand()}
 
 ${popHero()}
 
+    <section class="band">
+      <div class="strip" data-strip>
+        ${app.shots.map((s, i) => shot(s, 'strip', false, i)).join('\n        ')}
+      </div>
+      <div class="dots" aria-hidden="true"></div>
+      <div class="wrap">
+        <p class="credit"><svg class="credit-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><path d="M12 7.6v.01"/></svg>The truck axle in these pictures is a Mercedes-Benz Arocs 8×8 front axle. Trademarks belong to their owners; not affiliated.</p>
+      </div>
+    </section>
+
 ${savingsBand()}
 
     <section class="band why">
@@ -1229,16 +1248,6 @@ ${searchDemo()}
 ${quickRemeshBand()}
 ${wandDemo()}
 ${claudeBand()}
-    <section class="band">
-      <div class="strip" data-strip>
-        ${app.shots.map(s => shot(s, 'strip')).join('\n        ')}
-      </div>
-      <div class="dots" aria-hidden="true"></div>
-      <div class="wrap">
-        <p class="credit">The gearbox in these pictures is Gearbox Assy from Khronos’s <a href="https://github.com/KhronosGroup/glTF-Sample-Models/tree/main/2.0/GearboxAssy" rel="noopener">glTF-Sample-Models</a>, a JT CAD sample converted by Okino Computer Graphics. The bolts, nuts, washers and gears come from the app’s own library.</p>
-      </div>
-    </section>
-
     <section class="band">
       <div class="wrap split">
         <div class="split-head">
