@@ -116,10 +116,10 @@ window.labApps = [
       claude: {
         tag: 'New',
         kicker: 'Claude',
-        headline: 'Ask Claude to do the clean-up.',
+        headline: 'Don’t click. Ask Claude.',
         titleTag: 'Work with Claude — MeshOptimiser',
         description: 'Connect MeshOptimiser to Claude and it can use the app’s own tools on the scene you have open: find bolts and hidden parts, run Smart optimise, reduce to a size, take pictures. It asks before it changes the model.',
-        lead: 'Connect MeshOptimiser to Claude and describe the job. Claude uses the tools you click, on the scene you have open. It asks before it changes the model, and every change is one undo. It saves clicking, not judgement.',
+        lead: 'Describe the job in plain words. Claude runs the app’s own tools on the model you have open, asks before it changes anything, and every step is one undo.',
         // the strip on the home page
         band: {
           kicker: 'Claude',
@@ -217,7 +217,7 @@ window.labApps = [
         },
         chatNote: 'An example session on the Gearbox Assy. The numbers are what the app returned. The 3D part beside it is a light copy made for this page.',
         // the part beside the chat (chat3d.js): the app's own export of the Gearbox Assy at about 90,000 triangles, and the names of the 48 fasteners find_fasteners selected
-        view: { glb: 'chat-gearbox.glb', parts: 95, tris: [646064, 299984], fasteners: ["body_1", "body_2_instance_0", "mesh_33", "body_2_instance_1", "body_20_instance_0", "body_20_instance_1", "body_20_instance_2", "body_21_instance_0", "body_21_instance_1", "body_21_instance_2", "body_21_instance_3", "body_21_instance_4", "body_21_instance_5", "body_23_instance_0", "body_23_instance_1", "body_26_instance_0", "body_28_instance_0", "body_29_instance_0", "body_29_instance_1", "body_29_instance_2", "body_31_instance_0", "body_31_instance_1", "body_31_instance_2", "body_21_instance_6", "body_21_instance_7", "body_21_instance_8", "body_20_instance_3", "body_20_instance_4", "body_20_instance_5", "body_21_instance_9", "body_21_instance_10", "body_21_instance_11", "body_21_instance_12", "body_21_instance_13", "body_21_instance_14", "body_23_instance_2", "body_23_instance_3", "body_26_instance_1", "body_28_instance_1", "body_29_instance_3", "body_29_instance_4", "body_29_instance_5", "body_31_instance_3", "body_31_instance_4", "body_31_instance_5", "body_21_instance_15", "body_21_instance_16", "body_21_instance_17"] },
+        view: { glb: 'chat-gearbox.glb', parts: 95, tris: [646064, 299984], target: 300000, fasteners: ["body_1", "body_2_instance_0", "mesh_33", "body_2_instance_1", "body_20_instance_0", "body_20_instance_1", "body_20_instance_2", "body_21_instance_0", "body_21_instance_1", "body_21_instance_2", "body_21_instance_3", "body_21_instance_4", "body_21_instance_5", "body_23_instance_0", "body_23_instance_1", "body_26_instance_0", "body_28_instance_0", "body_29_instance_0", "body_29_instance_1", "body_29_instance_2", "body_31_instance_0", "body_31_instance_1", "body_31_instance_2", "body_21_instance_6", "body_21_instance_7", "body_21_instance_8", "body_20_instance_3", "body_20_instance_4", "body_20_instance_5", "body_21_instance_9", "body_21_instance_10", "body_21_instance_11", "body_21_instance_12", "body_21_instance_13", "body_21_instance_14", "body_23_instance_2", "body_23_instance_3", "body_26_instance_1", "body_28_instance_1", "body_29_instance_3", "body_29_instance_4", "body_29_instance_5", "body_31_instance_3", "body_31_instance_4", "body_31_instance_5", "body_21_instance_15", "body_21_instance_16", "body_21_instance_17"] },
         command: 'claude mcp add --transport http meshoptimiser http://localhost:4242/mcp',
         steps: [
           ['Switch it on', 'Settings › Claude › Let Claude connect. A pill in the top bar shows it is on.'],

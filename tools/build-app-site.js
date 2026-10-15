@@ -40,9 +40,9 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 405;
+const CSS_V = 419;
 const RP_V = 2;           // report.js
-const JS_V = 88;
+const JS_V = 95;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -713,7 +713,17 @@ ${k.figures.map(([figure, label]) => `          <div><dt>${esc(figure)}</dt><dd>
     const viewer = v ? `
         <aside class="cx-view" data-cx3d hidden aria-hidden="true">
           <canvas></canvas>
-          <div class="cx3d-hud"><b data-hud-tris>${v.tris[0].toLocaleString('en-US')}</b><span>triangles</span><em data-hud-note>${v.parts} parts</em></div>
+          <div class="cx3d-hud">
+            <p class="hud-k">Scene</p>
+            <div class="hud-n"><b data-hud-tris>${v.tris[0].toLocaleString('en-US')}</b><span>triangles</span></div>
+            <div class="hud-d"><s data-hud-orig>${v.tris[0].toLocaleString('en-US')}</s><em data-hud-pct>0.0%</em></div>
+            <div class="hud-bar" aria-hidden="true"><i data-hud-bar></i>${v.target ? `<u data-hud-mark style="left:${(v.target / v.tris[0] * 100).toFixed(2)}%"></u>` : ''}</div>
+            <dl class="hud-rows">
+              <div><dt>Parts</dt><dd data-hud-parts>${v.parts}</dd></div>
+              <div><dt>Hidden</dt><dd data-hud-hidden>0</dd></div>${v.target ? `
+              <div><dt>Budget</dt><dd>${v.target.toLocaleString('en-US')}</dd></div>` : ''}
+            </dl>
+          </div>
           <div class="cx3d-tool" data-hud-tool hidden></div>
           <script type="application/json" data-cx3d-data>${JSON.stringify(v)}</script>
         </aside>` : '';
@@ -1257,12 +1267,7 @@ ${c.badge ? `    <div class="soon-banner" role="note"><div class="wrap soon-bann
       </div>
     </section>
 
-    <section class="band is-first">
-      <div class="wrap">${claudeChat()}
-      </div>
-    </section>
-
-    <section class="band" id="how">
+    <section class="band is-first" id="how">
       <div class="wrap">
         <div class="band-head">
           <p class="kicker">How it works</p>
@@ -1275,19 +1280,27 @@ ${c.steps.map(([name, line], i) => `          <li><i>${pad2(i + 1)}</i><h3>${esc
       </div>
     </section>
 
+    <section class="band" id="demo">
+      <div class="wrap">${claudeChat()}
+      </div>
+    </section>
+
     <section class="band" id="can">
       <div class="wrap">
         <div class="band-head">
           <p class="kicker">What Claude can do</p>
           <h2>The app’s own tools, in Claude’s hands.</h2>
         </div>
-        <div class="cl-groups">
-${c.groups.map(([title, icon, note, tools], gi) => `          <article class="cl-group" style="--ico: ${GROUP_COLOURS[gi % GROUP_COLOURS.length]}">
-            <header><i class="ico">${svgIcon(icon)}</i><div><h3>${esc(title)}</h3><p>${esc(note)}</p></div></header>
-            <ul>
-${tools.map(([name, line, asks]) => `              <li><code>${esc(name)}</code><span>${esc(line)}</span>${asks ? '<em class="cl-asks">asks</em>' : ''}</li>`).join('\n')}
-            </ul>
-          </article>`).join('\n')}
+        <div class="cl-explore" data-tabs>
+          <div class="cl-tabs" role="tablist" aria-label="Kinds of tools">
+${c.groups.map(([title, icon, note, tools], gi) => `            <button type="button" role="tab" id="cl-tab-${gi}" aria-controls="cl-panel-${gi}" aria-selected="${gi === 0}" tabindex="${gi === 0 ? 0 : -1}" style="--ico: ${GROUP_COLOURS[gi % GROUP_COLOURS.length]}"><i class="ico">${svgIcon(icon)}</i><span>${esc(title)}</span><em>${tools.length}</em></button>`).join('')}
+          </div>
+          <div class="cl-panels">
+${c.groups.map(([title, icon, note, tools], gi) => `            <div class="cl-panel${gi === 0 ? ' is-on' : ''}" role="tabpanel" id="cl-panel-${gi}" aria-labelledby="cl-tab-${gi}" style="--ico: ${GROUP_COLOURS[gi % GROUP_COLOURS.length]}">
+              <p class="cl-panel-note">${esc(note)}</p>
+              <ul>${tools.map(([name, line, asks]) => `<li><code>${esc(name)}</code>${asks ? '<em class="cl-asks">asks</em>' : ''}<span>${esc(line)}</span></li>`).join('')}</ul>
+            </div>`).join('')}
+          </div>
         </div>
       </div>
     </section>
