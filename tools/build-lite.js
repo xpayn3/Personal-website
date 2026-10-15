@@ -6,8 +6,10 @@
      node tools/build-lite.js [path to the app folder]
 
    The app folder defaults to C:/Users/Luka/Documents/MeshOptimiser/app-merged
-   (or the MESHOPT_APP environment variable). What is copied: index.html
-   and the scripts it loads, vendor/ and assets/. What is not: the server,
+   (or the MESHOPT_APP environment variable); the program itself is its app/
+   folder (an older layout, with the files loose in it, is read as well).
+   What is copied: index.html, the scripts it loads (js/), vendor/ and
+   assets/. What is not: the server,
    the converter, the tests, the docs and any *.bak-* file. inbox/ is kept as
    it is (it holds the sample models: GearboxAssy.glb, 2CylinderEngine.glb and ReciprocatingSaw.glb, all from Khronos's
    glTF-Sample-Models, credited on the site).
@@ -20,7 +22,8 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
-const SRC = path.resolve(process.argv[2] || process.env.MESHOPT_APP || 'C:/Users/Luka/Documents/MeshOptimiser/app-merged');
+let SRC = path.resolve(process.argv[2] || process.env.MESHOPT_APP || 'C:/Users/Luka/Documents/MeshOptimiser/app-merged');
+if (fs.existsSync(path.join(SRC, 'app', 'index.html'))) SRC = path.join(SRC, 'app');      // the layout with the program in app/
 const OUT = path.join(ROOT, 'apps', 'meshoptimiser', 'lite');
 
 if (!fs.existsSync(path.join(SRC, 'index.html'))) { console.error('No index.html in ' + SRC); process.exit(1); }
@@ -36,9 +39,14 @@ const copyDir = (from, to) => {
 
 // the scripts at the top level that the page (or a worker) loads
 const html = fs.readFileSync(path.join(SRC, 'index.html'), 'utf8');
-const scripts = fs.readdirSync(SRC).filter(f => /\.js$/.test(f) && !/\.bak-/.test(f));
+// js/ in the current layout; the top level in the old one (then the old copies are cleared out first, below)
+const JS_DIR = fs.existsSync(path.join(SRC, 'js', 'app.js')) ? 'js' : '';
+const scripts = fs.readdirSync(path.join(SRC, JS_DIR)).filter(f => /\.m?js$/.test(f) && !/\.bak-/.test(f));
 fs.mkdirSync(OUT, { recursive: true });
-for (const f of scripts) fs.copyFileSync(path.join(SRC, f), path.join(OUT, f));
+for (const f of fs.readdirSync(OUT)) if (/\.m?js$/.test(f) && f !== 'lite-shim.js') fs.rmSync(path.join(OUT, f));      // loose scripts of an earlier build
+fs.rmSync(path.join(OUT, 'js'), { recursive: true, force: true });
+if (JS_DIR) fs.mkdirSync(path.join(OUT, JS_DIR), { recursive: true });
+for (const f of scripts) fs.copyFileSync(path.join(SRC, JS_DIR, f), path.join(OUT, JS_DIR, f));
 for (const dir of ['vendor', 'assets']) {
   fs.rmSync(path.join(OUT, dir), { recursive: true, force: true });
   copyDir(path.join(SRC, dir), path.join(OUT, dir));

@@ -675,7 +675,7 @@ window.labApps = [
       ['Fasteners', 'Every bolt, nut and washer, found by shape. Whatever the CAD file called them.', 'Images/apps/meshoptimiser-clip-fasteners.webm', 'fasteners'],
       ['Smart fit', 'A dense part becomes a box, a cylinder or blocks that keep its outline.', 'Images/apps/meshoptimiser-clip-smart-fit.webm', 'smart-fit'],
     ],
-    stats: [['Version', '0.30.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
+    stats: [['Version', '0.31.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
     about: [
       'For the STEP assembly that has to go on a web page.',
       '400 identical bolts, 80 duplicate brackets, half a million broken triangles. MeshOptimiser keeps each repeat once, rebuilds the bad geometry and drops what you can’t see.',
@@ -781,11 +781,12 @@ window.labApps = [
       { title: 'Build', items: [
         ['A library of 112 parts', 'Bolts, nuts, pipe fittings, bearings, brackets, gears, a servo. Set the size, drag it in.'],
         ['Exploded view', 'One slider pulls it apart, along the axes you choose.'],
-        ['Animate (alpha)', 'Make parts spin, swing, shake or travel along a path, and play it in the turntable video.', 'new'],
+        ['Animate (alpha)', 'Make parts spin, swing, shake or travel along a path, and play it in the turntable video.'],
+        ['Lock a part or a group', 'Lock one part or a whole group from Properties or the right-click menu. It shows a red lock, and delete skips it.', 'new'],
         ['Dynamic place (D)', 'Drag a part over a surface: it rests on it and turns to face it.'],
-        ['Align parts', 'Align or spread parts and whole groups along X, Y and Z, with a gap if you want one. One undo.', 'new'],
-        ['Copy groups', 'Copy several groups at once and each comes out as a whole folder next to its original, with its own pivot.', 'new'],
-        ['Materials, copied and pasted', 'Ctrl+C, Ctrl+D and Ctrl+V copy, duplicate and paste the picked material in the materials window.', 'new'],
+        ['Align parts', 'Align or spread parts and whole groups along X, Y and Z, with a gap if you want one. One undo.'],
+        ['Copy groups', 'Copy several groups at once and each comes out as a whole folder next to its original, with its own pivot.'],
+        ['Materials, copied and pasted', 'Ctrl+C, Ctrl+D and Ctrl+V copy, duplicate and paste the picked material in the materials window.'],
         ['Quick colour wheel', 'Hold C over the model, move, let go. The selected parts take the colour as you go; drag far out to cancel.'],
       ], more: [
         ['A bolt with its own nut', 'The nut is part of the bolt, so it moves and undoes with it.'],
@@ -795,6 +796,7 @@ window.labApps = [
       { title: 'Export', items: [
         ['GLB and glTF', 'Draco or Meshopt compression. Textures embedded if you want.'],
         ['FBX, USDZ, OBJ, STL, PLY', 'The common 3D and AR formats, with mm, cm, m and inch presets.'],
+        ['Axes at the parts', 'GLB, glTF, FBX and USDZ put each part’s pivot at its centre, so Cinema 4D, Blender and Maya open it the way you expect.', 'new'],
         ['Check against where it’s going', 'Test the scene against web, Shopify, AR Quick Look or phone-app limits.'],
       ], more: [
         ['Lighter, or just faster to draw', 'Meshopt cuts a GLB to about a quarter. Or keep the size and draw faster.'],
@@ -873,7 +875,7 @@ window.labApps = [
         'Select similar', 'Select all instances', 'Select the original', 'Make unique', 'Select by colour', 'Select by name', 'Select by rule', 'Arrow to a selection out of view',
       ] },
       { title: 'Parts tree', items: [
-        'Highlight small parts', 'Batch rename', 'Flatten', 'Lock a part', 'Point to find', 'Tidy the tree',
+        'Highlight small parts', 'Batch rename', 'Flatten', 'Lock a part or group', 'Point to find', 'Tidy the tree',
         'Part search language',
       ] },
       { title: 'Transform and place', items: [
@@ -955,7 +957,23 @@ window.labApps = [
     changelog: {
       link: 'https://github.com/xpayn3/MeshOptimiser/blob/main/CHANGELOG.md',
       versions: [
-        { version: '0.30.0', name: 'Kobarid', fixes: 9, date: '15 Oct 2026 · 03:03', latest: true,
+        { version: '0.31.0', name: 'Bled', fixes: 6, date: '15 Oct 2026 · 13:35', latest: true,
+          summary: 'A polish of the interface, and a tidier folder. Icons, menus and dropdowns share one look, groups can be locked, Export keeps the rest under Advanced and puts each part’s axis at the part, and the download is organised like an installed program.',
+          items: [
+            ['New', 'A polish of the interface. The toolbar icons are sharper, their dividers easy to see, and the + and − of the part tree sit in the middle of their circles. Every menu and dropdown looks the same and opens the same way, and closes at once.'],
+            ['New', 'The right-click menus of the part tree are about half as long. What you use least is one level in: Visibility, Select, Mesh, Fit and Tree for a part; Group, Order and Expand and collapse for a group.'],
+            ['New', 'Pivot points in Export. A part from a STEP file has its origin at 0, 0, 0, so in Cinema 4D every axis sat there. GLB, glTF, FBX and USDZ now write each part around its own centre, so the axis is at the part. FBX objects carry the rotation and scale of their part too.'],
+            ['New', 'Groups can be locked. Lock in Properties, or “Lock everything inside” on the right-click menu of a group, locks every part in it. A locked part or group shows a red lock where its icon is.'],
+            ['New', 'The Export window shows the format, the file name and “Visible parts only” up front. The rest is under Advanced, and it stays open or shut as you left it.'],
+            ['New', 'A tidier folder, and why. The top of the download had grown past fifty files, so it was hard to see what to double-click. It is organised like an installed program now: the launchers, the README and the licence, and one folder, app, with the program inside. The launchers keep their names, so shortcuts keep working.'],
+            ['New', 'Moving from an older version is one full download. The installer moves your inbox and exports into app, keeps the old loose files in a backup folder, and the first start builds the Python environment again.'],
+            ['Polish', 'The launcher window draws the name out of a wire mesh and shows a bar for each step.'],
+            ['Polish', 'A tooltip no longer shows over a menu that is open, and the list beside a menu row stands next to it instead of over it.'],
+            ['Fix', 'Exporting to FBX and opening it in Cinema 4D put every part’s axis at 0, 0, 0. It is now at the part.'],
+            ['Fix', 'Right-click menus no longer flicker when they close.'],
+            ['Fix', 'The cards of the right panel sit on whole pixels, so their text and rows are no longer soft.'],
+          ] },
+        { version: '0.30.0', name: 'Kobarid', fixes: 9, date: '15 Oct 2026 · 03:03',
           summary: 'Two alpha features: Claude mode, to follow Claude as a feed with your model beside it, and Animate, to make parts spin, swing, shake and travel. Also instance commands, three-way permissions for Claude, a redesigned Settings and a rounder look.',
           items: [
             ['New', 'Claude mode (alpha). Hide the app and follow Claude as a feed: what it says, every call it makes with what came back, and every picture it takes, with your model beside it as a rounded card you can show or hide. Open it from the start screen, the Claude badge, the command search, or with ?claude on the address. It is an early version, so expect rough edges.'],

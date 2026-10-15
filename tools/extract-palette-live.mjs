@@ -2,7 +2,7 @@
 //
 //   node tools/extract-palette-live.mjs [address of the online version]
 //
-// The registered commands can be read out of app-v2.js (tools/extract-palette.mjs), but the search also lists the buttons and controls of the
+// The registered commands can be read out of the app's js/app.js (tools/extract-palette.mjs), but the search also lists the buttons and controls of the
 // sidebars and the rows of Settings, which the app finds in its own page. So the online version (lite/) is opened in a headless Chrome
 // through the DevTools protocol, the search is opened and queried (every letter, then every word of every label found, until nothing new
 // turns up) and each row is written down: its label, its section, its kind, its icon and its shortcut.

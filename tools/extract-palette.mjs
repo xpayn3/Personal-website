@@ -4,7 +4,7 @@
 //   node tools/extract-palette.mjs [app folder]
 //
 // Two sources are put together:
-//   - the registered actions, read out of <app folder>/app-v2.js: id, group, label, shortcut and the hidden words the search also matches
+//   - the registered actions, read out of <app folder>/js/app.js: id, group, label, shortcut and the hidden words the search also matches
 //     ("toggle", "floor"...), with the icon the app gives each (ICON by id, else the icon of its group);
 //   - palette-live.json, if there is one: every row the app's search actually listed when it was run (apps/meshoptimiser/palette-live.json
 //     from extract-palette-live.mjs): the controls of the sidebars and the rows of Settings are only known to the running page.
@@ -18,9 +18,11 @@ import { fileURLToPath } from 'node:url';
 const here = dirname(fileURLToPath(import.meta.url));
 const SITE = join(here, '..', 'apps', 'meshoptimiser');
 const APP = process.argv[2] || 'C:/Users/Luka/Downloads/MeshOptimiser';
-const src = readFileSync(join(APP, 'app-v2.js'), 'utf8');
-const html = readFileSync(join(APP, 'index.html'), 'utf8');
-const lucide = createRequire(import.meta.url)(join(APP, 'vendor', 'lucide', 'lucide.min.js'));
+const APPJS = ['app/js/app.js', 'js/app.js', 'app-v2.js'].map((f) => join(APP, f)).find(existsSync);      // the app folder, or its parent, or the old layout
+const ROOTDIR = APPJS.endsWith(join('js', 'app.js')) ? join(dirname(APPJS), '..') : APP;
+const src = readFileSync(APPJS, 'utf8');
+const html = readFileSync(join(ROOTDIR, 'index.html'), 'utf8');
+const lucide = createRequire(import.meta.url)(join(ROOTDIR, 'vendor', 'lucide', 'lucide.min.js'));
 
 // the icon tables of the palette
 const block = (name) => { const m = src.match(new RegExp('const ' + name + ' = \\{([\\s\\S]*?)\\n\\s*\\};')); if (!m) throw new Error(name + ' not found'); return m[1]; };
