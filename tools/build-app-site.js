@@ -40,7 +40,7 @@ const SHOWCASE = [
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 391;
+const CSS_V = 405;
 const RP_V = 2;           // report.js
 const JS_V = 88;
 
@@ -61,7 +61,7 @@ const GH_ICON = '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"
 // The Chrome mark (flat, six colours: it stands for the browser the app opens in; the link goes to google.com/chrome)
 const CHROME_SVG = '<svg class="chrome-ico" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#fff"/><path d="M24 2a22 22 0 0 1 19.05 11H24a11 11 0 0 0-9.53 5.5L7.1 8.3A22 22 0 0 1 24 2z" fill="#ea4335"/><path d="M43.05 13A22 22 0 0 1 24 46l9.5-16.5a11 11 0 0 0 0-11z" fill="#fbbc05"/><path d="M24 46A22 22 0 0 1 4.95 13l9.52 16.5A11 11 0 0 0 24 35z" fill="#34a853"/><circle cx="24" cy="24" r="8.6" fill="#4285f4" stroke="#fff" stroke-width="2.4"/></svg>';
 const INSTALLER = STANDALONE ? 'https://lukagrcar.com/apps/meshoptimiser/Install-MeshOptimiser.bat' : 'Install-MeshOptimiser.bat';
-const LITE_BTN = '<a class="btn is-large btn-lite" href="lite/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5v15l12-7.5Z"/></svg>Open Web</a>';
+const LITE_BTN = '<a class="btn is-large btn-lite" href="lite/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>Launch</a>';
 const esc = text => String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const clamp = (text, max) => (text.length > max ? text.slice(0, max - 1).trim() + '…' : text);
 const slug = text => String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -162,7 +162,7 @@ ${JSON.stringify({
 ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.key === page.key || p.key === page.under ? ' aria-current="page"' : ''}>${p.label}${p.soon && site.claude && (site.claude.badge || site.claude.tag) ? `<em class="${site.claude.badge ? 'nav-soon' : 'nav-new'}">${site.claude.badge ? 'Soon' : esc(site.claude.tag)}</em>` : ''}</a>`).join('\n')}
         <a class="nav-out" href="${repo}" rel="noopener">${GH_ICON}GitHub</a>
       </nav>
-      <a class="btn is-primary bar-get" href="download.html"${page.key === 'download' ? ' aria-current="page"' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>
+      ${page.key === 'home' ? `<a class="btn is-primary bar-get" href="lite/index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>Launch</a>` : `<a class="btn is-primary bar-get" href="download.html"${page.key === 'download' ? ' aria-current="page"' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Download</a>`}
       <button class="bar-menu" id="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span></button>
     </div>
   </header>
@@ -187,7 +187,7 @@ ${PAGES.filter(p => p.nav !== false).map(p => `        <a href="${p.file}"${p.ke
               <p class="cmp-tag">In your browser</p>
               <h3>${esc(app.title)} Web</h3>
               <p class="cmp-sub">Try the app in a tab. Nothing to install.</p>
-              <div class="cmp-act"><a class="cmp-btn btn-lite" href="lite/index.html" target="_blank" rel="noopener">Open Web</a><a class="cmp-link" href="${docLink(/what-it-is/)}">What is it</a></div>
+              <div class="cmp-act"><a class="cmp-btn btn-lite" href="lite/index.html" target="_blank" rel="noopener">Launch</a><a class="cmp-link" href="${docLink(/what-it-is/)}">What is it</a></div>
             </div>
             <div class="cmp-col">
               <p class="cmp-tag">On your machine</p>
@@ -626,6 +626,24 @@ ${b.points.map(([name, line]) => `              <div><dt>${esc(name)}</dt><dd>${
         <dl class="cl-points cl-points-3">
 ${r.points.map(([name, line]) => `          <div><dt>${esc(name)}</dt><dd>${esc(line)}</dd></div>`).join('\n')}
         </dl>
+      </div>
+    </section>`;
+  };
+
+  const claudeMode = () => {
+    const r = site.claude.mode;
+    return `
+    <section class="band" id="claude-mode">
+      <div class="wrap">
+        <div class="band-head">
+          <p class="kicker">${esc(r.kicker)}<b>·</b><span class="tag-soon">${esc(r.tag)}</span></p>
+          <h2>${esc(r.title)}</h2>
+        </div>
+        <p class="lead">${esc(r.line)}</p>
+        <dl class="cl-points cl-points-3">
+${r.points.map(([name, line]) => `          <div><dt>${esc(name)}</dt><dd>${esc(line)}</dd></div>`).join('\n')}
+        </dl>
+        <p class="cl-fine">${esc(r.open)} <a href="docs/claude-mode.html">Read how it works</a>.</p>
       </div>
     </section>`;
   };
@@ -1155,7 +1173,7 @@ ${st.tiles.map(([label, claim, rest, line, colour], i) => `          <article cl
       <h1>${esc(app.subtitle)}</h1>
       <p class="lead">${esc(site.lead)}</p>
       <div class="actions">
-        ${LITE_BTN}
+        <a class="btn is-primary is-large" href="download.html">Download</a>
         <a class="btn is-large btn-gh" href="${repo}" rel="noopener">${GH_ICON}GitHub</a>
       </div>
     </section>
@@ -1274,6 +1292,7 @@ ${tools.map(([name, line, asks]) => `              <li><code>${esc(name)}</code>
       </div>
     </section>
 
+${c.mode ? claudeMode() : ''}
 ${c.jobs ? claudeJobs() : ''}
 ${c.renders ? claudeRenders() : ''}
 ${c.knows ? claudeKnows() : ''}
@@ -1425,7 +1444,9 @@ ${docs.articles.filter(a => a.group === group.id).map(a => `        <a href="doc
         <a href="download.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>Download</a>
         <a href="changelog.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>Changelog</a>
         <a href="report.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8v4"/><path d="M12 16h.01"/><circle cx="12" cy="12" r="10"/></svg>Report a problem</a>
-        <h2>Popular</h2>
+${(site.docsLatest || []).length ? `        <h2>Latest</h2>
+${site.docsLatest.filter(([, slug]) => bySlug.has(slug)).map(([name, slug, tag]) => `        <a href="docs/${slug}.html">${esc(name)}${tag ? `<em class="rail-tag">${esc(tag)}</em>` : ''}</a>`).join('\n')}
+` : ''}        <h2>Popular</h2>
         <a href="docs/shortcuts.html">Shortcuts</a>
         <a href="docs/troubleshooting.html">Troubleshooting</a>
         <a href="docs/faq.html">FAQ</a>
@@ -1453,6 +1474,11 @@ ${docs.articles.filter(a => a.group === group.id).map(a => `          <li data-w
 
   // an article: the index of all of them beside it, the one before and after under it
   const articlePage = (article) => {
+    // a function that has a drawing on the features page shows the same drawing under its title (it moves while it is on screen)
+    const cu = site.cleanup;
+    const artList = cu ? cu.stars.map(([n, , , d]) => [n, d]).concat(cu.more.map(([n, , d]) => [n, d])) : [];
+    const artAt = artList.findIndex(([, d]) => d === article.slug);
+    const articleArt = artAt < 0 ? '' : starArt(artAt, artList[artAt][0]);
     const page = { key: 'article', under: 'docs', file: `docs/${article.slug}.html` };
     const at = docs.articles.indexOf(article), before = docs.articles[at - 1], after = docs.articles[at + 1];
     const html = head(page, `${article.title} — ${app.title} Docs`, article.summary) + header(page) + `
@@ -1460,7 +1486,8 @@ ${docs.articles.filter(a => a.group === group.id).map(a => `          <li data-w
       <article class="kb-article">
         <p class="kicker"><a href="docs.html">Docs</a><b>·</b><a href="docs.html#${esc(article.group)}">${esc(groupOf(article).title)}</a></p>
         <h1>${esc(article.title)}</h1>
-        <p class="lead">${rich(article.summary)}</p>
+        <p class="lead">${rich(article.summary)}</p>${articleArt ? `
+        <figure class="star kb-anim">${articleArt}</figure>` : ''}
         <div class="kb-body">
           ${article.blocks.map(docBlock).join('\n          ')}
         </div>

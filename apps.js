@@ -58,6 +58,8 @@ window.labApps = [
       ['Images/apps/meshoptimiser-exploded-165.webp', 'Exploded view: the axle pulled apart to 165%, with four parts picked out.'],
     ],
     site: {
+      // the latest features, newest first, for the Latest list beside the docs: [name, docs slug, 'Alpha' when it is an early version]
+      docsLatest: [['Animate', 'animate', 'Alpha'], ['Claude mode', 'claude-mode', 'Alpha'], ['Locked groups', 'select-parts'], ['Pivot points in Export', 'export'], ['Make unique', 'move-rotate-scale']],
       path: 'apps/meshoptimiser/',
       // Credits (the Credits page, and the same list in the app's Settings, About and the README): everything the app and this
       // site are built on. [name, by, licence, link, what it does here]. Add a line when a library is added; keep licence files in vendor/.
@@ -155,6 +157,22 @@ window.labApps = [
             ['Images/apps/meshoptimiser-claude-render-exploded.webp', 'The Gearbox Assy exploded to 55%, on a dark background.'],
             ['Images/apps/meshoptimiser-claude-render-set.webp', 'Four angles in one request, in clay on white.'],
           ],
+        },
+        // Claude mode, an alpha view of the app for following Claude (see claudeMode in tools/build-app-site.js)
+        mode: {
+          kicker: 'Claude mode',
+          tag: 'Alpha',
+          title: 'Follow Claude as it works.',
+          line: 'Hide the app and watch a feed instead: what Claude says, every call it makes, every picture it takes, with your model beside it. An early version, so expect rough edges.',
+          points: [
+            ['A feed, not a window', 'What Claude says, each call it makes with what came back, and each picture it takes, in the order they happen.'],
+            ['Your model beside it', 'A card with the picture, name, size, parts and triangles, and a green “Ready for Claude”. Show it or hide it.'],
+            ['Open a model there', 'The folder button lists your recent files, the latest marked Continue. You can drop a file on the feed.'],
+            ['Loading you can follow', 'A card floats above the controls with the step, the percent, the time and a Cancel button.'],
+            ['Start a job in one press', 'Three buttons copy the command of a ready-made job: optimise for web, remove fasteners, review the scene.'],
+            ['Stay in charge', 'Switches for Connected and Ask before edits, Undo and Redo, and a Stop button while a long job runs.'],
+          ],
+          open: 'Open it from the start screen, the Claude badge or the command search.',
         },
         // longer jobs (see claudeJobs in tools/build-app-site.js): a dry run, one call to a size, before and after, a folder, progress and Stop
         jobs: {
@@ -427,7 +445,7 @@ window.labApps = [
         ],
         more: [
           ['Remove floating pieces', 'Plugs, shavings and stray dots, gone. The main body always stays.', 'remove-floating-pieces'],
-          ['Remove hidden faces', 'Deletes faces that never show: inside a housing, where two parts meet.', ''],
+          ['Remove hidden faces', 'Deletes faces that never show: inside a housing, where two parts meet.', 'remove-hidden-faces'],
           ['Remesh', 'Flat faces rebuilt with the fewest triangles. The shape doesn’t move.', 'remesh'],
           ['Delete small parts', 'Screws and clips too small to see, gone. A slider and a preview show what goes.', 'delete-small-parts'],
           ['Repair mesh', 'Doubled points, empty triangles and flipped faces, fixed.', 'cleanup'],
