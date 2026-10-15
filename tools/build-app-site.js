@@ -38,9 +38,10 @@ const SHOWCASE = [
   { title: 'Find and organise', note: 'Big assemblies', names: ['Built for big assemblies', 'Search and filters', 'Search (Shift + C)', 'Batch rename (F2)', 'Select by rule', 'Typo-proof part search'] },
   { title: 'Build and arrange', note: 'Make new parts', names: ['A Draw tool (L)', 'Align parts', 'Sweep', 'A library of 112 parts', 'Exploded view', 'Dynamic place (D)'] },
   { title: 'Export and deliver', note: 'Send it on', names: ['GLB and glTF', 'FBX, USDZ, OBJ, STL, PLY', 'Check against where it’s going', 'Parts list', 'Lighter, or just faster to draw'] },
+  { title: 'Make it yours', note: 'The app', names: ['Keyboard remapper', 'A look of your own', 'Numbers you drag', 'Cards over the model', 'Scene tabs', 'Floating Materials and Library'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 426;
+const CSS_V = 427;
 const RP_V = 2;           // report.js
 const JS_V = 98;
 
@@ -326,6 +327,14 @@ ${(pop.graph || []).map(([group, rows]) => { const top = Math.max(...rows.map(r 
 
   // The search of the app, working on the page. The words and lists are in
   // `site.demo` (apps.js); site.js does the rest (filter, arrows, Enter, sums).
+  // small line icons (Lucide, ISC) for the four search tips: search, calculator, toggle, keyboard
+  const tipIcon = (inner) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
+  const TIP_ICONS = [
+    tipIcon('<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>'),
+    tipIcon('<rect width="16" height="20" x="4" y="2" rx="2"/><path d="M8 6h8M16 14v4M16 10h.01M12 10h.01M8 10h.01M12 14h.01M8 14h.01M12 18h.01M8 18h.01"/>'),
+    tipIcon('<rect width="20" height="12" x="2" y="6" rx="6"/><circle cx="16" cy="12" r="2"/>'),
+    tipIcon('<rect width="20" height="16" x="2" y="4" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/>'),
+  ];
   const searchDemo = () => {
     const d = site.demo;
     if (!d) return '';
@@ -355,7 +364,7 @@ ${(pop.graph || []).map(([group, rows]) => { const top = Math.max(...rows.map(r 
             <script type="application/json" data-demo-data>${JSON.stringify(payload)}</script>
           </div>
         <ul class="wand-tips">
-${d.tips.map(([key, line]) => `          <li><kbd>${esc(key)}</kbd><span>${esc(line)}</span></li>`).join('\n')}
+${d.tips.map(([key, line], i) => `          <li><kbd>${TIP_ICONS[i] || ''}${esc(key)}</kbd><span>${esc(line)}</span></li>`).join('\n')}
         </ul>
       </div>
     </section>`;

@@ -837,10 +837,10 @@ window.labApps = [
         ['It knows the app', 'Six playbooks, about fifty help articles and six ready-made jobs.'],
       ] },
       { title: 'The app', items: [
+        ['Keyboard remapper', 'The shortcuts window is a keyboard: lit keys carry their command, and holding Ctrl, Shift or Alt shows what those do. Click a shortcut, press new keys, and a key that is taken warns you first. Keep your set in a profile, one per person.'],
         ['Scene tabs', 'Each tab is its own scene. Opening a file never replaces your work.'],
         ['Cards over the model', 'Tools open as cards you can move. Enter runs, Esc closes.'],
         ['A look of your own', 'Accent colour, tones, font, text size, corners and density.'],
-        ['Your own keys', 'The shortcuts window is a keyboard. Change any key, and keep your set in a profile.'],
         ['Numbers you drag', 'Drag any number sideways to change it, or click to type. Right-click to reset, step, double or halve it.'],
         ['Search (Shift + C)', 'Commands, settings, parts, library: one box. Typos and initials still find it.'],
         ['Floating Materials and Library', 'Pop either out as a window, move it, resize it. Both open side by side.'],
