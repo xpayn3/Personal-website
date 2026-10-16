@@ -42,9 +42,9 @@ const SHOWCASE = [
   { title: 'Make it yours', note: 'The app', names: ['Keyboard remapper', 'A look of your own', 'Numbers you drag', 'Cards over the model', 'Scene tabs', 'Floating Materials and Library'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 429;
+const CSS_V = 453;
 const RP_V = 2;           // report.js
-const JS_V = 101;
+const JS_V = 105;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -144,9 +144,8 @@ ${JSON.stringify({
   <meta property="og:url" content="${url}" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="site.css?v=${CSS_V}" />${(page.key === 'home' && site.pop) || (page.key === 'claude' && site.claude && site.claude.view) || (page.key === 'features' && site.interact) ? `
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/"}}</script>` : ''}
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
@@ -282,7 +281,7 @@ ${site.claude ? '        <a href="claude.html">Work with Claude</a>\n' : ''}    
   const logEntry = (entry, open) => `
         <li id="v${esc(entry.version)}">
           <div class="log-head">
-            <strong>v${esc(entry.version)}${relName(entry)}</strong>${entry.latest ? '<em>Latest</em>' : entry.next ? '<em>Next</em>' : ''}${entry.date ? `<span>${esc(entry.date)}</span>` : ''}${entry.fixes ? `<span>${entry.fixes} ${entry.fixes === 1 ? 'fix' : 'fixes'}</span>` : ''}
+            <strong>v${esc(entry.version)}${relName(entry)}</strong>${entry.latest ? '<em>Latest</em>' : entry.next ? '<em>Next</em>' : ''}${entry.date ? `<span>${esc(entry.date.split(' · ')[0])}</span>` : ''}${entry.fixes ? `<span>${entry.fixes} ${entry.fixes === 1 ? 'fix' : 'fixes'}</span>` : ''}
           </div>
           <div class="log-body">
             <p>${esc(entry.summary)}</p>${entry.items && entry.items.length && open ? `
@@ -459,8 +458,8 @@ ${pick.map(([key, label]) => `            <li><img src="library/${esc(key)}.webp
         <div class="sv" data-reveal>
           <div class="sv-big">
             <p class="sv-sub">${esc(first[0])}, Meshopt</p>
-            <b>−${100 - left(first[1], first[2])}<small>%</small></b>
-            <span>file size</span>
+            <b>${100 - left(first[1], first[2])}<small>%</small></b>
+            <span>smaller file size</span>
             <em>${mb(first[1])} → ${mb(first[2])}</em>
           </div>
           <div class="sv-rows">
@@ -571,8 +570,8 @@ ${c.points.map(([t, d]) => `          <div><dt>${esc(t)}</dt><dd>${esc(d)}</dd><
         <div class="sv" data-reveal>
           <div class="sv-big">
             <p class="sv-sub">Result</p>
-            <b>−${pct(t0, t1)}<small>%</small></b>
-            <span>triangles</span>
+            <b>${pct(t0, t1)}<small>%</small></b>
+            <span>fewer triangles</span>
             <em>${fmtN(t0)} → ${fmtN(t1)}</em>
           </div>
           <div class="sv-rows">
@@ -1466,8 +1465,8 @@ ${app.allFeatures
   const docsNav = (current) => `
       <nav class="kb-nav" aria-label="Docs">
         <a class="kb-nav-home" href="docs.html">All docs</a>
-${docs.groups.map(group => `        <h2>${esc(group.title)}</h2>
-${docs.articles.filter(a => a.group === group.id).map(a => `        <a href="docs/${a.slug}.html"${a === current ? ' aria-current="page"' : ''}>${esc(a.title)}</a>`).join('\n')}`).join('\n')}
+${docs.groups.map(group => `        <h2>${esc(group.short || group.title)}</h2>
+${docs.articles.filter(a => a.group === group.id).map(a => `        <a href="docs/${a.slug}.html"${a === current ? ' aria-current="page"' : ''}${a.short ? ` title="${esc(a.title)}"` : ''}>${esc(a.short || a.title)}</a>`).join('\n')}`).join('\n')}
       </nav>`;
 
   // quick links in a rail beside the docs: the places people go next

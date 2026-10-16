@@ -61,7 +61,7 @@ window.labApps = [
     ],
     site: {
       // the latest features, newest first, for the Latest list beside the docs: [name, docs slug, 'Alpha' when it is an early version]
-      docsLatest: [['Animate', 'animate', 'Alpha'], ['Claude mode', 'claude-mode', 'Alpha'], ['Locked groups', 'select-parts'], ['Pivot points in Export', 'export'], ['Make unique', 'move-rotate-scale']],
+      docsLatest: [['The axis of a part', 'axis-center'], ['Animate', 'animate', 'Alpha'], ['Claude mode', 'claude-mode', 'Alpha'], ['Locked groups', 'select-parts'], ['Pivot points in Export', 'export'], ['Make unique', 'move-rotate-scale']],
       path: 'apps/meshoptimiser/',
       // the standalone copy of the site (github.io); the Lab links here
       url: 'https://xpayn3.github.io/MeshOptimiser/',
@@ -85,6 +85,8 @@ window.labApps = [
         ] },
         { title: 'Look and feel', items: [
           ['Inter', 'Rasmus Andersson and the Inter Project Authors', 'SIL Open Font License 1.1', 'https://rsms.me/inter/', 'The typeface of the app and of this site.'],
+          ['Fraunces', 'The Fraunces Project Authors', 'SIL Open Font License 1.1', 'https://github.com/undercasetype/Fraunces', 'The serif of the headlines on this site and of the name MeshOptimiser in the app.'],
+          ['Source Serif 4', 'Adobe, with Reserved Font Name Source', 'SIL Open Font License 1.1', 'https://github.com/adobe-fonts/source-serif', 'The Serif choice of the app, a text serif that stays clear at small sizes.'],
           ['Lucide', 'Lucide Contributors', 'ISC', 'https://lucide.dev', 'The icons.'],
         ] },
         { title: 'The pictures', items: [
@@ -246,7 +248,7 @@ window.labApps = [
             ['render_image', 'A clean picture up to 8192 px, from one or several angles, saved as PNG.'],
             ['compare_images', 'Opened and now, side by side, with the numbers under each.'],
             ['turntable_video', 'One slow turn round the model, saved as a video. Animations play in it.'],
-            ['animate_parts', 'Choose which parts or groups move, and how: spin, swing, noise or a path. They keep running until removed.'],
+            ['animate_parts', 'Choose which parts or groups move, and how: spin, swing, noise, a path or an oscillation for pistons and pumps. They keep running until removed.'],
           ]],
           ['Show you around', 'mouse-pointer-2', 'Select, hide, turn and explode. Nothing is changed, so none of it asks.', [
             ['select_parts', 'Select by id or part of a name; add or remove.'],
@@ -286,12 +288,25 @@ window.labApps = [
             ['smart_fit', 'Replace a part with a box, a cylinder, a few boxes or blocks of the same size.', true],
             ['untriangulate', 'Fewer triangles on flat faces, with no change of shape.', true],
           ]],
+          ['Notes', 'message-square', 'The notes people leave on the model. Claude writes under the name Claude, and never signs a scene off.', [
+            ['list_notes', 'The notes on the model: number, title, kind, priority, who it is for, and the last messages.'],
+            ['get_note', 'One note in full, with every message and its history.'],
+            ['show_note', 'Open a note and fly the camera to where it is.'],
+            ['add_note', 'Leave a note on a part or on the whole scene.', true],
+            ['reply_to_note', 'Reply in a note’s conversation.', true],
+            ['update_note', 'Resolve, retitle, retag, set priority or due date, assign, edit its own messages.', true],
+            ['export_notes', 'The notes as Markdown, a spreadsheet, JSON or the one-page report.'],
+          ]],
           ['Whole folders', 'folder-open', 'Many files, one after another. Your scene is not touched.', [
             ['list_folder', 'The model files in a folder: name, path and size.'],
             ['batch_optimise', 'Open, optimise and export every file in a folder. Can be stopped.', true],
           ]],
           ['Tidy and arrange', 'pencil-line', 'Names, groups and positions.', [
             ['list_library', 'The app’s library of standard parts: bolts, nuts, pipes, profiles, gears and more.'],
+            ['remove_floating_pieces', 'Delete loose bits that float free of a part, up to a size.', true],
+            ['make_unique', 'Give parts that share one mesh a mesh each, so one can change alone.', true],
+            ['select_instances', 'Select every part that shares its shape with the chosen ones.'],
+            ['lock_parts', 'Lock parts so they cannot be moved or edited by hand, or let them go.', true],
             ['add_library_part', 'Add a standard part to the scene.', true],
             ['rename_parts', 'Rename by id, or find and replace, prefix and suffix.', true],
             ['group_parts', 'Put parts in a group.', true],
@@ -698,7 +713,7 @@ window.labApps = [
       ['Fasteners', 'Every bolt, nut and washer, found by shape. Whatever the CAD file called them.', 'Images/apps/meshoptimiser-clip-fasteners.webm', 'fasteners'],
       ['Smart fit', 'A dense part becomes a box, a cylinder or blocks that keep its outline.', 'Images/apps/meshoptimiser-clip-smart-fit.webm', 'smart-fit'],
     ],
-    stats: [['Version', '0.33.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
+    stats: [['Version', '0.34.0'], ['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally']],
     about: [
       'For the STEP assembly that has to go on a web page.',
       '400 identical bolts, 80 duplicate brackets, half a million broken triangles. MeshOptimiser keeps each repeat once, rebuilds the bad geometry and drops what you can’t see.',
@@ -788,6 +803,7 @@ window.labApps = [
         ['Box and Brush pick parts', 'Draw a box or paint with a brush over whole parts. Shift adds, Alt turns the camera.'],
       ], more: [
         ['Flatten, dissolve, ungroup', 'Collapse chains of single groups, dissolve a group, or ungroup a branch.'],
+        ['A group shows its parts dimly', 'Click a group and its parts are marked softly. Ctrl+click or Shift+click lights up the ones you pick, and the group stays selected.', 'new'],
         ['Collapse the way you want', 'The whole tree, the selection, or from the selection down.'],
         ['Organise from the right-click menu', 'Dissolve, flatten, sort, move or delete groups from one menu.'],
         ['Groups and parts together', 'Ctrl toggles a row, Shift picks a range. Groups and parts alike.'],
@@ -805,7 +821,8 @@ window.labApps = [
       { title: 'Build', items: [
         ['A library of 112 parts', 'Bolts, nuts, pipe fittings, bearings, brackets, gears, a servo. Set the size, drag it in.'],
         ['Exploded view', 'One slider pulls it apart, along the axes you choose.'],
-        ['Animate (alpha)', 'Make parts spin, swing, shake or travel along a path, and play it in the turntable video.'],
+        ['Animate (alpha)', 'Make parts spin, swing, shake, travel along a path or oscillate like a piston, on a video-editor timeline along the bottom. Take it out as a video, or inside a GLB as keyframes.', 'new'],
+        ['Axis Center', 'Put the axis in the middle of a part and reset its rotation, move the axis or the object to the origin, the selection or the view, align it, reset the scale. One undo each.', 'new'],
         ['Lock a part or a group', 'Lock one part or a whole group from Properties or the right-click menu. It shows a red lock, and delete skips it.'],
         ['Dynamic place (D)', 'Drag a part over a surface: it rests on it and turns to face it.'],
         ['Align parts', 'Align or spread parts and whole groups along X, Y and Z, with a gap if you want one. One undo.'],
@@ -829,21 +846,22 @@ window.labApps = [
         ['Save scene', 'Keeps the view, the selection and the recolouring in a small file next to the model.'],
       ] },
       { title: 'Work with Claude', note: 'MCP', items: [
-        ['Just ask', 'Say “find the bolts and hide them” or “get this under 5 MB”. Claude does it with the app’s 67 tools.'],
+        ['Just ask', 'Say “find the bolts and hide them” or “get this under 5 MB”. Claude does it with the app’s 78 tools.'],
         ['You decide', 'It asks before it changes anything. Deleting always asks. Every change is one undo.'],
         ['Try it first', 'Sixteen steps can be tried first: done, shown, taken back.'],
         ['One request, a whole job', 'Under 5 MB, or ready for web, Shopify, AR or phone, with a before and after picture.'],
         ['A whole folder', 'Every model in a folder: opened, optimised, exported, closed. Stop it any time.'],
         ['Pictures for a client', 'Clean renders up to 8192 px, several angles, a plain or transparent background, plus a turntable film.'],
         ['It knows the app', 'Six playbooks, about fifty help articles and six ready-made jobs.'],
+        ['Notes and more tools', 'Claude reads and answers the notes on the model, leaves its own, and can lock parts, make copies unique and remove loose bits. It never signs a scene off.', 'new'],
       ] },
       { title: 'Notes', note: 'Review', items: [
-        ['A note is a task', 'A title, a description, the kind, who it is for, a priority and a due date. A form makes it; comments go under it.', 'new'],
-        ['A shape for each kind', 'A circle, a square, a triangle and a diamond with the number inside. Finished notes are green, late ones outlined in red.', 'new'],
-        ['Many parts, no limit', 'A card for every part, Focus to go to it, Add selected to add more.', 'new'],
-        ['Screenshots from several views', 'Up to six, each remembering the view it was taken from.', 'new'],
-        ['Sign-off', 'Approve or ask for changes on the whole scene. Everyone has one answer, and the card shows who said what.', 'new'],
-        ['CSV, JSON and BCF', 'Take the notes out as a spreadsheet, as JSON or for design tools, and bring them back in.', 'new'],
+        ['A note is a task', 'A title, a description, the kind, who it is for, a priority and a due date. A form makes it; comments go under it.'],
+        ['A shape for each kind', 'A circle, a square, a triangle and a diamond with the number inside. Finished notes are green, late ones outlined in red.'],
+        ['Many parts, no limit', 'A card for every part, Focus to go to it, Add selected to add more.'],
+        ['Screenshots from several views', 'Up to six, each remembering the view it was taken from.'],
+        ['Sign-off', 'Approve or ask for changes on the whole scene. Everyone has one answer, and the card shows who said what.'],
+        ['CSV, JSON and BCF', 'Take the notes out as a spreadsheet, as JSON or for design tools, and bring them back in.'],
       ], more: [
         ['Notes on the model', 'Press N, click a spot, write. A numbered pin stays on the part, with a picture of the view it was written from.'],
         ['Replies, edits and resolve', 'Anyone can answer, edit or resolve. An edit keeps what it replaced; a delete leaves who deleted it.'],
@@ -965,7 +983,7 @@ window.labApps = [
         'Picture of the keyboard', 'Change any key', 'Key profiles',
       ] },
       { title: 'Work with Claude', items: [
-        'Let Claude connect', 'MCP over local HTTP', '67 tools', 'Four permission switches', 'One undo per change',
+        'Let Claude connect', 'MCP over local HTTP', '78 tools', 'Four permission switches', 'One undo per change',
         'Dry run', 'Optimise to a target', 'Before and after picture', 'Folder batch optimise', 'Clean renders to 8192 px',
         'Turntable by Claude', 'Model health check', 'Run saved recipes', 'Search the app’s help', 'Six playbooks',
         'Ready-made jobs', 'Claude mode (alpha)', 'Three-way permissions',
@@ -996,7 +1014,24 @@ window.labApps = [
     changelog: {
       link: 'https://github.com/xpayn3/MeshOptimiser/blob/main/CHANGELOG.md',
       versions: [
-        { version: '0.33.0', name: 'Ptuj', fixes: 3, date: '16 Oct 2026 · 09:47', latest: true,
+        { version: '0.34.0', name: 'Bled', fixes: 8, date: '16 Oct 2026 · 17:52', latest: true,
+          summary: 'Animate gets a timeline along the bottom and a motion for pistons. Claude can read and write notes. The axis tools of Cinema 4D arrive, a selected group shows its parts softly, and the Windows download can carry Python inside.',
+          items: [
+            ['New', 'A timeline along the bottom. Animate is a drawer set out like a video editor: a ruler, a row for every animated object and a bar for every motion. Drag the ruler or the playhead to scrub; drag the end of a bar to change its repeats and the bar to change its delay.'],
+            ['New', 'Oscillate, for pistons, rockers and pumps. A to-and-fro on all three axes of shift and of turn at once, perfectly loopable. Waves: Sine, Piston (a crank turning a rod), Eased and Triangle, with lags that turn X and Y into circles and ellipses.'],
+            ['New', 'Animation leaves the app. Include animation writes every moving part into a GLB or glTF as keyframes, and the timeline can be rendered to a WebM video. An Animation card in the right column plays, pauses, plays backwards and loops three ways.'],
+            ['New', 'Axis Center and the Axis card. Centre the axis of a part and reset its rotation, move the axis or the object to the origin, the selection or the view, align the axis to the world, its parent or the part’s faces, reset the scale. One undo step each, and the shape never moves.'],
+            ['New', 'Claude and notes. Seven new tools read, answer and leave notes (Claude writes under its own name and never signs a scene off), and four more lock parts, make copies unique, select instances and remove loose bits: 78 tools in all.'],
+            ['New', 'A selected group shows its parts softly. Ctrl+click or Shift+click lights up the ones you pick, and the group stays selected.'],
+            ['New', 'Python can come inside the Windows download. With the runtime folder beside the app, the first start has nothing to install.'],
+            ['New', 'Share to GrabCAD, Sketchfab, Printables, Thingiverse, Cults and MyMiniFactory from the Export window.'],
+            ['Polish', 'The Notes card has one toolbar and a menu, and recent cards show their notes. The search marks commands that open a panel and has shorter names. Claude mode says what each call did in words and shows no floor grid. Fewer pills. Dragging a command card is smooth.'],
+            ['Polish', 'The name in a serif: Fraunces Light for the name and the card titles, Source Serif 4 for the Serif choice. Both ship with the app.'],
+            ['Fix', 'The installer works where Windows Script Host is switched off.'],
+            ['Fix', 'Heavy jobs no longer start on top of each other: Remove holes, Reduce, Split, Merge, Flatten, Fit and Smart optimise run one at a time.'],
+            ['Fix', 'A part that follows another is no longer sheared, stray edge lines after Remove holes are gone, and the Materials and Library docks no longer stack.'],
+          ] },
+        { version: '0.33.0', name: 'Ptuj', fixes: 3, date: '16 Oct 2026 · 09:47',
           summary: 'Notes are tasks. A title, a description, the parts, who it is for, a priority and a due date, with comments under them, and the notes leave the app as a spreadsheet, JSON or BCF.',
           items: [
             ['New', 'A note is made with a form. Press N and click a spot, or right-click the model: Add a note here, Add a note to this part. A title, an optional description, the kind, who it is for, the priority, a due date and a screenshot. Comments go under the note afterwards.'],
