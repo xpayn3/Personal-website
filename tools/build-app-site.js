@@ -42,9 +42,9 @@ const SHOWCASE = [
   { title: 'Make it yours', note: 'The app', names: ['Keyboard remapper', 'A look of your own', 'Numbers you drag', 'Cards over the model', 'Scene tabs', 'Floating Materials and Library'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 483;
+const CSS_V = 484;
 const RP_V = 2;           // report.js
-const JS_V = 119;
+const JS_V = 124;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -493,7 +493,7 @@ ${c.points.map(([t, d]) => `          <div><dt>${esc(t)}</dt><dd>${esc(d)}</dd><
     const d = site.interact && site.interact[kind];
     if (!d) return '';
     return `
-    <section class="band live" id="${d.id}" data-live="${kind}"${d.model ? ` data-model="${esc(d.model)}"` : ''}>
+    <section class="band live" id="${d.id}" data-live="${kind}"${d.model ? ` data-model="${esc(d.model)}"` : ''}${d.noun ? ` data-noun="${esc(d.noun)}"` : ''}${d.whole ? ` data-whole="${esc(d.whole)}"` : ''}${d.partsNote ? ` data-parts-note="${esc(d.partsNote)}"` : ''}>
       <div class="wrap">
         <div class="band-head">
           <p class="kicker">${esc(d.kicker)}</p>
@@ -504,6 +504,7 @@ ${c.points.map(([t, d]) => `          <div><dt>${esc(t)}</dt><dd>${esc(d)}</dd><
           <img class="live-poster" src="${asset(d.poster)}" alt="${esc(d.posterAlt)}" width="${d.posterSize[0]}" height="${d.posterSize[1]}" loading="lazy" decoding="async" />
         </div>
         <p class="live-note">${esc(d.note)}</p>
+${d.names ? `        <script type="application/json" data-live-names>${JSON.stringify(d.names)}</script>` : ''}
       </div>
     </section>`;
   };
