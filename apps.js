@@ -165,8 +165,8 @@ window.labApps = [
             ['Framed for you', 'The model fills the frame. No grid.'],
           ],
           shots: [
-            ['Images/apps/meshoptimiser-claude-render-exploded.webp', 'A Scania V8 engine exploded to 55%, on a dark background.'],
-            ['Images/apps/meshoptimiser-claude-render-set.webp', 'Four angles in one request, on white.'],
+            ['Images/apps/meshoptimiser-claude-render-exploded-scania.webp', 'A Scania V8 engine exploded to 55%, on a dark background.'],
+            ['Images/apps/meshoptimiser-claude-render-set-scania.webp', 'Four angles in one request, on white.'],
           ],
         },
         // Claude mode, an alpha view of the app for following Claude (see claudeMode in tools/build-app-site.js)
@@ -187,7 +187,7 @@ window.labApps = [
             ['A clear stage', 'No floor grid under the model while you follow along. It comes back when you leave. Undo, redo and looking around stay quiet, and the messages at the top wait longer.'],
           ],
           open: 'Open it from the start screen, the Claude badge or the command search.',
-          shot: ['Images/apps/meshoptimiser-claude-mode.webp', 'The first screen of Claude mode: a Scania V8 engine is open, ready for Claude, and the viewport is hidden so the feed has the whole window.', 1920, 1009],
+          shot: ['Images/apps/meshoptimiser-claude-mode-scania.webp', 'The first screen of Claude mode: a Scania V8 engine is open, ready for Claude, and the viewport is hidden so the feed has the whole window.', 1920, 1009],
         },
         // longer jobs (see claudeJobs in tools/build-app-site.js): a dry run, one call to a size, before and after, a folder, progress and Stop
         jobs: {
@@ -203,7 +203,7 @@ window.labApps = [
             ['Stop, any time', 'Press Stop, or cancel in Claude. The job ends after the current step, and what was done can be undone.'],
           ],
           shots: [
-            ['Images/apps/meshoptimiser-claude-compare.webp', 'Before and after on a Scania V8 engine: 3,682,816 triangles on the left, 298,957 on the right, with the bolts hidden.'],
+            ['Images/apps/meshoptimiser-claude-compare-scania.webp', 'Before and after on a Scania V8 engine: 3,682,816 triangles on the left, 298,957 on the right, with the bolts hidden.'],
             ['Images/apps/meshoptimiser-claude-job.webp', 'Four models in a folder: the badge shows the file and step, the dropdown the progress and Stop.'],
           ],
         },
