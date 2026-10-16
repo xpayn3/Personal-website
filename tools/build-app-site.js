@@ -42,9 +42,9 @@ const SHOWCASE = [
   { title: 'Make it yours', note: 'The app', names: ['Keyboard remapper', 'A look of your own', 'Numbers you drag', 'Cards over the model', 'Scene tabs', 'Floating Materials and Library'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 481;
+const CSS_V = 483;
 const RP_V = 2;           // report.js
-const JS_V = 115;
+const JS_V = 119;
 
 // The pages of an app's site, in the order of its navigation. `file` is
 // written into site.path; `nav` is false for a page the header leaves out.
@@ -661,6 +661,7 @@ ${r.points.map(([name, line]) => `          <div><dt>${esc(name)}</dt><dd>${esc(
           <h2>${esc(r.title)}</h2>
         </div>
         <p class="lead">${esc(r.line)}</p>
+        ${r.shot ? `<div class="cl-shots cl-one"><figure><a class="zoom" href="${asset(r.shot[0])}" data-group="mode" data-caption="${esc(r.shot[1])}"><img src="${asset(r.shot[0])}" alt="${esc(app.title + ': ' + r.shot[1])}" width="${r.shot[2]}" height="${r.shot[3]}" loading="lazy" /></a><figcaption>${esc(r.shot[1])}</figcaption></figure></div>` : ''}
         <dl class="cl-points cl-points-3">
 ${r.points.map(([name, line]) => `          <div><dt>${esc(name)}</dt><dd>${esc(line)}</dd></div>`).join('\n')}
         </dl>
@@ -752,7 +753,7 @@ ${k.figures.map(([figure, label]) => `          <div><dt>${esc(figure)}</dt><dd>
       <div class="cx-grid" data-cx-grid>
         <figure class="cx-wrap">
           <div class="cx">
-            <div class="cx-bar"><span>${esc(c.chatTitle || 'Lighten the gearbox')}</span></div>
+            <div class="cx-bar"><span>${esc(c.chatTitle || 'Lighten the engine')}</span></div>
             <ol class="cx-thread">
 ${c.chat.map(([who, text, tools, ask, result], i) => who === 'you'
     ? `              <li class="cx-you"><p>${esc(text)}</p></li>`
