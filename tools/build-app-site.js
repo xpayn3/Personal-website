@@ -310,7 +310,6 @@ ${rows.map(([label, command]) => `          <div><dt>${esc(label)}</dt><dd><code
         <div class="wrap pop-stage">
           <img class="pop-poster" src="${asset(pop.poster)}?v=${pop.v || 1}" alt="${esc(pop.label)}" width="${pop.posterSize[0]}" height="${pop.posterSize[1]}" decoding="async" fetchpriority="high" />
           <div class="pop-copy" aria-hidden="false">
-            <p class="kicker">${esc(pop.kicker)}</p>
             <h2>${esc(pop.title)}</h2>
             <p>${esc(pop.line)}</p>
           </div>
