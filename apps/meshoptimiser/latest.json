@@ -1,28 +1,26 @@
 {
  "schema": 1,
  "stable": {
-  "version": "0.33.0",
+  "version": "0.34.0",
   "date": "2026-10-16",
-  "headline": "Notes are tasks: a title, a description, parts, who it is for, a priority and a due date, with comments under them, and they leave the app as CSV, JSON or BCF.",
+  "headline": "Animate gets a timeline and a motion for pistons, Claude works with notes, and the axis tools of Cinema 4D arrive.",
   "notes": [
-   "A note is a task: a title, a description, the kind, who it is for, a priority and a due date, with comments under it.",
-   "Each kind has its own shape; finished notes are green and late ones are outlined in red.",
-   "A card for every part a note is about, with no limit; Focus selects the part and takes the camera to it.",
-   "Up to six screenshots per note, each remembering the view it was taken from.",
-   "Sign off a scene with Approve or Changes.",
-   "Take the notes out as a report, a spreadsheet, JSON or BCF for design tools, and bring them back in.",
-   "Save writes over the scene's file again after a restart.",
-   "A big STEP file with colours no longer stops the import."
+   "Animate has a timeline along the bottom, with a new Oscillate motion for pistons and pumps.",
+   "Axis Center and the Axis card: centre the axis, reset its rotation, align it, one undo each.",
+   "Claude can read, answer and leave notes (78 tools in all).",
+   "A selected group shows its parts dimly; Ctrl+click or Shift+click lights up the ones you pick.",
+   "Animation can leave the app as a GLB, glTF or video.",
+   "Python can come inside the Windows download, so a first start has nothing to install."
   ],
   "more": "https://lukagrcar.com/apps/meshoptimiser/changelog.html",
   "archive": {
-   "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.33.0/meshoptimiser-app-0.33.0.zip",
-   "sha256": "34cbf4e1e198a8302339fd4660efbddbcf001339bf19b44d2cee37e14f91205b",
-   "size": 5574986
+   "url": "https://github.com/xpayn3/MeshOptimiser/releases/download/v0.34.0/meshoptimiser-app-0.34.0.zip",
+   "sha256": "e0989e35eb71ad15105d430905a5be69cfb36e5fb747d1899fa40291a9813c4e",
+   "size": 5987047
   },
   "requirements_sha256": "f1a93ffe65235c3537c454bcad32277ba82c666c35ece65e2fe598556d0f2f7d",
   "requirements_changed": false,
-  "launcher": 3,
+  "launcher": 4,
   "min_from": ""
  }
 }
