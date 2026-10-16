@@ -42,7 +42,7 @@ const SHOWCASE = [
   { title: 'Make it yours', note: 'The app', names: ['Keyboard remapper', 'A look of your own', 'Numbers you drag', 'Cards over the model', 'Scene tabs', 'Floating Materials and Library'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 473;
+const CSS_V = 474;
 const RP_V = 2;           // report.js
 const JS_V = 106;
 
@@ -310,8 +310,8 @@ ${rows.map(([label, command]) => `          <div><dt>${esc(label)}</dt><dd><code
         <div class="wrap pop-stage">
           <img class="pop-poster" src="${asset(pop.poster)}?v=${pop.v || 1}" alt="${esc(pop.label)}" width="${pop.posterSize[0]}" height="${pop.posterSize[1]}" decoding="async" fetchpriority="high" />
           <div class="pop-copy" aria-hidden="false">
-            <h2>${esc(pop.title)}</h2>
-            <p>${esc(pop.line)}</p>
+            <h2>${pop.titleRows ? pop.titleRows.map((row, i) => `<span class="pop-row" style="--s:${(0.12 + i * 0.1).toFixed(2)}">${esc(row)}</span>`).join(' ') : esc(pop.title)}</h2>
+            <p${pop.titleRows ? ` class="pop-row" style="--s:${(0.12 + pop.titleRows.length * 0.1).toFixed(2)}"` : ''}>${esc(pop.line)}</p>
           </div>
           <div class="pop-info">
             <div class="pop-info-top">

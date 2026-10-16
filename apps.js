@@ -607,6 +607,7 @@ window.labApps = [
         label: 'A truck front axle, light enough to pull apart live as you scroll',
         kicker: 'Live in your browser',
         title: 'So light, it comes apart live.',
+        titleRows: ['So light,', 'it comes', 'apart live.'],      // one row after another as the page is scrolled
         line: '33 MB of CAD, now 1.3 MB. All 295 parts move as you scroll.',
         readout: '295 parts · 250,075 tris',
         // the small graph: [group, [[label, value, text]...]]: the bars are drawn against the largest value of their group
