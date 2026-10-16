@@ -44,7 +44,7 @@ window.labApps = [
   {
     id: 'meshoptimiser',
     title: 'MeshOptimiser',
-    subtitle: 'Heavy CAD, made light enough for a browser.',
+    subtitle: 'Heavy models. Made light.',
     category: 'CAD tool',
     stage: 'Beta',
     repo: 'https://github.com/xpayn3/MeshOptimiser',
