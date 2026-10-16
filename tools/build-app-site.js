@@ -42,7 +42,7 @@ const SHOWCASE = [
   { title: 'Make it yours', note: 'The app', names: ['Keyboard remapper', 'A look of your own', 'Numbers you drag', 'Cards over the model', 'Scene tabs', 'Floating Materials and Library'] },
   { title: 'Work with Claude', note: 'Ask for it', names: ['Just ask', 'You decide', 'Try it first', 'One request, a whole job', 'A whole folder', 'Pictures for a client'] },
 ];
-const CSS_V = 463;
+const CSS_V = 464;
 const RP_V = 2;           // report.js
 const JS_V = 106;
 
@@ -318,8 +318,8 @@ ${rows.map(([label, command]) => `          <div><dt>${esc(label)}</dt><dd><code
             <div class="pop-info-top">
 ${(pop.graph || []).map(([group, rows]) => { const top = Math.max(...rows.map(r => r[1])); return `            <div class="pop-bars" role="img" aria-label="${esc(group + ': ' + rows.map(r => r[0] + ' ' + r[2]).join(', '))}"><small>${esc(group)}</small>${rows.map(([label, value, text], i) => `<span class="pb${i === rows.length - 1 ? ' is-last' : ''}"><i>${esc(label)}</i><s style="--w:${Math.max(1.5, value / top * 100).toFixed(1)}%;--i:${i}"></s><em>${esc(text)}</em></span>`).join('')}</div>`; }).join('')}
             <p class="pop-note">${esc(pop.note)}</p>
-            </div>
 ${pop.credit ? `            <p class="pop-note pop-credit">${esc(pop.credit)}</p>` : ''}
+            </div>
           </div>
         </div>
       </div>
