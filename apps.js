@@ -34,7 +34,24 @@
 //   changelog { link, versions: [{ version, date, latest, summary,
 //             items: [[tag, text], …] }, …] }, newest first (optional)
 //   info      the table at the bottom: [label, value] pairs
+//   site      { url }: an app whose site lives elsewhere (its own repository). The Lab card
+//             links to that address instead of to apps/<id>.html. MeshOptimiser is one:
+//             its website is generated and published from the app's repository.
 window.labApps = [
+  {
+    id: 'meshoptimiser',
+    title: 'MeshOptimiser',
+    subtitle: 'Heavy models. Made light.',
+    category: 'CAD tool',
+    stage: 'Beta',
+    repo: 'https://github.com/xpayn3/MeshOptimiser',
+    icon: 'Images/apps/meshoptimiser-icon.svg',
+    cover: 'Images/apps/meshoptimiser-hero.webp',
+    share: 'Images/apps/meshoptimiser-share.jpg',
+    labCover: 'Images/apps/meshoptimiser-lab-cover.webp',   // the picture on the Lab page card
+    // The app and its website live in their own repository (xpayn3/MeshOptimiser); the Lab card links to the site.
+    site: { url: 'https://xpayn3.github.io/MeshOptimiser/' },
+  },
   {
     id: 'webtree',
     title: 'Windy Tree',

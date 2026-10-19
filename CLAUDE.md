@@ -57,9 +57,10 @@ All pages also load `tokens.css`; pages with the site nav load `floating-nav.css
 - They use `<base href="../">` so the site's relative paths work. `window.PROJECT_PAGE` puts `overlay.js` in standalone mode: Close goes to `grid.html`, Next is an ordinary link, no hash routing.
 - Cards, features and next links point at these pages (crawlable); clicks are intercepted to open in place.
 
-## App pages
+## App pages and MeshOptimiser
 
-- `apps.js` is the only source of app data; each app has one page, `apps/<id>.html`, drawn from it by `app-page.js`.
+- `apps.js` is the only source of app data; an app without a `site` has one page, `apps/<id>.html`, drawn from it by `app-page.js`.
+- **MeshOptimiser no longer lives here.** The app, its website (`site/`), the site generators (`tools/site/`) and the updates feed (`site/latest.json`) are in the app repo `xpayn3/MeshOptimiser` (`C:/Users/Luka/Documents/MeshOptimiser`), published at `https://xpayn3.github.io/MeshOptimiser/`. Its entry here is only a card (`site: { url }` makes the Lab link out) and `apps/meshoptimiser.html` forwards to the new address. Work on the site in that repo; see its `CLAUDE.md`.
 
 ## Work page (`script.js`, `gallery.css`)
 - Tiles from `window.gridItems` (Lab items are skipped), lazy-loaded; phones use the 300px copies in `Images/mobile/`, falling back to the full image if one is missing.
