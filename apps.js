@@ -7,6 +7,7 @@
 // apps/<id>.html, changing the id, title and description in it.
 //   id        file name of its page, and its handle everywhere
 //   title, subtitle, category
+//   pitch     one or two sentences for the card on the Lab page (lab.js)
 //   stage     how finished it is, shown as a small tag by its name: 'Alpha',
 //             'Beta', 'Experimental' (optional)
 //   repo      GitHub link            url   where it runs (optional)
@@ -49,6 +50,8 @@ window.labApps = [
     cover: 'Images/apps/meshoptimiser-hero.webp',
     share: 'Images/apps/meshoptimiser-share.jpg',
     labCover: 'Images/apps/meshoptimiser-lab-cover.webp',   // the picture on the Lab page card
+    pitch: 'Open a heavy CAD or mesh file and make it light: fewer triangles, repaired meshes and clean parts. It runs on your own computer, and Claude can drive it.',
+    stats: [['Category', 'CAD tool'], ['Platform', 'Windows · macOS'], ['Runs', 'Locally'], ['Opens', 'STEP, GLB, OBJ, FBX']],
     // The app and its website live in their own repository (xpayn3/MeshOptimiser); the Lab card links to the site.
     site: { url: 'https://xpayn3.github.io/MeshOptimiser/' },
   },
@@ -58,6 +61,7 @@ window.labApps = [
     subtitle: 'A real-time procedural tree generator.',
     category: '3D tool',
     stage: 'Alpha',
+    pitch: 'An experiment in growing trees from numbers. Nothing is modelled by hand: trunk, bark, branching and leaves all come from parameters.',
     repo: 'https://github.com/xpayn3/webtree',
     url: 'https://xpayn3.github.io/webtree/',
     icon: 'https://xpayn3.github.io/webtree/icons/icon.svg',
@@ -160,6 +164,7 @@ window.labApps = [
     subtitle: 'A cycling training dashboard, powered by intervals.icu.',
     category: 'Fitness',
     stage: 'Experimental',
+    pitch: 'A training dashboard for cycling, built on intervals.icu: training load, power analysis, weather, a garage for the bikes, and builders for workouts and routes.',
     repo: 'https://github.com/xpayn3/cyclingHUB',
     url: 'https://xpayn3.github.io/cyclingHUB/',
     icon: 'https://xpayn3.github.io/cyclingHUB/icon-192.png',

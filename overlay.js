@@ -491,9 +491,9 @@
   function openProject(projId, opts) {
     const proj = window.projects && window.projects[projId];
     if (!proj) return;
-    // The Lab is a page of its own, not a project.
+    // The "lab" pictures are a page of their own (Sketch), not a project.
     if (projId === 'lab') {
-      if (!/lab\.html$/.test(location.pathname)) location.href = 'lab.html';
+      if (!/sketch\.html$/.test(location.pathname)) location.href = 'sketch.html';
       return;
     }
     const wasOpen = overlay.classList.contains('open');

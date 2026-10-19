@@ -1,0 +1,153 @@
+/* ========== LAB — the apps showcase ==========
+   One big plate for every app: its cover picture beside a column with the
+   icon, name, what it is, a few numbers and where to open it. The plates
+   alternate sides. Built by lab.js from apps.js. Colours (--g-*) come from
+   gallery.css, so the page follows the Dark / Light button; the icon tile
+   and the stage tag come from apps.css. */
+
+.showcase {
+  max-width: 1480px;
+  margin: 0 auto;
+  /* the top clears the fixed nav */
+  padding: clamp(104px, 15vh, 160px) var(--g-gutter) clamp(80px, 12vh, 160px);
+}
+
+/* ---- page head ---- */
+.sc-head { display: grid; gap: 22px; max-width: 940px; margin-bottom: clamp(56px, 10vh, 120px); }
+.sc-kicker {
+  display: flex;
+  gap: 14px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--g-muted);
+}
+.sc-kicker span + span::before { content: '·'; margin-right: 14px; }
+.sc-head h1 {
+  font-size: clamp(40px, 7.4vw, 112px);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  color: var(--g-ink);
+  text-wrap: balance;
+}
+.sc-lead { max-width: 52ch; font-size: clamp(16px, 1.5vw, 20px); line-height: 1.55; color: var(--g-text); }
+
+/* ---- the plates ---- */
+.sc-list { display: grid; gap: clamp(72px, 12vh, 140px); }
+.sc-list noscript ul { list-style: none; display: grid; gap: 10px; color: var(--g-text); }
+.sc-list noscript a { color: var(--g-ink); }
+
+.sc-app {
+  display: grid;
+  grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+  gap: clamp(24px, 4vw, 64px);
+  align-items: end;
+}
+.sc-app:nth-of-type(even) { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); }
+.sc-app:nth-of-type(even) .sc-cover { order: 2; }
+.sc-app.will-rise { opacity: 0; transform: translateY(28px); transition: opacity 0.8s ease, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
+.sc-app.will-rise.in-view { opacity: 1; transform: none; }
+
+/* cover picture; the whole picture is a link */
+.sc-cover {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--g-well);
+  box-shadow: inset 0 0 0 1px var(--g-line);
+  color: inherit;
+  text-decoration: none;
+}
+.sc-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sc-cover-cta {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  padding: 8px 15px;
+  border-radius: 999px;
+  background: var(--g-ink);
+  color: var(--g-bg);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sc-cover:focus-visible { outline: 2px solid var(--g-ink); outline-offset: 3px; }
+.sc-cover:focus-visible .sc-cover-cta { opacity: 1; transform: none; }
+@media (hover: hover) and (pointer: fine) {
+  .sc-cover:hover img { transform: scale(1.03); }
+  .sc-cover:hover .sc-cover-cta { opacity: 1; transform: none; }
+}
+@media (hover: none) { .sc-cover-cta { opacity: 1; transform: none; } }
+
+/* the text column */
+.sc-body { display: grid; gap: 18px; align-content: end; min-width: 0; }
+.sc-id { display: flex; align-items: center; gap: 16px; }
+.sc-id-text { display: grid; gap: 4px; min-width: 0; }
+.sc-num { font-family: var(--font-mono, 'IBM Plex Mono', monospace); font-size: 12px; letter-spacing: 0.08em; color: var(--g-muted); }
+.sc-title { font-size: clamp(26px, 2.6vw, 36px); font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; color: var(--g-ink); }
+.sc-title .app-stage { margin-left: 12px; }
+.sc-sub { font-size: 16px; line-height: 1.4; color: var(--g-ink); }
+.sc-pitch { max-width: 46ch; font-size: 14.5px; line-height: 1.6; color: var(--g-text); }
+
+.sc-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; border-top: 1px solid var(--g-line); }
+.sc-stats > div { display: grid; gap: 3px; padding: 12px 0; border-bottom: 1px solid var(--g-line); }
+.sc-stats dt { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g-muted); }
+.sc-stats dd { font-size: 14px; color: var(--g-ink); }
+
+.sc-actions { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 4px; }
+.sc-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 18px;
+  border: 1px solid var(--g-line);
+  border-radius: 999px;
+  color: var(--g-ink);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.sc-btn:hover { background: var(--g-card-hover); border-color: color-mix(in srgb, var(--g-ink) 36%, transparent); }
+.sc-btn.is-main { border-color: transparent; background: var(--g-ink); color: var(--g-bg); }
+.sc-btn.is-main:hover { background: color-mix(in srgb, var(--g-ink) 86%, var(--g-bg)); }
+.sc-btn:focus-visible { outline: 2px solid var(--g-ink); outline-offset: 2px; }
+
+/* ---- the way over to Sketch ---- */
+.sc-more {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-top: clamp(80px, 12vh, 140px);
+  padding-top: 28px;
+  border-top: 1px solid var(--g-line);
+  font-size: 14px;
+  color: var(--g-muted);
+}
+.sc-more a { color: var(--g-ink); font-size: 16px; font-weight: 500; text-decoration: none; }
+.sc-more a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+/* ---- narrower windows: the cover above, the text below ---- */
+@media (max-width: 900px) {
+  .sc-app, .sc-app:nth-of-type(even) { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .sc-app:nth-of-type(even) .sc-cover { order: 0; }
+  .sc-body { max-width: 560px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sc-app.will-rise { opacity: 1; transform: none; transition: none; }
+  .sc-cover img, .sc-cover-cta { transition: none; }
+}

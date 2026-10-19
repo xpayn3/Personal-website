@@ -151,7 +151,8 @@ const sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n' +
   urlTag('', 'monthly', '1.0') +
   urlTag('grid.html', 'weekly', '0.9') +
   ids.map(id => urlTag('work/' + id, 'monthly', '0.8', stills(projects[id]).map(imageTag).join(''))).join('') +
-  urlTag('lab.html', 'monthly', '0.7', projects.lab ? imageTag(Template.posterOf(projects.lab.images[0])) : '') +
+  urlTag('sketch.html', 'monthly', '0.7', projects.lab ? imageTag(Template.posterOf(projects.lab.images[0])) : '') +
+  urlTag('lab.html', 'monthly', '0.6') +
   apps.filter(app => !app.site).map(app => urlTag('apps/' + app.id, 'monthly', '0.7', app.cover ? imageTag(app.cover) : '')).join('') +
   urlTag('about.html', 'monthly', '0.8') +
   '</urlset>\n';

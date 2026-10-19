@@ -14,7 +14,8 @@ Static portfolio served from GitHub Pages (repo `xpayn3/Personal-website`, domai
 |------|------|-----|-----|
 | Home | `index.html` | `home.css`, `smoke.css`, `overlay.css` | `smoke.js`, `projects.js`, `project-template.js`, `overlay.js` + inline |
 | Work | `grid.html` | `style.css`, `gallery.css`, `overlay.css`, `footer.css` | `projects.js`, `project-template.js`, `overlay.js`, `script.js` |
-| Lab | `lab.html` | `lab.css`, `gallery.css`, `overlay.css`, `footer.css` | `projects.js`, `project-template.js`, `overlay.js`, `lab.js` |
+| Sketch | `sketch.html` | `lab.css`, `gallery.css`, `overlay.css`, `footer.css` | `projects.js`, `project-template.js`, `overlay.js`, `sketch.js` |
+| Lab (apps showcase) | `lab.html` | `lab.css`, `gallery.css`, `apps.css`, `showcase.css`, `footer.css` | `apps.js`, `lab.js` |
 | About | `about.html` | `about.css` | inline (contact form) |
 | Admin | `admin.html` (noindex, password gate) | inline | inline, reads `admin-data.js` |
 | Privacy | `privacy.html` | `home.css` (`body.page-plain`) | inline |
@@ -67,7 +68,10 @@ All pages also load `tokens.css`; pages with the site nav load `floating-nav.css
 - Featured blocks (`FEATURED` in `script.js`) are woven in by `placeFeatures()` in whole rows and removed while filtering, searching or in list view.
 - Control panel: layout, columns, filters, sort, search.
 
-## Lab page (`lab.js`)
+## Lab page (`lab.js`, `showcase.css`)
+- The apps showcase: one big plate per app in `apps.js` (`window.labApps`), alternating sides, with its cover, icon, name, stage tag, `pitch`, up to four `stats` and its buttons. Add an app to `apps.js` and its plate appears. The animation and graphics that used to be here are on Sketch.
+
+## Sketch page (`sketch.js`)
 - Every tile is an `<img>` (clips show their `_thumb.webp`); a `<video>` is created only on mouse hover. Opens the shared lightbox with `setLightboxItems(items, true)`.
 
 ## Performance rules (phones)

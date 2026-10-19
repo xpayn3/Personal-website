@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <script>
+    // Theme before first paint: the visitor's saved choice, else this page's
+    // own default (dark). theme.js wires the Dark / Light button in the nav.
+    (function () {
+      var saved = null;
+      try { saved = localStorage.getItem('lg-theme'); } catch (e) {}
+      document.documentElement.dataset.theme = saved === 'light' || saved === 'dark' ? saved : 'dark';
+    })();
+  </script>
+  <title>Sketch — 3D Animation &amp; Graphics | Luka Grčar</title>
+  <meta name="robots" content="noai, noimageai" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="color-scheme" content="light" />
+  <meta name="description" content="Animation and graphics by Luka Grčar: Cinema 4D and Houdini sketches, renders, simulations, loops and works in progress." />
+  <link rel="canonical" href="https://lukagrcar.com/sketch.html" />
+  <meta property="og:title" content="Sketch — 3D Animation &amp; Graphics | Luka Grčar" />
+  <meta property="og:description" content="Animation and graphics by Luka Grčar: Cinema 4D and Houdini sketches, renders, simulations, loops and works in progress." />
+  <meta property="og:image" content="https://lukagrcar.com/og-image.png" />
+  <meta property="og:url" content="https://lukagrcar.com/sketch.html" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="tokens.css?v=4" />
+  <link rel="stylesheet" href="lab.css?v=27" />
+  <link rel="stylesheet" href="gallery.css?v=17" />
+  <link rel="stylesheet" href="overlay.css?v=38" />
+  <link rel="stylesheet" href="floating-nav.css?v=20" />
+  <link rel="stylesheet" href="footer.css?v=5" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXZ65KVMCQ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-RXZ65KVMCQ');</script>
+</head>
+<body class="page-lab page-sketch">
+
+  <!-- ===== JOURNAL (lab.css; entries built by sketch.js) ===== -->
+  <main class="journal">
+    <aside class="journal-rail">
+      <!-- page title: lives in the rail, above the small print -->
+      <header class="journal-head">
+        <span><h1 class="page-head-label">Sketch</h1></span>
+      </header>
+      <p>Animation and graphics: 3D sketches, half-baked renders, loops and weird stuff, the things that happen before a project. Updated whenever I make a mess. The apps I build are in the <a href="lab.html">Lab</a>.</p>
+      <label class="journal-search">
+        <span class="visually-hidden">Search Sketch</span>
+        <input type="search" id="labSearch" placeholder="Search" autocomplete="off" spellcheck="false" />
+        <kbd aria-hidden="true">/</kbd>
+      </label>
+      <div class="journal-filter" role="group" aria-label="Show">
+        <button type="button" class="is-active" data-show="all">All <i></i></button>
+        <button type="button" data-show="still">Stills <i></i></button>
+        <button type="button" data-show="clip">Clips <i></i></button>
+      </div>
+    </aside>
+    <div class="journal-main">
+      <div class="journal-feed" id="labFeed" aria-label="Journal entries">
+        <p class="journal-empty" id="labEmpty" hidden>Nothing posted here yet.</p>
+      </div>
+    </div>
+    <aside class="journal-side">
+      <nav class="journal-index" aria-label="Entries">
+        <h2>Index</h2>
+        <ol id="labIndex"></ol>
+      </nav>
+    </aside>
+  </main>
+
+  <!-- Floating top-left nav (shared component) -->
+  <header class="site-nav">
+    <a href="index.html" class="floating-name">Luka Grčar</a>
+    <nav class="floating-nav" aria-label="Sections">
+      <a href="grid.html" class="floating-nav-link">Work</a>
+      <a href="sketch.html" class="floating-nav-link is-active">Sketch</a>
+      <a href="lab.html" class="floating-nav-link">Lab</a>
+      <a href="about.html" class="floating-nav-link">About</a>
+    </nav>
+    <div class="site-nav-actions">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch between the dark and light theme">Light</button>
+      <a href="about.html#contact" class="site-nav-cta">Start a project</a>
+    </div>
+  </header>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <section class="site-footer-contact">
+      <h2 class="site-footer-label">Contact</h2>
+      <p class="contact-links">
+        <a href="mailto:luka.grcar@me.com">luka.grcar@me.com</a>
+        <a href="https://www.instagram.com/lukakluka/" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://www.behance.net/lukagrcar" target="_blank" rel="noopener noreferrer">Behance</a>
+        <a href="https://www.linkedin.com/in/luka-grcar-9534b695/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      </p>
+    </section>
+    <div class="colophon">
+      <span>All rights reserved _ Luka Grčar&copy;2026</span>
+      <span><a href="privacy.html">Privacy</a> · Design &amp; code by Luka Grčar</span>
+    </div>
+  </footer>
+
+  <script src="motion.js"></script>
+  <script defer src="projects.js?v=7"></script>
+  <script defer src="project-template.js?v=4"></script>
+  <script defer src="overlay.js?v=49"></script>
+  <script defer src="sketch.js?v=1"></script>
+  <script src="floating-nav.js?v=18" defer></script>
+  <script src="theme.js?v=2" defer></script>
+  <script src="brand.js" defer></script>
+</body>
+</html>

@@ -352,3 +352,6 @@ html.nav-away .journal-index ol { max-height: 28vh; }
 @media (prefers-reduced-motion: reduce) {
   .entry { opacity: 1; transform: none; transition: none; }
 }
+
+/* a link in the rail's small print (Sketch points to the Lab) */
+.journal-rail p a { color: var(--g-ink); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--g-ink) 36%, transparent); text-underline-offset: 3px; }
